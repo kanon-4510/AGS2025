@@ -15,6 +15,8 @@
 #include "Planet.h"
 #include "Player.h"
 
+//’S“–ûü–ì
+
 Player::Player(void)
 {
 
