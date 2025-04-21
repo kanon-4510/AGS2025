@@ -8,9 +8,9 @@ public:
 	//敵の種類
 	enum class TYPE
 	{
-		BIRD
-		, GHOST
-		, MAX
+		BIRD,
+		GHOST,
+		MAX
 	};
 
 	EnemyBase(int baseModelId);	// コンストラクタ
