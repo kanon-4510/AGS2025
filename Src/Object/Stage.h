@@ -91,4 +91,7 @@ private:
 	// ゴールスター
 	void MakeGoalStar(void);
 
+	// メインステージ
+	void MainStage(void);
+
 };

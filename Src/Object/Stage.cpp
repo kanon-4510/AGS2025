@@ -25,10 +25,7 @@ Stage::Stage(Player& player)
 
 Stage::~Stage(void)
 {
-	
-	// ワープスター
-	warpStars_.clear();
-	
+		
 	// 惑星
 	planets_.clear();
 
@@ -43,6 +40,10 @@ void Stage::Init(void)
 	MakeSpecialPlanet();
 	MakeWarpStar();
 	MakeGoalStar();
+
+	//// 外部ファイルの３Ｄモデルをロード
+	//modelId_ = MV1LoadModel(
+	//	(Application::PATH_MODEL + "Cube.mv1").c_str());
 
 	step_ = -1.0f;
 }
@@ -471,4 +472,9 @@ void Stage::MakeWarpStar(void)
 
 void Stage::MakeGoalStar(void)
 {
+}
+
+void Stage::MainStage(void)
+{	
+
 }

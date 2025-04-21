@@ -56,64 +56,16 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
 
 	// 最初の惑星
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/MainPlanet.mv1");
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Stage/Stage.mv1");
 	resourcesMap_.emplace(SRC::MAIN_PLANET, std::move(res));
-
-	// 落とし穴の惑星
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/FallPlanet.mv1");
-	resourcesMap_.emplace(SRC::FALL_PLANET, std::move(res));
-
-	// 平坦な惑星01
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/FlatPlanet01.mv1");
-	resourcesMap_.emplace(SRC::FLAT_PLANET_01, std::move(res));
-
-	// 平坦な惑星02
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/FlatPlanet02.mv1");
-	resourcesMap_.emplace(SRC::FLAT_PLANET_02, std::move(res));
-
-	// 最後の惑星
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/LastPlanet.mv1");
-	resourcesMap_.emplace(SRC::LAST_PLANET, std::move(res));
-
-	// 特別な惑星
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Planet/RoadPlanet.mv1");
-	resourcesMap_.emplace(SRC::SPECIAL_PLANET, std::move(res));
 
 	// 足煙
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "Smoke/Smoke.efkefc");
 	resourcesMap_.emplace(SRC::FOOT_SMOKE, std::move(res));
 
-	// ワープスターモデル
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Star/star.mv1");
-	resourcesMap_.emplace(SRC::WARP_STAR, std::move(res));
-
-	// ワープスター用回転エフェクト
-	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "StarDust/StarDust.efkefc");
-	resourcesMap_.emplace(SRC::WARP_STAR_ROT_EFF, std::move(res));
-
-	// ワープの軌跡線
-	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "Warp/WarpOrbit.efkefc");
-	resourcesMap_.emplace(SRC::WARP_ORBIT, std::move(res));
-
-	// ブラックホール
-	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "BlackHole/BlackHole.efkefc");
-	resourcesMap_.emplace(SRC::BLACK_HOLE, std::move(res));
-
-	// ゴール
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "GoalStar/GoalStar.mv1");
-	resourcesMap_.emplace(SRC::GOAL_STAR, std::move(res));
-
 	// Clear
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Congratulations.png");
 	resourcesMap_.emplace(SRC::CLEAR, std::move(res));
-
-	// タンク
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Tank/Body.mv1");
-	resourcesMap_.emplace(SRC::TANK_BODY, std::move(res));
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Tank/Wheel.mv1");
-	resourcesMap_.emplace(SRC::TANK_WHEEL, std::move(res));
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Tank/Barrel.mv1");
-	resourcesMap_.emplace(SRC::TANK_BARREL, std::move(res));
 
 }
 
