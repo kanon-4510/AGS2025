@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <DxLib.h>
+#include "ActorBase.h"
 
-class EnemyBase
+class EnemyBase : public ActorBase
 {
 public:
 	//敵の種類
@@ -32,6 +33,9 @@ public:
 
 	VECTOR GetCollisionPos(void);	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);	// 衝突用の球体半径の取得
+
+	void DrawDebug(void);	//デバッグ用
+
 protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる弾のモデルID
 	int modelId_;	// 弾のモデルID

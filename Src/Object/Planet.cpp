@@ -38,9 +38,9 @@ void Planet::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
 	
-	// d—Í”ÍˆÍ
-	DrawSphere3D(
-		transform_.pos, gravityRadius_, 10, 0xff0000, 0xff0000, false);
+	//// d—Í”ÍˆÍ
+	//DrawSphere3D(
+	//	transform_.pos, gravityRadius_, 10, 0xff0000, 0xff0000, false);
 }
 
 void Planet::SetPosition(const VECTOR& pos)
