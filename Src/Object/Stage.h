@@ -73,22 +73,25 @@ private:
 	// 最初の惑星
 	void MakeMainStage(void);
 
-	// 落とし穴惑星
-	void MakeFallPlanet(void);
+	//// 落とし穴惑星
+	//void MakeFallPlanet(void);
 
-	// 平坦な惑星
-	void MakeFlatPlanet(void);
+	//// 平坦な惑星
+	//void MakeFlatPlanet(void);
 
-	// 最後の惑星
-	void MakeLastPlanet(void);
+	//// 最後の惑星
+	//void MakeLastPlanet(void);
 
-	// 番外編の惑星
-	void MakeSpecialPlanet(void);
+	//// 番外編の惑星
+	//void MakeSpecialPlanet(void);
 
-	// ワープスター
-	void MakeWarpStar(void);
+	//// ワープスター
+	//void MakeWarpStar(void);
 
 	// ゴールスター
 	void MakeGoalStar(void);
+
+	// メインステージ
+	void MainStage(void);
 
 };
