@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Utility/AsoUtility.h"
+#include "../Application.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/InputManager.h"
@@ -9,6 +10,7 @@
 #include "../Object/SkyDome.h"
 #include "../Object/Stage.h"
 #include "../Object/Player.h"
+#include "../Object/EnemyBase.h"
 #include "../Object/Planet.h"
 #include "GameScene.h"
 
@@ -31,6 +33,12 @@ void GameScene::Init(void)
 	player_ = std::make_shared<Player>();
 	GravityManager::GetInstance().SetPlayer(player_);
 	player_->Init();
+
+	// 敵のモデル
+	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str());
+	auto enemy = new EnemyBase(enemyModelId_);
+	enemy->Init();
+	enemys_.push_back(enemy);
 
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
@@ -57,19 +65,23 @@ void GameScene::Update(void)
 	}
 
 	skyDome_->Update();
-
 	stage_->Update();
-
 	player_->Update();
+	for (auto enemy : enemys_)
+	{
+		enemy->Update();
+	}
 }
 
 void GameScene::Draw(void)
 {
-	// 背景
 	skyDome_->Draw();
 	stage_->Draw();
-	
 	player_->Draw();
+	for (auto enemy : enemys_)
+	{
+		enemy->Draw();
+	}
 
 	// ヘルプ
 	DrawFormatString(840, 20, 0x000000, "移動　　：WASD");
