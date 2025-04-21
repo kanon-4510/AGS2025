@@ -14,6 +14,9 @@ class SceneManager
 
 public:
 
+	//60FPSŒÅ’è‚Ì’è”
+	static constexpr float DEFAULT_FPS = 60.0f;
+
 	// ƒV[ƒ“ŠÇ——p
 	enum class SCENE_ID
 	{
