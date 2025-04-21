@@ -27,7 +27,6 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
-
 	// プレイヤー
 	player_ = std::make_shared<Player>();
 	GravityManager::GetInstance().SetPlayer(player_);
@@ -46,12 +45,10 @@ void GameScene::Init(void)
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
-
 }
 
 void GameScene::Update(void)
 {
-
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
@@ -64,12 +61,10 @@ void GameScene::Update(void)
 	stage_->Update();
 
 	player_->Update();
-
 }
 
 void GameScene::Draw(void)
 {
-
 	// 背景
 	skyDome_->Draw();
 	stage_->Draw();
@@ -81,5 +76,4 @@ void GameScene::Draw(void)
 	DrawFormatString(840, 40, 0x000000, "カメラ　：矢印キー");
 	DrawFormatString(840, 60, 0x000000, "ダッシュ：右Shift");
 	DrawFormatString(840, 80, 0x000000, "ジャンプ：＼(バクスラ)");
-
 }
