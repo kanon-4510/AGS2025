@@ -24,10 +24,13 @@ void EnemyBase::SetParam(void)
 	// モデルデータをいくつもメモリ上に存在させない
 	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
-	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
-	transform_.rot = { 0.0f, -90.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 0.0f, -2780.0f, 0.0f };						// 位置の設定
-	transform_.dir = { 1.0f, 0.0f, 0.0f };						// 右方向に移動する
+	scl_ = { 0.3f, 0.3f, 0.3f };					// 大きさの設定
+
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+
+	pos_ = { -350.0f, 30.0f, 75.0f };				// 位置の設定
+
+	dir_ = { 1.0f, 0.0f, 0.0f };					// 右方向に移動する
 
 	speed_ = 1.5f;		// 移動スピード
 
@@ -143,7 +146,7 @@ void EnemyBase::DrawDebug(void)
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	v = transform_.pos;
+	v = pos_;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
 		v.x, v.y, v.z
 	);
