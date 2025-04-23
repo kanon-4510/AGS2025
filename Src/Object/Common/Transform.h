@@ -33,6 +33,9 @@ public:
 	VECTOR pos;
 	VECTOR localPos;
 
+	// •ûŒü
+	VECTOR dir;
+
 	MATRIX matScl;
 	MATRIX matRot;
 	MATRIX matPos;
