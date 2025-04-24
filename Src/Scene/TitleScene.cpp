@@ -57,17 +57,17 @@ void TitleScene::Init(void)
 
 	// キャラ
 	charactor_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
-	charactor_.pos = { -250.0f, -32.0f, -105.0f };
-	size = 0.4f;
+	charactor_.pos = { 0.0f,-100.0f,0.0f };
+	size = 1.4f;
 	charactor_.scl = { size, size, size };
 	charactor_.quaRot = Quaternion::Euler(
-		0.0f, AsoUtility::Deg2RadF(90.0f), 0.0f);
+		0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
 	charactor_.Update();
 
 	// アニメーションの設定
 	std::string path = Application::PATH_MODEL + "Player/";
 	animationController_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationController_->Add(0, path + "Run.mv1", 20.0f);
+	animationController_->Add(0, path + "Slash.mv1", 20.0f);
 	animationController_->Play(0);
 
 	// 定点カメラ
@@ -102,11 +102,13 @@ void TitleScene::Draw(void)
 
 	skyDome_->Draw();
 
+	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 250, 1.0, 0.0, imgTitle_, true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
+
 	MV1DrawModel(planet_.modelId);
 	MV1DrawModel(movePlanet_.modelId);
 	MV1DrawModel(charactor_.modelId);
 
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 250, 1.0, 0.0, imgTitle_, true);
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
+
 
 }
