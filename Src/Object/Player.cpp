@@ -42,6 +42,9 @@ Player::Player(void)
 	imgShadow_ = -1;
 	stepJump_ = 0.0f; //初期化しなかったら遷移時にジャンプを押してる間ジャンプし続ける
 
+	//攻撃の初期化
+	isAttack_ = false;
+
 	//ワープの初期化
 	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
 	stepWarp_ = 0.0f;
@@ -201,6 +204,7 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
 	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
@@ -267,6 +271,9 @@ void Player::UpdatePlay(void)
 
 	// ジャンプ処理
 	ProcessJump();
+	
+	// 攻撃処理
+	ProcessAttack();
 
 	// 重力による移動量
 	CalcGravityPow();
@@ -513,7 +520,7 @@ void Player::ProcessMove(void)
 		//移動量
 		movePow_ = VScale(dir, speed_);
 
-		// 回転処理
+		// 回転処理IDLE
 		SetGoalRotate(rotRad);
 
 		if (!isJump_ && IsEndLanding())
@@ -773,6 +780,11 @@ bool Player::IsEndLanding(void)
 	}
 	return false;
 
+}
+
+void Player::ProcessAttack(void)
+{
+	
 }
 
 void Player::EffectFootSmoke(void)
