@@ -16,6 +16,8 @@ public:
 	static constexpr float ENEMY_SHADOW_SIZE = 30.0f;
 	static constexpr float ENEMY_SHADOW_HEIGHT = 300.0f;
 
+	static constexpr float TIME_ROT = 1.0f;	// 回転完了までの時間
+
 	//敵の種類
 	enum class TYPE
 	{
@@ -30,6 +32,7 @@ public:
 	virtual void Init(void);		// 初期処理(最初の１回のみ実行)
 	virtual void SetParam(void);	// パラメータ設定(純粋仮想関数)
 	virtual void Update(void);		// 更新処理(毎フレーム実行)
+	virtual void EnemyUpdate(void);		// 更新処理(毎フレーム実行)
 	virtual void Draw(void);		// 描画処理(毎フレーム実行)
 	virtual void Release(void);		// 解放処理(最後の１回のみ実行)
 
@@ -40,6 +43,8 @@ public:
 	void SetAlive(bool alive);	// 生存判定
 
 	void Damage(int damage);	// ダメージを与える
+
+	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
 	VECTOR GetCollisionPos(void);	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);	// 衝突用の球体半径の取得
@@ -66,6 +71,11 @@ protected:
 
 	VECTOR moveDiff_;	// フレームごとの移動値
 	
+	// 回転
+	Quaternion enemyRotY_;
+	Quaternion goalQuaRot_;
+	float stepRotTime_;
+
 	int imgShadow_;		// 丸影
 
 	int hp_;	// 体力
@@ -90,6 +100,10 @@ protected:
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
+
+	// 回転
+	void SetGoalRotate(double rotRad);
+	void Rotate(void);
 
 	// 衝突判定
 	void Collision(void);

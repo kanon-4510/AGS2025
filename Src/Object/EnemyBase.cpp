@@ -26,6 +26,7 @@ void EnemyBase::Init(void)
 
 	SetParam();
 	Update();
+	EnemyUpdate();	//置く場所が分からん
 }
 
 void EnemyBase::SetParam(void)
@@ -36,12 +37,11 @@ void EnemyBase::SetParam(void)
 
 	scl_ = { 0.5f, 0.5f, 0.5f };					// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	pos_ = { 0.0f, 0.0f, 200.0f };					// 位置の設定
+	pos_ = { 0.0f, 0.0f, 0.0f };					// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };					// 右方向に移動する
 
-	transform_.pos = pos_;
 
-	speed_ = 2.0f;		// 移動スピード
+	speed_ = 01.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
 
@@ -57,19 +57,15 @@ void EnemyBase::SetParam(void)
 
 	// カプセルコライダ
 	capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
-	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
-	capsule_->SetRadius(20.0f);
+	capsule_->SetLocalPosTop({ 0.0f, 140.0f, 1.0f });
+	capsule_->SetLocalPosDown({ 0.0f, 00.0f, 0.0f });
+	capsule_->SetRadius(30.0f);
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
 	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
 
-	// 重力による移動量
-	CalcGravityPow();
-
-	// 衝突判定
-	Collision();
+	
 }
 
 
@@ -79,13 +75,11 @@ void EnemyBase::Update(void)
 	{
 		return;
 	}
-	pos_ = VAdd(pos_, VScale(dir_, speed_));
+	transform_.pos = VAdd(pos_, VScale(dir_, speed_));
 
 	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
-
-	
 
 	// アニメーション再生
 	// 経過時間の取得
@@ -98,6 +92,26 @@ void EnemyBase::Update(void)
 	}
 	// 再生するアニメーション時間の設定
 	MV1SetAttachAnimTime(modelId_, animAttachNo_, stepAnim_);
+}
+
+void EnemyBase::EnemyUpdate(void)
+{
+	
+	// 重力による移動量
+	CalcGravityPow();
+
+	// 衝突判定
+	Collision();
+
+	//現在座標を起点に移動後座標を決める
+	movedPos_ = VAdd(transform_.pos, movePow_);
+
+	//移動
+	pos_ = movedPos_;
+
+	// 重力方向に沿って回転させる
+	transform_.quaRot = grvMng_.GetTransform().quaRot;
+	transform_.quaRot = transform_.quaRot.Mult(enemyRotY_);
 }
 
 void EnemyBase::Draw(void)
@@ -147,6 +161,11 @@ void EnemyBase::Damage(int damage)
 	}
 }
 
+const Capsule& EnemyBase::GetCapsule(void) const
+{
+	return *capsule_;
+}
+
 VECTOR EnemyBase::GetCollisionPos(void)
 {
 	return VAdd(pos_, collisionLocalPos_);
@@ -155,6 +174,15 @@ VECTOR EnemyBase::GetCollisionPos(void)
 float EnemyBase::GetCollisionRadius(void)
 {
 	return collisionRadius_;
+}
+
+void EnemyBase::Rotate(void)
+{
+	stepRotTime_ -= scnMng_.GetDeltaTime();
+
+	// 回転の球面補間
+	enemyRotY_ = Quaternion::Slerp(
+		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
 }
 
 void EnemyBase::Collision(void)
@@ -176,7 +204,6 @@ void EnemyBase::Collision(void)
 
 void EnemyBase::CollisionGravity(void)
 {
-
 	// ジャンプ量を加算
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
