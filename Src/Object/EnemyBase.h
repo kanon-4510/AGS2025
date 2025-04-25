@@ -1,11 +1,21 @@
 #pragma once
+#include <memory>
 #include <string>
+#include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
+
+class Collider;
+class Capsule;
 
 class EnemyBase : public ActorBase
 {
 public:
+
+	//影の大きさ
+	static constexpr float ENEMY_SHADOW_SIZE = 30.0f;
+	static constexpr float ENEMY_SHADOW_HEIGHT = 300.0f;
+
 	//敵の種類
 	enum class TYPE
 	{
@@ -40,12 +50,23 @@ protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる弾のモデルID
 	int modelId_;	// 弾のモデルID
 
+	VECTOR jumpPow_;// ジャンプ量
+
 	VECTOR scl_;	// 大きさ
 	VECTOR rot_;	// 角度
 	VECTOR pos_;	// 表示座標
 
 	float speed_;	// 移動速度
 	VECTOR dir_;	// 移動方向
+
+	
+	VECTOR moveDir_;	// 移動方向
+	VECTOR movePow_;	// 移動量
+	VECTOR movedPos_;	// 移動後の座標
+
+	VECTOR moveDiff_;	// フレームごとの移動値
+	
+	int imgShadow_;		// 丸影
 
 	int hp_;	// 体力
 	int hpMax_;	// 体力最大値
@@ -59,4 +80,25 @@ protected:
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+
+	// 衝突判定に用いられるコライダ
+	std::vector <std::weak_ptr<Collider>> colliders_;
+
+	//カプセル
+	std::unique_ptr<Capsule> capsule_;
+
+	// 衝突チェック 衝突用線分
+	VECTOR gravHitPosDown_;
+	VECTOR gravHitPosUp_;
+
+	// 衝突判定
+	void Collision(void);
+	void CollisionGravity(void);
+	void CollisionCapsule(void);
+
+	//影の描画
+	void DrawShadow(void);	
+
+	// 移動量の計算
+	void CalcGravityPow(void);
 };

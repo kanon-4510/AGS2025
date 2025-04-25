@@ -57,7 +57,8 @@ public:
 		WARP_PAUSE,
 		FLY,
 		FALLING,
-		VICTORY
+		VICTORY,
+		ATTACK
 	};
 
 	// コンストラクタ
@@ -140,6 +141,9 @@ private:
 	// ジャンプの入力受付時間
 	float stepJump_;
 	
+	//攻撃の判定
+	bool isAttack_;
+
 	// 足煙エフェクト
 	int effectSmokeResId_;
 	int effectSmokePleyId_;
@@ -210,6 +214,9 @@ private:
 	void ProcessJump(void);
 	// 着地モーション終了
 	bool IsEndLanding(void);
+
+	//攻撃モーション
+	void ProcessAttack(void);
 
 	std::unique_ptr<Capsule> capsule_;
 	
