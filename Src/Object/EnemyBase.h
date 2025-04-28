@@ -57,9 +57,9 @@ protected:
 
 	VECTOR jumpPow_;// ジャンプ量
 
-	VECTOR scl_;	// 大きさ
-	VECTOR rot_;	// 角度
-	VECTOR pos_;	// 表示座標
+	//VECTOR scl_;	// 大きさ
+	//VECTOR rot_;	// 角度
+	//VECTOR pos_;	// 表示座標
 
 	float speed_;	// 移動速度
 	VECTOR dir_;	// 移動方向
@@ -101,8 +101,10 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	// 回転
-	void SetGoalRotate(double rotRad);
+	//操作
+	void ProcessMove(void);
+
+	//// 回転
 	void Rotate(void);
 
 	// 衝突判定

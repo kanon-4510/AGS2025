@@ -1,5 +1,7 @@
 #include "../Manager/SceneManager.h"
+#include "../Manager/Camera.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/Capsule.h"
@@ -35,9 +37,9 @@ void EnemyBase::SetParam(void)
 	// モデルデータをいくつもメモリ上に存在させない
 	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
-	scl_ = { 0.5f, 0.5f, 0.5f };					// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	pos_ = { 0.0f, 0.0f, 0.0f };					// 位置の設定
+	transform_.scl = { 0.5f, 0.5f, 0.5f };					// 大きさの設定
+	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+	transform_.pos = { 00.0f, 50.0f, 0.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };					// 右方向に移動する
 
 
@@ -52,20 +54,18 @@ void EnemyBase::SetParam(void)
 
 	hp_ = hpMax_ = 2;	// HPの設定
 
-	collisionRadius_ = 35.0f;	// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 50.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
 	// カプセルコライダ
 	capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 0.0f, 140.0f, 1.0f });
-	capsule_->SetLocalPosDown({ 0.0f, 00.0f, 0.0f });
+	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
+	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
 	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
-
-	
 }
 
 
@@ -75,11 +75,11 @@ void EnemyBase::Update(void)
 	{
 		return;
 	}
-	transform_.pos = VAdd(pos_, VScale(dir_, speed_));
+	transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
 
-	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+	MV1SetScale(modelId_, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+	MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 
 	// アニメーション再生
 	// 経過時間の取得
@@ -96,7 +96,6 @@ void EnemyBase::Update(void)
 
 void EnemyBase::EnemyUpdate(void)
 {
-	
 	// 重力による移動量
 	CalcGravityPow();
 
@@ -107,7 +106,7 @@ void EnemyBase::EnemyUpdate(void)
 	movedPos_ = VAdd(transform_.pos, movePow_);
 
 	//移動
-	pos_ = movedPos_;
+	transform_.pos = movedPos_;
 
 	// 重力方向に沿って回転させる
 	transform_.quaRot = grvMng_.GetTransform().quaRot;
@@ -136,9 +135,46 @@ VECTOR EnemyBase::GetPos(void)
 	return VECTOR();
 }
 
+void EnemyBase::ProcessMove(void)
+{
+	auto& ins = InputManager::GetInstance();
+
+	//方向量をゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+
+	//X軸回転を除いた、重力方向に垂直なカメラ角度(XZ平面)を取得
+	Quaternion cameraRot = mainCamera->GetQuaRotOutX();
+
+	//方向
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+
+	double rotRad = 0;
+
+	if (ins.IsNew(KEY_INPUT_W))
+	{
+		dir = cameraRot.GetForward();
+		rotRad = AsoUtility::Deg2RadF(0.0f);
+	}
+	if (ins.IsNew(KEY_INPUT_S))
+	{
+		dir = cameraRot.GetBack();
+		rotRad = AsoUtility::Deg2RadF(180.0f);
+	}
+	if (ins.IsNew(KEY_INPUT_D))
+	{
+		dir = cameraRot.GetRight();
+		rotRad = AsoUtility::Deg2RadF(90.0f);
+	}
+	if (ins.IsNew(KEY_INPUT_A))
+	{
+		dir = cameraRot.GetLeft();
+		rotRad = AsoUtility::Deg2RadF(-90.0f);
+	}
+}
+
 void EnemyBase::SetPos(VECTOR pos)
 {
-	pos_ = pos;
+	transform_.pos = pos;
 }
 
 bool EnemyBase::IsAlive(void)
@@ -168,13 +204,14 @@ const Capsule& EnemyBase::GetCapsule(void) const
 
 VECTOR EnemyBase::GetCollisionPos(void)
 {
-	return VAdd(pos_, collisionLocalPos_);
+	return VAdd(transform_.pos, collisionLocalPos_);
 }
 
 float EnemyBase::GetCollisionRadius(void)
 {
 	return collisionRadius_;
 }
+
 
 void EnemyBase::Rotate(void)
 {
@@ -240,7 +277,7 @@ void EnemyBase::CollisionGravity(void)
 			//押し戻し座標については、dxlib のhit構造体の中にヒントアリ
 			//衝突地点情報が格納されている
 
-			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
+			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 1.0f));
 
 			//jumpPow_の値をゼロにする
 			//ジャンプのリセット
@@ -426,7 +463,7 @@ void EnemyBase::DrawDebug(void)
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	v = pos_;
+	v = transform_.pos;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
 		v.x, v.y, v.z
 	);
