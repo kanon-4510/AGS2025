@@ -194,11 +194,11 @@ void Camera::ProcessRot(void)
 			angles_.x = -LIMIT_X_DW_RAD;
 		}
 	}
-	if (ins.IsNew(KEY_INPUT_D))
+	if (ins.IsNew(KEY_INPUT_RIGHT))
 	{
 		angles_.y += AsoUtility::Deg2RadF(1.0);
 	}
-	if (ins.IsNew(KEY_INPUT_A))
+	if (ins.IsNew(KEY_INPUT_LEFT))
 	{
 		angles_.y -= AsoUtility::Deg2RadF(1.0);
 	}

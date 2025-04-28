@@ -30,10 +30,10 @@ void Application::Init(void)
 {
 
 	// アプリケーションの初期設定
-	SetWindowText("3DAction");
+	SetWindowText("AGS2025");
 
 	// ウィンドウサイズ
-	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
+	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y,0);
 	ChangeWindowMode(true);
 
 	// DxLibの初期化

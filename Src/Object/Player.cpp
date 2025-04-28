@@ -506,7 +506,7 @@ void Player::ProcessMove(void)
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
 	}
 
-	if ((!AsoUtility::EqualsVZero(dir)) && (isJump_ || IsEndLanding()))
+	if ((!AsoUtility::EqualsVZero(dir)) && (isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
@@ -523,10 +523,10 @@ void Player::ProcessMove(void)
 		// 回転処理IDLE
 		SetGoalRotate(rotRad);
 
-		if (!isJump_ && IsEndLanding())
+		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
 		{
 			// アニメーション
-			if (ins.IsNew(KEY_INPUT_RSHIFT))
+			if (ins.IsNew(KEY_INPUT_LSHIFT))
 			{
 				animationController_->Play((int)ANIM_TYPE::FAST_RUN);
 			}
@@ -538,7 +538,7 @@ void Player::ProcessMove(void)
 	}
 	else
 	{
-		if (!isJump_ && IsEndLanding())
+		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
 		{
 			animationController_->Play((int)ANIM_TYPE::IDLE);
 		}
@@ -784,7 +784,36 @@ bool Player::IsEndLanding(void)
 
 void Player::ProcessAttack(void)
 {
-	
+	bool isHit = CheckHitKey(KEY_INPUT_E);
+
+	// アタック
+	if (isHit && (isAttack_ || IsEndLandingA()))
+	{
+		if (!isAttack_)
+		{
+			animationController_->Play(
+				(int)ANIM_TYPE::ATTACK, true, 13.0f, 25.0f);
+			animationController_->SetEndLoop(23.0f, 30.0f, 5.0f);
+		}
+		isAttack_ = true;
+	}
+}
+
+bool Player::IsEndLandingA(void)
+{
+	bool ret = true;
+
+	// アニメーションがジャンプではない
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
+	{
+		return ret;
+	}
+	// アニメーションが終了しているか
+	if (animationController_->IsEnd())
+	{
+		return ret;
+	}
+	return false;
 }
 
 void Player::EffectFootSmoke(void)

@@ -44,6 +44,7 @@ public:
 		WARP_MOVE,
 		DEAD,
 		VICTORY,
+		ATTACK,
 		END
 	};
 
@@ -217,6 +218,7 @@ private:
 
 	//çUåÇÉÇÅ[ÉVÉáÉì
 	void ProcessAttack(void);
+	bool IsEndLandingA(void);
 
 	std::unique_ptr<Capsule> capsule_;
 	
