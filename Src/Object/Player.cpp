@@ -510,7 +510,7 @@ void Player::ProcessMove(void)
 	{
 		//ˆÚ“®—Ê
 		speed_ = SPEED_MOVE;
-		if (ins.IsNew(KEY_INPUT_RSHIFT))
+		if (ins.IsNew(KEY_INPUT_LSHIFT))
 		{
 			speed_ = SPEED_RUN;
 		}
@@ -725,7 +725,7 @@ void Player::CalcGravityPow(void)
 void Player::ProcessJump(void)
 {
 
-	bool isHit = CheckHitKey(KEY_INPUT_BACKSLASH);
+	bool isHit = CheckHitKey(KEY_INPUT_SPACE);
 
 	// ƒWƒƒƒ“ƒv
 	if (isHit && (isJump_ || IsEndLanding()))
