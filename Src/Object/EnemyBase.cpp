@@ -13,6 +13,10 @@ EnemyBase::EnemyBase(int baseModelId)
 {
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 	imgShadow_ = -1;
+
+	// 衝突チェック
+	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
+	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
 }
 
 EnemyBase::~EnemyBase(void)
@@ -37,10 +41,10 @@ void EnemyBase::SetParam(void)
 	// モデルデータをいくつもメモリ上に存在させない
 	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
-	transform_.scl = { 0.5f, 0.5f, 0.5f };					// 大きさの設定
+	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
-	dir_ = { 0.0f, 0.0f, -1.0f };					// 右方向に移動する
+	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
 
 	speed_ = 01.0f;		// 移動スピード
@@ -63,9 +67,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
-	// 衝突チェック
-	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
-	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
 }
 
 
