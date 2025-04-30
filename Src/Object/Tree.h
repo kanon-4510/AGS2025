@@ -37,17 +37,10 @@ private:
 	GameScene* gameScene_;
 	SceneManager* sceneManager_;
 
-	Vector2 pos_;
 	int lv_;
 	int hp_;
 	int water_;
 	bool isAlive_;
 	bool isLvUp_;
-	bool isDmg_;
-	int img_[GROW_UP];
-	int dmg_[GROW_UP];
-	int up1Se_;
-	int up2Se_;
-	int dmgSe_;
 	GROW grow_;
 };
