@@ -792,10 +792,15 @@ void Player::ProcessAttack(void)
 		if (!isAttack_)
 		{
 			animationController_->Play(
-				(int)ANIM_TYPE::ATTACK, true, 13.0f, 25.0f);
-			animationController_->SetEndLoop(23.0f, 30.0f, 5.0f);
+				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			isAttack_ = true;
 		}
-		isAttack_ = true;
+	}
+
+	// アニメーションが終わったらフラグをリセット
+	if (isAttack_ && animationController_->IsEnd())
+	{
+		isAttack_ = false;
 	}
 }
 
@@ -803,7 +808,7 @@ bool Player::IsEndLandingA(void)
 {
 	bool ret = true;
 
-	// アニメーションがジャンプではない
+	// アニメーションがアタックではない
 	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
 	{
 		return ret;
