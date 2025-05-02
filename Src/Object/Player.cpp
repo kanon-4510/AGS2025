@@ -728,7 +728,7 @@ void Player::ProcessJump(void)
 	bool isHit = CheckHitKey(KEY_INPUT_SPACE);
 
 	// ジャンプ
-	if (isHit && (isJump_ || IsEndLanding()))
+	if (isHit && !isAttack_ && (isJump_ || IsEndLanding()))
 	{
 		if (!isJump_)
 		{
@@ -787,7 +787,7 @@ void Player::ProcessAttack(void)
 	bool isHit = CheckHitKey(KEY_INPUT_E);
 
 	// アタック
-	if (isHit && (isAttack_ || IsEndLandingA()))
+	if (isHit && !isJump_ && (isAttack_ || IsEndLandingA()))
 	{
 		if (!isAttack_)
 		{

@@ -44,7 +44,6 @@ public:
 		WARP_MOVE,
 		DEAD,
 		VICTORY,
-		ATTACK,
 		END
 	};
 
