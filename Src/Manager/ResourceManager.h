@@ -34,6 +34,7 @@ public:
 		TANK_BODY,
 		TANK_BARREL,
 		TANK_WHEEL,
+		Water
 	};
 
 	// 明示的にインステンスを生成する
