@@ -510,7 +510,7 @@ void Player::ProcessMove(void)
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
-		if (ins.IsNew(KEY_INPUT_RSHIFT))
+		if (ins.IsNew(KEY_INPUT_LSHIFT))
 		{
 			speed_ = SPEED_RUN;
 		}
@@ -725,10 +725,10 @@ void Player::CalcGravityPow(void)
 void Player::ProcessJump(void)
 {
 
-	bool isHit = CheckHitKey(KEY_INPUT_BACKSLASH);
+	bool isHit = CheckHitKey(KEY_INPUT_SPACE);
 
 	// ジャンプ
-	if (isHit && (isJump_ || IsEndLanding()))
+	if (isHit && !isAttack_ && (isJump_ || IsEndLanding()))
 	{
 		if (!isJump_)
 		{
@@ -787,15 +787,20 @@ void Player::ProcessAttack(void)
 	bool isHit = CheckHitKey(KEY_INPUT_E);
 
 	// アタック
-	if (isHit && (isAttack_ || IsEndLandingA()))
+	if (isHit && !isJump_ && (isAttack_ || IsEndLandingA()))
 	{
 		if (!isAttack_)
 		{
 			animationController_->Play(
-				(int)ANIM_TYPE::ATTACK, true, 13.0f, 25.0f);
-			animationController_->SetEndLoop(23.0f, 30.0f, 5.0f);
+				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			isAttack_ = true;
 		}
-		isAttack_ = true;
+	}
+
+	// アニメーションが終わったらフラグをリセット
+	if (isAttack_ && animationController_->IsEnd())
+	{
+		isAttack_ = false;
 	}
 }
 
@@ -803,7 +808,7 @@ bool Player::IsEndLandingA(void)
 {
 	bool ret = true;
 
-	// アニメーションがジャンプではない
+	// アニメーションがアタックではない
 	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
 	{
 		return ret;
