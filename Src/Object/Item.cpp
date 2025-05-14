@@ -17,21 +17,21 @@ Item::~Item(void)
 void Item::Init(void)
 {
 	// モデルの基本設定
-	/*transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::Water));
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::ITEM));
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.pos = { 0.0f, -20.0f, 0.0f };
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
-	transform_.Update();*/
+	transform_.Update();
 
 	modelId_ = MV1LoadModel("../Date/model/Item/bottle.MV1");
 
-	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
+	transform_.scl = { 500.0f, 500.0f, 500.0f };				// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
-	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
+	transform_.pos = { 00.0f, 0.0f, 1000.0f };					// 位置の設定
+	dir_ = { 0.0f, 0.0f, 0.0f };								// 右方向に移動する
 }
 
 void Item::Update(void)
