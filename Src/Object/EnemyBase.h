@@ -62,6 +62,9 @@ protected:
 	//VECTOR pos_;	// 表示座標
 
 	float speed_;	// 移動速度
+	VECTOR scl_;	// 大きさ
+	VECTOR rot_;	// 角度
+	VECTOR pos_;	// 表示座標
 	VECTOR dir_;	// 移動方向
 
 	

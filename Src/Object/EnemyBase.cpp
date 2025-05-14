@@ -7,6 +7,7 @@
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "ActorBase.h"
+#include "EnemyGhost.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(int baseModelId)
@@ -205,7 +206,7 @@ const Capsule& EnemyBase::GetCapsule(void) const
 
 VECTOR EnemyBase::GetCollisionPos(void)
 {
-	return VAdd(transform_.pos, collisionLocalPos_);
+	return VAdd(collisionLocalPos_, pos_);
 }
 
 float EnemyBase::GetCollisionRadius(void)
@@ -231,12 +232,15 @@ void EnemyBase::Collision(void)
 	// 衝突(カプセル)
 	CollisionCapsule();
 
+	//collisionLocalPos_  movedPos_;
+
 	// 衝突(重力)
 	CollisionGravity();
 
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
+	//collisionLocalPos_ = movedPos_;
 
 }
 
@@ -332,6 +336,7 @@ void EnemyBase::CollisionCapsule(void)
 		MV1CollResultPolyDimTerminate(hits);
 	}
 }
+
 void EnemyBase::DrawShadow(void)
 {
 	int i, j;
@@ -474,4 +479,6 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
 		c.x, c.y, c.z
 	);
+
+	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, red, red,false);
 }
