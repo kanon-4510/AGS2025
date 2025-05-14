@@ -15,6 +15,7 @@ TitleScene::TitleScene(void)
 {
 	imgPush_ = -1;
 	imgTitle_ = -1;
+	imgBackTitle_ = -1;
 	skyDome_ = nullptr;
 	animationController_ = nullptr;
 }
@@ -31,12 +32,13 @@ void TitleScene::Init(void)
 
 	// âÊëúì«Ç›çûÇ›
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;
 	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
 
-	// îwåi
-	spaceDomeTran_.pos = AsoUtility::VECTOR_ZERO;
-	skyDome_ = std::make_unique<SkyDome>(spaceDomeTran_);
-	skyDome_->Init();
+	//// îwåi
+	//spaceDomeTran_.pos = AsoUtility::VECTOR_ZERO;
+	//skyDome_ = std::make_unique<SkyDome>(spaceDomeTran_);
+	//skyDome_->Init();
 
 	float size;
 
@@ -93,22 +95,25 @@ void TitleScene::Update(void)
 	// ÉLÉÉÉâÉAÉjÉÅÅ[ÉVÉáÉì
 	animationController_->Update();
 
-	skyDome_->Update();
+	//skyDome_->Update();
 
 }
 
 void TitleScene::Draw(void)
 {
+	//skyDome_->Draw();
+	
+	
 
-	skyDome_->Draw();
+	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
 
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 250, 1.0, 0.0, imgTitle_, true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
+	
 	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
 
-	MV1DrawModel(planet_.modelId);
-	MV1DrawModel(movePlanet_.modelId);
-	MV1DrawModel(charactor_.modelId);
+	
 
-
-
+	//MV1DrawModel(planet_.modelId);
+	//MV1DrawModel(movePlanet_.modelId);
+	//MV1DrawModel(charactor_.modelId);
 }

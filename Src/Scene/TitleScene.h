@@ -25,6 +25,7 @@ private:
 
 	// 画像
 	int imgTitle_;
+	int imgBackTitle_;
 	int imgPush_;
 
 	// スカイドーム用
