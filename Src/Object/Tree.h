@@ -30,8 +30,8 @@ public:
 	int GetLv(void);
 	void ChangeGrow(void);
 
-	void eHit(void);
-	void pHit(void);
+	//void eHit(void);
+	//void pHit(void);
 private:
 	Player* player_;
 	GameScene* gameScene_;
@@ -41,6 +41,5 @@ private:
 	int hp_;
 	int water_;
 	bool isAlive_;
-	bool isLvUp_;
 	GROW grow_;
 };

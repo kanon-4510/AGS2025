@@ -20,7 +20,7 @@ public:
 	void Draw(void) override;
 private:
 	std::unique_ptr<Stage> stage_;		// ステージ
-	std::shared_ptr<Tree>tree_;			//ツリー
+	std::shared_ptr<Tree>tree_;			// ツリー
 	//EnemyBase& enemy_;				// エネミー
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
 	std::shared_ptr<Player> player_;	// プレイヤー

@@ -11,6 +11,7 @@
 #include "../Object/Stage.h"
 #include "../Object/Player.h"
 #include "../Object/EnemyBase.h"
+#include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "GameScene.h"
 
@@ -19,6 +20,7 @@
 GameScene::GameScene(void)
 {
 	player_ = nullptr;
+	tree_ = nullptr;
 	skyDome_ = nullptr;
 	stage_ = nullptr;
 }
@@ -40,10 +42,13 @@ void GameScene::Init(void)
 	enemy->Init();
 	enemys_.push_back(enemy);
 
+	//木
+	tree_ = std::make_shared<Tree>();
+	//tree_->Init();
+
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
 	stage_->Init();
-
 	// ステージの初期設定
 	stage_->ChangeStage(Stage::NAME::MAIN_PLANET);
 
