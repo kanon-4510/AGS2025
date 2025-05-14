@@ -46,8 +46,8 @@ public:
 
 	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
-	void SetCollisionPos(VECTOR collision);//衝突判定用の球体
-	VECTOR GetCollisionPos(void);		// 衝突用の中心座標の取得
+	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
+	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 

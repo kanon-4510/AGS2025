@@ -51,8 +51,6 @@ Player::Player(void)
 
 	//ƒ[ƒv‚Ì‰Šú‰»
 	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
-	
-	
 
 	// ó‘ÔŠÇ—
 	stateChanges_.emplace(
@@ -100,6 +98,8 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
+	enemy_ = std::make_unique<EnemyBase>(1);
+	enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
@@ -159,6 +159,11 @@ void Player::ClearCollider(void)
 const Capsule& Player::GetCapsule(void) const
 {
 	return *capsule_;
+}
+
+const EnemyBase& Player::GetCollision(void) const
+{
+	return *enemy_;
 }
 
 bool Player::IsPlay(void) const

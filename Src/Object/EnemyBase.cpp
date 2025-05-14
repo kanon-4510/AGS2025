@@ -155,12 +155,12 @@ const Capsule& EnemyBase::GetCapsule(void) const
 	return *capsule_;
 }
 
-void EnemyBase::SetCollisionPos(VECTOR collision)
+void EnemyBase::SetCollisionPos(const VECTOR collision)
 {
 	spherePos_ = collision;
 }
 
-VECTOR EnemyBase::GetCollisionPos(void)
+VECTOR EnemyBase::GetCollisionPos(void)const
 {
 	return VAdd(collisionLocalPos_, pos_);
 }

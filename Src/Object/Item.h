@@ -18,6 +18,9 @@ public:
 private:
 	int modelId_;//ƒ‚ƒfƒ‹‚ÌŠi”[
 
+	VECTOR scl_;
+	VECTOR pos_;
+	VECTOR rot_;
 	VECTOR dir_;	// ˆÚ“®•ûŒü
 
 };
