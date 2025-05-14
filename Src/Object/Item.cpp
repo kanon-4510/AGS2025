@@ -18,7 +18,7 @@ Item::~Item(void)
 
 void Item::Init(void)
 {
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str());
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// ëÂÇ´Ç≥ÇÃê›íË
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// äpìxÇÃê›íË
