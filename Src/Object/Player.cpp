@@ -22,7 +22,6 @@ Player::Player(void)
 
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
-
 	
 	effectSmokeResId_ = -1;
 	effectSmokePleyId_ = -1;
@@ -44,6 +43,15 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
+
+	// 体力関連
+	hp_ = 100;
+	maxHp_ = 100;
+
+	// 無敵状態
+	invincible_ = false;
+	// 移動が可能かどうか
+	canMove_ = true;
 
 	//ワープの初期化
 	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
@@ -126,6 +134,19 @@ void Player::Update(void)
 	// アニメーション再生
 	animationController_->Update();
 
+	UpdateD(1.0f);
+
+}
+
+void Player::UpdateD(float deltaTime)
+{
+	if (pstate_ == PlayerState::DOWN) {
+		revivalTimer_ += deltaTime;
+		if (revivalTimer_ >= kRevivalTime) {
+			Revival();
+		}
+		return;
+	}
 }
 
 void Player::Draw(void)
@@ -263,37 +284,40 @@ void Player::UpdateNone(void)
 
 void Player::UpdatePlay(void)
 {
-	//移動処理
-	ProcessMove();
+	if (canMove_) 
+	{
+		//移動処理
+		ProcessMove();
 
-	// 移動方向に応じた回転
-	Rotate();
+		// 移動方向に応じた回転
+		Rotate();
 
-	// ジャンプ処理
-	ProcessJump();
-	
-	// 攻撃処理
-	ProcessAttack();
+		// ジャンプ処理
+		ProcessJump();
 
-	// 重力による移動量
-	CalcGravityPow();
-	
-	// 衝突判定
-	Collision();
+		// 攻撃処理
+		ProcessAttack();
 
-	//現在座標を起点に移動後座標を決める
-	movedPos_ = VAdd(transform_.pos, movePow_);
+		// 重力による移動量
+		CalcGravityPow();
 
-	//移動
-	transform_.pos = movedPos_;
+		// 衝突判定
+		Collision();
 
-	// 重力方向に沿って回転させる
-	transform_.quaRot = grvMng_.GetTransform().quaRot;
-	transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
+		//現在座標を起点に移動後座標を決める
+		movedPos_ = VAdd(transform_.pos, movePow_);
 
-	// 歩きエフェクト
-	EffectFootSmoke();
+		//移動
+		transform_.pos = movedPos_;
 
+		// 重力方向に沿って回転させる
+		transform_.quaRot = grvMng_.GetTransform().quaRot;
+		transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
+
+		// 歩きエフェクト
+		EffectFootSmoke();
+
+	}
 }
 
 void Player::DrawShadow(void)
@@ -454,20 +478,37 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 60, black, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
+	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)",
 		v.x, v.y, v.z
 	);
+
+	//HP
+	DrawFormatString(20, 80, white, "HP ： %d",
+		hp_
+	);
+
 	//-------------------------------------------------------
 
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
 	// アクティブな惑星
-	DrawFormatString(20, 80, black, "惑星　　　 ： %d",
+	DrawFormatString(20, 100, white, "惑星　　　 ： %d",
 		(int)grvMng_.GetActivePlanet().lock()->GetName()
 	);
+	if (isAttack_) {
 
-	//capsule_->Draw();
+		VECTOR forward = transform_.quaRot.GetForward();
+		VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		capStart.y += 100.0f;
+		VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
+		float capRadius = 30.0f;
+		// カプセルの描画確認用	
+		//DrawLine3D(capStart, capEnd, GetColor(255, 0, 0));  // 赤線
+		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+		//DrawSphere3D(capEnd, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}
+	capsule_->Draw();
 }
 
 void Player::ProcessMove(void)
@@ -588,6 +629,9 @@ void Player::Collision(void)
 
 	// 衝突(重力)
 	CollisionGravity();
+	
+	// 衝突(攻撃)
+	CollisionAttack();
 
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
@@ -699,6 +743,77 @@ void Player::CollisionCapsule(void)
 	}
 }
 
+void Player::CollisionAttack(void)
+{
+	if (!isAttack_) return;
+
+	//// プレイヤーの前方ベクトルを取得（回転に基づく）
+	//VECTOR forward = transform_.quaRot.GetForward();
+	//
+	//// カプセルの始点と終点を定義（プレイヤーの前方に出す）
+	//VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+	//capStart.y += 100.0f;
+	//VECTOR capEnd   = VAdd(transform_.pos, VScale(forward, 80.0f));  // 80まで伸ばす
+	//float capRadius = 30.0f;  // カプセルの太さ（攻撃範囲）
+
+	//for (const auto& c : colliders_)
+	//{
+	//	auto hitResult = MV1CollCheck_Capsule(
+	//		c.lock()->modelId_, -1,
+	//		capStart, capEnd, capRadius);
+
+	//	if (hitResult.HitNum > 0)
+	//	{
+	//		// 当たっていたらここに処理を書く（例：敵のHPを減らす）
+	//		//printfDx("攻撃ヒット！\n");
+
+	//		// 複数当たっていたら1回だけ反応して終了（必要ならループ処理）
+	//		break;
+	//	}
+
+	//	// メモリ解放
+	//	MV1CollResultPolyDimTerminate(hitResult);
+	//}
+	
+	// カプセルを移動させる
+	Transform trans = Transform(transform_);
+	trans.pos = movedPos_;
+	trans.Update();
+	Capsule cap = Capsule(*capsule_, trans);
+	// カプセルとの衝突判定
+	for (const auto c : colliders_)
+	{
+		auto hits = MV1CollCheck_Capsule(
+			c.lock()->modelId_, -1,
+			cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
+		// 衝突した複数のポリゴンと衝突回避するまで、
+		// プレイヤーの位置を移動させる
+		for (int i = 0; i < hits.HitNum; i++)
+		{
+			auto hit = hits.Dim[i];
+			// 地面と異なり、衝突回避位置が不明なため、何度か移動させる
+			// この時、移動させる方向は、移動前座標に向いた方向であったり、
+			// 衝突したポリゴンの法線方向だったりする
+			for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+			{
+				// 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
+				// 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
+				int pHit = HitCheck_Capsule_Triangle(
+					cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
+					hit.Position[0], hit.Position[1], hit.Position[2]);
+				if (pHit)
+				{
+					printfDx("攻撃ヒット！\n");
+					break;
+				}
+				break;
+			}
+		}
+		// 検出した地面ポリゴン情報の後始末
+		MV1CollResultPolyDimTerminate(hits);
+	}
+}
+
 void Player::CalcGravityPow(void)
 {
 	// 重力方向
@@ -741,7 +856,6 @@ void Player::ProcessJump(void)
 			animationController_->Play(
 				(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
 			animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
-
 		}
 
 		isJump_ = true;
@@ -794,6 +908,7 @@ void Player::ProcessAttack(void)
 			animationController_->Play(
 				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
+			Damage(1);
 		}
 	}
 
@@ -819,6 +934,43 @@ bool Player::IsEndLandingA(void)
 		return ret;
 	}
 	return false;
+}
+
+void Player::Damage(int damage)
+{
+	if (pstate_ == PlayerState::DOWN) return;  // ダウン中は無敵
+	hp_ -= damage;
+
+	if (hp_ <= 0) {
+		hp_ = 0;
+		StartRevival();  // 死亡ではなく復活待機
+	}
+}
+
+void Player::StartRevival()
+{
+	invincible_ = true;   // 無敵状態にする
+	canMove_ = false;     // 移動停止
+
+	pstate_ = PlayerState::DOWN;
+	revivalTimer_ = 0.0f;
+
+	animationController_->Play((int)ANIM_TYPE::DOWN, false);
+	// 必要なら移動や入力を停止させる
+}
+
+void Player::Revival()
+{
+	hp_ = maxHp_;
+	pstate_ = PlayerState::NORMAL;
+
+	// 復活後の無敵状態を解除
+	invincible_ = false;   // 無敵解除
+	// プレイヤーが移動可能になる
+	canMove_ = true;   // 移動再開
+
+	animationController_->Play((int)ANIM_TYPE::IDLE, true);
+	// 他の再開処理（無敵終了、移動可能など）をここで
 }
 
 void Player::EffectFootSmoke(void)

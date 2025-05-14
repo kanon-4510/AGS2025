@@ -47,6 +47,14 @@ public:
 		END
 	};
 
+	// PLAY中の状態
+	enum class PlayerState {
+		NORMAL,
+		DOWN,
+		// 他にも Jumping, Attacking など必要なら追加
+	};
+	PlayerState pstate_ = PlayerState::NORMAL;
+
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
@@ -54,6 +62,7 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
+		DOWN,
 		WARP_PAUSE,
 		FLY,
 		FALLING,
@@ -69,6 +78,7 @@ public:
 
 	void Init(void) override;
 	void Update(void) override;
+	void UpdateD(float deltaTime);
 	void Draw(void) override;
 
 	// 衝突判定に用いられるコライダ制御
@@ -144,6 +154,19 @@ private:
 	//攻撃の判定
 	bool isAttack_;
 
+	// 体力関連
+	int hp_ = 100;
+	int maxHp_ = 100;
+
+	// 無敵状態
+	bool invincible_;
+	// 移動が可能かどうか
+	bool canMove_;
+
+	// 復活処理
+	float revivalTimer_ = 0.0f;
+	const float kRevivalTime = 180.0f;
+
 	// 足煙エフェクト
 	int effectSmokeResId_;
 	int effectSmokePleyId_;
@@ -207,6 +230,7 @@ private:
 	void Collision(void);
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
+	void CollisionAttack(void);
 	
 	// 移動量の計算
 	void CalcGravityPow(void);
@@ -218,6 +242,13 @@ private:
 	//攻撃モーション
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
+
+	//ダメージ
+	void Damage(int damage);
+
+	//復活処理
+	void StartRevival();
+	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
 	
