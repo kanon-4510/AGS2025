@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <vector>
+#include "../Application.h"
 #include "../Manager/ResourceManager.h"
 #include "../Utility/AsoUtility.h"
 #include "ActorBase.h"
@@ -7,7 +8,8 @@
 
 Item::Item(void)
 {
-	
+	dir_ = {};
+	modelId_ = 0;
 }
 
 Item::~Item(void)
@@ -16,19 +18,9 @@ Item::~Item(void)
 
 void Item::Init(void)
 {
-	// モデルの基本設定
-	/*transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::Water));
-	transform_.scl = AsoUtility::VECTOR_ONE;
-	transform_.pos = { 0.0f, -20.0f, 0.0f };
-	transform_.quaRot = Quaternion();
-	transform_.quaRotLocal =
-		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
-	transform_.Update();*/
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str());
 
-	modelId_ = MV1LoadModel("../Date/model/Item/bottle.MV1");
-
-	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
+	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
@@ -58,7 +50,6 @@ void Item::DrawDebug(void)
 	int purpl = 0x800080;
 
 	VECTOR v;
-	VECTOR c;
 
 	// キャラ基本情報
 	//-------------------------------------------------------

@@ -42,7 +42,6 @@ void EnemyBase::SetParam(void)
 	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
-
 	speed_ = 01.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
@@ -103,7 +102,6 @@ void EnemyBase::EnemyUpdate(void)
 
 	// 衝突判定
 	Collision();
-
 }
 
 void EnemyBase::Draw(void)
@@ -187,12 +185,6 @@ void EnemyBase::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
 
-	// 衝突(カプセル)
-	//CollisionCapsule();
-
-	// 衝突(重力)
-	//CollisionGravity();
-
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
@@ -234,5 +226,4 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
 		s.x, s.y, s.z
 	);
-
 }
