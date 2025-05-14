@@ -40,12 +40,18 @@ public:
 	{
 		NONE,
 		PLAY,
-		WARP_RESERVE,
-		WARP_MOVE,
 		DEAD,
 		VICTORY,
 		END
 	};
+
+	// PLAY中の状態
+	enum class PlayerState {
+		NORMAL,
+		DOWN,
+		// 他にも Jumping, Attacking など必要なら追加
+	};
+	PlayerState pstate_ = PlayerState::NORMAL;
 
 	// アニメーション種別
 	enum class ANIM_TYPE
@@ -54,7 +60,7 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
-		WARP_PAUSE,
+		DOWN,
 		FLY,
 		FALLING,
 		VICTORY,
@@ -69,6 +75,7 @@ public:
 
 	void Init(void) override;
 	void Update(void) override;
+	void UpdateD(float deltaTime);
 	void Draw(void) override;
 
 	// 衝突判定に用いられるコライダ制御
@@ -78,13 +85,9 @@ public:
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
 
-	// ワープ準備開始
-	void StartWarpReserve(
-		float time, const Quaternion& goalRot, const VECTOR& goalPos);
 
 	//状態確認
 	bool IsPlay(void) const;
-	bool IsWarpMove(void) const;
 
 
 private:
@@ -110,10 +113,6 @@ private:
 	
 	// 状態管理(更新ステップ)
 	std::function<void(void)> stateUpdate_;
-	
-	// ワープ前の惑星名
-	Stage::NAME preWarpName_;
-
 
 	// 丸影
 	int imgShadow_;
@@ -144,14 +143,23 @@ private:
 	//攻撃の判定
 	bool isAttack_;
 
+	// 体力関連
+	int hp_ = 100;
+	int maxHp_ = 100;
+
+	// 無敵状態
+	bool invincible_;
+	// 移動が可能かどうか
+	bool canMove_;
+
+	// 復活処理
+	float revivalTimer_ = 0.0f;
+	const float kRevivalTime = 180.0f;
+
 	// 足煙エフェクト
 	int effectSmokeResId_;
 	int effectSmokePleyId_;
 	float stepFootSmoke_;
-
-	//ワープ奇跡
-	int effectWarpOrbitResId_;
-	int effectWarpOrbitPlayId_;
 
 	//モデルパーツのハンドル
 	int fremLeHandl_;//左
@@ -160,18 +168,6 @@ private:
 	// フレームごとの移動値
 	VECTOR moveDiff_;
 
-	// ワープ準備時間
-	float timeWarp_;
-	
-	// ワープ準備経過時間
-	float stepWarp_;
-	
-	// ワープ準備完了時の回転
-	Quaternion warpQua_;
-	
-	// ワープ準備完了時の座標
-	VECTOR warpReservePos_;
-	
 	// ワープ準備開始時のプレイヤー情報
 	Quaternion reserveStartQua_;
 	VECTOR reserveStartPos_;
@@ -182,16 +178,12 @@ private:
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
-	void ChangeStateWarpReserve(void);
-	void ChangeStateWarpMove(void);
 
 
 	// 更新ステップ
 	void UpdateNone(void);
 	void UpdatePlay(void);
 	void DrawShadow(void);
-	void UpdateWarpReserve(void);
-	void UpdateWarpMove(void);
 
 	// 描画系
 	void DrawDebug(void);
@@ -207,6 +199,7 @@ private:
 	void Collision(void);
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
+	void CollisionAttack(void);
 	
 	// 移動量の計算
 	void CalcGravityPow(void);
@@ -218,6 +211,13 @@ private:
 	//攻撃モーション
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
+
+	//ダメージ
+	void Damage(int damage);
+
+	//復活処理
+	void StartRevival();
+	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
 	

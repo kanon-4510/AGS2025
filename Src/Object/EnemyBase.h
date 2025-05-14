@@ -46,8 +46,10 @@ public:
 
 	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
-	VECTOR GetCollisionPos(void);	// 衝突用の中心座標の取得
-	float GetCollisionRadius(void);	// 衝突用の球体半径の取得
+	void SetCollisionPos(VECTOR collision);//衝突判定用の球体
+	VECTOR GetCollisionPos(void);		// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
 
 	void DrawDebug(void);	//デバッグ用
 
@@ -56,21 +58,20 @@ protected:
 	int modelId_;	// 弾のモデルID
 
 	VECTOR jumpPow_;// ジャンプ量
-
-	//VECTOR scl_;	// 大きさ
-	//VECTOR rot_;	// 角度
-	//VECTOR pos_;	// 表示座標
-
 	float speed_;	// 移動速度
+	VECTOR scl_;	// 大きさ
+	VECTOR rot_;	// 角度
+	VECTOR pos_;	// 表示座標
 	VECTOR dir_;	// 移動方向
 
-	
 	VECTOR moveDir_;	// 移動方向
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
 
 	VECTOR moveDiff_;	// フレームごとの移動値
 	
+	VECTOR spherePos_;	//スフィアの移動後座標
+
 	// 回転
 	Quaternion enemyRotY_;
 	Quaternion goalQuaRot_;
@@ -101,20 +102,9 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	//操作
-	void ProcessMove(void);
-
 	//// 回転
 	void Rotate(void);
 
 	// 衝突判定
 	void Collision(void);
-	void CollisionGravity(void);
-	void CollisionCapsule(void);
-
-	//影の描画
-	void DrawShadow(void);	
-
-	// 移動量の計算
-	void CalcGravityPow(void);
 };
