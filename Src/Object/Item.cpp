@@ -18,7 +18,9 @@ Item::~Item(void)
 
 void Item::Init(void)
 {
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
+	// モデルの基本設定
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::ITEM));
 
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
@@ -33,7 +35,7 @@ void Item::Update(void)
 void Item::Draw(void)
 {
 	// モデルの描画
-	MV1DrawModel(modelId_);
+	MV1DrawModel(transform_.modelId);
 	DrawDebug();
 }
 
