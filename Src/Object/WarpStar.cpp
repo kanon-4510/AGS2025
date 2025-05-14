@@ -87,13 +87,7 @@ void WarpStar::ChangeStateIdle(void)
 
 void WarpStar::ChangeStateReserve(void)
 {
-
-
 	stateUpdate_ = std::bind(&WarpStar::UpdateReserve, this);
-
-	// プレイヤーの状態を変更
-	player_.StartWarpReserve(TIME_WARP_RESERVE, warpQua_, warpStartPos_);
-
 }
 
 void WarpStar::ChangeStateMove(void)
@@ -129,10 +123,6 @@ void WarpStar::UpdateReserve(void)
 	//エフェクト
 	PlayEffectRotParticle();
 
-	if (player_.IsWarpMove())
-	{
-		ChangeState(STATE::MOVE);
-	}
 }
 
 void WarpStar::UpdateMove(void)

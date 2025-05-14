@@ -26,10 +26,6 @@ Player::Player(void)
 	effectSmokeResId_ = -1;
 	effectSmokePleyId_ = -1;
 
-	//ワープ奇跡
-	effectWarpOrbitResId_ = -1;
-	effectWarpOrbitPlayId_ = -1;
-
 
 	jumpPow_ = AsoUtility::VECTOR_ZERO;
 	// 衝突チェック
@@ -55,9 +51,6 @@ Player::Player(void)
 
 	//ワープの初期化
 	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
-	stepWarp_ = 0.0f;
-	timeWarp_ = 0.0f;
-	warpReservePos_ = AsoUtility::VECTOR_ZERO;
 	
 	
 
@@ -66,12 +59,6 @@ Player::Player(void)
 		STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
-	stateChanges_.emplace(
-		STATE::WARP_RESERVE, std::bind(&Player::ChangeStateWarpReserve, this));
-	stateChanges_.emplace(
-		STATE::WARP_MOVE, std::bind(&Player::ChangeStateWarpMove, this));
-
-	preWarpName_ = Stage::NAME::MAIN_PLANET;
 }
 
 Player::~Player(void)
@@ -98,10 +85,6 @@ void Player::Init(void)
 	//足煙エフェクト
 	effectSmokeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::FOOT_SMOKE).handleId_;
-
-	//ワープ奇跡
-	effectWarpOrbitResId_ = ResourceManager::GetInstance().Load(
-		ResourceManager::SRC::WARP_ORBIT).handleId_;
 
 	//モデルのフレーム番号
 	fremLeHandl_ = MV1SearchFrame(transform_.modelId, "mixamorig:LeftHand");
@@ -178,35 +161,9 @@ const Capsule& Player::GetCapsule(void) const
 	return *capsule_;
 }
 
-void Player::StartWarpReserve(float time, const Quaternion& goalRot, const VECTOR& goalPos)
-{
-	// ワープ準備時間
-	timeWarp_ = time;
-	
-	// ワープ準備経過時間
-	stepWarp_ = time;
-	
-	// ワープ準備完了時の回転
-	warpQua_ = goalRot;
-	
-	// ワープ準備完了時の座標
-	warpReservePos_ = goalPos;
-	
-	// ワープ前の惑星情報を保持
-	preWarpName_ = grvMng_.GetActivePlanet().lock()->GetName();
-	
-	ChangeState(STATE::WARP_RESERVE);
-
-}
-
 bool Player::IsPlay(void) const
 {
 	return state_ == STATE::PLAY;
-}
-
-bool Player::IsWarpMove(void) const
-{
-	return state_ == STATE::WARP_MOVE;
 }
 
 void Player::InitAnimation(void)
@@ -221,7 +178,6 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::WARP_PAUSE, path + "WarpPose.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
 	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
@@ -250,32 +206,6 @@ void Player::ChangeStateNone(void)
 void Player::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&Player::UpdatePlay, this);
-}
-
-void Player::ChangeStateWarpReserve(void)
-{
-	stateUpdate_ = std::bind(&Player::UpdateWarpReserve, this);
-	
-	jumpPow_ = AsoUtility::VECTOR_ZERO;
-	
-	// ワープ準備開始時のプレイヤー情報
-	reserveStartQua_ = transform_.quaRot;
-	reserveStartPos_ = transform_.pos;
-	
-
-}
-
-void Player::ChangeStateWarpMove(void)
-{
-	stateUpdate_ = std::bind(&Player::UpdateWarpMove, this);
-
-	//正面を向いているものとして、回転の補間処理をリセット
-	playerRotY_ = Quaternion();
-	goalQuaRot_ = Quaternion();
-
-	
-
-	animationController_->Play((int)ANIM_TYPE::FLY);
 }
 
 void Player::UpdateNone(void)
@@ -410,55 +340,6 @@ void Player::DrawShadow(void)
 	// Ｚバッファを無効にする
 	SetUseZBuffer3D(FALSE);
 	
-}
-
-void Player::UpdateWarpReserve(void)
-{
-	//徐々にプレイヤーの移動
-	stepWarp_ -= scnMng_.GetDeltaTime();
-	if (stepWarp_ < 0.0f)
-	{
-
-		//ワープ準備
-		transform_.quaRot = warpQua_;
-		transform_.pos = warpReservePos_;
-
-		//ワープ移動状態へ移行
-		ChangeState(STATE::WARP_MOVE);
-
-		return;
-	}
-	else
-	{
-		//ワープ準備時間中に回転と座標を補間
-		float t = 1.0f - (stepWarp_ / timeWarp_);
-		transform_.quaRot = Quaternion::Slerp(reserveStartQua_, warpQua_, t);
-		transform_.pos = AsoUtility::Lerp(reserveStartPos_, warpReservePos_, t);
-
-	}
-	
-
-}
-
-void Player::UpdateWarpMove(void)
-{
-	// ワープ方向に移動する処理
-	//VECTOR dir = transform_.quaRot.GetForward(); ←こっちのdirでも動く
-	VECTOR dir = warpQua_.GetForward();
-	float speed_ = 30.0f;
-	transform_.pos = VAdd(transform_.pos, VScale(dir, speed_));
-
-	// 次の惑星に切り替わったらワープ状態からプレイ状態へ切り替える
-	Stage::NAME name = grvMng_.GetActivePlanet().lock()->GetName();
-	if (name != preWarpName_)
-	{
-		// 落下アニメーション
-		animationController_->Play((int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
-		animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
-		ChangeState(Player::STATE::PLAY);
-		return;
-	}
-
 }
 
 void Player::DrawDebug(void)
