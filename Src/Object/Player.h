@@ -40,8 +40,6 @@ public:
 	{
 		NONE,
 		PLAY,
-		WARP_RESERVE,
-		WARP_MOVE,
 		DEAD,
 		VICTORY,
 		END
@@ -63,7 +61,6 @@ public:
 		FAST_RUN,
 		JUMP,
 		DOWN,
-		WARP_PAUSE,
 		FLY,
 		FALLING,
 		VICTORY,
@@ -88,13 +85,9 @@ public:
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
 
-	// ワープ準備開始
-	void StartWarpReserve(
-		float time, const Quaternion& goalRot, const VECTOR& goalPos);
 
 	//状態確認
 	bool IsPlay(void) const;
-	bool IsWarpMove(void) const;
 
 
 private:
@@ -120,10 +113,6 @@ private:
 	
 	// 状態管理(更新ステップ)
 	std::function<void(void)> stateUpdate_;
-	
-	// ワープ前の惑星名
-	Stage::NAME preWarpName_;
-
 
 	// 丸影
 	int imgShadow_;
@@ -172,10 +161,6 @@ private:
 	int effectSmokePleyId_;
 	float stepFootSmoke_;
 
-	//ワープ奇跡
-	int effectWarpOrbitResId_;
-	int effectWarpOrbitPlayId_;
-
 	//モデルパーツのハンドル
 	int fremLeHandl_;//左
 	int fremReHandl_;//右
@@ -183,18 +168,6 @@ private:
 	// フレームごとの移動値
 	VECTOR moveDiff_;
 
-	// ワープ準備時間
-	float timeWarp_;
-	
-	// ワープ準備経過時間
-	float stepWarp_;
-	
-	// ワープ準備完了時の回転
-	Quaternion warpQua_;
-	
-	// ワープ準備完了時の座標
-	VECTOR warpReservePos_;
-	
 	// ワープ準備開始時のプレイヤー情報
 	Quaternion reserveStartQua_;
 	VECTOR reserveStartPos_;
@@ -205,16 +178,12 @@ private:
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
-	void ChangeStateWarpReserve(void);
-	void ChangeStateWarpMove(void);
 
 
 	// 更新ステップ
 	void UpdateNone(void);
 	void UpdatePlay(void);
 	void DrawShadow(void);
-	void UpdateWarpReserve(void);
-	void UpdateWarpMove(void);
 
 	// 描画系
 	void DrawDebug(void);
