@@ -20,10 +20,9 @@ Tree::~Tree(void)
 bool Tree::Init(GameScene* parent)
 {
 	lv_ = 1;
-	isLvUp_ = false;
 	isAlive_ = true;
 	grow_ = Tree::GROW::BABY;
-	hp_ = 75;
+	hp_ = 50;
 	water_ = 0;
 	gameScene_ = parent;
 
@@ -33,7 +32,6 @@ void Tree::Update(void)
 {
 	if (water_ >= 1)
 	{
-		isLvUp_ = true;
 		lv_ += 1;
 		water_ -= 1;
 		ChangeGrow();
@@ -79,30 +77,30 @@ void Tree::ChangeGrow(void)
 	if (lv_ == 75)
 	{
 		grow_ = Tree::GROW::OLD;
-		hp_ = 100;
+		hp_ = 50;
 	}
 	else if (lv_ == 50)
 	{
 		grow_ = Tree::GROW::ADULT;
-		hp_ = 100;
+		hp_ = 50;
 	}
 	else if (lv_ == 25)
 	{
 		grow_ = Tree::GROW::KID;
-		hp_ = 100;
+		hp_ = 50;
 	}
 	else if (lv_ == 1)
 	{
 		grow_ = Tree::GROW::BABY;
-		hp_ = 100;
+		hp_ = 50;
 	}
 }
 
-void Tree::eHit(void)
-{
-	hp_ -= 1;
-}
-void Tree::pHit(void)
-{
-	water_++;
-}
+//void Tree::eHit(void)
+//{
+//	hp_ -= 1;
+//}
+//void Tree::pHit(void)
+//{
+//	water_++;
+//}

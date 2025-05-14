@@ -42,7 +42,6 @@ void EnemyBase::SetParam(void)
 	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
-
 	speed_ = 01.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
@@ -62,7 +61,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
-
 }
 
 
@@ -74,7 +72,7 @@ void EnemyBase::Update(void)
 	}
 	transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
 
-	MV1SetScale(modelId_, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetScale(modelId_, transform_.scl);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 
@@ -103,7 +101,6 @@ void EnemyBase::EnemyUpdate(void)
 
 	// 衝突判定
 	Collision();
-
 }
 
 void EnemyBase::Draw(void)
@@ -187,12 +184,6 @@ void EnemyBase::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
 
-	// 衝突(カプセル)
-	//CollisionCapsule();
-
-	// 衝突(重力)
-	//CollisionGravity();
-
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
@@ -234,5 +225,4 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
 		s.x, s.y, s.z
 	);
-
 }
