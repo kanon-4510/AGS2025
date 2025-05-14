@@ -61,7 +61,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
-
 }
 
 
@@ -73,7 +72,7 @@ void EnemyBase::Update(void)
 	}
 	transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
 
-	MV1SetScale(modelId_, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetScale(modelId_, transform_.scl);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 
@@ -158,7 +157,7 @@ const Capsule& EnemyBase::GetCapsule(void) const
 
 void EnemyBase::SetCollisionPos(VECTOR collision)
 {
-	collisionLocalPos_ = collision;
+	spherePos_ = collision;
 }
 
 VECTOR EnemyBase::GetCollisionPos(void)
