@@ -10,6 +10,7 @@ Item::Item(void)
 {
 	dir_ = {};
 	modelId_ = 0;
+	Update();
 }
 
 Item::~Item(void)
@@ -24,7 +25,7 @@ void Item::Init(void)
 
 	scl_ = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 00.0f, 0.0f, 1000.0f };					// 位置の設定
+	pos_ = { 00.0f, 0.0f, 2000.0f };					// 位置の設定
 	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
 }
 

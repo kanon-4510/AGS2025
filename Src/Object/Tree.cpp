@@ -88,11 +88,8 @@ void Tree::DrawDebug(void)
 
 	VECTOR v;
 
-	// キャラ基本情報
-	//-------------------------------------------------------
-	// キャラ座標
 	v = pos_;
-	DrawFormatString(20, 210, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+	DrawFormatString(20, 230, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
 }
