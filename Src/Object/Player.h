@@ -5,6 +5,7 @@
 #include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
+#include "EnemyBase.h"
 #include "Stage.h"
 class AnimationController;
 class Collider;
@@ -84,11 +85,10 @@ public:
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
-
+	const EnemyBase& GetCollision(void) const;
 
 	//状態確認
 	bool IsPlay(void) const;
-
 
 private:
 
@@ -220,6 +220,7 @@ private:
 	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
+	std::unique_ptr<EnemyBase> enemy_;
 	
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
