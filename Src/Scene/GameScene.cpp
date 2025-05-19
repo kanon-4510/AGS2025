@@ -46,7 +46,7 @@ void GameScene::Init(void)
 
 	//–Ø
 	tree_ = std::make_shared<Tree>();
-	//tree_->Init();
+	tree_->Init(this);
 
 	//ƒAƒCƒeƒ€
 	item_ = std::make_shared<Item>();
