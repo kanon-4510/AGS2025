@@ -36,6 +36,7 @@ public:
 		TANK_BARREL,
 		TANK_WHEEL,
 		ITEM,
+		WOOD,
 	};
 
 	// 明示的にインステンスを生成する

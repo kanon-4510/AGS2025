@@ -46,7 +46,7 @@ void GameScene::Init(void)
 
 	//–Ø
 	tree_ = std::make_shared<Tree>();
-	//tree_->Init();
+	tree_->Init(this);
 
 	//ƒAƒCƒeƒ€
 	item_ = std::make_shared<Item>();
@@ -77,6 +77,7 @@ void GameScene::Update(void)
 
 	skyDome_->Update();
 	stage_->Update();
+	tree_->Update();
 	player_->Update();
 	item_->Update();
 	for (auto enemy : enemys_)
@@ -89,6 +90,7 @@ void GameScene::Draw(void)
 {
 	skyDome_->Draw();
 	stage_->Draw();
+	tree_->Draw();
 	player_->Draw();
 	item_->Draw();
 	for (auto enemy : enemys_)

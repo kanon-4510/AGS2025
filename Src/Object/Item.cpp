@@ -21,14 +21,14 @@ void Item::Init(void)
 	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	scl_ = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
 	pos_ = { 00.0f, 0.0f, 1000.0f };					// 位置の設定
-	dir_ = { 0.0f, 90.0f, 0.0f };								// 右方向に移動する
+	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
 }
 
 void Item::Update(void)
 {
-	MV1SetScale(modelId_, scl_);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 }
