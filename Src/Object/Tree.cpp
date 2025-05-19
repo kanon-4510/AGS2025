@@ -12,6 +12,8 @@ Tree::Tree(void)
 	isAlive_ = false;
 	hp_ = 0;
 	water_ = 0;
+	dir_ = {};
+	modelId_ = 0;
 }
 Tree::~Tree(void)
 {
@@ -19,6 +21,13 @@ Tree::~Tree(void)
 
 bool Tree::Init(GameScene* parent)
 {
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+
+	scl_ = { 5.0f, 5.0f, 5.0f };						// ëÂÇ´Ç≥ÇÃê›íË
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
+	pos_ = { 00.0f, 0.0f, 0.0f };					// à íuÇÃê›íË
+	dir_ = { 0.0f, 90.0f, 0.0f };						// âEï˚å¸Ç…à⁄ìÆÇ∑ÇÈ
+
 	lv_ = 1;
 	isAlive_ = true;
 	grow_ = Tree::GROW::BABY;
@@ -30,6 +39,10 @@ bool Tree::Init(GameScene* parent)
 }
 void Tree::Update(void)
 {
+	MV1SetScale(modelId_, scl_);		// ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+	MV1SetRotationXYZ(modelId_, rot_);	// ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+	MV1SetPosition(modelId_, pos_);		// ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+
 	if (water_ >= 1)
 	{
 		lv_ += 1;
@@ -39,6 +52,9 @@ void Tree::Update(void)
 }
 void Tree::Draw(void)
 {
+	// ÉÇÉfÉãÇÃï`âÊ
+	MV1DrawModel(modelId_);
+	DrawDebug();
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -59,9 +75,23 @@ void Tree::Draw(void)
 		break;
 	}
 }
-bool Tree::Release(void)
+void Tree::DrawDebug(void)
 {
-	return false;
+
+	int white = 0xffffff;
+	int black = 0x000000;
+	int red = 0xff0000;
+	int green = 0x00ff00;
+	int blue = 0x0000ff;
+	int yellow = 0xffff00;
+	int purpl = 0x800080;
+
+	VECTOR v;
+
+	v = pos_;
+	DrawFormatString(20, 230, white, "ñÿÇÃç¿ïW ÅF (%0.2f   , %0.2f   , %0.2f   )",
+		v.x, v.y, v.z
+	);
 }
 
 int Tree::GetHp(void)
