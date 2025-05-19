@@ -12,6 +12,8 @@ Tree::Tree(void)
 	isAlive_ = false;
 	hp_ = 0;
 	water_ = 0;
+	dir_ = {};
+	modelId_ = 0;
 }
 Tree::~Tree(void)
 {
@@ -19,6 +21,13 @@ Tree::~Tree(void)
 
 bool Tree::Init(GameScene* parent)
 {
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+
+	scl_ = { 5.0f, 5.0f, 5.0f };						// 大きさの設定
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+	pos_ = { 00.0f, 0.0f, 0.0f };					// 位置の設定
+	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
+
 	lv_ = 1;
 	isAlive_ = true;
 	grow_ = Tree::GROW::BABY;
@@ -30,6 +39,10 @@ bool Tree::Init(GameScene* parent)
 }
 void Tree::Update(void)
 {
+	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+
 	if (water_ >= 1)
 	{
 		lv_ += 1;
@@ -39,6 +52,9 @@ void Tree::Update(void)
 }
 void Tree::Draw(void)
 {
+	// モデルの描画
+	MV1DrawModel(modelId_);
+	DrawDebug();
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -59,9 +75,26 @@ void Tree::Draw(void)
 		break;
 	}
 }
-bool Tree::Release(void)
+void Tree::DrawDebug(void)
 {
-	return false;
+
+	int white = 0xffffff;
+	int black = 0x000000;
+	int red = 0xff0000;
+	int green = 0x00ff00;
+	int blue = 0x0000ff;
+	int yellow = 0xffff00;
+	int purpl = 0x800080;
+
+	VECTOR v;
+
+	// キャラ基本情報
+	//-------------------------------------------------------
+	// キャラ座標
+	v = pos_;
+	DrawFormatString(20, 210, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+		v.x, v.y, v.z
+	);
 }
 
 int Tree::GetHp(void)
