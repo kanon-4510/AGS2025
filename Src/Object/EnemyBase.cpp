@@ -1,3 +1,4 @@
+#include "../Application.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/GravityManager.h"
@@ -6,14 +7,19 @@
 #include "../Utility/AsoUtility.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
+#include "Common/AnimationController.h"
 #include "ActorBase.h"
 #include "EnemyGhost.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(int baseModelId)
 {
+	// 敵のモデル
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 	imgShadow_ = -1;
+
+	animationController_ = nullptr;
+	state_
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
@@ -28,6 +34,7 @@ EnemyBase::~EnemyBase(void)
 void EnemyBase::Init(void)
 {
 	SetParam();
+	InitLoad();
 	Update();
 }
 
@@ -168,6 +175,21 @@ VECTOR EnemyBase::GetCollisionPos(void)const
 float EnemyBase::GetCollisionRadius(void)
 {
 	return collisionRadius_;
+}
+
+void EnemyBase::InitLoad(void)
+{
+	std::string path = Application::PATH_MODEL + "Enemy/";
+
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
+
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Attack.mv1", 60.0f);
+
+	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
 void EnemyBase::Rotate(void)
