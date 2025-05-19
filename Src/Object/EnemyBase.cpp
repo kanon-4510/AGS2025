@@ -16,10 +16,8 @@ EnemyBase::EnemyBase(int baseModelId)
 {
 	// 敵のモデル
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
-	imgShadow_ = -1;
 
 	animationController_ = nullptr;
-	state_
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
