@@ -30,9 +30,9 @@ bool Tree::Init(GameScene* parent)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
 
-	scl_ = { 5.0f, 5.0f, 5.0f };						// 大きさの設定
+	scl_ = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 00.0f, -100.0f, 0.0f };					// 位置の設定
+	pos_ = { 00.0f, -10.0f, 0.0f };					// 位置の設定
 	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
 
 	lv_ = 1;
@@ -81,6 +81,7 @@ void Tree::Update(void)
 	if (ins.IsNew(KEY_INPUT_O))
 	{
 		lv_ += 1;
+		ChangeGrow();
 	}
 }
 void Tree::Draw(void)
@@ -135,21 +136,29 @@ void Tree::ChangeGrow(void)
 	if (lv_ == 75)
 	{
 		grow_ = Tree::GROW::OLD;
+		scl_ = { 5.0f, 5.0f, 5.0f };
+		pos_ = { 00.0f, -10.0f, 0.0f };
 		hp_ = 50;
 	}
 	else if (lv_ == 50)
 	{
 		grow_ = Tree::GROW::ADULT;
+		scl_ = {3.0f, 3.0f, 3.0f };
+		pos_ = { 00.0f, -10.0f, 0.0f };
 		hp_ = 50;
 	}
 	else if (lv_ == 25)
 	{
 		grow_ = Tree::GROW::KID;
+		scl_ = { 2.0f, 2.0f, 2.0f };
+		pos_ = { 00.0f, -10.0f, 0.0f };
 		hp_ = 50;
 	}
 	else if (lv_ == 1)
 	{
 		grow_ = Tree::GROW::BABY;
+		scl_ = { 1.0f, 1.0f, 1.0f };
+		pos_ = { 00.0f, -10.0f, 0.0f };
 		hp_ = 50;
 	}
 }
