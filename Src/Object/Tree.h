@@ -37,7 +37,10 @@ private:
 	GameScene* gameScene_;
 	SceneManager* sceneManager_;
 
-	int modelId_;	//ƒ‚ƒfƒ‹‚ÌŠi”[
+	int modelIdB_;	//ƒ‚ƒfƒ‹‚ÌŠi”[(•c–Ø)
+	int modelIdK_;	//ƒ‚ƒfƒ‹‚ÌŠi”[(—c–Ø)
+	int modelIdA_;	//ƒ‚ƒfƒ‹‚ÌŠi”[(¬–Ø)
+	int modelIdO_;	//ƒ‚ƒfƒ‹‚ÌŠi”[(˜V–Ø)
 	VECTOR scl_;	//‚¨‚¨‚«‚³
 	VECTOR pos_;	//ˆÊ’u‚ª—ˆ‚é
 	VECTOR rot_;	//‰ô“V

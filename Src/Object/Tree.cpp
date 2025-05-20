@@ -13,7 +13,10 @@ Tree::Tree(void)
 	hp_ = 0;
 	water_ = 0;
 	dir_ = {};
-	modelId_ = 0;
+	modelIdB_ = 0;
+	modelIdK_ = 0;
+	modelIdA_ = 0;
+	modelIdO_ = 0;
 }
 Tree::~Tree(void)
 {
@@ -21,11 +24,14 @@ Tree::~Tree(void)
 
 bool Tree::Init(GameScene* parent)
 {
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdB_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
 
 	scl_ = { 5.0f, 5.0f, 5.0f };						// ëÂÇ´Ç≥ÇÃê›íË
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
-	pos_ = { 00.0f, 0.0f, 0.0f };					// à íuÇÃê›íË
+	pos_ = { 00.0f, -100.0f, 0.0f };					// à íuÇÃê›íË
 	dir_ = { 0.0f, 90.0f, 0.0f };						// âEï˚å¸Ç…à⁄ìÆÇ∑ÇÈ
 
 	lv_ = 1;
@@ -39,9 +45,29 @@ bool Tree::Init(GameScene* parent)
 }
 void Tree::Update(void)
 {
-	MV1SetScale(modelId_, scl_);		// ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
-	MV1SetRotationXYZ(modelId_, rot_);	// ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
-	MV1SetPosition(modelId_, pos_);		// ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+	switch (grow_)
+	{
+	case Tree::GROW::BABY:
+		MV1SetScale(modelIdB_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdB_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdB_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		break;
+	case Tree::GROW::KID:
+		MV1SetScale(modelIdK_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdK_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdK_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		break;
+	case Tree::GROW::ADULT:
+		MV1SetScale(modelIdA_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdA_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdA_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		break;
+	case Tree::GROW::OLD:
+		MV1SetScale(modelIdO_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdO_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdO_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		break;
+	}
 
 	if (water_ >= 1)
 	{
@@ -53,31 +79,26 @@ void Tree::Update(void)
 void Tree::Draw(void)
 {
 	// ÉÇÉfÉãÇÃï`âÊ
-	MV1DrawModel(modelId_);
-	DrawDebug();
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		//DrawRotaGraph(350, 120, 0.1f, 0.0f, img_[0], true, false);
-		//pos_ = { 350,130 };
+		MV1DrawModel(modelIdB_);
 		break;
 	case Tree::GROW::KID:
-		//DrawRotaGraph(350, 100, 1.25f, 0.0f, img_[1], true, false);
-		//pos_ = { 338,138 };
+		MV1DrawModel(modelIdK_);
 		break;
 	case Tree::GROW::ADULT:
-		//DrawRotaGraph(350, -17, 2.0f, 0.0f, img_[2], true, false);
-		//pos_ = { 338,138 };
+		MV1DrawModel(modelIdA_);
 		break;
 	case Tree::GROW::OLD:
-		//DrawRotaGraph(350, -45, 2.0f, 0.0f, img_[3], true, false);
-		//pos_ = { 345,135 };
+		MV1DrawModel(modelIdO_);
 		break;
 	}
+
+	DrawDebug();
 }
 void Tree::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -89,8 +110,8 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "ñÿÇÃç¿ïW ÅF (%0.2f   , %0.2f   , %0.2f   )",
-		v.x, v.y, v.z
+	DrawFormatString(20, 230, white, "ñÿÇÃç¿ïWÅF(%0.2f, %0.2f, %0.2f)ñÿÇÃèÛë‘(%d,%d)",
+		v.x, v.y, v.z,lv_,grow_
 	);
 }
 
