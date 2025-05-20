@@ -2,6 +2,7 @@
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Manager/SceneManager.h"
+#include "../Manager/InputManager.h"
 #include"../Application.h"
 #include"Player.h"
 #include"Tree.h"
@@ -74,6 +75,12 @@ void Tree::Update(void)
 		lv_ += 1;
 		water_ -= 1;
 		ChangeGrow();
+	}
+
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_O))
+	{
+		lv_ += 1;
 	}
 }
 void Tree::Draw(void)

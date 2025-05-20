@@ -19,7 +19,7 @@ Item::~Item(void)
 void Item::Init(void)
 {
 	// ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "item/bottle.mv1").c_str());
+	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	scl_ = { 0.1f, 0.1f, 0.1f };						// ‘å‚«‚³‚Ìİ’è
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚Ìİ’è
