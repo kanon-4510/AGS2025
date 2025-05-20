@@ -99,7 +99,7 @@ void Tree::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = pos_;
-	DrawFormatString(20, 210, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+	DrawFormatString(20, 210, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )木の状態(%d,%d)",
 		v.x, v.y, v.z
 	);
 }
