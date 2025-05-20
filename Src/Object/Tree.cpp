@@ -2,6 +2,7 @@
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Manager/SceneManager.h"
+#include "../Manager/InputManager.h"
 #include"../Application.h"
 #include"Player.h"
 #include"Tree.h"
@@ -25,7 +26,7 @@ bool Tree::Init(GameScene* parent)
 
 	scl_ = { 5.0f, 5.0f, 5.0f };						// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 00.0f, 0.0f, 0.0f };					// 位置の設定
+	pos_ = { 00.0f, 0.0f, 0.0f };						// 位置の設定
 	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
 
 	lv_ = 1;
@@ -48,6 +49,12 @@ void Tree::Update(void)
 		lv_ += 1;
 		water_ -= 1;
 		ChangeGrow();
+	}
+
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_O))
+	{
+		lv_ += 1;
 	}
 }
 void Tree::Draw(void)
