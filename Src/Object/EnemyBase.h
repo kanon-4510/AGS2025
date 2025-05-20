@@ -7,6 +7,8 @@
 
 class Collider;
 class Capsule;
+class AnimationController;
+
 
 class EnemyBase : public ActorBase
 {
@@ -23,6 +25,25 @@ public:
 	{
 		BIRD,
 		GHOST,
+		MAX
+	};
+
+	//状態管理
+	enum class STATE
+	{
+		NONE,
+		PLAY,
+		DEAD,
+		MAX
+	};
+
+	// アニメーション種別
+	enum class ANIM_TYPE
+	{
+		RUN,
+		ATTACK,
+		DAMAGE,
+		DEATH,
 		MAX
 	};
 
@@ -54,8 +75,8 @@ public:
 	void DrawDebug(void);	//デバッグ用
 
 protected:
-	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる弾のモデルID
-	int modelId_;	// 弾のモデルID
+	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
+	int modelId_;	// 敵のモデルID
 
 	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度
@@ -77,13 +98,13 @@ protected:
 	Quaternion goalQuaRot_;
 	float stepRotTime_;
 
-	int imgShadow_;		// 丸影
-
 	int hp_;	// 体力
 	int hpMax_;	// 体力最大値
 
 	bool isAlive_;	// 生存判定
 
+	STATE state_;	//状態管理
+	
 	int animAttachNo_;		// アニメーションをアタッチ番号
 	float animTotalTime_;	// アニメーションの総再生時間
 	float stepAnim_;		// 再生中のアニメーション時間
@@ -91,20 +112,20 @@ protected:
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+	
+	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
-	// 衝突判定に用いられるコライダ
-	std::vector <std::weak_ptr<Collider>> colliders_;
-
-	//カプセル
-	std::unique_ptr<Capsule> capsule_;
+	std::unique_ptr<Capsule> capsule_;//カプセル
 
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	//// 回転
-	void Rotate(void);
+	std::unique_ptr<AnimationController> animationController_;// アニメーション
+	
+	void InitLoad(void); //アニメーションロード用
+	
+	void Rotate(void);	 //回転
 
-	// 衝突判定
-	void Collision(void);
+	void Collision(void);// 衝突判定
 };

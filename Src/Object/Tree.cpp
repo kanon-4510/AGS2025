@@ -14,7 +14,10 @@ Tree::Tree(void)
 	hp_ = 0;
 	water_ = 0;
 	dir_ = {};
-	modelId_ = 0;
+	modelIdB_ = 0;
+	modelIdK_ = 0;
+	modelIdA_ = 0;
+	modelIdO_ = 0;
 }
 Tree::~Tree(void)
 {
@@ -22,11 +25,14 @@ Tree::~Tree(void)
 
 bool Tree::Init(GameScene* parent)
 {
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdB_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
+	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/1.mv1").c_str());
 
 	scl_ = { 5.0f, 5.0f, 5.0f };						// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 00.0f, 0.0f, 0.0f };						// 位置の設定
+	pos_ = { 00.0f, -100.0f, 0.0f };					// 位置の設定
 	dir_ = { 0.0f, 90.0f, 0.0f };						// 右方向に移動する
 
 	lv_ = 1;
@@ -40,9 +46,29 @@ bool Tree::Init(GameScene* parent)
 }
 void Tree::Update(void)
 {
-	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+	switch (grow_)
+	{
+	case Tree::GROW::BABY:
+		MV1SetScale(modelIdB_, scl_);		//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(modelIdB_, rot_);	//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(modelIdB_, pos_);	//３Ｄモデルの位置(引数は、３Ｄ座標)
+		break;
+	case Tree::GROW::KID:
+		MV1SetScale(modelIdK_, scl_);		//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(modelIdK_, rot_);	//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(modelIdK_, pos_);	//３Ｄモデルの位置(引数は、３Ｄ座標)
+		break;
+	case Tree::GROW::ADULT:
+		MV1SetScale(modelIdA_, scl_);		//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(modelIdA_, rot_);	//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(modelIdA_, pos_);	//３Ｄモデルの位置(引数は、３Ｄ座標)
+		break;
+	case Tree::GROW::OLD:
+		MV1SetScale(modelIdO_, scl_);		//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(modelIdO_, rot_);	//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(modelIdO_, pos_);	//３Ｄモデルの位置(引数は、３Ｄ座標)
+		break;
+	}
 
 	if (water_ >= 1)
 	{
@@ -60,31 +86,26 @@ void Tree::Update(void)
 void Tree::Draw(void)
 {
 	// モデルの描画
-	MV1DrawModel(modelId_);
-	DrawDebug();
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		//DrawRotaGraph(350, 120, 0.1f, 0.0f, img_[0], true, false);
-		//pos_ = { 350,130 };
+		MV1DrawModel(modelIdB_);
 		break;
 	case Tree::GROW::KID:
-		//DrawRotaGraph(350, 100, 1.25f, 0.0f, img_[1], true, false);
-		//pos_ = { 338,138 };
+		MV1DrawModel(modelIdK_);
 		break;
 	case Tree::GROW::ADULT:
-		//DrawRotaGraph(350, -17, 2.0f, 0.0f, img_[2], true, false);
-		//pos_ = { 338,138 };
+		MV1DrawModel(modelIdA_);
 		break;
 	case Tree::GROW::OLD:
-		//DrawRotaGraph(350, -45, 2.0f, 0.0f, img_[3], true, false);
-		//pos_ = { 345,135 };
+		MV1DrawModel(modelIdO_);
 		break;
 	}
+
+	DrawDebug();
 }
 void Tree::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -95,12 +116,9 @@ void Tree::DrawDebug(void)
 
 	VECTOR v;
 
-	// キャラ基本情報
-	//-------------------------------------------------------
-	// キャラ座標
 	v = pos_;
-	DrawFormatString(20, 210, white, "木の座標 ： (%0.2f   , %0.2f   , %0.2f   )木の状態(%d,%d)",
-		v.x, v.y, v.z
+	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)木の状態(%d,%d)",
+		v.x, v.y, v.z,lv_,grow_
 	);
 }
 
