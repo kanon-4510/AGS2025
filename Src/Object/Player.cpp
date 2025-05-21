@@ -187,6 +187,7 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
 	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
@@ -394,7 +395,7 @@ void Player::DrawDebug(void)
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 		//DrawSphere3D(capEnd, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
-	capsule_->Draw();
+	//capsule_->Draw();
 }
 
 void Player::ProcessMove(void)
@@ -633,69 +634,42 @@ void Player::CollisionAttack(void)
 {
 	if (!isAttack_) return;
 
-	//// プレイヤーの前方ベクトルを取得（回転に基づく）
-	//VECTOR forward = transform_.quaRot.GetForward();
-	//
-	//// カプセルの始点と終点を定義（プレイヤーの前方に出す）
-	//VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-	//capStart.y += 100.0f;
-	//VECTOR capEnd   = VAdd(transform_.pos, VScale(forward, 80.0f));  // 80まで伸ばす
-	//float capRadius = 30.0f;  // カプセルの太さ（攻撃範囲）
+	// 攻撃の方向（プレイヤーの前方）
+	VECTOR forward = transform_.quaRot.GetForward();
 
-	//for (const auto& c : colliders_)
-	//{
-	//	auto hitResult = MV1CollCheck_Capsule(
-	//		c.lock()->modelId_, -1,
-	//		capStart, capEnd, capRadius);
+	// 攻撃の開始位置と終了位置
+	VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+	attackStart.y += 100.0f;  // 攻撃の高さ調整
+	VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 200.0f));
+	attackEnd.y += 100.0f;  // 攻撃の高さ調整
 
-	//	if (hitResult.HitNum > 0)
-	//	{
-	//		// 当たっていたらここに処理を書く（例：敵のHPを減らす）
-	//		//printfDx("攻撃ヒット！\n");
+	// 攻撃の半径（カプセルの半径）
+	float attackRadius = 30.0f;
 
-	//		// 複数当たっていたら1回だけ反応して終了（必要ならループ処理）
-	//		break;
-	//	}
-
-	//	// メモリ解放
-	//	MV1CollResultPolyDimTerminate(hitResult);
-	//}
-	
-	// カプセルを移動させる
-	Transform trans = Transform(transform_);
-	trans.pos = movedPos_;
-	trans.Update();
-	Capsule cap = Capsule(*capsule_, trans);
-	// カプセルとの衝突判定
-	for (const auto c : colliders_)
+	// カプセルの衝突判定を実行
+	for (const auto& collider : colliders_)
 	{
+		// 敵や障害物のコライダーとの衝突を判定
 		auto hits = MV1CollCheck_Capsule(
-			c.lock()->modelId_, -1,
-			cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
-		// 衝突した複数のポリゴンと衝突回避するまで、
-		// プレイヤーの位置を移動させる
+			collider.lock()->modelId_, -1,
+			attackStart, attackEnd, attackRadius);
+
+		// 衝突したポリゴンを確認
 		for (int i = 0; i < hits.HitNum; i++)
 		{
 			auto hit = hits.Dim[i];
-			// 地面と異なり、衝突回避位置が不明なため、何度か移動させる
-			// この時、移動させる方向は、移動前座標に向いた方向であったり、
-			// 衝突したポリゴンの法線方向だったりする
-			for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+
+			// 衝突した対象が敵であれば、ダメージを与える処理
+			if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
 			{
-				// 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
-				// 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
-				int pHit = HitCheck_Capsule_Triangle(
-					cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
-					hit.Position[0], hit.Position[1], hit.Position[2]);
-				if (pHit)
-				{
-					printfDx("攻撃ヒット！\n");
-					break;
-				}
-				break;
+				printfDx("攻撃ヒット！\n");
+				// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
 			}
+
+			// 衝突処理が必要であればここに追加
 		}
-		// 検出した地面ポリゴン情報の後始末
+
+		// 衝突情報の後始末
 		MV1CollResultPolyDimTerminate(hits);
 	}
 }
@@ -794,7 +768,7 @@ void Player::ProcessAttack(void)
 			animationController_->Play(
 				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
-			Damage(1);
+			//Damage(25);
 		}
 	}
 
@@ -855,7 +829,7 @@ void Player::Revival()
 	// プレイヤーが移動可能になる
 	canMove_ = true;   // 移動再開
 
-	animationController_->Play((int)ANIM_TYPE::IDLE, true);
+	//animationController_->Play((int)ANIM_TYPE::IDLE, true);
 	// 他の再開処理（無敵終了、移動可能など）をここで
 }
 
