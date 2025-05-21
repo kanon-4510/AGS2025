@@ -223,8 +223,8 @@ void EnemyBase::InitLoad(void)
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
