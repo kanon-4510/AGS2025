@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
-#include <string>
+#include <map>
+#include <functional>
 #include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
@@ -53,7 +54,6 @@ public:
 	virtual void Init(void);		// 初期処理(最初の１回のみ実行)
 	virtual void SetParam(void);	// パラメータ設定(純粋仮想関数)
 	virtual void Update(void);		// 更新処理(毎フレーム実行)
-	virtual void EnemyUpdate(void);		// 更新処理(毎フレーム実行)
 	virtual void Draw(void);		// 描画処理(毎フレーム実行)
 	virtual void Release(void);		// 解放処理(最後の１回のみ実行)
 
@@ -90,7 +90,7 @@ protected:
 	VECTOR movedPos_;	// 移動後の座標
 
 	VECTOR moveDiff_;	// フレームごとの移動値
-	
+
 	VECTOR spherePos_;	//スフィアの移動後座標
 
 	// 回転
@@ -104,7 +104,10 @@ protected:
 	bool isAlive_;	// 生存判定
 
 	STATE state_;	//状態管理
-	
+
+	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
+	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
+
 	int animAttachNo_;		// アニメーションをアタッチ番号
 	float animTotalTime_;	// アニメーションの総再生時間
 	float stepAnim_;		// 再生中のアニメーション時間
@@ -112,7 +115,7 @@ protected:
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
-	
+
 	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
 	std::unique_ptr<Capsule> capsule_;//カプセル
@@ -122,9 +125,17 @@ protected:
 	VECTOR gravHitPosUp_;
 
 	std::unique_ptr<AnimationController> animationController_;// アニメーション
-	
+
 	void InitLoad(void); //アニメーションロード用
-	
+
+	void UpdateNone(void);			// 更新ステップ
+	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
+
+	// 状態遷移
+	void ChangeState(STATE state);
+	void ChangeStateNone(void);
+	void ChangeStatePlay(void);
+
 	void Rotate(void);	 //回転
 
 	void Collision(void);// 衝突判定

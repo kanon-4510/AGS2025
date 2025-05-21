@@ -65,7 +65,7 @@ public:
 		FLY,
 		FALLING,
 		VICTORY,
-		ATTACK
+		ATTACK,
 	};
 
 	// コンストラクタ
