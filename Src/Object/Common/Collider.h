@@ -14,7 +14,7 @@ public :
 	Collider(TYPE type, int modelId);
 
 	// デストラクタ
-	~Collider(void);
+	virtual ~Collider(void);
 
 	// 衝突種別
 	TYPE type_;
