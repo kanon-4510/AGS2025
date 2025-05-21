@@ -39,14 +39,14 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// 敵のモデル
-	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str());
+	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Run.mv1").c_str());
 	auto enemy = new EnemyBase(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
 
 	//木
 	tree_ = std::make_shared<Tree>();
-	//tree_->Init();
+	tree_->Init(this);
 
 	//アイテム
 	item_ = std::make_shared<Item>();
@@ -77,6 +77,7 @@ void GameScene::Update(void)
 
 	skyDome_->Update();
 	stage_->Update();
+	tree_->Update();
 	player_->Update();
 	item_->Update();
 	for (auto enemy : enemys_)
@@ -89,6 +90,7 @@ void GameScene::Draw(void)
 {
 	skyDome_->Draw();
 	stage_->Draw();
+	tree_->Draw();
 	player_->Draw();
 	item_->Draw();
 	for (auto enemy : enemys_)

@@ -74,6 +74,10 @@ void ResourceManager::Init(void)
 	//êÖ
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
 	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//ñÿ
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Wood/1.mv1");
+	resourcesMap_.emplace(SRC::WOOD, std::move(res));
 }
 
 void ResourceManager::Release(void)

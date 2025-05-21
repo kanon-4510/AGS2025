@@ -18,19 +18,27 @@ Item::~Item(void)
 
 void Item::Init(void)
 {
+	// モデルの基本設定
 	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	scl_ = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	pos_ = { 00.0f, 0.0f, 1000.0f };					// 位置の設定
-	dir_ = { 0.0f, 90.0f, 0.0f };								// 右方向に移動する
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+	pos_ = { 500.0f, -28.0f, 500.0f };					// 位置の設定
+	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
+
+	collisionRadius_ = 20.0f;					// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+
+	Update();
 }
 
 void Item::Update(void)
 {
-	MV1SetScale(modelId_, scl_);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+
+	Collision();
 }
 
 void Item::Draw(void)
@@ -38,6 +46,36 @@ void Item::Draw(void)
 	// モデルの描画
 	MV1DrawModel(modelId_);
 	DrawDebug();
+}
+
+VECTOR Item::GetPos(void)
+{
+	return VECTOR();
+}
+
+void Item::SetPos(VECTOR pos)
+{
+	pos_ = pos;
+}
+
+void Item::SetCollisionPos(const VECTOR collision)
+{
+	collisionLocalPos_ = collision;
+}
+
+VECTOR Item::GetCollisionPos(void) const
+{
+	return VECTOR();
+}
+
+float Item::GetCollisionRadius(void)
+{
+	return collisionRadius_;
+}
+
+void Item::Collision(void)
+{
+	collisionLocalPos_ = pos_;
 }
 
 
@@ -61,4 +99,7 @@ void Item::DrawDebug(void)
 	DrawFormatString(20, 210, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
+
+	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
 }
+

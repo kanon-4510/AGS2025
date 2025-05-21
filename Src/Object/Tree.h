@@ -24,7 +24,7 @@ public:
 	bool Init(GameScene* parent);      //初期化処理
 	void Update(void);    //更新処理
 	void Draw(void);      //描画処理
-	bool Release(void);   //解放処理
+	void DrawDebug(void);	//デバッグ用
 
 	int GetHp(void);
 	int GetLv(void);
@@ -36,6 +36,15 @@ private:
 	Player* player_;
 	GameScene* gameScene_;
 	SceneManager* sceneManager_;
+
+	int modelIdB_;	//モデルの格納(苗木)
+	int modelIdK_;	//モデルの格納(幼木)
+	int modelIdA_;	//モデルの格納(成木)
+	int modelIdO_;	//モデルの格納(老木)
+	VECTOR scl_;	//おおきさ
+	VECTOR pos_;	//位置が来る
+	VECTOR rot_;	//廻天
+	VECTOR dir_;	//移動せんよ
 
 	int lv_;
 	int hp_;

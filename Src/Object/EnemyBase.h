@@ -1,12 +1,15 @@
 #pragma once
 #include <memory>
-#include <string>
+#include <map>
+#include <functional>
 #include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
 
 class Collider;
 class Capsule;
+class AnimationController;
+
 
 class EnemyBase : public ActorBase
 {
@@ -26,13 +29,31 @@ public:
 		MAX
 	};
 
+	//状態管理
+	enum class STATE
+	{
+		NONE,
+		PLAY,
+		DEAD,
+		MAX
+	};
+
+	// アニメーション種別
+	enum class ANIM_TYPE
+	{
+		RUN,
+		ATTACK,
+		DAMAGE,
+		DEATH,
+		MAX
+	};
+
 	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
 	virtual void Init(void);		// 初期処理(最初の１回のみ実行)
 	virtual void SetParam(void);	// パラメータ設定(純粋仮想関数)
 	virtual void Update(void);		// 更新処理(毎フレーム実行)
-	virtual void EnemyUpdate(void);		// 更新処理(毎フレーム実行)
 	virtual void Draw(void);		// 描画処理(毎フレーム実行)
 	virtual void Release(void);		// 解放処理(最後の１回のみ実行)
 
@@ -54,8 +75,8 @@ public:
 	void DrawDebug(void);	//デバッグ用
 
 protected:
-	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる弾のモデルID
-	int modelId_;	// 弾のモデルID
+	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
+	int modelId_;	// 敵のモデルID
 
 	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度
@@ -69,7 +90,7 @@ protected:
 	VECTOR movedPos_;	// 移動後の座標
 
 	VECTOR moveDiff_;	// フレームごとの移動値
-	
+
 	VECTOR spherePos_;	//スフィアの移動後座標
 
 	// 回転
@@ -77,12 +98,15 @@ protected:
 	Quaternion goalQuaRot_;
 	float stepRotTime_;
 
-	int imgShadow_;		// 丸影
-
 	int hp_;	// 体力
 	int hpMax_;	// 体力最大値
 
 	bool isAlive_;	// 生存判定
+
+	STATE state_;	//状態管理
+
+	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
+	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
 
 	int animAttachNo_;		// アニメーションをアタッチ番号
 	float animTotalTime_;	// アニメーションの総再生時間
@@ -92,19 +116,27 @@ protected:
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
-	// 衝突判定に用いられるコライダ
-	std::vector <std::weak_ptr<Collider>> colliders_;
+	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
-	//カプセル
-	std::unique_ptr<Capsule> capsule_;
+	std::unique_ptr<Capsule> capsule_;//カプセル
 
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	//// 回転
-	void Rotate(void);
+	std::unique_ptr<AnimationController> animationController_;// アニメーション
 
-	// 衝突判定
-	void Collision(void);
+	void InitLoad(void); //アニメーションロード用
+
+	void UpdateNone(void);			// 更新ステップ
+	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
+
+	// 状態遷移
+	void ChangeState(STATE state);
+	void ChangeStateNone(void);
+	void ChangeStatePlay(void);
+
+	void Rotate(void);	 //回転
+
+	void Collision(void);// 衝突判定
 };
