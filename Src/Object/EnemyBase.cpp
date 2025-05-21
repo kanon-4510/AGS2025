@@ -1,3 +1,5 @@
+#include <string>
+#include <vector>
 #include "../Application.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
@@ -18,10 +20,26 @@ EnemyBase::EnemyBase(int baseModelId)
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 
 	animationController_ = nullptr;
+	state_ = STATE::NONE;
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
 	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
+
+	// 状態管理
+	stateChanges_.emplace(
+		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
+	stateChanges_.emplace(
+		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
+
+	// 初期状態関数を必ず設定する！
+	auto it = stateChanges_.find(state_);
+	if (it != stateChanges_.end()) {
+		stateUpdate_ = it->second;
+	}
+	else {
+		stateUpdate_ = []() {};  // デフォルト空関数でクラッシュ回避
+	}
 }
 
 EnemyBase::~EnemyBase(void)
@@ -42,7 +60,7 @@ void EnemyBase::SetParam(void)
 	// モデルデータをいくつもメモリ上に存在させない
 	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
-	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
+	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
@@ -68,45 +86,54 @@ void EnemyBase::SetParam(void)
 	capsule_->SetRadius(30.0f);
 }
 
-
+#pragma region Update
 void EnemyBase::Update(void)
 {
 	if (!isAlive_)
 	{
 		return;
 	}
-	transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
-
-	MV1SetScale(modelId_, transform_.scl);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-	MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-	MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+	
+	transform_.Update();
 
 	// アニメーション再生
-	// 経過時間の取得
-	float deltaTime = 1.0f / SceneManager::DEFAULT_FPS;
-	// アニメーション時間の進行
-	stepAnim_ += (speedAnim_ * deltaTime);
-	if (stepAnim_ > animTotalTime_)
+	animationController_->Update();
+
+	// 更新ステップ
+	if (stateUpdate_) 
 	{
-		stepAnim_ = 0.0f;		// ループ再生
+		stateUpdate_();
 	}
-	// 再生するアニメーション時間の設定
-	MV1SetAttachAnimTime(modelId_, animAttachNo_, stepAnim_);
 
 	EnemyUpdate();	//置く場所が分からん
 }
 
+void EnemyBase::UpdateNone(void)
+{
+}
+
 void EnemyBase::EnemyUpdate(void)
 {
-	//現在座標を起点に移動後座標を決める
-	movedPos_ = VAdd(transform_.pos, movePow_);
+	if (isAlive_)
+	{
+		transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
 
-	//移動
-	transform_.pos = movedPos_;
 
-	// 衝突判定
-	Collision();
+		MV1SetScale(modelId_, transform_.scl);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+
+		// 衝突判定
+		Collision();
+
+		//現在座標を起点に移動後座標を決める
+		movedPos_ = VAdd(transform_.pos, movePow_);
+
+		//移動
+		transform_.pos = movedPos_;
+	}
 }
+#pragma endregion
 
 void EnemyBase::Draw(void)
 {
@@ -160,6 +187,18 @@ const Capsule& EnemyBase::GetCapsule(void) const
 	return *capsule_;
 }
 
+void EnemyBase::Collision(void)
+{
+	// 現在座標を起点に移動後座標を決める
+	movedPos_ = VAdd(transform_.pos, movePow_);
+
+	// 移動
+	moveDiff_ = VSub(movedPos_, transform_.pos);
+	transform_.pos = movedPos_;
+
+	spherePos_ = VAdd(transform_.pos, collisionLocalPos_);
+}
+
 void EnemyBase::SetCollisionPos(const VECTOR collision)
 {
 	spherePos_ = collision;
@@ -190,6 +229,25 @@ void EnemyBase::InitLoad(void)
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
+void EnemyBase::ChangeState(STATE state)
+{
+	// 状態変更
+	state_ = state;
+
+	// 各状態遷移の初期処理
+	stateChanges_[state_]();
+}
+
+void EnemyBase::ChangeStateNone(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
+}
+
+void EnemyBase::ChangeStatePlay(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
+}
+
 void EnemyBase::Rotate(void)
 {
 	stepRotTime_ -= scnMng_.GetDeltaTime();
@@ -197,18 +255,6 @@ void EnemyBase::Rotate(void)
 	// 回転の球面補間
 	enemyRotY_ = Quaternion::Slerp(
 		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
-}
-
-void EnemyBase::Collision(void)
-{
-	// 現在座標を起点に移動後座標を決める
-	movedPos_ = VAdd(transform_.pos, movePow_);
-
-	// 移動
-	moveDiff_ = VSub(movedPos_, transform_.pos);
-	transform_.pos = movedPos_;
-
-	spherePos_ = VAdd(transform_.pos, collisionLocalPos_);
 }
 
 void EnemyBase::DrawDebug(void)
@@ -233,13 +279,13 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
 		v.x, v.y, v.z
 	);
-	
+
 	capsule_->Draw();
 	c = capsule_->GetPosDown();
 	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
 		c.x, c.y, c.z
 	);
-	
+
 	s = spherePos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
