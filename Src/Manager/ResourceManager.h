@@ -35,6 +35,7 @@ public:
 		TANK_BODY,
 		TANK_BARREL,
 		TANK_WHEEL,
+		ENEMY,
 		ITEM,
 		WOOD,
 	};
