@@ -51,7 +51,7 @@ void EnemyBase::Init(void)
 {
 	SetParam();
 	InitLoad();
-	Update();
+	//Update();
 }
 
 void EnemyBase::SetParam(void)
@@ -69,8 +69,8 @@ void EnemyBase::SetParam(void)
 
 	isAlive_ = true;	// 初期は生存状態
 
-	animAttachNo_ = MV1AttachAnim(modelId_, 10);	// アニメーションをアタッチする
-	animTotalTime_ = MV1GetAttachAnimTotalTime(modelId_, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
+	//animAttachNo_ = MV1AttachAnim(modelId_, 0);	// アニメーションをアタッチする
+	//animTotalTime_ = MV1GetAttachAnimTotalTime(modelId_, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
 	stepAnim_ = 0.0f;	// 再生中のアニメーション時間
 	speedAnim_ = 30.0f;	// アニメーション速度
 
@@ -98,6 +98,7 @@ void EnemyBase::Update(void)
 
 	// アニメーション再生
 	animationController_->Update();
+	//Mv1SetAnim
 
 	// 更新ステップ
 	if (stateUpdate_) 
@@ -106,6 +107,7 @@ void EnemyBase::Update(void)
 	}
 
 	EnemyUpdate();	//置く場所が分からん
+
 }
 
 void EnemyBase::UpdateNone(void)
@@ -116,21 +118,17 @@ void EnemyBase::EnemyUpdate(void)
 {
 	if (isAlive_)
 	{
-		transform_.pos = VAdd(transform_.pos, VScale(dir_, speed_));
+		// 毎フレームの移動（1回だけ）
+		movePow_ = VScale(dir_, speed_);
+		transform_.pos = VAdd(transform_.pos, movePow_);
 
-
-		MV1SetScale(modelId_, transform_.scl);			// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-		MV1SetRotationXYZ(modelId_, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-		MV1SetPosition(modelId_, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+		// モデル反映
+		MV1SetScale(modelId_, transform_.scl);
+		MV1SetRotationXYZ(modelId_, transform_.rot);
+		MV1SetPosition(modelId_, transform_.pos);
 
 		// 衝突判定
 		Collision();
-
-		//現在座標を起点に移動後座標を決める
-		movedPos_ = VAdd(transform_.pos, movePow_);
-
-		//移動
-		transform_.pos = movedPos_;
 	}
 }
 #pragma endregion
@@ -140,6 +138,11 @@ void EnemyBase::Draw(void)
 	if (!isAlive_)
 	{
 		return;
+	}
+
+	if (modelId_ == 0)
+	{
+		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
 	}
 
 	MV1DrawModel(modelId_);
@@ -154,7 +157,7 @@ void EnemyBase::Release(void)
 
 VECTOR EnemyBase::GetPos(void)
 {
-	return VECTOR();
+	return transform_.pos;
 }
 
 void EnemyBase::SetPos(VECTOR pos)
@@ -206,7 +209,7 @@ void EnemyBase::SetCollisionPos(const VECTOR collision)
 
 VECTOR EnemyBase::GetCollisionPos(void)const
 {
-	return VAdd(collisionLocalPos_, pos_);
+	return VAdd(collisionLocalPos_, transform_.pos);
 }
 
 float EnemyBase::GetCollisionRadius(void)
@@ -218,13 +221,13 @@ void EnemyBase::InitLoad(void)
 {
 	std::string path = Application::PATH_MODEL + "Enemy/";
 
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
+	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
 
-	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+	animationController_ = std::make_unique<AnimationController>(modelId_);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
@@ -291,4 +294,9 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
 		s.x, s.y, s.z
 	);
+
+	int animNum = MV1GetAnimNum(modelId_);
+	if (animNum == 0) {
+		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
+	}
 }
