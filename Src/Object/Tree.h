@@ -1,11 +1,15 @@
 //#pragma once
+#include <memory>
 #include"../Common/Vector2.h"
+#include "ActorBase.h"
 
 class GameScene;
 class SceneManager;
 class Player;
+class Capsule;
+class Collider;
 
-class Tree
+class Tree:public ActorBase
 {
 public:
 	static constexpr int GROW_UP = 4;
@@ -30,6 +34,12 @@ public:
 	int GetLv(void);
 	void ChangeGrow(void);
 
+	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+
+	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
+	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
 	//void eHit(void);
 	//void pHit(void);
 private:
@@ -51,4 +61,13 @@ private:
 	int water_;
 	bool isAlive_;
 	GROW grow_;
+
+	VECTOR spherePos_;	//スフィアの移動後座標
+
+	float collisionRadius_;		// 衝突判定用の球体半径
+	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+
+	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
+
+	std::unique_ptr<Capsule> capsule_;//カプセル
 };

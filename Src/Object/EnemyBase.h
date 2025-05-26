@@ -10,7 +10,6 @@ class Collider;
 class Capsule;
 class AnimationController;
 
-
 class EnemyBase : public ActorBase
 {
 public:
