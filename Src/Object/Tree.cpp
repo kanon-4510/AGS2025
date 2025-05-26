@@ -94,7 +94,25 @@ void Tree::Update(void)
 		break;
 	}
 
-	if (water_ >= 1)
+	if (lv_ >=75 && water_ >= 4)
+	{
+		lv_ += 1;
+		water_ -= 4;
+		ChangeGrow();
+	}
+	else if (lv_ >= 50 && water_ >= 3)
+	{
+		lv_ += 1;
+		water_ -= 3;
+		ChangeGrow();
+	}
+	if (lv_ >= 25 && water_ >= 2)
+	{
+		lv_ += 1;
+		water_ -= 2;
+		ChangeGrow();
+	}
+	if (lv_ >= 1 && water_ >= 1)
 	{
 		lv_ += 1;
 		water_ -= 1;
