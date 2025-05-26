@@ -3,13 +3,14 @@
 #include <memory>
 #include <vector>
 
+class Player;
 class Collider;
 
 class Item : public ActorBase
 {
 public:
 	// コンストラクタ
-	Item(void);
+	Item(Player& player, const Transform& transform);
 
 	// デストラクタ
 	~Item(void);
@@ -27,6 +28,8 @@ public:
 
 	void DrawDebug(void);	//デバッグ用
 private:
+	Player& player_;
+
 	int modelId_;//モデルの格納
 
 	VECTOR scl_;	// 大きさ
@@ -34,11 +37,13 @@ private:
 	VECTOR pos_;	// 表示座標
 	VECTOR dir_;	// 移動方向
 
+	bool isAlive_;
+
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
 	// 衝突判定に用いられるコライダ
-	std::vector <std::weak_ptr<Collider>> colliders_;
+	//std::vector <std::weak_ptr<Collider>> colliders_;
 
 	// 衝突判定
 	void Collision(void);
