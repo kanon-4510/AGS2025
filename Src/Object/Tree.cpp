@@ -1,7 +1,5 @@
 #include<DxLib.h>
 #include"../Common/Vector2.h"
-#include "Common/Capsule.h"
-#include "Common/Collider.h"
 #include"../Scene/GameScene.h"
 #include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
@@ -21,11 +19,11 @@ Tree::Tree(void)
 	modelIdA_ = 0;
 	modelIdO_ = 0;
 
-	// カプセルコライダ
-	capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
-	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
-	capsule_->SetRadius(30.0f);
+	//// カプセルコライダ
+	//capsule_ = std::make_unique<Capsule>(transform_);
+	//capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
+	//capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
+	//capsule_->SetRadius(30.0f);
 }
 Tree::~Tree(void)
 {
@@ -49,10 +47,8 @@ bool Tree::Init(GameScene* parent)
 	water_ = 0;
 	gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
-
-
+	//collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
+	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
 	return true;
 }
@@ -152,6 +148,7 @@ void Tree::Draw(void)
 
 	DrawDebug();
 }
+
 void Tree::DrawDebug(void)
 {
 	int white = 0xffffff;
@@ -197,25 +194,25 @@ void Tree::ChangeGrow(void)
 	}
 }
 
-const Capsule& Tree::GetCapsule(void) const
-{
-	return *capsule_;
-}
+//const Capsule& Tree::GetCapsule(void) const
+//{
+//	return *capsule_;
+//}
 
-void Tree::SetCollisionPos(const VECTOR collision)
-{
-	spherePos_ = collision;
-}
+//void Tree::SetCollisionPos(const VECTOR collision)
+//{
+//	spherePos_ = collision;
+//}
 
-VECTOR Tree::GetCollisionPos(void) const
-{
-	return VAdd(collisionLocalPos_,pos_);
-}
+//VECTOR Tree::GetCollisionPos(void) const
+//{
+//	return VAdd(collisionLocalPos_,pos_);
+//}
 
-float Tree::GetCollisionRadius(void)
-{
-	return collisionRadius_;
-}
+//float Tree::GetCollisionRadius(void)
+//{
+//	return collisionRadius_;
+//}
 
 //void Tree::eHit(void)
 //{
