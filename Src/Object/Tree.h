@@ -1,15 +1,15 @@
 //#pragma once
-#include <memory>
+//#include <memory>
 #include"../Common/Vector2.h"
-#include "ActorBase.h"
+//#include "ActorBase.h"
 
 class GameScene;
 class SceneManager;
 class Player;
-class Capsule;
-class Collider;
+//class Capsule;
+//class Collider;
 
-class Tree:public ActorBase
+class Tree
 {
 public:
 	static constexpr int GROW_UP = 4;
@@ -34,11 +34,11 @@ public:
 	int GetLv(void);
 	void ChangeGrow(void);
 
-	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+	//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
-	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
-	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
-	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+	//void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
+	//VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	//float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	//void eHit(void);
 	//void pHit(void);
