@@ -47,8 +47,8 @@ bool Tree::Init(GameScene* parent)
 	water_ = 0;
 	gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
+	//collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
+	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
 
 	return true;
 }
@@ -120,7 +120,7 @@ void Tree::Update(void)
 	if (ins.IsNew(KEY_INPUT_O))	lv_ += 1;
 	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
 
-	if (ins.IsNew(KEY_INPUT_U)) water_ += 1;
+	if (ins.IsNew(KEY_INPUT_U)) pHit();
 	if (ins.IsNew(KEY_INPUT_I))	water_ -= 1;
 }
 void Tree::Draw(void)
@@ -233,11 +233,11 @@ float Tree::GetCollisionRadius(void)
 	return collisionRadius_;
 }*/
 
-/*void Tree::eHit(void)
+void Tree::eHit(void)//エネミーとのあたり判定
 {
 	hp_ -= 1;
 }
-void Tree::pHit(void)
+void Tree::pHit(void)//プレイヤーとのあたり判定
 {
 	water_++;
-}*/
+}

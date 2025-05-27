@@ -90,6 +90,9 @@ public:
 	//状態確認
 	bool IsPlay(void) const;
 
+	void eHit(void);//敵
+	void wHit(void);//水
+	void tHit(void);//木
 private:
 
 	// ジャンプ量
@@ -146,6 +149,10 @@ private:
 	// 体力関連
 	int hp_ = 100;
 	int maxHp_ = 100;
+
+	//水関連
+	int water_;
+	int waterMax_;
 
 	// 無敵状態
 	bool invincible_;

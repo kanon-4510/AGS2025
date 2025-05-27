@@ -44,6 +44,10 @@ Player::Player(void)
 	hp_ = 100;
 	maxHp_ = 100;
 
+	//…ŠÖ˜A
+	water_ = 0;
+	waterMax_ = 10;
+
 	// –³“Gó‘Ô
 	invincible_ = false;
 	// ˆÚ“®‚ª‰Â”\‚©‚Ç‚¤‚©
@@ -888,9 +892,19 @@ void Player::EffectFootSmoke(void)
 		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,
 			transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	}
-
 }
 
+void Player::eHit(void)
+{
 
-
-
+}
+void Player::wHit(void)
+{
+	water_++;
+}
+void Player::tHit(void)
+{
+	water_--;
+	hp_ += 5;
+	if (hp_ > maxHp_)hp_ = maxHp_;
+}
