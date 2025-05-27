@@ -517,9 +517,6 @@ void Player::Collision(void)
 	// 衝突(重力)
 	CollisionGravity();
 	
-	// 衝突(攻撃)
-	CollisionAttack();
-
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
@@ -632,45 +629,77 @@ void Player::CollisionCapsule(void)
 
 void Player::CollisionAttack(void)
 {
-	if (!isAttack_) return;
-
-	// 攻撃の方向（プレイヤーの前方）
-	VECTOR forward = transform_.quaRot.GetForward();
-
-	// 攻撃の開始位置と終了位置
-	VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-	attackStart.y += 100.0f;  // 攻撃の高さ調整
-	VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 200.0f));
-	attackEnd.y += 100.0f;  // 攻撃の高さ調整
-
-	// 攻撃の半径（カプセルの半径）
-	float attackRadius = 30.0f;
-
-	// カプセルの衝突判定を実行
-	for (const auto& collider : colliders_)
+	if (isAttack_)
 	{
-		// 敵や障害物のコライダーとの衝突を判定
-		auto hits = MV1CollCheck_Capsule(
-			collider.lock()->modelId_, -1,
-			attackStart, attackEnd, attackRadius);
 
-		// 衝突したポリゴンを確認
-		for (int i = 0; i < hits.HitNum; i++)
+		// 攻撃の方向（プレイヤーの前方）
+		/*VECTOR forward = transform_.quaRot.GetForward();
+
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+		VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
+		// 攻撃の半径（カプセルの半径）
+		float attackRadius = 30.0f;
+
+		// カプセルの衝突判定を実行
+		for (const auto& collider : colliders_)
 		{
-			auto hit = hits.Dim[i];
+			// 敵や障害物のコライダーとの衝突を判定
+			auto hits = MV1CollCheck_Capsule(
+				collider.lock()->modelId_, -1,
+				attackStart, attackEnd, attackRadius);
 
-			// 衝突した対象が敵であれば、ダメージを与える処理
-			if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
+			// 衝突したポリゴンを確認
+			for (int i = 0; i < hits.HitNum; i++)
 			{
-				printfDx("攻撃ヒット！\n");
-				// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
+				auto hit = hits.Dim[i];
+
+				// 衝突した対象が敵であれば、ダメージを与える処理
+				if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
+				{
+					printfDx("攻撃ヒット！\n");
+					// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
+				}
+
+				// 衝突処理が必要であればここに追加
 			}
 
-			// 衝突処理が必要であればここに追加
-		}
+			// 衝突情報の後始末
+			MV1CollResultPolyDimTerminate(hits);
+		}*/
 
-		// 衝突情報の後始末
-		MV1CollResultPolyDimTerminate(hits);
+		// 攻撃カプセルの位置を更新
+		//SetAttackCapsule();
+
+		// 衝突判定を行い、ヒットした敵にダメージを与える
+		/*for (auto& enemy : enemyList_)
+		{
+			// 敵のコライダーと攻撃カプセルを衝突判定
+			if (capsule_->CheckCollision(enemy->GetCapsule()))
+			{
+				// 衝突した敵にダメージを与える
+				//enemy->Damage(attackDamage_);
+				printfDx("攻撃ヒット！\n");
+			}
+		}*/
+
+
+		//エネミーとの衝突判定
+		// 攻撃の方向（プレイヤーの前方）
+		VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+
+		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
+		float dis = AsoUtility::SqrMagnitudeF(diff);
+		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius())
+		{
+			//範囲に入った
+			printfDx("攻撃ヒット！\n");
+			return;
+		}
 	}
 }
 
@@ -768,6 +797,10 @@ void Player::ProcessAttack(void)
 			animationController_->Play(
 				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
+
+			// 衝突(攻撃)
+			CollisionAttack();
+
 			//Damage(25);
 		}
 	}

@@ -1,7 +1,5 @@
 #include<DxLib.h>
 #include"../Common/Vector2.h"
-#include "Common/Capsule.h"
-#include "Common/Collider.h"
 #include"../Scene/GameScene.h"
 #include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
@@ -51,8 +49,6 @@ bool Tree::Init(GameScene* parent)
 
 	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
-
-
 
 	return true;
 }
@@ -159,6 +155,7 @@ void Tree::Draw(void)
 
 	DrawDebug();
 }
+
 void Tree::DrawDebug(void)
 {
 	int white = 0xffffff;
@@ -221,15 +218,15 @@ void Tree::ChangeGrow(void)
 	return *capsule_;
 }
 
-void Tree::SetCollisionPos(const VECTOR collision)
-{
-	spherePos_ = collision;
-}
+//void Tree::SetCollisionPos(const VECTOR collision)
+//{
+//	spherePos_ = collision;
+//}
 
-VECTOR Tree::GetCollisionPos(void) const
-{
-	return VAdd(collisionLocalPos_,pos_);
-}
+//VECTOR Tree::GetCollisionPos(void) const
+//{
+//	return VAdd(collisionLocalPos_,pos_);
+//}
 
 float Tree::GetCollisionRadius(void)
 {

@@ -62,12 +62,12 @@ private:
 	bool isAlive_;
 	GROW grow_;
 
-	VECTOR spherePos_;	//スフィアの移動後座標
+	//VECTOR spherePos_;	//スフィアの移動後座標
 
-	float collisionRadius_;		// 衝突判定用の球体半径
-	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+	//float collisionRadius_;		// 衝突判定用の球体半径
+	//VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
-	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
+	//std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
-	std::unique_ptr<Capsule> capsule_;//カプセル
+	//std::unique_ptr<Capsule> capsule_;//カプセル
 };
