@@ -82,10 +82,6 @@ public:
 
 	bool IsPlay(void) const;
 
-	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
-	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
-	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
-
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
 
@@ -106,9 +102,6 @@ protected:
 	VECTOR pos_;	// 表示座標
 	VECTOR dir_;	// 移動方向
 
-	float speed_;	// 移動速度
-
-	VECTOR jumpPow_;// ジャンプ量
 	bool isGround_;	//地面着地用フラグ
 
 	VECTOR moveDir_;	// 移動方向
