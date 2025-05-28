@@ -51,7 +51,7 @@ void GameScene::Init(void)
 	tree_->Init(this);
 
 	//アイテム
-	item_ = std::make_shared<Item>(*player_, Transform{});
+	item_ = std::make_shared<Item>(*player_, *enemys_[0], Transform{});
 	item_->Init();
 
 	// ステージ
