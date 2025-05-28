@@ -44,6 +44,8 @@ void GameScene::Init(void)
 	enemy->Init();
 	enemys_.push_back(enemy);
 
+	enemy->SetPlayer(player_);
+
 	//–Ø
 	tree_ = std::make_shared<Tree>();
 	tree_->Init(this);

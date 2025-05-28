@@ -19,12 +19,13 @@ Tree::Tree(void)
 	modelIdA_ = 0;
 	modelIdO_ = 0;
 
-	//// ÉJÉvÉZÉãÉRÉâÉCÉ_
-	//capsule_ = std::make_unique<Capsule>(transform_);
-	//capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
-	//capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
-	//capsule_->SetRadius(30.0f);
+	// ÉJÉvÉZÉãÉRÉâÉCÉ_
+	/*capsule_ = std::make_unique<Capsule>(transform_);
+	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
+	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
+	capsule_->SetRadius(30.0f);*/
 }
+
 Tree::~Tree(void)
 {
 }
@@ -36,9 +37,9 @@ bool Tree::Init(GameScene* parent)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	scl_ = { 2.0f, 2.0f, 2.0f };						// ëÂÇ´Ç≥ÇÃê›íË
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
-	pos_ = { 0.0f, 60.0f, 0.0f };						// à íuÇÃê›íË
+	scl_ = { 2.0f, 2.0f, 2.0f };							// ëÂÇ´Ç≥ÇÃê›íË
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// äpìxÇÃê›íË
+	pos_ = { 0.0f, 60.0f, 0.0f };							// à íuÇÃê›íË
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -47,8 +48,8 @@ bool Tree::Init(GameScene* parent)
 	water_ = 0;
 	gameScene_ = parent;
 
-	//collisionRadius_ = 100.0f;	// è’ìÀîªíËópÇÃãÖëÃîºåa
-	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// è’ìÀîªíËópÇÃãÖëÃíÜêSÇÃí≤êÆç¿ïW
+	//collisionRadius_ = 100.0f;								// è’ìÀîªíËópÇÃãÖëÃîºåa
+	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// è’ìÀîªíËópÇÃãÖëÃíÜêSÇÃí≤êÆç¿ïW
 
 	return true;
 }
@@ -60,55 +61,55 @@ void Tree::Update(void)
 		scl_ = { 3.0f, 2.5f, 3.0f };						// ëÂÇ´Ç≥ÇÃê›íË
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
 		pos_ = { 0.0f, 100.0f, 0.0f };						// à íuÇÃê›íË
-		MV1SetScale(modelIdB_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
-		MV1SetRotationXYZ(modelIdB_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
-		MV1SetPosition(modelIdB_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		MV1SetScale(modelIdB_, scl_);						//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdB_, rot_);					//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdB_, pos_);					//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
 		break;
 	case Tree::GROW::KID:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
 		scl_ = { 15.0f, 10.0f, 15.0f };
 		pos_ = { 0.0f, 450.0f, 0.0f };
-		MV1SetScale(modelIdK_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
-		MV1SetRotationXYZ(modelIdK_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
-		MV1SetPosition(modelIdK_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		MV1SetScale(modelIdK_, scl_);						//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdK_, rot_);					//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdK_, pos_);					//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
 		break;
 	case Tree::GROW::ADULT:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
 		scl_ = { 30.0f, 25.0f, 30.0f };
 		pos_ = { 0.0f, 805.0f, 0.0f };
-		MV1SetScale(modelIdA_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
-		MV1SetRotationXYZ(modelIdA_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
-		MV1SetPosition(modelIdA_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		MV1SetScale(modelIdA_, scl_);						//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdA_, rot_);					//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdA_, pos_);					//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
 		break;
 	case Tree::GROW::OLD:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// äpìxÇÃê›íË
 		scl_ = { 50.0f, 45.0f, 50.0f };
 		pos_ = { 0.0f, 1470.0f, 0.0f };
-		MV1SetScale(modelIdO_, scl_);		//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
-		MV1SetRotationXYZ(modelIdO_, rot_);	//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
-		MV1SetPosition(modelIdO_, pos_);	//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
+		MV1SetScale(modelIdO_, scl_);						//ÇRÇcÉÇÉfÉãÇÃëÂÇ´Ç≥Çê›íË(à¯êîÇÕÅAx, y, zÇÃî{ó¶)
+		MV1SetRotationXYZ(modelIdO_, rot_);					//ÇRÇcÉÇÉfÉãÇÃå¸Ç´(à¯êîÇÕÅAx, y, zÇÃâÒì]ó ÅBíPà ÇÕÉâÉWÉAÉìÅB)
+		MV1SetPosition(modelIdO_, pos_);					//ÇRÇcÉÇÉfÉãÇÃà íu(à¯êîÇÕÅAÇRÇcç¿ïW)
 		break;
 	}
 
-	if (lv_ >=75 && water_ >= 4)
+	if (grow_ == GROW::OLD   && water_ >= 4)
 	{
 		lv_ += 1;
 		water_ -= 4;
 		ChangeGrow();
 	}
-	else if (lv_ >= 50 && water_ >= 3)
+	if (grow_ == GROW::ADULT && water_ >= 3)
 	{
 		lv_ += 1;
 		water_ -= 3;
 		ChangeGrow();
 	}
-	if (lv_ >= 25 && water_ >= 2)
+	if (grow_ == GROW::KID   && water_ >= 2)
 	{
 		lv_ += 1;
 		water_ -= 2;
 		ChangeGrow();
 	}
-	if (lv_ >= 1 && water_ >= 1)
+	if (grow_ == GROW::BABY  && water_ >= 1)
 	{
 		lv_ += 1;
 		water_ -= 1;
@@ -117,15 +118,10 @@ void Tree::Update(void)
 	ChangeGrow();
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_O))
-	{
-		lv_ += 1;
-		ChangeGrow();
-	}
-	else if (ins.IsNew(KEY_INPUT_P))
-	{
-		lv_ -= 1;
-	}
+	if (ins.IsNew(KEY_INPUT_O))	lv_ += 1;
+	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
+
+	if (ins.IsNew(KEY_INPUT_U)) pHit();
 }
 void Tree::Draw(void)
 {
@@ -146,6 +142,17 @@ void Tree::Draw(void)
 		break;
 	}
 
+#pragma region ÉXÉeÅ[É^ÉXï\é¶
+	DrawFormatString(55, Application::SCREEN_SIZE_Y - 160, 0x0, "YGGDRASILL : Lv%d", lv_);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 140, 650, Application::SCREEN_SIZE_Y - 120, 0x0, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0x00ff00, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 115, 650, Application::SCREEN_SIZE_Y - 105, 0x0, true);
+	if(grow_ == GROW::BABY) DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	if(grow_ == GROW::KID)  DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	if(grow_ == GROW::ADULT)DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	if(grow_ == GROW::OLD)  DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*150+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+#pragma endregion
+
 	DrawDebug();
 }
 
@@ -162,11 +169,7 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "ñÿÇÃç¿ïWÅF(%0.2f, %0.2f, %0.2f)ñÿÇÃèÛë‘(%d,%d)",
-		v.x, v.y, v.z,lv_,grow_
-	);
-
-
+	DrawFormatString(20, 230, white, "ñÿÇÃç¿ïWÅF(%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 }
 
 int Tree::GetHp(void)
@@ -194,12 +197,17 @@ void Tree::ChangeGrow(void)
 		grow_ = Tree::GROW::KID;
 		hp_ = 50;
 	}
+	else if(lv_ == 1)
+	{
+		grow_ = GROW::BABY;
+		hp_ = 50;
+	}
 }
 
-//const Capsule& Tree::GetCapsule(void) const
-//{
-//	return *capsule_;
-//}
+/*const Capsule& Tree::GetCapsule(void) const
+{
+	return *capsule_;
+}
 
 //void Tree::SetCollisionPos(const VECTOR collision)
 //{
@@ -211,16 +219,16 @@ void Tree::ChangeGrow(void)
 //	return VAdd(collisionLocalPos_,pos_);
 //}
 
-//float Tree::GetCollisionRadius(void)
-//{
-//	return collisionRadius_;
-//}
+float Tree::GetCollisionRadius(void)
+{
+	return collisionRadius_;
+}*/
 
-//void Tree::eHit(void)
-//{
-//	hp_ -= 1;
-//}
-//void Tree::pHit(void)
-//{
-//	water_++;
-//}
+void Tree::eHit(void)//ÉGÉlÉ~Å[Ç∆ÇÃÇ†ÇΩÇËîªíË
+{
+	hp_ -= 1;
+}
+void Tree::pHit(void)//ÉvÉåÉCÉÑÅ[Ç∆ÇÃÇ†ÇΩÇËîªíË
+{
+	water_++;
+}
