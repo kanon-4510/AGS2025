@@ -59,7 +59,7 @@ void EnemyBase::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
@@ -87,6 +87,9 @@ void EnemyBase::SetParam(void)
 	capsule_->SetRadius(30.0f);
 
 	player_ = std::make_shared<Player>();
+
+	// 初期状態
+	ChangeState(STATE::PLAY);
 }
 
 #pragma region Update
@@ -109,7 +112,7 @@ void EnemyBase::Update(void)
 		stateUpdate_();
 	}
 
-	EnemyUpdate();	//置く場所が分からん
+	//EnemyUpdate();	//置く場所が分からん
 
 }
 
@@ -125,13 +128,19 @@ void EnemyBase::EnemyUpdate(void)
 		movePow_ = VScale(dir_, speed_);
 		transform_.pos = VAdd(transform_.pos, movePow_);
 
-		// モデル反映
-		MV1SetScale(modelId_, transform_.scl);
-		MV1SetRotationXYZ(modelId_, transform_.rot);
-		MV1SetPosition(modelId_, transform_.pos);
-
 		// 衝突判定
 		Collision();
+
+
+		// 移動を反映
+		transform_.pos = movedPos_;
+
+		// モデル反映
+		MV1SetScale(transform_.modelId, transform_.scl);
+		MV1SetRotationXYZ(transform_.modelId, transform_.rot);
+		MV1SetPosition(transform_.modelId, transform_.pos);
+
+	
 	}
 }
 #pragma endregion
@@ -143,13 +152,15 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	if (modelId_ == 0)
+	if (transform_.modelId == 0)
 	{
 		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
 	}
 
-	MV1DrawModel(modelId_);
+	// モデルの描画
+	MV1DrawModel(transform_.modelId);
 
+	//デバッグ
 	DrawDebug();
 
 	// 視野範囲の描画
@@ -158,7 +169,7 @@ void EnemyBase::Draw(void)
 
 void EnemyBase::Release(void)
 {
-	MV1DeleteModel(modelId_);
+	MV1DeleteModel(transform_.modelId);
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -229,7 +240,7 @@ void EnemyBase::InitLoad(void)
 
 	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
 
-	animationController_ = std::make_unique<AnimationController>(modelId_);
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
@@ -301,7 +312,7 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	int animNum = MV1GetAnimNum(modelId_);
+	int animNum = MV1GetAnimNum(transform_.modelId);
 	if (animNum == 0) {
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
