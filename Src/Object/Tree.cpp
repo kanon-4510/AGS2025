@@ -121,7 +121,6 @@ void Tree::Update(void)
 	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
 
 	if (ins.IsNew(KEY_INPUT_U)) pHit();
-	if (ins.IsNew(KEY_INPUT_I))	water_ -= 1;
 }
 void Tree::Draw(void)
 {
@@ -169,16 +168,7 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)木の状態LGHW(%d,%d,%d,%d)",
-		v.x, v.y, v.z,lv_,grow_,hp_,water_);
-
-#pragma region p
-	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, black, "PLAYER");
-	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, black, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_*6+50, Application::SCREEN_SIZE_Y - 55, green, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, black, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_*60+50, Application::SCREEN_SIZE_Y - 40, blue, true);
-#pragma endregion
+	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 }
 
 int Tree::GetHp(void)
