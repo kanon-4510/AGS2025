@@ -11,6 +11,7 @@
 #include "Common/Collider.h"
 #include "Common/AnimationController.h"
 #include "ActorBase.h"
+#include "Player.h"
 #include "EnemyGhost.h"
 #include "EnemyBase.h"
 
@@ -84,6 +85,8 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
+
+	player_ = std::make_shared<Player>();
 }
 
 #pragma region Update
@@ -148,6 +151,9 @@ void EnemyBase::Draw(void)
 	MV1DrawModel(modelId_);
 
 	DrawDebug();
+
+	// 視野範囲の描画
+	DrawDebugSearchRange();
 }
 
 void EnemyBase::Release(void)
@@ -299,4 +305,82 @@ void EnemyBase::DrawDebug(void)
 	if (animNum == 0) {
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
+}
+
+void EnemyBase::DrawDebugSearchRange(void)
+{
+	//VECTOR centerPos = transform_.pos;
+	//float radius = VIEW_RANGE;
+	//int segments = 60; // 分割数（多いほど滑らか）
+
+	//float angleStep = DX_PI * 2.0f / segments; // 360度分割の角度ステップ
+
+	//for (int i = 0; i < segments; ++i)
+	//{
+	//	float angle1 = angleStep * i;
+	//	float angle2 = angleStep * (i + 1);
+
+	//	VECTOR p1 = {
+	//		centerPos.x + radius * sinf(angle1),
+	//		centerPos.y,
+	//		centerPos.z + radius * cosf(angle1)
+	//	};
+
+	//	VECTOR p2 = {
+	//		centerPos.x + radius * sinf(angle2),
+	//		centerPos.y,
+	//		centerPos.z + radius * cosf(angle2)
+	//	};
+
+	//	DrawTriangle3D(centerPos, p1, p2, 0xffffff, false);
+	//}
+
+	//DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+
+	VECTOR centerPos = transform_.pos;
+	float radius = VIEW_RANGE;
+	int segments = 60;
+
+	// プレイヤーの座標
+	VECTOR playerPos = player_->GetTransform().pos; // プレイヤーオブジェクトの参照を持っている想定
+
+	// プレイヤーと敵の距離（XZ平面）
+	float dx = playerPos.x - centerPos.x;
+	float dz = playerPos.z - centerPos.z;
+	float distance = sqrtf(dx * dx + dz * dz);
+
+	// 範囲内か判定
+	bool inRange = (distance <= radius);
+
+	// 色を決定（範囲内なら赤、範囲外は元の色）
+	unsigned int color = inRange ? 0xff0000 : 0xffdead;
+
+	float angleStep = DX_PI * 2.0f / segments;
+
+	for (int i = 0; i < segments; ++i)
+	{
+		float angle1 = angleStep * i;
+		float angle2 = angleStep * (i + 1);
+
+		VECTOR p1 = {
+			centerPos.x + radius * sinf(angle1),
+			centerPos.y,
+			centerPos.z + radius * cosf(angle1)
+		};
+
+		VECTOR p2 = {
+			centerPos.x + radius * sinf(angle2),
+			centerPos.y,
+			centerPos.z + radius * cosf(angle2)
+		};
+
+		DrawTriangle3D(centerPos, p1, p2, color, false);
+	}
+
+	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+}
+
+void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
+{
+	player_ = player;
 }

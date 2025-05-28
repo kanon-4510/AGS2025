@@ -35,7 +35,6 @@ public:
 	// 煙エフェクト発生間隔
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
-
 	// 状態
 	enum class STATE
 	{
@@ -179,7 +178,6 @@ private:
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
 
-
 	// 更新ステップ
 	void UpdateNone(void);
 	void UpdatePlay(void);
@@ -221,7 +219,7 @@ private:
 
 	std::unique_ptr<Capsule> capsule_;
 	std::unique_ptr<EnemyBase> enemy_;
-	
+
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
 

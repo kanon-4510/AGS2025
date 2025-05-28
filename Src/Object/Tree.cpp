@@ -26,6 +26,7 @@ Tree::Tree(void)
 	//capsule_->SetRadius(30.0f);
 
 }
+
 Tree::~Tree(void)
 {
 }
@@ -166,8 +167,6 @@ void Tree::DrawDebug(void)
 	DrawFormatString(20, 230, white, "–Ø‚ÌÀ•WF(%0.2f, %0.2f, %0.2f)–Ø‚Ìó‘Ô(%d,%d)",
 		v.x, v.y, v.z,lv_,grow_
 	);
-
-
 }
 
 int Tree::GetHp(void)

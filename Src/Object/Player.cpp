@@ -143,7 +143,6 @@ void Player::Draw(void)
 
 	// デバッグ用描画
 	DrawDebug();
-
 }
 
 void Player::AddCollider(std::weak_ptr<Collider> collider)
