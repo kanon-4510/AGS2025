@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform):player_(player)
+Item::Item(Player& player,EnemyBase& enemy, const Transform& transform):player_(player),enemy_(enemy)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -25,12 +25,12 @@ void Item::Init(void)
 
 	scl_ = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 500.0f, -28.0f, 500.0f };					// 位置の設定
+	pos_ = { 0.0f, -28.0f, 500.0f };					// 位置の設定
 	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = true;
 
-	collisionRadius_ = 50.0f;					// 衝突判定用の球体半径
+	collisionRadius_ = 70.0f;					// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
 	Update();
@@ -52,6 +52,15 @@ void Item::Update(void)
 	}
 	isAlive_ = true;
 
+	VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
+	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
+	if (dis1 < collisionRadius_ * collisionRadius_)
+	{
+		//範囲に入った
+		isAlive_ = false;
+		return;
+	}
+
 	Collision();
 }
 
@@ -63,6 +72,16 @@ void Item::Draw(void)
 		MV1DrawModel(modelId_);
 		DrawDebug();
 	}
+}
+
+void Item::AddCollider(std::weak_ptr<Collider> collider)
+{
+	colliders_.push_back(collider);
+}
+
+void Item::ClearCollider(void)
+{
+	colliders_.clear();
 }
 
 VECTOR Item::GetPos(void)
@@ -95,6 +114,11 @@ void Item::Collision(void)
 	collisionLocalPos_ = pos_;
 }
 
+const EnemyBase& Item::GetCollision(void) const
+{
+	return enemy_;
+}
+
 
 void Item::DrawDebug(void)
 {
@@ -118,6 +142,6 @@ void Item::DrawDebug(void)
 	);
 
 	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
-	DrawSphere3D(player_.GetCapsule().GetPosDown(), collisionRadius_, 8, green, green, false);
+	DrawSphere3D(enemy_.GetCollisionPos(), enemy_.GetCollisionRadius(), 8, yellow, yellow, false);
 }
 
