@@ -8,8 +8,8 @@
 
 class Collider;
 class Capsule;
+class Player;
 class AnimationController;
-
 
 class EnemyBase : public ActorBase
 {
@@ -18,6 +18,12 @@ public:
 	//影の大きさ
 	static constexpr float ENEMY_SHADOW_SIZE = 30.0f;
 	static constexpr float ENEMY_SHADOW_HEIGHT = 300.0f;
+
+	// 視野の広さ
+	static constexpr float VIEW_RANGE = 500.0f;
+
+	// 視野角
+	static constexpr float VIEW_ANGLE = 15.0f;
 
 	static constexpr float TIME_ROT = 1.0f;	// 回転完了までの時間
 
@@ -76,7 +82,14 @@ public:
 
 	bool IsPlay(void) const;
 
+	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
+	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
 	void DrawDebug(void);	//デバッグ用
+	void DrawDebugSearchRange(void);
+
+	void SetPlayer(std::shared_ptr<Player> player);
 
 protected:
 
@@ -84,6 +97,10 @@ protected:
 	int modelId_;	// 敵のモデルID
 	int imgShadow_;	// 丸影
 
+	std::shared_ptr<Player> player_;
+
+	VECTOR jumpPow_;// ジャンプ量
+	float speed_;	// 移動速度
 	VECTOR scl_;	// 大きさ
 	VECTOR rot_;	// 角度
 	VECTOR pos_;	// 表示座標

@@ -35,6 +35,10 @@ public:
 	// 煙エフェクト発生間隔
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
+	//ステ関連
+	static constexpr int HP = 30;
+	static constexpr int D_COUNT = 600;
+	static constexpr int WATER_WAX = 10;
 
 	// 状態
 	enum class STATE
@@ -90,6 +94,9 @@ public:
 	//状態確認
 	bool IsPlay(void) const;
 
+	void eHit(void);//敵
+	void wHit(void);//水
+	void tHit(void);//木
 private:
 
 	// ジャンプ量
@@ -143,9 +150,9 @@ private:
 	//攻撃の判定
 	bool isAttack_;
 
-	// 体力関連
-	int hp_ = 100;
-	int maxHp_ = 100;
+	//ステ関連
+	int hp_;
+	int water_;
 
 	// 無敵状態
 	bool invincible_;
@@ -153,8 +160,7 @@ private:
 	bool canMove_;
 
 	// 復活処理
-	float revivalTimer_ = 0.0f;
-	const float kRevivalTime = 180.0f;
+	float revivalTimer_;
 
 	// 足煙エフェクト
 	int effectSmokeResId_;
@@ -178,7 +184,6 @@ private:
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
-
 
 	// 更新ステップ
 	void UpdateNone(void);
@@ -221,7 +226,7 @@ private:
 
 	std::unique_ptr<Capsule> capsule_;
 	std::unique_ptr<EnemyBase> enemy_;
-	
+
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
 

@@ -40,9 +40,9 @@ Player::Player(void)
 	//攻撃の初期化
 	isAttack_ = false;
 
-	// 体力関連
-	hp_ = 100;
-	maxHp_ = 100;
+	//ステ関連
+	hp_ = 30;
+	water_ = 0;
 
 	// 無敵状態
 	invincible_ = false;
@@ -123,9 +123,12 @@ void Player::Update(void)
 
 void Player::UpdateD(float deltaTime)
 {
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_I)) Damage(1);
+
 	if (pstate_ == PlayerState::DOWN) {
 		revivalTimer_ += deltaTime;
-		if (revivalTimer_ >= kRevivalTime) {
+		if (revivalTimer_ >= D_COUNT) {
 			Revival();
 		}
 		return;
@@ -134,16 +137,18 @@ void Player::UpdateD(float deltaTime)
 
 void Player::Draw(void)
 {
+	MV1DrawModel(transform_.modelId);	// モデルの描画
+	DrawShadow();						// 丸影描画
+	DrawDebug();						// デバッグ用描画
 
-	// モデルの描画
-	MV1DrawModel(transform_.modelId);
-
-	// 丸影描画
-	DrawShadow();
-
-	// デバッグ用描画
-	DrawDebug();
-
+#pragma region ステータス
+	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
+	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
+	if(hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 20 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if(hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_+50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
+#pragma endregion
 }
 
 void Player::AddCollider(std::weak_ptr<Collider> collider)
@@ -365,15 +370,7 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
-
-	//HP
-	DrawFormatString(20, 80, white, "HP ： %d",
-		hp_
-	);
-
+	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d",v.x, v.y, v.z,hp_);
 	//-------------------------------------------------------
 
 	// 衝突
@@ -517,9 +514,6 @@ void Player::Collision(void)
 	// 衝突(重力)
 	CollisionGravity();
 	
-	// 衝突(攻撃)
-	CollisionAttack();
-
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
@@ -632,45 +626,77 @@ void Player::CollisionCapsule(void)
 
 void Player::CollisionAttack(void)
 {
-	if (!isAttack_) return;
-
-	// 攻撃の方向（プレイヤーの前方）
-	VECTOR forward = transform_.quaRot.GetForward();
-
-	// 攻撃の開始位置と終了位置
-	VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-	attackStart.y += 100.0f;  // 攻撃の高さ調整
-	VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 200.0f));
-	attackEnd.y += 100.0f;  // 攻撃の高さ調整
-
-	// 攻撃の半径（カプセルの半径）
-	float attackRadius = 30.0f;
-
-	// カプセルの衝突判定を実行
-	for (const auto& collider : colliders_)
+	if (isAttack_)
 	{
-		// 敵や障害物のコライダーとの衝突を判定
-		auto hits = MV1CollCheck_Capsule(
-			collider.lock()->modelId_, -1,
-			attackStart, attackEnd, attackRadius);
 
-		// 衝突したポリゴンを確認
-		for (int i = 0; i < hits.HitNum; i++)
+		// 攻撃の方向（プレイヤーの前方）
+		/*VECTOR forward = transform_.quaRot.GetForward();
+
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+		VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
+		// 攻撃の半径（カプセルの半径）
+		float attackRadius = 30.0f;
+
+		// カプセルの衝突判定を実行
+		for (const auto& collider : colliders_)
 		{
-			auto hit = hits.Dim[i];
+			// 敵や障害物のコライダーとの衝突を判定
+			auto hits = MV1CollCheck_Capsule(
+				collider.lock()->modelId_, -1,
+				attackStart, attackEnd, attackRadius);
 
-			// 衝突した対象が敵であれば、ダメージを与える処理
-			if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
+			// 衝突したポリゴンを確認
+			for (int i = 0; i < hits.HitNum; i++)
 			{
-				printfDx("攻撃ヒット！\n");
-				// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
+				auto hit = hits.Dim[i];
+
+				// 衝突した対象が敵であれば、ダメージを与える処理
+				if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
+				{
+					printfDx("攻撃ヒット！\n");
+					// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
+				}
+
+				// 衝突処理が必要であればここに追加
 			}
 
-			// 衝突処理が必要であればここに追加
-		}
+			// 衝突情報の後始末
+			MV1CollResultPolyDimTerminate(hits);
+		}*/
 
-		// 衝突情報の後始末
-		MV1CollResultPolyDimTerminate(hits);
+		// 攻撃カプセルの位置を更新
+		//SetAttackCapsule();
+
+		// 衝突判定を行い、ヒットした敵にダメージを与える
+		/*for (auto& enemy : enemyList_)
+		{
+			// 敵のコライダーと攻撃カプセルを衝突判定
+			if (capsule_->CheckCollision(enemy->GetCapsule()))
+			{
+				// 衝突した敵にダメージを与える
+				//enemy->Damage(attackDamage_);
+				printfDx("攻撃ヒット！\n");
+			}
+		}*/
+
+
+		//エネミーとの衝突判定
+		// 攻撃の方向（プレイヤーの前方）
+		VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+
+		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
+		float dis = AsoUtility::SqrMagnitudeF(diff);
+		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius())
+		{
+			//範囲に入った
+			printfDx("攻撃ヒット！\n");
+			return;
+		}
 	}
 }
 
@@ -768,6 +794,10 @@ void Player::ProcessAttack(void)
 			animationController_->Play(
 				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
+
+			// 衝突(攻撃)
+			CollisionAttack();
+
 			//Damage(25);
 		}
 	}
@@ -821,7 +851,7 @@ void Player::StartRevival()
 
 void Player::Revival()
 {
-	hp_ = maxHp_;
+	hp_ = HP;
 	pstate_ = PlayerState::NORMAL;
 
 	// 復活後の無敵状態を解除
@@ -855,9 +885,19 @@ void Player::EffectFootSmoke(void)
 		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,
 			transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	}
-
 }
 
+void Player::eHit(void)
+{
 
-
-
+}
+void Player::wHit(void)
+{
+	water_++;
+}
+void Player::tHit(void)
+{
+	water_--;
+	hp_ += 5;
+	if (hp_ > HP)hp_ = HP;
+}
