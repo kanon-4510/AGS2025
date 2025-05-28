@@ -35,11 +35,6 @@ void TitleScene::Init(void)
 	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;
 	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
 
-	//// îwåi
-	//spaceDomeTran_.pos = AsoUtility::VECTOR_ZERO;
-	//skyDome_ = std::make_unique<SkyDome>(spaceDomeTran_);
-	//skyDome_->Init();
-
 	float size;
 
 	// ÉÅÉCÉìòfêØ
@@ -107,9 +102,7 @@ void TitleScene::Draw(void)
 
 	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
 	
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
+	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
 
-	//MV1DrawModel(planet_.modelId);
-	//MV1DrawModel(movePlanet_.modelId);
 	MV1DrawModel(charactor_.modelId);
 }

@@ -25,6 +25,7 @@ Tree::Tree(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);*/
 }
+
 Tree::~Tree(void)
 {
 }
