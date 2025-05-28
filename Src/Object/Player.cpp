@@ -857,7 +857,3 @@ void Player::EffectFootSmoke(void)
 	}
 
 }
-
-
-
-
