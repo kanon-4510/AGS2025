@@ -11,6 +11,7 @@
 #include "Common/Collider.h"
 #include "Common/AnimationController.h"
 #include "ActorBase.h"
+#include "Player.h"
 #include "EnemyGhost.h"
 #include "EnemyBase.h"
 
@@ -105,9 +106,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
-
-	// 初期状態
-	ChangeState(STATE::PLAY);
 }
 
 void EnemyBase::Update(void)
@@ -262,12 +260,11 @@ void EnemyBase::DrawShadow(void)
 		MV1CollResultPolyDimTerminate(HitResDim);
 	}
 
-	// ライティングを有効にする
-	SetUseLighting(TRUE);
+	//デバッグ
+	DrawDebug();
 
-	// Ｚバッファを無効にする
-	SetUseZBuffer3D(FALSE);
-
+	// 視野範囲の描画
+	DrawDebugSearchRange();
 }
 
 void EnemyBase::DrawDebug(void)
@@ -424,9 +421,11 @@ void EnemyBase::CollisionGravity(void)
 			// 地面と衝突している
 			// 押し戻し処理とジャンプ力の打ち消しを実装しましょう
 
-			//movedPos_に押し戻し座標を設定
-			//押し戻し座標については、dxlib のhit構造体の中にヒントアリ
-			//衝突地点情報が格納されている
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
 
 			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 0.9f));
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
@@ -538,5 +537,86 @@ void EnemyBase::Damage(int damage)
 	{
 		hp_ = 0;
 		isAlive_ = false;
+	int animNum = MV1GetAnimNum(transform_.modelId);
+	if (animNum == 0) {
+		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
+}
+
+void EnemyBase::DrawDebugSearchRange(void)
+{
+	//VECTOR centerPos = transform_.pos;
+	//float radius = VIEW_RANGE;
+	//int segments = 60; // 分割数（多いほど滑らか）
+
+	//float angleStep = DX_PI * 2.0f / segments; // 360度分割の角度ステップ
+
+	//for (int i = 0; i < segments; ++i)
+	//{
+	//	float angle1 = angleStep * i;
+	//	float angle2 = angleStep * (i + 1);
+
+	//	VECTOR p1 = {
+	//		centerPos.x + radius * sinf(angle1),
+	//		centerPos.y,
+	//		centerPos.z + radius * cosf(angle1)
+	//	};
+
+	//	VECTOR p2 = {
+	//		centerPos.x + radius * sinf(angle2),
+	//		centerPos.y,
+	//		centerPos.z + radius * cosf(angle2)
+	//	};
+
+	//	DrawTriangle3D(centerPos, p1, p2, 0xffffff, false);
+	//}
+
+	//DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+
+	VECTOR centerPos = transform_.pos;
+	float radius = VIEW_RANGE;
+	int segments = 60;
+
+	// プレイヤーの座標
+	VECTOR playerPos = player_->GetTransform().pos; // プレイヤーオブジェクトの参照を持っている想定
+
+	// プレイヤーと敵の距離（XZ平面）
+	float dx = playerPos.x - centerPos.x;
+	float dz = playerPos.z - centerPos.z;
+	float distance = sqrtf(dx * dx + dz * dz);
+
+	// 範囲内か判定
+	bool inRange = (distance <= radius);
+
+	// 色を決定（範囲内なら赤、範囲外は元の色）
+	unsigned int color = inRange ? 0xff0000 : 0xffdead;
+
+	float angleStep = DX_PI * 2.0f / segments;
+
+	for (int i = 0; i < segments; ++i)
+	{
+		float angle1 = angleStep * i;
+		float angle2 = angleStep * (i + 1);
+
+		VECTOR p1 = {
+			centerPos.x + radius * sinf(angle1),
+			centerPos.y,
+			centerPos.z + radius * cosf(angle1)
+		};
+
+		VECTOR p2 = {
+			centerPos.x + radius * sinf(angle2),
+			centerPos.y,
+			centerPos.z + radius * cosf(angle2)
+		};
+
+		DrawTriangle3D(centerPos, p1, p2, color, false);
+	}
+
+	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+}
+
+void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
+{
+	player_ = player;
 }

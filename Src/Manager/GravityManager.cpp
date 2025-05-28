@@ -4,6 +4,7 @@
 #include "../Object/Common/Transform.h"
 #include "../Object/Planet.h"
 #include "../Object/Player.h"
+#include "../Object/EnemyBase.h"
 #include "GravityManager.h"
 
 GravityManager* GravityManager::instance_ = nullptr;
@@ -11,6 +12,7 @@ GravityManager* GravityManager::instance_ = nullptr;
 GravityManager::GravityManager(void)
 {
 	player_ = nullptr;
+	enemyBase_ = nullptr;
 	preDirGravity_ = AsoUtility::DIR_D;
 	dirGravity_ = AsoUtility::DIR_D;
 	dirUpGravity_ = AsoUtility::DIR_U;
@@ -121,6 +123,11 @@ void GravityManager::SetPlayer(std::shared_ptr<Player> player)
 	player_ = player;
 }
 
+void GravityManager::SetEnemyBase(std::shared_ptr<EnemyBase> enemy)
+{
+	enemyBase_ = enemy;
+}
+
 const Transform& GravityManager::GetTransform(void) const
 {
 	return transform_;
@@ -186,6 +193,11 @@ VECTOR GravityManager::CalcDirGravity(void) const
 	VECTOR ret = AsoUtility::DIR_D;
 
 	if (activePlanet_.lock() == nullptr || player_ == nullptr)
+	{
+		return ret;
+	}
+
+	if (activePlanet_.lock() == nullptr || enemyBase_ == nullptr)
 	{
 		return ret;
 	}

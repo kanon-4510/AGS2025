@@ -8,8 +8,8 @@
 
 class Collider;
 class Capsule;
+class Player;
 class AnimationController;
-
 
 class EnemyBase : public ActorBase
 {
@@ -18,6 +18,12 @@ public:
 	//‰e‚Ì‘å‚«‚³
 	static constexpr float ENEMY_SHADOW_SIZE = 30.0f;
 	static constexpr float ENEMY_SHADOW_HEIGHT = 300.0f;
+
+	// ‹–ì‚ÌL‚³
+	static constexpr float VIEW_RANGE = 500.0f;
+
+	// ‹–ìŠp
+	static constexpr float VIEW_ANGLE = 15.0f;
 
 	static constexpr float TIME_ROT = 1.0f;	// ‰ñ“]Š®—¹‚Ü‚Å‚ÌŠÔ
 
@@ -77,12 +83,15 @@ public:
 	bool IsPlay(void) const;
 
 	void DrawDebug(void);	//ƒfƒoƒbƒO—p
+	void DrawDebugSearchRange(void);
+
+	void SetPlayer(std::shared_ptr<Player> player);
 
 protected:
 
+protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// Œ³‚Æ‚È‚é“G‚Ìƒ‚ƒfƒ‹ID
 	int modelId_;	// “G‚Ìƒ‚ƒfƒ‹ID
-	int imgShadow_;	// ŠÛ‰e
 
 	VECTOR scl_;	// ‘å‚«‚³
 	VECTOR rot_;	// Šp“x
