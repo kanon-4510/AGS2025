@@ -40,9 +40,9 @@ Player::Player(void)
 	//攻撃の初期化
 	isAttack_ = false;
 
-	// 体力関連
-	hp_ = 100;
-	maxHp_ = 100;
+	//ステ関連
+	hp_ = 30;
+	water_ = 0;
 
 	// 無敵状態
 	invincible_ = false;
@@ -123,9 +123,12 @@ void Player::Update(void)
 
 void Player::UpdateD(float deltaTime)
 {
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_I)) Damage(1);
+
 	if (pstate_ == PlayerState::DOWN) {
 		revivalTimer_ += deltaTime;
-		if (revivalTimer_ >= kRevivalTime) {
+		if (revivalTimer_ >= D_COUNT) {
 			Revival();
 		}
 		return;
@@ -134,15 +137,18 @@ void Player::UpdateD(float deltaTime)
 
 void Player::Draw(void)
 {
+	MV1DrawModel(transform_.modelId);	// モデルの描画
+	DrawShadow();						// 丸影描画
+	DrawDebug();						// デバッグ用描画
 
-	// モデルの描画
-	MV1DrawModel(transform_.modelId);
-
-	// 丸影描画
-	DrawShadow();
-
-	// デバッグ用描画
-	DrawDebug();
+#pragma region ステータス
+	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
+	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
+	if(hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 20 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if(hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_+50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
+#pragma endregion
 }
 
 void Player::AddCollider(std::weak_ptr<Collider> collider)
@@ -364,15 +370,7 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
-
-	//HP
-	DrawFormatString(20, 80, white, "HP ： %d",
-		hp_
-	);
-
+	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d",v.x, v.y, v.z,hp_);
 	//-------------------------------------------------------
 
 	// 衝突
@@ -853,7 +851,7 @@ void Player::StartRevival()
 
 void Player::Revival()
 {
-	hp_ = maxHp_;
+	hp_ = HP;
 	pstate_ = PlayerState::NORMAL;
 
 	// 復活後の無敵状態を解除
@@ -887,9 +885,19 @@ void Player::EffectFootSmoke(void)
 		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,
 			transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	}
-
 }
 
+void Player::eHit(void)
+{
 
-
-
+}
+void Player::wHit(void)
+{
+	water_++;
+}
+void Player::tHit(void)
+{
+	water_--;
+	hp_ += 5;
+	if (hp_ > HP)hp_ = HP;
+}
