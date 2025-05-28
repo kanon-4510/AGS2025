@@ -5,6 +5,7 @@
 class SceneManager;
 class Planet;
 class Player;
+class EnemyBase;
 
 class GravityManager
 {
@@ -49,6 +50,8 @@ public:
 
 	// 操作プレイヤーをセット
 	void SetPlayer(std::shared_ptr<Player> player);
+	//エネミー
+	void SetEnemyBase(std::shared_ptr<EnemyBase> enemy);
 
 	const Transform& GetTransform(void) const;
 	
@@ -78,6 +81,8 @@ protected:
 
 	// プレイヤー
 	std::shared_ptr<Player> player_;
+
+	std::shared_ptr<EnemyBase>enemyBase_;
 
 	// 現在プレイしている惑星
 	std::weak_ptr<Planet> activePlanet_;
