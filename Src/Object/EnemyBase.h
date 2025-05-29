@@ -101,7 +101,7 @@ protected:
 
 	VECTOR moveDiff_;	// フレームごとの移動値
 
-	VECTOR spherePos_;	//スフィアの移動後座標
+	VECTOR collisionPos_;	//赤い球体の移動後座標
 
 	// 回転
 	Quaternion enemyRotY_;
@@ -112,6 +112,8 @@ protected:
 	int hpMax_;	// 体力最大値
 
 	bool isAlive_;	// 生存判定
+
+	bool isAttack_;	//攻撃の判定
 
 	STATE state_;	//状態管理
 
@@ -141,6 +143,10 @@ protected:
 	void UpdateNone(void);			// 更新ステップ
 	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
 	void ChasePlayer(void);			//プレイヤーを追いかける
+
+	//攻撃モーション
+	void Attack(void);	
+	bool IsEndLandingA(void);
 
 	// 状態遷移
 	void ChangeState(STATE state);
