@@ -44,6 +44,7 @@ void GameScene::Init(void)
 	enemy->Init();
 	enemys_.push_back(enemy);
 
+	player_->SetEnemy(enemys_[0]);
 	enemy->SetPlayer(player_);
 
 	//–Ø

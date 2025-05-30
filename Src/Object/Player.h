@@ -87,6 +87,8 @@ public:
 	void AddCollider(std::weak_ptr<Collider> collider);
 	void ClearCollider(void);
 
+	void SetEnemy(EnemyBase* enemy);
+
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
 	const EnemyBase& GetCollision(void) const;
@@ -151,6 +153,7 @@ private:
 	
 	//攻撃の判定
 	bool isAttack_;
+	bool hitAttack_;
 
 	//ステ関連
 	int hp_;
@@ -227,7 +230,7 @@ private:
 	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
-	std::unique_ptr<EnemyBase> enemy_;
+	EnemyBase* enemy_;
 
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
