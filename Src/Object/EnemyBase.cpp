@@ -1,8 +1,6 @@
 #include <string>
 #include <vector>
 #include "../Application.h"
-#include "../Manager/SceneManager.h"
-#include "../Manager/Camera.h"
 #include "../Manager/GravityManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
@@ -59,7 +57,7 @@ void EnemyBase::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
@@ -86,7 +84,10 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
-	player_ = std::make_shared<Player>();
+	//player_ = std::make_shared<Player>();
+
+	// 初期状態
+	ChangeState(STATE::PLAY);
 }
 
 void EnemyBase::Update(void)
@@ -99,15 +100,12 @@ void EnemyBase::Update(void)
 
 	// アニメーション再生
 	animationController_->Update();
-	//Mv1SetAnim
 
 	// 更新ステップ
 	if (stateUpdate_)
 	{
 		stateUpdate_();
 	}
-
-	EnemyUpdate();	//置く場所が分からん
 
 }
 
@@ -126,9 +124,9 @@ void EnemyBase::EnemyUpdate(void)
 		ChasePlayer();
 
 		// モデル反映
-		MV1SetScale(modelId_, transform_.scl);
-		MV1SetRotationXYZ(modelId_, transform_.rot);
-		MV1SetPosition(modelId_, transform_.pos);
+		MV1SetScale(transform_.modelId, transform_.scl);
+		MV1SetRotationXYZ(transform_.modelId, transform_.rot);
+		MV1SetPosition(transform_.modelId, transform_.pos);
 
 		// 衝突判定
 		Collision();
@@ -172,12 +170,12 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	if (modelId_ == 0)
+	if (transform_.modelId == 0)
 	{
 		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
 	}
 
-	MV1DrawModel(modelId_);
+	MV1DrawModel(transform_.modelId);
 
 	DrawDebug();
 
@@ -187,7 +185,7 @@ void EnemyBase::Draw(void)
 
 void EnemyBase::Release(void)
 {
-	MV1DeleteModel(modelId_);
+	MV1DeleteModel(transform_.modelId);
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -258,7 +256,7 @@ void EnemyBase::InitLoad(void)
 
 	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
 
-	animationController_ = std::make_unique<AnimationController>(modelId_);
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 25.0f);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
@@ -286,14 +284,14 @@ void EnemyBase::ChangeStatePlay(void)
 	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
 }
 
-void EnemyBase::Rotate(void)
-{
-	stepRotTime_ -= scnMng_.GetDeltaTime();
-
-	// 回転の球面補間
-	enemyRotY_ = Quaternion::Slerp(
-		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
-}
+//void EnemyBase::Rotate(void)
+//{
+//	stepRotTime_ -= scnMng_.GetDeltaTime();
+//
+//	// 回転の球面補間
+//	enemyRotY_ = Quaternion::Slerp(
+//		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
+//}
 
 void EnemyBase::DrawDebug(void)
 {
@@ -330,7 +328,7 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	int animNum = MV1GetAnimNum(modelId_);
+	int animNum = MV1GetAnimNum(transform_.modelId);
 	if (animNum == 0) {
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
@@ -340,7 +338,6 @@ void EnemyBase::DrawDebug(void)
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
-	
 
 	VECTOR centerPos = transform_.pos;
 	float radius = VIEW_RANGE;
@@ -397,10 +394,10 @@ void EnemyBase::Attack(void)
 	}
 }
 
-bool EnemyBase::IsEndLandingA(void)
-{
-	return false;
-}
+//bool EnemyBase::IsEndLandingA(void)
+//{
+//	return false;
+//}
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {
