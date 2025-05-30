@@ -63,7 +63,7 @@ void EnemyBase::SetParam(void)
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
+	transform_.pos = { 00.0f, -28.0f, 2000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
 	speed_ = 01.0f;		// 移動スピード
@@ -89,14 +89,12 @@ void EnemyBase::SetParam(void)
 	player_ = std::make_shared<Player>();
 }
 
-#pragma region Update
 void EnemyBase::Update(void)
 {
 	if (!isAlive_)
 	{
 		return;
 	}
-	
 	transform_.Update();
 
 	// アニメーション再生
@@ -104,7 +102,7 @@ void EnemyBase::Update(void)
 	//Mv1SetAnim
 
 	// 更新ステップ
-	if (stateUpdate_) 
+	if (stateUpdate_)
 	{
 		stateUpdate_();
 	}
@@ -122,8 +120,10 @@ void EnemyBase::EnemyUpdate(void)
 	if (isAlive_)
 	{
 		// 毎フレームの移動（1回だけ）
-		movePow_ = VScale(dir_, speed_);
-		transform_.pos = VAdd(transform_.pos, movePow_);
+		/*movePow_ = VScale(dir_, speed_);
+		transform_.pos = VAdd(transform_.pos, movePow_);*/
+
+		ChasePlayer();
 
 		// モデル反映
 		MV1SetScale(modelId_, transform_.scl);
@@ -134,7 +134,36 @@ void EnemyBase::EnemyUpdate(void)
 		Collision();
 	}
 }
-#pragma endregion
+
+void EnemyBase::ChasePlayer(void)
+{
+	if (!player_) {
+		return;
+	}
+	VECTOR playerPos = player_->GetTransform().pos;
+
+	VECTOR toPlayer = VSub(playerPos, transform_.pos);
+	toPlayer.y = 0;  // 高さ無視
+
+	float distance = VSize(toPlayer);
+	//エネミーの視野内に入ったら追いかける
+	if (distance <= VIEW_RANGE)
+	{
+		VECTOR dirToPlayer = VNorm(toPlayer);
+		VECTOR moveVec = VScale(dirToPlayer, speed_);
+
+		transform_.pos = VAdd(transform_.pos, moveVec);
+
+		// 角度計算（X,Z軸）
+		float targetAngle = atan2f(dirToPlayer.x, dirToPlayer.z);
+
+		//Rotate();
+		// モデルの前が +Z軸ならこのままでOK
+		//モデルが反対を向いているから180度プラスする
+		transform_.rot.y = targetAngle + DX_PI_F;
+		
+	}
+}
 
 void EnemyBase::Draw(void)
 {
@@ -205,12 +234,12 @@ void EnemyBase::Collision(void)
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
 
-	spherePos_ = VAdd(transform_.pos, collisionLocalPos_);
+	collisionPos_ = VAdd(transform_.pos, collisionLocalPos_);
 }
 
 void EnemyBase::SetCollisionPos(const VECTOR collision)
 {
-	spherePos_ = collision;
+	collisionPos_ = collision;
 }
 
 VECTOR EnemyBase::GetCollisionPos(void)const
@@ -231,11 +260,11 @@ void EnemyBase::InitLoad(void)
 
 	animationController_ = std::make_unique<AnimationController>(modelId_);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 25.0f);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
 
-	animationController_->Play((int)ANIM_TYPE::RUN);
+	animationController_->Play((int)ANIM_TYPE::ATTACK);
 }
 
 void EnemyBase::ChangeState(STATE state)
@@ -295,7 +324,7 @@ void EnemyBase::DrawDebug(void)
 		c.x, c.y, c.z
 	);
 
-	s = spherePos_;
+	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
 		s.x, s.y, s.z
@@ -305,37 +334,13 @@ void EnemyBase::DrawDebug(void)
 	if (animNum == 0) {
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
+
+	
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
-	//VECTOR centerPos = transform_.pos;
-	//float radius = VIEW_RANGE;
-	//int segments = 60; // 分割数（多いほど滑らか）
-
-	//float angleStep = DX_PI * 2.0f / segments; // 360度分割の角度ステップ
-
-	//for (int i = 0; i < segments; ++i)
-	//{
-	//	float angle1 = angleStep * i;
-	//	float angle2 = angleStep * (i + 1);
-
-	//	VECTOR p1 = {
-	//		centerPos.x + radius * sinf(angle1),
-	//		centerPos.y,
-	//		centerPos.z + radius * cosf(angle1)
-	//	};
-
-	//	VECTOR p2 = {
-	//		centerPos.x + radius * sinf(angle2),
-	//		centerPos.y,
-	//		centerPos.z + radius * cosf(angle2)
-	//	};
-
-	//	DrawTriangle3D(centerPos, p1, p2, 0xffffff, false);
-	//}
-
-	//DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+	
 
 	VECTOR centerPos = transform_.pos;
 	float radius = VIEW_RANGE;
@@ -378,6 +383,23 @@ void EnemyBase::DrawDebugSearchRange(void)
 	}
 
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+}
+
+void EnemyBase::Attack(void)
+{
+	VECTOR diff1 = VSub(player_->GetCapsule().GetCenter(), pos_);
+	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
+	if (dis1 < collisionRadius_ * collisionRadius_)
+	{
+		//範囲に入った
+		isAlive_ = false;
+		return;
+	}
+}
+
+bool EnemyBase::IsEndLandingA(void)
+{
+	return false;
 }
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)

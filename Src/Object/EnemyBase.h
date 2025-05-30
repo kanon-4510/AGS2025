@@ -66,21 +66,16 @@ public:
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
 
-	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
-	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
-	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
-	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
-
-	// 衝突判定に用いられるコライダ制御
-	void AddCollider(std::weak_ptr<Collider> collider);
-	void ClearCollider(void);
-
 	bool IsAlive(void);			// 生存判定
 	void SetAlive(bool alive);	// 生存判定
 
 	void Damage(int damage);	// ダメージを与える
 
-	bool IsPlay(void) const;
+	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+
+	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
+	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
@@ -88,10 +83,8 @@ public:
 	void SetPlayer(std::shared_ptr<Player> player);
 
 protected:
-
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
 	int modelId_;	// 敵のモデルID
-	int imgShadow_;	// 丸影
 
 	std::shared_ptr<Player> player_;
 
@@ -102,23 +95,25 @@ protected:
 	VECTOR pos_;	// 表示座標
 	VECTOR dir_;	// 移動方向
 
-	bool isGround_;	//地面着地用フラグ
-
 	VECTOR moveDir_;	// 移動方向
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
+
 	VECTOR moveDiff_;	// フレームごとの移動値
 
-	VECTOR spherePos_;	//スフィアの移動後座標
+	VECTOR collisionPos_;	//赤い球体の移動後座標
 
 	// 回転
-	Quaternion enemyRotY_;	//現在の回転
-	Quaternion goalQuaRot_;	//目標回転
-	float stepRotTime_;		//回転にかける時間
+	Quaternion enemyRotY_;
+	Quaternion goalQuaRot_;
+	float stepRotTime_;
 
 	int hp_;	// 体力
 	int hpMax_;	// 体力最大値
+
 	bool isAlive_;	// 生存判定
+
+	bool isAttack_;	//攻撃の判定
 
 	STATE state_;	//状態管理
 
@@ -129,8 +124,6 @@ protected:
 	float animTotalTime_;	// アニメーションの総再生時間
 	float stepAnim_;		// 再生中のアニメーション時間
 	float speedAnim_;		// アニメーション速度
-
-	std::unique_ptr<AnimationController> animationController_;// アニメーション制御
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
@@ -143,11 +136,17 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
+	std::unique_ptr<AnimationController> animationController_;// アニメーション
+
 	void InitLoad(void); //アニメーションロード用
 
 	void UpdateNone(void);			// 更新ステップ
 	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
-	void DrawShadow(void);
+	void ChasePlayer(void);			//プレイヤーを追いかける
+
+	//攻撃モーション
+	void Attack(void);	
+	bool IsEndLandingA(void);
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -156,11 +155,5 @@ protected:
 
 	void Rotate(void);	 //回転
 
-	// 衝突判定
-	void Collision(void);
-	void CollisionGravity(void);
-	void CollisionCapsule(void);
-
-	// 移動量の計算
-	void CalcGravityPow(void);
+	void Collision(void);// 衝突判定
 };
