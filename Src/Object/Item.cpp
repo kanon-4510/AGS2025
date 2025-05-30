@@ -30,8 +30,8 @@ void Item::Init(void)
 
 	isAlive_ = true;
 
-	collisionRadius_ = 70.0f;					// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 
 	Update();
 }
@@ -44,9 +44,10 @@ void Item::Update(void)
 
 	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
-	if (dis < collisionRadius_ * collisionRadius_)
+	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//範囲に入った
+		player_.wHit();
 		isAlive_ = false;
 		return;
 	}
@@ -122,7 +123,6 @@ const EnemyBase& Item::GetCollision(void) const
 
 void Item::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -144,4 +144,3 @@ void Item::DrawDebug(void)
 	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
 	DrawSphere3D(enemy_.GetCollisionPos(), enemy_.GetCollisionRadius(), 8, yellow, yellow, false);
 }
-

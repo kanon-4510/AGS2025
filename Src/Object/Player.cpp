@@ -108,7 +108,6 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
-
 	// 更新ステップ
 	stateUpdate_();
 
@@ -119,6 +118,8 @@ void Player::Update(void)
 
 	UpdateD(1.0f);
 
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_U)) water_--;
 }
 
 void Player::UpdateD(float deltaTime)
@@ -887,6 +888,10 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
+int Player::GetWater(void)
+{
+	return water_;
+}
 void Player::eHit(void)
 {
 
@@ -894,6 +899,7 @@ void Player::eHit(void)
 void Player::wHit(void)
 {
 	water_++;
+	if (water_ > WATER_WAX)water_ = WATER_WAX;
 }
 void Player::tHit(void)
 {
