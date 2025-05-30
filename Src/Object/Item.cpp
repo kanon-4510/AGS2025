@@ -28,7 +28,7 @@ void Item::Init(void)
 	pos_ = { 0.0f, -28.0f, 500.0f };					// 位置の設定
 	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
-	isAlive_ = true;
+	isAlive_ = false;
 
 	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -51,7 +51,7 @@ void Item::Update(void)
 		isAlive_ = false;
 		return;
 	}
-	isAlive_ = true;
+	/*isAlive_ = true;*/
 
 	Collision();
 }
