@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player,EnemyBase& enemy, const Transform& transform):player_(player),enemy_(enemy)
+Item::Item(Player& player, const Transform& transform):player_(player)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -30,8 +30,8 @@ void Item::Init(void)
 
 	isAlive_ = true;
 
-	collisionRadius_ = 70.0f;					// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 
 	Update();
 }
@@ -44,22 +44,14 @@ void Item::Update(void)
 
 	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
-	if (dis < collisionRadius_ * collisionRadius_)
+	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//範囲に入った
+		player_.wHit();
 		isAlive_ = false;
 		return;
 	}
 	isAlive_ = true;
-
-	VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
-	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
-	if (dis1 < collisionRadius_ * collisionRadius_)
-	{
-		//範囲に入った
-		isAlive_ = false;
-		return;
-	}
 
 	Collision();
 }
@@ -109,20 +101,18 @@ float Item::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
+void Item::SetIsAlive(bool isAlive)
+{
+	isAlive_ = isAlive;
+}
+
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;
 }
 
-const EnemyBase& Item::GetCollision(void) const
-{
-	return enemy_;
-}
-
-
 void Item::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -142,6 +132,4 @@ void Item::DrawDebug(void)
 	);
 
 	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
-	DrawSphere3D(enemy_.GetCollisionPos(), enemy_.GetCollisionRadius(), 8, yellow, yellow, false);
 }
-

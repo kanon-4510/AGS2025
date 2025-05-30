@@ -118,10 +118,9 @@ void Tree::Update(void)
 	ChangeGrow();
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_O))	lv_ += 1;
 	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
 
-	if (ins.IsNew(KEY_INPUT_U)) pHit();
+	if (ins.IsNew(KEY_INPUT_O)) pHit();
 }
 void Tree::Draw(void)
 {
