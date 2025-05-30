@@ -211,12 +211,17 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
+
+	printf("Damage called. HP=%d\n", hp_); // ’Ç‰Á
+
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
 		isAlive_ = false;
+		printf("Enemy is dead.\n");
 
 		if (item_) {
+			item_ = std::make_shared<Item>(*player_, Transform{});
 			item_->SetPos(transform_.pos);
 			item_->SetIsAlive(true);
 		}
