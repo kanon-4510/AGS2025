@@ -94,6 +94,8 @@ public:
 	//ó‘ÔŠm”F
 	bool IsPlay(void) const;
 
+	//”»’è
+	int GetWater(void);
 	void eHit(void);//“G
 	void wHit(void);//…
 	void tHit(void);//–Ø
