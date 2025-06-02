@@ -45,7 +45,9 @@
     <ClCompile Include="Src\Object\Stage.cpp" />
     <ClCompile Include="Src\Object\Tree.cpp" />
     <ClCompile Include="Src\Object\WarpStar.cpp" />
+    <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\Scene\OverScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
@@ -77,7 +79,9 @@
     <ClInclude Include="Src\Object\Stage.h" />
     <ClInclude Include="Src\Object\Tree.h" />
     <ClInclude Include="Src\Object\WarpStar.h" />
+    <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\Scene\OverScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />

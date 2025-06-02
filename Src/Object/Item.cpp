@@ -56,6 +56,15 @@ void Item::Update(void)
 		return;
 	}
 
+	/*VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
+	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
+	if (dis1 < collisionRadius_ * collisionRadius_)
+	{
+		//”ÍˆÍ‚É“ü‚Á‚½
+		isAlive_ = false;
+		return;
+	}*/
+
 	Collision();
 }
 

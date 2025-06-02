@@ -22,7 +22,9 @@ public:
 	{
 		NONE,
 		TITLE,
-		GAME
+		GAME,
+		OVER,
+		CLEAR
 	};
 	
 	// インスタンスの生成
