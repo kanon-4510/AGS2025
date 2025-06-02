@@ -24,7 +24,7 @@ GameScene::GameScene(void)
 	tree_ = nullptr;
 	skyDome_ = nullptr;
 	stage_ = nullptr;
-	item_ = nullptr;
+	//item_ = nullptr;
 }
 
 GameScene::~GameScene(void)
@@ -52,8 +52,9 @@ void GameScene::Init(void)
 	tree_->Init();
 
 	//アイテム
-	item_ = std::make_shared<Item>(*player_, Transform{});
-	item_->Init();
+	/*item_ = std::make_shared<Item>(*player_, Transform{});
+	item_->Init();*/
+	enemy->SetGameScene(this);
 
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
@@ -90,7 +91,10 @@ void GameScene::Update(void)
 	stage_->Update();
 	tree_->Update();
 	player_->Update();
-	item_->Update();
+	for (auto& item : items_)
+	{
+		item->Update();
+	}
 	for (auto enemy : enemys_)
 	{
 		enemy->Update();
@@ -105,7 +109,10 @@ void GameScene::Draw(void)
 	stage_->Draw();
 	tree_->Draw();
 	player_->Draw();
-	item_->Draw();
+	for (auto& item : items_)
+	{
+		item->Draw();
+	}
 	for (auto enemy : enemys_)
 	{
 		enemy->Draw();
@@ -116,4 +123,9 @@ void GameScene::Draw(void)
 	DrawFormatString(840, 40, 0x000000, "カメラ　：矢印キー");
 	DrawFormatString(840, 60, 0x000000, "ダッシュ：右Shift");
 	DrawFormatString(840, 80, 0x000000, "ジャンプ：＼(バクスラ)");
+}
+
+void GameScene::AddItem(std::shared_ptr<Item> item)
+{
+	items_.push_back(item);
 }

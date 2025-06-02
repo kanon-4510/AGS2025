@@ -19,13 +19,15 @@ public:
 	void Init(void) override;
 	void Update(void) override;
 	void Draw(void) override;
+
+	void AddItem(std::shared_ptr<Item> item);
 private:
 	std::unique_ptr<Stage> stage_;		// ステージ
 	std::shared_ptr<Tree>tree_;			// ツリー
 	//EnemyBase& enemy_;				// エネミー
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
 	std::shared_ptr<Player> player_;	// プレイヤー
-	std::shared_ptr<Item> item_;		// アイテム
+	std::vector<std::shared_ptr<Item>> items_;		//アイテム
 
 	int enemyModelId_;
 	std::vector<EnemyBase*> enemys_;

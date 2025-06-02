@@ -7,6 +7,7 @@
 #include "ActorBase.h"
 #include "Item.h" 
 
+class GameScene;
 class Collider;
 class Capsule;
 class Player;
@@ -73,10 +74,14 @@ public:
 	void Damage(int damage);	// ダメージを与える
 
 	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+	
+	const Item& GetItem(void) const;	// アイテム取得
 
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
+	void SetGameScene(GameScene* scene);
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
@@ -89,6 +94,7 @@ protected:
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Item>item_;
+	GameScene* scene_;
 
 	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度
