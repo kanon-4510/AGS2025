@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player,EnemyBase& enemy, const Transform& transform):player_(player),enemy_(enemy)
+Item::Item(Player& player, const Transform& transform):player_(player), pos_(transform.pos)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -28,38 +28,42 @@ void Item::Init(void)
 	pos_ = { 0.0f, -28.0f, 500.0f };					// 位置の設定
 	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
-	isAlive_ = true;
+	isAlive_ = false;
 
-	collisionRadius_ = 70.0f;					// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 
 	Update();
 }
 
 void Item::Update(void)
 {
+	if (!isAlive_) {
+		return;
+	}
+
 	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 
 	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
-	if (dis < collisionRadius_ * collisionRadius_)
+	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//範囲に入った
+		player_.wHit();
 		isAlive_ = false;
 		return;
 	}
-	isAlive_ = true;
 
-	VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
+	/*VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
 	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
 	if (dis1 < collisionRadius_ * collisionRadius_)
 	{
 		//範囲に入った
 		isAlive_ = false;
 		return;
-	}
+	}*/
 
 	Collision();
 }
@@ -109,20 +113,23 @@ float Item::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
+void Item::SetIsAlive(bool isAlive)
+{
+	isAlive_ = isAlive;
+}
+
+bool Item::GetIsAlive()
+{
+	return isAlive_;
+}
+
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;
 }
 
-const EnemyBase& Item::GetCollision(void) const
-{
-	return enemy_;
-}
-
-
 void Item::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -142,6 +149,4 @@ void Item::DrawDebug(void)
 	);
 
 	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
-	DrawSphere3D(enemy_.GetCollisionPos(), enemy_.GetCollisionRadius(), 8, yellow, yellow, false);
 }
-

@@ -25,7 +25,7 @@ public:
 	Tree(void);							//コンストラクタ
 	~Tree(void);						//デストラクタ
 
-	bool Init(GameScene* parent);		//初期化処理
+	bool Init(void);		//初期化処理
 	void Update(void);					//更新処理
 	void Draw(void);					//描画処理
 	void DrawDebug(void);				//デバッグ用
@@ -39,6 +39,8 @@ public:
 	//void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	//VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
 	//float GetCollisionRadius(void);		// 衝突用の球体半径の取得*/
+	float collisionRadius_;		// 衝突判定用の球体半径
+	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
 	void eHit(void);
 	void pHit(void);

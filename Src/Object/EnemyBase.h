@@ -5,7 +5,9 @@
 #include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
+#include "Item.h" 
 
+class GameScene;
 class Collider;
 class Capsule;
 class Player;
@@ -72,10 +74,14 @@ public:
 	void Damage(int damage);	// ダメージを与える
 
 	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+	
+	const Item& GetItem(void) const;	// アイテム取得
 
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
+	void SetGameScene(GameScene* scene);
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
@@ -87,6 +93,8 @@ protected:
 	int modelId_;	// 敵のモデルID
 
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Item>item_;
+	GameScene* scene_;
 
 	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度
@@ -101,7 +109,7 @@ protected:
 
 	VECTOR moveDiff_;	// フレームごとの移動値
 
-	VECTOR spherePos_;	//スフィアの移動後座標
+	VECTOR collisionPos_;	//赤い球体の移動後座標
 
 	// 回転
 	Quaternion enemyRotY_;
@@ -112,6 +120,8 @@ protected:
 	int hpMax_;	// 体力最大値
 
 	bool isAlive_;	// 生存判定
+
+	bool isAttack_;	//攻撃の判定
 
 	STATE state_;	//状態管理
 
@@ -141,6 +151,10 @@ protected:
 	void UpdateNone(void);			// 更新ステップ
 	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
 	void ChasePlayer(void);			//プレイヤーを追いかける
+
+	//攻撃モーション
+	void Attack(void);	
+	bool IsEndLandingA(void);
 
 	// 状態遷移
 	void ChangeState(STATE state);

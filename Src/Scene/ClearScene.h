@@ -2,27 +2,21 @@
 #include <memory>
 #include "SceneBase.h"
 #include "../Object/Common/Transform.h"
+
 class SceneManager;
 class SkyDome;
 class AnimationController;
 
-class TitleScene : public SceneBase
+class ClearScene : public SceneBase
 {
-
 public:
-
-	// コンストラクタ
-	TitleScene(void);
-
-	// デストラクタ
-	~TitleScene(void);
+	ClearScene(void);	// コンストラクタ
+	~ClearScene(void);	// デストラクタ
 
 	void Init(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-
 private:
-
 	// 画像
 	int imgTitle_;
 	int imgBackTitle_;
@@ -44,5 +38,4 @@ private:
 
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
-
 };

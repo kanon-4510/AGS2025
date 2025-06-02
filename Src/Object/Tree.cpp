@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
+#include"../Utility/AsoUtility.h"
 #include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include"../Application.h"
@@ -30,7 +31,7 @@ Tree::~Tree(void)
 {
 }
 
-bool Tree::Init(GameScene* parent)
+bool Tree::Init(void)
 {
 	modelIdB_ = MV1LoadModel((Application::PATH_MODEL + "wood/Baby.mv1").c_str());
 	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/Kid.mv1").c_str());
@@ -46,7 +47,7 @@ bool Tree::Init(GameScene* parent)
 	grow_ = Tree::GROW::BABY;
 	hp_ = 50;
 	water_ = 0;
-	gameScene_ = parent;
+	//gameScene_ = parent;
 
 	//collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
 	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
@@ -115,13 +116,22 @@ void Tree::Update(void)
 		water_ -= 1;
 		ChangeGrow();
 	}
-	ChangeGrow();
+
+	/*VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
+	float dis = AsoUtility::SqrMagnitudeF(diff);
+	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
+	{
+		//範囲に入った
+		player_.wHit();
+		isAlive_ = false;
+		return;
+	}
+	isAlive_ = true;*/
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_O))	lv_ += 1;
 	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
-
-	if (ins.IsNew(KEY_INPUT_U)) pHit();
+	if (ins.IsNew(KEY_INPUT_O)) pHit();
+	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
 }
 void Tree::Draw(void)
 {

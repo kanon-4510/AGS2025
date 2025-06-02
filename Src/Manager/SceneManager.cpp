@@ -5,6 +5,8 @@
 #include "../Manager/GravityManager.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
+#include "../Scene/OverScene.h"
+#include "../Scene/ClearScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -27,7 +29,6 @@ SceneManager& SceneManager::GetInstance(void)
 
 void SceneManager::Init(void)
 {
-
 	sceneId_ = SCENE_ID::TITLE;
 	waitSceneId_ = SCENE_ID::NONE;
 
@@ -253,7 +254,12 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
 		break;
-
+	case SCENE_ID::OVER:
+		scene_ = std::make_unique<OverScene>();
+		break;
+	case SCENE_ID::CLEAR:
+		scene_ = std::make_unique<ClearScene>();
+		break;
 	}
 
 	scene_->Init();

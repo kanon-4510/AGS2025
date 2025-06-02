@@ -1,11 +1,10 @@
 #include <string>
 #include <vector>
 #include "../Application.h"
-#include "../Manager/SceneManager.h"
-#include "../Manager/Camera.h"
 #include "../Manager/GravityManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
+#include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
@@ -21,7 +20,10 @@ EnemyBase::EnemyBase(int baseModelId)
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 
 	animationController_ = nullptr;
+	item_ = nullptr;
 	state_ = STATE::NONE;
+
+	scene_ = nullptr;
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
@@ -59,11 +61,11 @@ void EnemyBase::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 00.0f, -28.0f, 1000.0f };				// 位置の設定
+	transform_.pos = { 00.0f, -28.0f, 2000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
 	speed_ = 01.0f;		// 移動スピード
@@ -86,7 +88,8 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
-	player_ = std::make_shared<Player>();
+	// 初期状態
+	ChangeState(STATE::PLAY);
 }
 
 void EnemyBase::Update(void)
@@ -99,15 +102,12 @@ void EnemyBase::Update(void)
 
 	// アニメーション再生
 	animationController_->Update();
-	//Mv1SetAnim
 
 	// 更新ステップ
 	if (stateUpdate_)
 	{
 		stateUpdate_();
 	}
-
-	EnemyUpdate();	//置く場所が分からん
 
 }
 
@@ -119,16 +119,17 @@ void EnemyBase::EnemyUpdate(void)
 {
 	if (isAlive_)
 	{
-		// 毎フレームの移動（1回だけ）
-		/*movePow_ = VScale(dir_, speed_);
-		transform_.pos = VAdd(transform_.pos, movePow_);*/
+		if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Q)) 
+		{
+			Damage(1);
+		}
 
 		ChasePlayer();
 
 		// モデル反映
-		MV1SetScale(modelId_, transform_.scl);
-		MV1SetRotationXYZ(modelId_, transform_.rot);
-		MV1SetPosition(modelId_, transform_.pos);
+		MV1SetScale(transform_.modelId, transform_.scl);
+		MV1SetRotationXYZ(transform_.modelId, transform_.rot);
+		MV1SetPosition(transform_.modelId, transform_.pos);
 
 		// 衝突判定
 		Collision();
@@ -146,6 +147,7 @@ void EnemyBase::ChasePlayer(void)
 	toPlayer.y = 0;  // 高さ無視
 
 	float distance = VSize(toPlayer);
+	//エネミーの視野内に入ったら追いかける
 	if (distance <= VIEW_RANGE)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
@@ -156,8 +158,11 @@ void EnemyBase::ChasePlayer(void)
 		// 角度計算（X,Z軸）
 		float targetAngle = atan2f(dirToPlayer.x, dirToPlayer.z);
 
+		//Rotate();
 		// モデルの前が +Z軸ならこのままでOK
-		transform_.rot.y = targetAngle;
+		//モデルが反対を向いているから180度プラスする
+		transform_.rot.y = targetAngle + DX_PI_F;
+		
 	}
 }
 
@@ -168,12 +173,12 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	if (modelId_ == 0)
+	if (transform_.modelId == 0)
 	{
 		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
 	}
 
-	MV1DrawModel(modelId_);
+	MV1DrawModel(transform_.modelId);
 
 	DrawDebug();
 
@@ -183,7 +188,7 @@ void EnemyBase::Draw(void)
 
 void EnemyBase::Release(void)
 {
-	MV1DeleteModel(modelId_);
+	MV1DeleteModel(transform_.modelId);
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -209,16 +214,27 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
-	if (hp_ <= 0)
+	if (hp_ <= 0 && isAlive_)
 	{
 		hp_ = 0;
 		isAlive_ = false;
+
+		auto newItem = std::make_shared<Item>(*player_, Transform{});
+		newItem->Init();
+		newItem->SetPos(transform_.pos);
+		newItem->SetIsAlive(true);
+		scene_->AddItem(newItem);
 	}
 }
 
 const Capsule& EnemyBase::GetCapsule(void) const
 {
 	return *capsule_;
+}
+
+const Item& EnemyBase::GetItem(void) const
+{
+	return *item_;
 }
 
 void EnemyBase::Collision(void)
@@ -230,12 +246,12 @@ void EnemyBase::Collision(void)
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
 
-	spherePos_ = VAdd(transform_.pos, collisionLocalPos_);
+	collisionPos_ = VAdd(transform_.pos, collisionLocalPos_);
 }
 
 void EnemyBase::SetCollisionPos(const VECTOR collision)
 {
-	spherePos_ = collision;
+	collisionPos_ = collision;
 }
 
 VECTOR EnemyBase::GetCollisionPos(void)const
@@ -248,19 +264,24 @@ float EnemyBase::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
+void EnemyBase::SetGameScene(GameScene* scene)
+{
+	scene_ = scene;
+}
+
 void EnemyBase::InitLoad(void)
 {
 	std::string path = Application::PATH_MODEL + "Enemy/";
 
 	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
 
-	animationController_ = std::make_unique<AnimationController>(modelId_);
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 25.0f);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
 
-	animationController_->Play((int)ANIM_TYPE::RUN);
+	animationController_->Play((int)ANIM_TYPE::ATTACK);
 }
 
 void EnemyBase::ChangeState(STATE state)
@@ -282,14 +303,14 @@ void EnemyBase::ChangeStatePlay(void)
 	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
 }
 
-void EnemyBase::Rotate(void)
-{
-	stepRotTime_ -= scnMng_.GetDeltaTime();
-
-	// 回転の球面補間
-	enemyRotY_ = Quaternion::Slerp(
-		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
-}
+//void EnemyBase::Rotate(void)
+//{
+//	stepRotTime_ -= scnMng_.GetDeltaTime();
+//
+//	// 回転の球面補間
+//	enemyRotY_ = Quaternion::Slerp(
+//		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
+//}
 
 void EnemyBase::DrawDebug(void)
 {
@@ -320,21 +341,22 @@ void EnemyBase::DrawDebug(void)
 		c.x, c.y, c.z
 	);
 
-	s = spherePos_;
+	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
 		s.x, s.y, s.z
 	);
 
-	int animNum = MV1GetAnimNum(modelId_);
+	int animNum = MV1GetAnimNum(transform_.modelId);
 	if (animNum == 0) {
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
+
+	
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
-	
 
 	VECTOR centerPos = transform_.pos;
 	float radius = VIEW_RANGE;
@@ -378,6 +400,23 @@ void EnemyBase::DrawDebugSearchRange(void)
 
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
 }
+
+void EnemyBase::Attack(void)
+{
+	VECTOR diff1 = VSub(player_->GetCapsule().GetCenter(), pos_);
+	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
+	if (dis1 < collisionRadius_ * collisionRadius_)
+	{
+		//範囲に入った
+		isAlive_ = false;
+		return;
+	}
+}
+
+//bool EnemyBase::IsEndLandingA(void)
+//{
+//	return false;
+//}
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {
