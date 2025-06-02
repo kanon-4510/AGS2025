@@ -31,6 +31,7 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetIsAlive(bool isAlive);
+	bool GetIsAlive();
 
 
 	void DrawDebug(void);	//デバッグ用

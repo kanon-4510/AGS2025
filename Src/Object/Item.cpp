@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform):player_(player)
+Item::Item(Player& player, const Transform& transform):player_(player), pos_(transform.pos)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -28,7 +28,7 @@ void Item::Init(void)
 	pos_ = { 0.0f, -28.0f, 500.0f };					// 位置の設定
 	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
-	isAlive_ = true;
+	isAlive_ = false;
 
 	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -38,6 +38,10 @@ void Item::Init(void)
 
 void Item::Update(void)
 {
+	if (!isAlive_) {
+		return;
+	}
+
 	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
@@ -51,7 +55,6 @@ void Item::Update(void)
 		isAlive_ = false;
 		return;
 	}
-	isAlive_ = true;
 
 	Collision();
 }
@@ -104,6 +107,11 @@ float Item::GetCollisionRadius(void)
 void Item::SetIsAlive(bool isAlive)
 {
 	isAlive_ = isAlive;
+}
+
+bool Item::GetIsAlive()
+{
+	return isAlive_;
 }
 
 void Item::Collision(void)
