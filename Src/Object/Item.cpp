@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player,EnemyBase& enemy, const Transform& transform):player_(player),enemy_(enemy)
+Item::Item(Player& player, const Transform& transform):player_(player)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -110,16 +110,15 @@ float Item::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
+void Item::SetIsAlive(bool isAlive)
+{
+	isAlive_ = isAlive;
+}
+
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;
 }
-
-const EnemyBase& Item::GetCollision(void) const
-{
-	return enemy_;
-}
-
 
 void Item::DrawDebug(void)
 {
@@ -142,5 +141,4 @@ void Item::DrawDebug(void)
 	);
 
 	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
-	DrawSphere3D(enemy_.GetCollisionPos(), enemy_.GetCollisionRadius(), 8, yellow, yellow, false);
 }

@@ -5,6 +5,7 @@
 #include <vector>
 #include <DxLib.h>
 #include "ActorBase.h"
+#include "Item.h" 
 
 class Collider;
 class Capsule;
@@ -87,6 +88,7 @@ protected:
 	int modelId_;	// 敵のモデルID
 
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Item>item_;
 
 	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度

@@ -19,6 +19,7 @@ EnemyBase::EnemyBase(int baseModelId)
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 
 	animationController_ = nullptr;
+	item_ = nullptr;
 	state_ = STATE::NONE;
 
 	// 衝突チェック
@@ -84,8 +85,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
-	//player_ = std::make_shared<Player>();
-
 	// 初期状態
 	ChangeState(STATE::PLAY);
 }
@@ -117,9 +116,10 @@ void EnemyBase::EnemyUpdate(void)
 {
 	if (isAlive_)
 	{
-		// 毎フレームの移動（1回だけ）
-		/*movePow_ = VScale(dir_, speed_);
-		transform_.pos = VAdd(transform_.pos, movePow_);*/
+		if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Q)) 
+		{
+			Damage(1);
+		}
 
 		ChasePlayer();
 
@@ -215,6 +215,11 @@ void EnemyBase::Damage(int damage)
 	{
 		hp_ = 0;
 		isAlive_ = false;
+
+		if (item_) {
+			item_->SetPos(transform_.pos);
+			item_->SetIsAlive(true);
+		}
 	}
 }
 

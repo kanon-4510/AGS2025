@@ -44,6 +44,7 @@ void GameScene::Init(void)
 	enemy->Init();
 	enemys_.push_back(enemy);
 
+	player_->SetEnemy(enemys_[0]);
 	enemy->SetPlayer(player_);
 
 	//木
@@ -51,7 +52,7 @@ void GameScene::Init(void)
 	tree_->Init();
 
 	//アイテム
-	item_ = std::make_shared<Item>(*player_, *enemys_[0], Transform{});
+	item_ = std::make_shared<Item>(*player_, Transform{});
 	item_->Init();
 
 	// ステージ

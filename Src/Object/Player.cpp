@@ -21,6 +21,8 @@ Player::Player(void)
 {
 
 	animationController_ = nullptr;
+	enemy_ = nullptr;
+
 	state_ = STATE::NONE;
 	
 	effectSmokeResId_ = -1;
@@ -98,7 +100,7 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
-	enemy_ = std::make_unique<EnemyBase>(1);
+	enemy_ = new EnemyBase(0);
 	enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// 初期状態
@@ -160,6 +162,11 @@ void Player::AddCollider(std::weak_ptr<Collider> collider)
 void Player::ClearCollider(void)
 {
 	colliders_.clear();
+}
+
+void Player::SetEnemy(EnemyBase* enemy)
+{
+	enemy_ = enemy;
 }
 
 const Capsule& Player::GetCapsule(void) const
@@ -629,60 +636,6 @@ void Player::CollisionAttack(void)
 {
 	if (isAttack_)
 	{
-
-		// 攻撃の方向（プレイヤーの前方）
-		/*VECTOR forward = transform_.quaRot.GetForward();
-
-		// 攻撃の開始位置と終了位置
-		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackStart.y += 100.0f;  // 攻撃の高さ調整
-		VECTOR attackEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
-		// 攻撃の半径（カプセルの半径）
-		float attackRadius = 30.0f;
-
-		// カプセルの衝突判定を実行
-		for (const auto& collider : colliders_)
-		{
-			// 敵や障害物のコライダーとの衝突を判定
-			auto hits = MV1CollCheck_Capsule(
-				collider.lock()->modelId_, -1,
-				attackStart, attackEnd, attackRadius);
-
-			// 衝突したポリゴンを確認
-			for (int i = 0; i < hits.HitNum; i++)
-			{
-				auto hit = hits.Dim[i];
-
-				// 衝突した対象が敵であれば、ダメージを与える処理
-				if (auto enemy = dynamic_cast<EnemyBase*>(collider.lock().get()))
-				{
-					printfDx("攻撃ヒット！\n");
-					// ここに他の攻撃ヒット時の処理（エフェクトなど）を追加可能
-				}
-
-				// 衝突処理が必要であればここに追加
-			}
-
-			// 衝突情報の後始末
-			MV1CollResultPolyDimTerminate(hits);
-		}*/
-
-		// 攻撃カプセルの位置を更新
-		//SetAttackCapsule();
-
-		// 衝突判定を行い、ヒットした敵にダメージを与える
-		/*for (auto& enemy : enemyList_)
-		{
-			// 敵のコライダーと攻撃カプセルを衝突判定
-			if (capsule_->CheckCollision(enemy->GetCapsule()))
-			{
-				// 衝突した敵にダメージを与える
-				//enemy->Damage(attackDamage_);
-				printfDx("攻撃ヒット！\n");
-			}
-		}*/
-
-
 		//エネミーとの衝突判定
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
@@ -695,6 +648,7 @@ void Player::CollisionAttack(void)
 		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius())
 		{
 			//範囲に入った
+			enemy_->Damage(2);
 			printfDx("攻撃ヒット！\n");
 			return;
 		}

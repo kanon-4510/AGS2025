@@ -10,7 +10,7 @@ class Item : public ActorBase
 {
 public:
 	// コンストラクタ
-	Item(Player& player,EnemyBase& enemy, const Transform& transform);
+	Item(Player& player, const Transform& transform);
 
 	// デストラクタ
 	~Item(void);
@@ -29,6 +29,9 @@ public:
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+
+	void SetIsAlive(bool isAlive);
+
 
 	void DrawDebug(void);	//デバッグ用
 private:
@@ -51,7 +54,6 @@ private:
 
 	// 衝突判定に用いられるコライダ
 	//std::vector <std::weak_ptr<Collider>> colliders_;
-	EnemyBase& enemy_;
 
 	// 衝突判定
 	void Collision(void);
