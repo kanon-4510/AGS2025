@@ -56,6 +56,4 @@ private:
 	// Õ“Ë”»’è
 	void Collision(void);
 	const EnemyBase& GetCollision(void) const;
-
 };
-

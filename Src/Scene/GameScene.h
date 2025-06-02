@@ -25,7 +25,7 @@ private:
 	//EnemyBase& enemy_;				// エネミー
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
 	std::shared_ptr<Player> player_;	// プレイヤー
-	std::shared_ptr<Item> item_;		//アイテム
+	std::shared_ptr<Item> item_;		// アイテム
 
 	int enemyModelId_;
 	std::vector<EnemyBase*> enemys_;

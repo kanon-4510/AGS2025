@@ -9,9 +9,9 @@
 #include "../Manager/Camera.h"
 #include "../Object/Common/AnimationController.h"
 #include "../Object/SkyDome.h" 
-#include "TitleScene.h"
+#include "ClearScene.h"
 
-TitleScene::TitleScene(void)
+ClearScene::ClearScene(void)
 {
 	imgPush_ = -1;
 	imgTitle_ = -1;
@@ -20,11 +20,11 @@ TitleScene::TitleScene(void)
 	animationController_ = nullptr;
 }
 
-TitleScene::~TitleScene(void)
+ClearScene::~ClearScene(void)
 {
 }
 
-void TitleScene::Init(void)
+void ClearScene::Init(void)
 {
 
 	// d—Í§Œä‚Ì‰Šú‰»
@@ -72,14 +72,14 @@ void TitleScene::Init(void)
 
 }
 
-void TitleScene::Update(void)
+void ClearScene::Update(void)
 {
 
 	// ƒV[ƒ“‘JˆÚ
 	InputManager& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_TAB))
 	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	// ˜f¯‚Ì‰ñ“]
@@ -94,14 +94,12 @@ void TitleScene::Update(void)
 
 }
 
-void TitleScene::Draw(void)
+void ClearScene::Draw(void)
 {
 	//skyDome_->Draw();
-	
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
 
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
-	
+	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
+	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
 	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
 
 	MV1DrawModel(charactor_.modelId);

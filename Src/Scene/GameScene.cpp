@@ -48,7 +48,7 @@ void GameScene::Init(void)
 
 	//–Ø
 	tree_ = std::make_shared<Tree>();
-	tree_->Init(this);
+	tree_->Init();
 
 	//ƒAƒCƒeƒ€
 	item_ = std::make_shared<Item>(*player_, *enemys_[0], Transform{});
@@ -76,6 +76,14 @@ void GameScene::Update(void)
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
+	if (tree_->GetLv() >= 100)
+	{
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
+	}
+	if (tree_->GetHp() <= 0)
+	{
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::OVER);
+	}
 
 	skyDome_->Update();
 	stage_->Update();
@@ -86,6 +94,8 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 	}
+
+
 }
 
 void GameScene::Draw(void)
