@@ -59,6 +59,11 @@ private:
 	SCENE_ID sceneId_;
 	SCENE_ID waitSceneId_;
 
+	// 画像
+	int imgLoad_[3];
+
+	int loadingTimer_;
+
 	// フェード
 	std::unique_ptr<SceneBase> scene_;
 

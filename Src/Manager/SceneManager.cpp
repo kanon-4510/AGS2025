@@ -41,6 +41,16 @@ void SceneManager::Init(void)
 	camera_ = std::make_shared<Camera>();
 	camera_->Init();
 
+	LoadDivGraph(
+		"Data/image/Load.png",	 // スプライトシート
+		4,						 // 分割数
+		4, 1,						// 横4コマ、縦1コマ
+		600, 129,					// 各コマのサイズ
+		imgLoad_					// グラフィックIDを格納
+	);
+
+	loadingTimer_ = 0;
+
 	isSceneChanging_ = false;
 
 	// デルタタイム
@@ -85,6 +95,7 @@ void SceneManager::Init3D(void)
 
 void SceneManager::Update(void)
 {
+	loadingTimer_++;
 
 	if (scene_ == nullptr)
 	{
@@ -143,7 +154,18 @@ void SceneManager::Draw(void)
 	// 暗転・明転
 	fader_->Draw();
 
+	// 暗転中に「Now Loading...」など表示
+	if (fader_->GetState() == Fader::STATE::FADE_OUT) {
+		//DrawString(400, 400, "Now Loading...", GetColor(255, 255, 255)); // 中央表示など
+		//DrawGraph(1200, 900, imgLoad_[4], true);
+
+
+		int index = (loadingTimer_ / 20) % 4; // 約1秒で一周
+
+		DrawGraph(1200, 900, imgLoad_[index], TRUE);
+	}
 }
+
 
 void SceneManager::Destroy(void)
 {
@@ -231,6 +253,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
 		break;
+
 	}
 
 	scene_->Init();
