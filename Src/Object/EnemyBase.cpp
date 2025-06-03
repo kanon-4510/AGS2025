@@ -100,9 +100,6 @@ void EnemyBase::Update(void)
 		return;
 	}
 
-	if (item_ && item_->IsAlive) {
-		item_->Update();
-	}
 	transform_.Update();
 
 	// アニメーション再生
@@ -227,11 +224,12 @@ void EnemyBase::Damage(int damage)
 
 		if (!item_) {
 
-		auto newItem = std::make_shared<Item>(*player_, Transform{});
-		newItem->Init();
-		newItem->SetPos(transform_.pos);
-		newItem->SetIsAlive(true);
-		scene_->AddItem(newItem);
+			auto newItem = std::make_shared<Item>(*player_, Transform{});
+			newItem->Init();
+			newItem->SetPos(transform_.pos);
+			newItem->SetIsAlive(true);
+			scene_->AddItem(newItem);
+		}
 	}
 }
 
