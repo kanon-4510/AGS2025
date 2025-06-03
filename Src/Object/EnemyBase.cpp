@@ -20,7 +20,7 @@ EnemyBase::EnemyBase(int baseModelId)
 	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
 
 	animationController_ = nullptr;
-	item_ = nullptr;
+	//item_ = nullptr;
 	state_ = STATE::NONE;
 
 	scene_ = nullptr;
@@ -88,6 +88,7 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
 
+
 	// 初期状態
 	ChangeState(STATE::PLAY);
 }
@@ -98,6 +99,7 @@ void EnemyBase::Update(void)
 	{
 		return;
 	}
+
 	transform_.Update();
 
 	// アニメーション再生
@@ -218,12 +220,16 @@ void EnemyBase::Damage(int damage)
 	{
 		hp_ = 0;
 		isAlive_ = false;
+		printf("Enemy is dead.\n");
 
-		auto newItem = std::make_shared<Item>(*player_, Transform{});
-		newItem->Init();
-		newItem->SetPos(transform_.pos);
-		newItem->SetIsAlive(true);
-		scene_->AddItem(newItem);
+		if (!item_) {
+
+			auto newItem = std::make_shared<Item>(*player_, Transform{});
+			newItem->Init();
+			newItem->SetPos(transform_.pos);
+			newItem->SetIsAlive(true);
+			scene_->AddItem(newItem);
+		}
 	}
 }
 

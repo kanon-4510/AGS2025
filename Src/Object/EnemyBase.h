@@ -154,8 +154,6 @@ protected:
 
 	//UŒ‚ƒ‚[ƒVƒ‡ƒ“
 	void Attack(void);	
-	bool IsEndLandingA(void);
-
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
