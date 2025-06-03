@@ -68,7 +68,7 @@ void EnemyBase::SetParam(void)
 	transform_.pos = { 00.0f, -28.0f, 2000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
-	speed_ = 01.0f;		// 移動スピード
+	speed_ = 3.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
 
@@ -300,12 +300,12 @@ void EnemyBase::InitLoad(void)
 	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 25.0f);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Dgame.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Death.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Run.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Attack2.mv1", 25.0f);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Damage.mv1", 16.0f);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Die.mv1", 23.0f);
 
-	animationController_->Play((int)ANIM_TYPE::ATTACK);
+	animationController_->Play((int)ANIM_TYPE::DEATH);
 }
 
 void EnemyBase::ChangeState(STATE state)
@@ -376,6 +376,7 @@ void EnemyBase::DrawDebug(void)
 		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
 	}
 
+	DrawFormatString(20, 300, white, "エネミーの移動速度 ： %0.2f",speed_);
 	
 }
 
