@@ -194,9 +194,6 @@
     <ClInclude Include="Src\Scene\SceneBase.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\TitleScene.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utility\AsoUtility.h">
       <Filter>ヘッダー ファイル\Utility</Filter>
     </ClInclude>
@@ -245,11 +242,8 @@
     <ClInclude Include="Src\Object\EnemyGhost.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\OverScene.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\ClearScene.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
+    <ClInclude Include="Src\Scene\TitleScene.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

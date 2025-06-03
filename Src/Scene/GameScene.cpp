@@ -51,6 +51,8 @@ void GameScene::Init(void)
 	tree_ = std::make_shared<Tree>();
 	tree_->Init();
 
+	tree_->SetPlayer(player_.get());
+
 	//ƒAƒCƒeƒ€
 	/*item_ = std::make_shared<Item>(*player_, Transform{});
 	item_->Init();*/

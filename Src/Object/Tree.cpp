@@ -163,6 +163,8 @@ void Tree::Draw(void)
 	if(grow_ == GROW::OLD)  DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*150+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 #pragma endregion
 
+	DrawDebugTree2Player();
+
 	DrawDebug();
 }
 
@@ -180,6 +182,63 @@ void Tree::DrawDebug(void)
 
 	v = pos_;
 	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
+
+}
+
+void Tree::DrawDebugTree2Player(void)
+{
+	// プレイヤーとの距離判定して円を描く処理を追加
+	if (player_ != nullptr)
+	{
+		VECTOR centerPos = pos_;  // 木の中心座標
+		centerPos.y -= 100.0f;  // 円を下げる
+		VECTOR playerPos = player_->GetTransform().pos;
+
+		float dx = playerPos.x - centerPos.x;
+		float dz = playerPos.z - centerPos.z;
+		float distance = sqrtf(dx * dx + dz * dz);
+		bool inRange = (distance <= viewRange_);
+
+		unsigned int color = inRange ? 0xff0000 : 0xffdead;  // 赤 or 薄黄色
+
+		float angleStep = DX_PI_F * 2.0f / circleSegments_;
+
+		if (grow_ == GROW::KID)
+		{
+			centerPos.y -= 350.0f;
+			viewRange_ = 200.0f;
+		}
+		else if(grow_ == GROW::ADULT)
+		{
+			centerPos.y -= 705.0f;
+			viewRange_ = 650.0f;
+		}
+		else if(grow_ == GROW::OLD)
+		{
+			centerPos.y -= 1370.0f;
+			viewRange_ = 909.0f;
+		}
+
+		for (int i = 0; i < circleSegments_; ++i)
+		{
+			float angle1 = angleStep * i;
+			float angle2 = angleStep * (i + 1);
+
+			VECTOR p1 = {
+				centerPos.x + viewRange_ * sinf(angle1),
+				centerPos.y,
+				centerPos.z + viewRange_ * cosf(angle1)
+			};
+
+			VECTOR p2 = {
+				centerPos.x + viewRange_ * sinf(angle2),
+				centerPos.y,
+				centerPos.z + viewRange_ * cosf(angle2)
+			};
+
+			DrawTriangle3D(centerPos, p1, p2, color, false);
+		}
+	}
 }
 
 int Tree::GetHp(void)
@@ -212,6 +271,11 @@ void Tree::ChangeGrow(void)
 		grow_ = GROW::BABY;
 		hp_ = 50;
 	}
+}
+
+void Tree::SetPlayer(Player* player)
+{
+	player_ = player;
 }
 
 /*const Capsule& Tree::GetCapsule(void) const
