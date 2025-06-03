@@ -133,6 +133,7 @@ void Tree::Update(void)
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
 	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
 }
+
 void Tree::Draw(void)
 {
 	// モデルの描画
@@ -181,8 +182,7 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
-
+	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 }
 
 void Tree::DrawDebugTree2Player(void)
@@ -203,20 +203,27 @@ void Tree::DrawDebugTree2Player(void)
 
 		float angleStep = DX_PI_F * 2.0f / circleSegments_;
 
-		if (grow_ == GROW::KID)
+		if (grow_ == GROW::BABY) 
+		{
+			
+		}
+		else if (grow_ == GROW::KID)
 		{
 			centerPos.y -= 350.0f;
 			viewRange_ = 200.0f;
+			
 		}
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y -= 705.0f;
 			viewRange_ = 650.0f;
+			
 		}
 		else if(grow_ == GROW::OLD)
 		{
 			centerPos.y -= 1370.0f;
 			viewRange_ = 909.0f;
+			
 		}
 
 		for (int i = 0; i < circleSegments_; ++i)
