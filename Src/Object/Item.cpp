@@ -10,8 +10,8 @@
 
 Item::Item(Player& player, const Transform& transform):player_(player), pos_(transform.pos)
 {
-	dir_ = {};
-	modelId_ = 0;
+	transform_.dir = {};
+	transform_.modelId = 0;
 }
 
 Item::~Item(void)
@@ -21,16 +21,16 @@ Item::~Item(void)
 void Item::Init(void)
 {
 	// モデルの基本設定
-	modelId_ = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
+	transform_.modelId = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
-	scl_ = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-	pos_ = { 0.0f, -28.0f, 500.0f };					// 位置の設定
-	dir_ = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
+	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
+	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+	transform_.pos = { 0.0f, -28.0f, 500.0f };					// 位置の設定
+	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = false;
 
-	collisionRadius_ = 70.0f;							// 衝突判定用の球体半径
+	collisionRadius_ = 50.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 
 	Update();
@@ -42,11 +42,11 @@ void Item::Update(void)
 		return;
 	}
 
-	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+	MV1SetScale(transform_.modelId, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+	MV1SetRotationXYZ(transform_.modelId, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+	MV1SetPosition(transform_.modelId, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
 
-	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
+	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), transform_.pos);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
 	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
@@ -73,7 +73,7 @@ void Item::Draw(void)
 	if (isAlive_)
 	{
 		// モデルの描画
-		MV1DrawModel(modelId_);
+		MV1DrawModel(transform_.modelId);
 		DrawDebug();
 	}
 }
@@ -90,12 +90,12 @@ void Item::ClearCollider(void)
 
 VECTOR Item::GetPos(void)
 {
-	return VECTOR();
+	return transform_.pos;
 }
 
 void Item::SetPos(VECTOR pos)
 {
-	pos_ = pos;
+	transform_.pos = pos;
 }
 
 void Item::SetCollisionPos(const VECTOR collision)
@@ -105,7 +105,7 @@ void Item::SetCollisionPos(const VECTOR collision)
 
 VECTOR Item::GetCollisionPos(void) const
 {
-	return VECTOR();
+	return VAdd(collisionLocalPos_, transform_.pos);
 }
 
 float Item::GetCollisionRadius(void)
@@ -143,10 +143,10 @@ void Item::DrawDebug(void)
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	v = pos_;
+	v = transform_.pos;
 	DrawFormatString(20, 210, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
 
-	DrawSphere3D(collisionLocalPos_, collisionRadius_, 8, blue, blue, false);
+	DrawSphere3D(transform_.pos, collisionRadius_, 8, blue, blue, false);
 }
