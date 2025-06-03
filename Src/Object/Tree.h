@@ -29,10 +29,14 @@ public:
 	void Update(void);					//更新処理
 	void Draw(void);					//描画処理
 	void DrawDebug(void);				//デバッグ用
+	void DrawDebugTree2Player(void);
 
 	int GetHp(void);
 	int GetLv(void);
 	void ChangeGrow(void);
+
+	// プレイヤーのポインタをセットする関数
+	void SetPlayer(Player* player);
 
 	/*//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
@@ -45,6 +49,10 @@ public:
 	void eHit(void);
 	void pHit(void);
 private:
+
+	float viewRange_ = 100.0f; // 円の半径（任意の値）
+	int circleSegments_ = 120;  // 円の分割数
+
 	Player* player_;
 	GameScene* gameScene_;
 	SceneManager* sceneManager_;
