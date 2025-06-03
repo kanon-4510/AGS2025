@@ -214,6 +214,7 @@ private:
 	// 移動量の計算
 	void CalcGravityPow(void);
 
+	//ジャンプモーション
 	void ProcessJump(void);
 	// 着地モーション終了
 	bool IsEndLanding(void);
