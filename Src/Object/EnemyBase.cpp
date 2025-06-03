@@ -371,12 +371,7 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	int animNum = MV1GetAnimNum(transform_.modelId);
-	if (animNum == 0) {
-		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
-	}
-
-	DrawFormatString(20, 300, white, "エネミーの移動速度 ： %0.2f",speed_);
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f",speed_);
 	
 }
 

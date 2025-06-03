@@ -144,7 +144,7 @@ void Item::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 210, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+	DrawFormatString(20, 120, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
 
