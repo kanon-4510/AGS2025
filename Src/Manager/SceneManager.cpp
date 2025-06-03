@@ -42,16 +42,6 @@ void SceneManager::Init(void)
 	camera_ = std::make_shared<Camera>();
 	camera_->Init();
 
-	LoadDivGraph(
-		"Data/image/Load.png",	 // スプライトシート
-		4,						 // 分割数
-		4, 1,						// 横4コマ、縦1コマ
-		600, 129,					// 各コマのサイズ
-		imgLoad_					// グラフィックIDを格納
-	);
-
-	loadingTimer_ = 0;
-
 	isSceneChanging_ = false;
 
 	// デルタタイム
@@ -96,8 +86,6 @@ void SceneManager::Init3D(void)
 
 void SceneManager::Update(void)
 {
-	loadingTimer_++;
-
 	if (scene_ == nullptr)
 	{
 		return;
@@ -155,16 +143,6 @@ void SceneManager::Draw(void)
 	// 暗転・明転
 	fader_->Draw();
 
-	// 暗転中に「Now Loading...」など表示
-	if (fader_->GetState() == Fader::STATE::FADE_OUT) {
-		//DrawString(400, 400, "Now Loading...", GetColor(255, 255, 255)); // 中央表示など
-		//DrawGraph(1200, 900, imgLoad_[4], true);
-
-
-		int index = (loadingTimer_ / 20) % 4; // 約1秒で一周
-
-		DrawGraph(1200, 900, imgLoad_[index], TRUE);
-	}
 }
 
 
@@ -266,6 +244,10 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	ResetDeltaTime();
 
+	if (fader_) {
+		fader_->loadingTimer_ = 0;
+	}
+
 	waitSceneId_ = SCENE_ID::NONE;
 
 }
@@ -273,30 +255,40 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 void SceneManager::Fade(void)
 {
 
-	Fader::STATE fState = fader_->GetState();
-	switch (fState)
-	{
-	case Fader::STATE::FADE_IN:
-		// 明転中
-		if (fader_->IsEnd())
-		{
-			// 明転が終了したら、フェード処理終了
-			fader_->SetFade(Fader::STATE::NONE);
-			isSceneChanging_ = false;
-		}
-		break;
-	case Fader::STATE::FADE_OUT:
-		// 暗転中
-		if (fader_->IsEnd())
-		{
-			// 完全に暗転してからシーン遷移
-			DoChangeScene(waitSceneId_);
-			// 暗転から明転へ
-			fader_->SetFade(Fader::STATE::FADE_IN);
-		}
-		break;
-	}
+    Fader::STATE fState = fader_->GetState();
+    switch (fState)
+    {
+    case Fader::STATE::FADE_IN:
+        if (fader_->IsEnd())
+        {
+            fader_->SetFade(Fader::STATE::NONE);
+            isSceneChanging_ = false;
+        }
+        break;
 
+    case Fader::STATE::FADE_OUT:
+        if (fader_->IsEnd())
+        {
+            if (!isLoading_)
+            {
+                // ローディング表示期間に入る
+                isLoading_ = true;
+                loadingTimer_ = 0;
+            }
+            else
+            {
+                loadingTimer_++;
+
+                if (loadingTimer_ > 60) // 約1秒間ローディングを見せる
+                {
+                    DoChangeScene(waitSceneId_);
+                    fader_->SetFade(Fader::STATE::FADE_IN);
+                    isLoading_ = false;
+                }
+            }
+        }
+        break;
+    }
 }
 
 

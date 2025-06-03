@@ -29,7 +29,15 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	// ‰æ‘œ
+	int imgLoad_[4];
+
+	int loadingTimer_;
+
 private:
+
+
+
 
 	// ó‘Ô
 	STATE state_;

@@ -61,11 +61,6 @@ private:
 	SCENE_ID sceneId_;
 	SCENE_ID waitSceneId_;
 
-	// 画像
-	int imgLoad_[3];
-
-	int loadingTimer_;
-
 	// フェード
 	std::unique_ptr<SceneBase> scene_;
 
@@ -77,6 +72,9 @@ private:
 
 	// シーン遷移中判定
 	bool isSceneChanging_;
+
+	bool isLoading_ = false;
+	int loadingTimer_ = 0;
 
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
