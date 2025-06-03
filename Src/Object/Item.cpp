@@ -24,7 +24,7 @@ void Item::Init(void)
 	transform_.modelId = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 0.0f, -28.0f, 500.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
