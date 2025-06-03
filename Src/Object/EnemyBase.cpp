@@ -4,6 +4,7 @@
 #include "../Manager/GravityManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
+#include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
@@ -21,6 +22,8 @@ EnemyBase::EnemyBase(int baseModelId)
 	animationController_ = nullptr;
 	//item_ = nullptr;
 	state_ = STATE::NONE;
+
+	scene_ = nullptr;
 
 	// 衝突チェック
 	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
@@ -216,10 +219,7 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
-
-	printf("Damage called. HP=%d\n", hp_); // 追加
-
-	if (hp_ <= 0)
+	if (hp_ <= 0 && isAlive_)
 	{
 		hp_ = 0;
 		isAlive_ = false;
@@ -227,17 +227,22 @@ void EnemyBase::Damage(int damage)
 
 		if (!item_) {
 
-			item_ = std::make_shared<Item>(*player_, Transform{});
-			item_->Init();
-		}
-		item_->SetPos(transform_.pos);
-		item_->SetIsAlive(true);
+		auto newItem = std::make_shared<Item>(*player_, Transform{});
+		newItem->Init();
+		newItem->SetPos(transform_.pos);
+		newItem->SetIsAlive(true);
+		scene_->AddItem(newItem);
 	}
 }
 
 const Capsule& EnemyBase::GetCapsule(void) const
 {
 	return *capsule_;
+}
+
+const Item& EnemyBase::GetItem(void) const
+{
+	return *item_;
 }
 
 void EnemyBase::Collision(void)
@@ -265,6 +270,11 @@ VECTOR EnemyBase::GetCollisionPos(void)const
 float EnemyBase::GetCollisionRadius(void)
 {
 	return collisionRadius_;
+}
+
+void EnemyBase::SetGameScene(GameScene* scene)
+{
+	scene_ = scene;
 }
 
 void EnemyBase::InitLoad(void)

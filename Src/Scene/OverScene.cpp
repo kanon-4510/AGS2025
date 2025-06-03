@@ -9,9 +9,9 @@
 #include "../Manager/Camera.h"
 #include "../Object/Common/AnimationController.h"
 #include "../Object/SkyDome.h" 
-#include "TitleScene.h"
+#include "OverScene.h"
 
-TitleScene::TitleScene(void)
+OverScene::OverScene(void)
 {
 	imgPush_ = -1;
 	imgTitle_ = -1;
@@ -20,13 +20,12 @@ TitleScene::TitleScene(void)
 	animationController_ = nullptr;
 }
 
-TitleScene::~TitleScene(void)
+OverScene::~OverScene(void)
 {
 }
 
-void TitleScene::Init(void)
+void OverScene::Init(void)
 {
-
 	// 重力制御の初期化
 	GravityManager::GetInstance().Init();
 
@@ -48,8 +47,7 @@ void TitleScene::Init(void)
 	movePlanet_.pos = { -250.0f, -100.0f, -100.0f };
 	size = 0.7f;
 	movePlanet_.scl = { size, size, size };
-	movePlanet_.quaRotLocal = Quaternion::Euler(
-		AsoUtility::Deg2RadF(90.0f), 0.0f, 0.0f);
+	movePlanet_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(90.0f), 0.0f, 0.0f);
 	movePlanet_.Update();
 
 	// キャラ
@@ -57,8 +55,7 @@ void TitleScene::Init(void)
 	charactor_.pos = { 0.0f,-200.0f,0.0f };
 	size = 1.4f;
 	charactor_.scl = { size, size, size };
-	charactor_.quaRot = Quaternion::Euler(
-		0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
+	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
 	charactor_.Update();
 
 	// アニメーションの設定
@@ -69,39 +66,30 @@ void TitleScene::Init(void)
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
-
 }
 
-void TitleScene::Update(void)
+void OverScene::Update(void)
 {
-
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
-	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
-	}
+	if (ins.IsTrgDown(KEY_INPUT_TAB))SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 
 	// 惑星の回転
-	movePlanet_.quaRot = movePlanet_.quaRot.Mult(
-		Quaternion::Euler(0.0f, 0.0f, AsoUtility::Deg2RadF(-1.0f)));
+	movePlanet_.quaRot = movePlanet_.quaRot.Mult(Quaternion::Euler(0.0f, 0.0f, AsoUtility::Deg2RadF(-1.0f)));
 	movePlanet_.Update();
 
 	// キャラアニメーション
 	animationController_->Update();
 
 	//skyDome_->Update();
-
 }
 
-void TitleScene::Draw(void)
+void OverScene::Draw(void)
 {
 	//skyDome_->Draw();
-	
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
 
-	DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
-	
+	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
+	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
 	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
 
 	MV1DrawModel(charactor_.modelId);

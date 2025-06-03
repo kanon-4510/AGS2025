@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform):player_(player)
+Item::Item(Player& player, const Transform& transform):player_(player), pos_(transform.pos)
 {
 	dir_ = {};
 	modelId_ = 0;
@@ -38,6 +38,10 @@ void Item::Init(void)
 
 void Item::Update(void)
 {
+	if (!isAlive_) {
+		return;
+	}
+
 	MV1SetScale(modelId_, scl_);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(modelId_, rot_);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 	MV1SetPosition(modelId_, pos_);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
@@ -51,7 +55,15 @@ void Item::Update(void)
 		isAlive_ = false;
 		return;
 	}
-	/*isAlive_ = true;*/
+
+	/*VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
+	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
+	if (dis1 < collisionRadius_ * collisionRadius_)
+	{
+		//範囲に入った
+		isAlive_ = false;
+		return;
+	}*/
 
 	Collision();
 }
@@ -104,6 +116,11 @@ float Item::GetCollisionRadius(void)
 void Item::SetIsAlive(bool isAlive)
 {
 	isAlive_ = isAlive;
+}
+
+bool Item::GetIsAlive()
+{
+	return isAlive_;
 }
 
 void Item::Collision(void)
