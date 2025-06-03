@@ -645,7 +645,7 @@ void Player::CollisionAttack(void)
 
 		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
 		float dis = AsoUtility::SqrMagnitudeF(diff);
-		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius())
+		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
 		{
 			//”ÍˆÍ‚É“ü‚Á‚½
 			enemy_->Damage(2);

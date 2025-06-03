@@ -119,10 +119,10 @@ void GameScene::Draw(void)
 	}
 
 	// ヘルプ
-	DrawFormatString(840, 20, 0x000000, "移動　　：WASD");
-	DrawFormatString(840, 40, 0x000000, "カメラ　：矢印キー");
-	DrawFormatString(840, 60, 0x000000, "ダッシュ：右Shift");
-	DrawFormatString(840, 80, 0x000000, "ジャンプ：＼(バクスラ)");
+	DrawFormatString(30, 500, 0x000000, "移動　　：WASD");
+	DrawFormatString(30, 520, 0x000000, "カメラ　：矢印キー");
+	DrawFormatString(30, 540, 0x000000, "ダッシュ：左Shift");
+	DrawFormatString(30, 560, 0x000000, "ジャンプ：Space");
 }
 
 void GameScene::AddItem(std::shared_ptr<Item> item)
