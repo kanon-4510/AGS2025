@@ -86,7 +86,6 @@ void SceneManager::Init3D(void)
 
 void SceneManager::Update(void)
 {
-
 	if (scene_ == nullptr)
 	{
 		return;
@@ -145,6 +144,7 @@ void SceneManager::Draw(void)
 	fader_->Draw();
 
 }
+
 
 void SceneManager::Destroy(void)
 {
@@ -244,6 +244,10 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	ResetDeltaTime();
 
+	if (fader_) {
+		fader_->loadingTimer_ = 0;
+	}
+
 	waitSceneId_ = SCENE_ID::NONE;
 
 }
@@ -251,30 +255,40 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 void SceneManager::Fade(void)
 {
 
-	Fader::STATE fState = fader_->GetState();
-	switch (fState)
-	{
-	case Fader::STATE::FADE_IN:
-		// 明転中
-		if (fader_->IsEnd())
-		{
-			// 明転が終了したら、フェード処理終了
-			fader_->SetFade(Fader::STATE::NONE);
-			isSceneChanging_ = false;
-		}
-		break;
-	case Fader::STATE::FADE_OUT:
-		// 暗転中
-		if (fader_->IsEnd())
-		{
-			// 完全に暗転してからシーン遷移
-			DoChangeScene(waitSceneId_);
-			// 暗転から明転へ
-			fader_->SetFade(Fader::STATE::FADE_IN);
-		}
-		break;
-	}
+    Fader::STATE fState = fader_->GetState();
+    switch (fState)
+    {
+    case Fader::STATE::FADE_IN:
+        if (fader_->IsEnd())
+        {
+            fader_->SetFade(Fader::STATE::NONE);
+            isSceneChanging_ = false;
+        }
+        break;
 
+    case Fader::STATE::FADE_OUT:
+        if (fader_->IsEnd())
+        {
+            if (!isLoading_)
+            {
+                // ローディング表示期間に入る
+                isLoading_ = true;
+                loadingTimer_ = 0;
+            }
+            else
+            {
+                loadingTimer_++;
+
+                if (loadingTimer_ > 60) // 約1秒間ローディングを見せる
+                {
+                    DoChangeScene(waitSceneId_);
+                    fader_->SetFade(Fader::STATE::FADE_IN);
+                    isLoading_ = false;
+                }
+            }
+        }
+        break;
+    }
 }
 
 

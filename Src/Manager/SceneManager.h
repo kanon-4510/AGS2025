@@ -73,6 +73,9 @@ private:
 	// シーン遷移中判定
 	bool isSceneChanging_;
 
+	bool isLoading_ = false;
+	int loadingTimer_ = 0;
+
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
 	float deltaTime_;

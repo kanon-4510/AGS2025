@@ -61,7 +61,7 @@ void OverScene::Init(void)
 	// アニメーションの設定
 	std::string path = Application::PATH_MODEL + "Player/";
 	animationController_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationController_->Add(0, path + "Watering.mv1", 20.0f);
+	animationController_->Add(0, path + "Sword And Shield Death.mv1", 20.0f);
 	animationController_->Play(0);
 
 	// 定点カメラ
