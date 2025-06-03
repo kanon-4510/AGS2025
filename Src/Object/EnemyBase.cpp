@@ -166,6 +166,24 @@ void EnemyBase::ChasePlayer(void)
 		transform_.rot.y = targetAngle + DX_PI_F;
 		
 	}
+	else
+	{
+		// Œ´“_‚ÉŒü‚©‚¤
+		VECTOR toOrigin = VSub(VGet(0.0f, 0.0f, 0.0f), transform_.pos);
+		toOrigin.y = 0;  // ‚‚³–³‹
+
+		float distToOrigin = VSize(toOrigin);
+		if (distToOrigin > 0.01f) // ‹ß‚·‚¬‚éê‡‚Í“®‚©‚È‚¢
+		{
+			VECTOR dirToOrigin = VNorm(toOrigin);
+			VECTOR moveVec = VScale(dirToOrigin, speed_);
+			transform_.pos = VAdd(transform_.pos, moveVec);
+
+			// Œü‚«’²®
+			float targetAngle = atan2f(dirToOrigin.x, dirToOrigin.z);
+			transform_.rot.y = targetAngle + DX_PI_F;
+		}
+	}
 }
 
 void EnemyBase::Draw(void)
