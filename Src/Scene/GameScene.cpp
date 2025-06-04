@@ -125,6 +125,8 @@ void GameScene::Draw(void)
 	DrawFormatString(30, 520, 0x000000, "カメラ　：矢印キー");
 	DrawFormatString(30, 540, 0x000000, "ダッシュ：左Shift");
 	DrawFormatString(30, 560, 0x000000, "ジャンプ：Space");
+	DrawFormatString(30, 580, 0x000000, "攻撃　　：Eキー");
+
 }
 
 void GameScene::AddItem(std::shared_ptr<Item> item)

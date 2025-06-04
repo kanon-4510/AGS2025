@@ -224,7 +224,7 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
+	DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 }
 
 void Tree::DrawDebugTree2Player(void)
