@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <DxLib.h>
+#include <algorithm>
 #include "ActorBase.h"
 #include "EnemyBase.h"
 #include "Stage.h"
@@ -87,7 +88,10 @@ public:
 	void AddCollider(std::weak_ptr<Collider> collider);
 	void ClearCollider(void);
 
+
 	void SetEnemy(EnemyBase* enemy);
+
+	VECTOR GetPos() const;
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
@@ -97,7 +101,9 @@ public:
 	bool IsPlay(void) const;
 
 	//判定
-	int GetWater(void);
+	int GetWater(void) const;
+	void UseWater(int amount);
+
 	void eHit(void);//敵
 	void wHit(void);//水
 	void tHit(void);//木
