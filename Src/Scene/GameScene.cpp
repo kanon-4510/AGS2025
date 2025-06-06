@@ -101,8 +101,6 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 	}
-
-
 }
 
 void GameScene::Draw(void)
@@ -130,4 +128,36 @@ void GameScene::Draw(void)
 void GameScene::AddItem(std::shared_ptr<Item> item)
 {
 	items_.push_back(item);
+}
+
+void GameScene::EnemyCreate(int i)
+{
+	int randDir = GetRand(3);
+	VECTOR randPos;
+	switch (randDir)//ˆÊ’u
+	{
+	case 0://‘O
+		randPos.x = GetRand(29000) - 14500;
+		randPos.z = 14500;
+		break;
+	case 1://Œã
+		randPos.x = GetRand(29000) - 14500;
+		randPos.z = -14500;
+		break;
+	case 2://¶
+		randPos.x = -14500;
+		randPos.z = GetRand(29000) - 14500;
+		break;
+	case 3://‰E
+		randPos.x = 14500;
+		randPos.z = GetRand(29000) - 14500;
+		break;
+	default:
+		break;
+	}
+	//“G‚Ìtype
+	enemys_[i]->Release();
+	delete enemys_[i];
+	EnemyBase::TYPE type_;
+	type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 1));
 }
