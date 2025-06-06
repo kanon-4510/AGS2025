@@ -41,6 +41,9 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
+	
+	//水の初期化
+	isWater_ = false;
 
 	//ステ関連
 	hp_ = 30;
@@ -201,6 +204,7 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
 	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::WATER, path + "Watering.mv1", 60.0f);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
@@ -246,6 +250,9 @@ void Player::UpdatePlay(void)
 
 		// 攻撃処理
 		ProcessAttack();
+		
+		// 攻撃処理
+		ProcessWater();
 
 		// 重力による移動量
 		CalcGravityPow();
@@ -439,7 +446,8 @@ void Player::ProcessMove(void)
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
 	}
 
-	if ((!AsoUtility::EqualsVZero(dir)) && (isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
+	if ((!AsoUtility::EqualsVZero(dir)) && 
+		(isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()) && (isWater_ || IsEndLandingW()))
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
@@ -456,7 +464,7 @@ void Player::ProcessMove(void)
 		// 回転処理IDLE
 		SetGoalRotate(rotRad);
 
-		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
+		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()) && (!isWater_ && IsEndLandingW()))
 		{
 			// アニメーション
 			if (ins.IsNew(KEY_INPUT_LSHIFT))
@@ -471,7 +479,7 @@ void Player::ProcessMove(void)
 	}
 	else
 	{
-		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
+		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()) && (!isWater_ && IsEndLandingW()))
 		{
 			animationController_->Play((int)ANIM_TYPE::IDLE);
 		}
@@ -655,6 +663,28 @@ void Player::CollisionAttack(void)
 	}
 }
 
+void Player::CollisionWater(void)
+{
+	if (isWater_)
+	{
+		//エネミーとの衝突判定
+		// 攻撃の方向（プレイヤーの前方）
+		/*VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+
+		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
+		float dis = AsoUtility::SqrMagnitudeF(diff);
+		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
+		{
+			//範囲に入った
+			printfDx("水\n");
+			return;
+		}*/
+	}
+}
+
 void Player::CalcGravityPow(void)
 {
 	// 重力方向
@@ -684,7 +714,7 @@ void Player::ProcessJump(void)
 	bool isHit = CheckHitKey(KEY_INPUT_SPACE);
 
 	// ジャンプ
-	if (isHit && !isAttack_ && (isJump_ || IsEndLanding()))
+	if (isHit && !isAttack_ &&  !isWater_ && (isJump_ || IsEndLanding()))
 	{
 		if (!isJump_)
 		{
@@ -742,7 +772,7 @@ void Player::ProcessAttack(void)
 	bool isHit = CheckHitKey(KEY_INPUT_E);
 
 	// アタック
-	if (isHit && !isJump_ && (isAttack_ || IsEndLandingA()))
+	if (isHit && !isJump_ &&  !isWater_ && (isAttack_ || IsEndLandingA()))
 	{
 		if (!isAttack_)
 		{
@@ -770,6 +800,47 @@ bool Player::IsEndLandingA(void)
 
 	// アニメーションがアタックではない
 	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
+	{
+		return ret;
+	}
+	// アニメーションが終了しているか
+	if (animationController_->IsEnd())
+	{
+		return ret;
+	}
+	return false;
+}
+
+void Player::ProcessWater(void)
+{
+	bool isHit = CheckHitKey(KEY_INPUT_Z);
+
+	// アタック
+	if (isHit && !isJump_  && !isAttack_ && (isWater_ || IsEndLandingW()))
+	{
+		if (!isWater_)
+		{
+			animationController_->Play(
+				(int)ANIM_TYPE::WATER, false, 13.0f, 90.0f);
+			isWater_ = true;
+
+			CollisionWater();
+		}
+	}
+
+	// アニメーションが終わったらフラグをリセット
+	if (isWater_ && animationController_->IsEnd())
+	{
+		isWater_ = false;
+	}
+}
+
+bool Player::IsEndLandingW(void)
+{
+	bool ret = true;
+
+	// アニメーションがアタックではない
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::WATER)
 	{
 		return ret;
 	}
