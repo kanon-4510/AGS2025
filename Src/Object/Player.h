@@ -71,7 +71,6 @@ public:
 		FALLING,
 		VICTORY,
 		ATTACK,
-		WATER,
 	};
 
 	// コンストラクタ
@@ -162,10 +161,6 @@ private:
 	bool isAttack_;
 	bool hitAttack_;
 	
-	//水の判定
-	bool isWater_;
-	bool hitWater_;
-
 	//ステ関連
 	int hp_;
 	int water_;
@@ -221,7 +216,6 @@ private:
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
 	void CollisionAttack(void);
-	void CollisionWater(void);
 	
 	// 移動量の計算
 	void CalcGravityPow(void);
@@ -234,10 +228,6 @@ private:
 	//攻撃モーション
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
-
-	//水モーション
-	void ProcessWater(void);
-	bool IsEndLandingW(void);
 
 	//ダメージ
 	void Damage(int damage);
