@@ -121,11 +121,6 @@ void EnemyBase::EnemyUpdate(void)
 {
 	if (isAlive_)
 	{
-		if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Q)) 
-		{
-			Damage(1);
-		}
-
 		ChasePlayer();
 
 		// è’ìÀîªíË
@@ -185,6 +180,8 @@ void EnemyBase::Draw(void)
 	MV1SetScale(transform_.modelId, transform_.scl);
 	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
 	MV1SetPosition(transform_.modelId, transform_.pos);
+
+	Collision();
 
 	//ÉÇÉfÉãÇÃï`âÊ
 	MV1DrawModel(transform_.modelId);
