@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <EffekseerForDXLib.h>
 #include "../Application.h"
 #include "../Utility/AsoUtility.h"
@@ -170,6 +171,11 @@ void Player::ClearCollider(void)
 void Player::SetEnemy(EnemyBase* enemy)
 {
 	enemy_ = enemy;
+}
+
+VECTOR Player::GetPos() const
+{
+	return transform_.pos;
 }
 
 const Capsule& Player::GetCapsule(void) const
@@ -913,10 +919,18 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
-int Player::GetWater(void)
+int Player::GetWater(void) const
 {
 	return water_;
 }
+
+void Player::UseWater(int amount)
+{
+	int newWater = water_ - amount;
+	if (newWater < 0) newWater = 0;
+	water_ = newWater;
+}
+
 void Player::eHit(void)
 {
 
