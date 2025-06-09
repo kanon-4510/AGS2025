@@ -67,6 +67,7 @@ public:
 
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
+	STATE GetState(void);		// 状態獲得
 
 	bool IsAlive(void);			// 生存判定
 	void SetAlive(bool alive);	// 生存判定
@@ -87,7 +88,6 @@ public:
 	void DrawDebugSearchRange(void);
 
 	void SetPlayer(std::shared_ptr<Player> player);
-
 protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
 	int modelId_;	// 敵のモデルID

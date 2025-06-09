@@ -13,7 +13,7 @@ class Item;
 class GameScene : public SceneBase
 {
 public:
-	static constexpr int ENCOUNT = 120;	//エンカウンタ
+	static constexpr int ENCOUNT = 30;	//エンカウンタ
 	static constexpr int ENEMY_MAX = 20;//最大出現数
 
 	GameScene(void);	// コンストラクタ
@@ -36,4 +36,5 @@ private:
 
 	int enemyModelId_;
 	std::vector<EnemyBase*> enemys_;
+	int enCounter;//敵の出現頻度
 };

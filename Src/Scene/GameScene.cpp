@@ -101,6 +101,21 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 	}
+	//敵のエンカウント
+	enCounter++;
+	if (enCounter > ENCOUNT)
+	{
+		enCounter = 0;//エンカウントのリセット
+
+		for (int i = 0; i < ENEMY_MAX; i++)
+		{
+			if (enemys_[i]->GetState() == EnemyBase::STATE::NONE)
+			{
+				EnemyCreate(i);
+				break;
+			}
+		}
+	}
 }
 
 void GameScene::Draw(void)

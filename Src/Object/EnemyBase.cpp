@@ -221,6 +221,11 @@ void EnemyBase::SetPos(VECTOR pos)
 	transform_.pos = pos;
 }
 
+EnemyBase::STATE EnemyBase::GetState(void)
+{
+	return state_;
+}
+
 bool EnemyBase::IsAlive(void)
 {
 	return isAlive_;

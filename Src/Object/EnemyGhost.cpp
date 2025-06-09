@@ -16,7 +16,7 @@ void EnemyGhost::SetParam(void)
 
 	speed_ = 01.0f;		// 移動スピード
 
-	isAlive_ = true;	// 初期は生存状態
+	//isAlive_ = true;	// 初期は生存状態
 
 	animAttachNo_ = MV1AttachAnim(modelId_, 10);	// アニメーションをアタッチする
 	animTotalTime_ = MV1GetAttachAnimTotalTime(modelId_, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
