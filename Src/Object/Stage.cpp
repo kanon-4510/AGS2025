@@ -5,7 +5,6 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/GravityManager.h"
-#include "WarpStar.h"
 #include "Player.h"
 #include "Planet.h"
 #include "Common/Collider.h"
@@ -34,11 +33,6 @@ Stage::~Stage(void)
 void Stage::Init(void)
 {
 	MakeMainStage();
-	//MakeFallPlanet();
-	//MakeFlatPlanet();
-	//MakeLastPlanet();
-	//MakeSpecialPlanet();
-	//MakeWarpStar();
 	MakeGoalStar();
 
 	step_ = -1.0f;
@@ -46,12 +40,6 @@ void Stage::Init(void)
 
 void Stage::Update(void)
 {
-
-	// ワープスター
-	for (const auto& s : warpStars_)
-	{
-		s->Update();
-	}
 
 	// 重力範囲が重なっていた場合、惑星がコロコロ切り替わらないように
 	// 一定時間ステージが変わらないようにする
@@ -78,6 +66,7 @@ void Stage::Update(void)
 		{
 			//次のステージへ遷移
 			ChangeStage(s.second->GetName());
+
 			//以降のループでステージが変わらないようにする
 			isPossibleChange = false;
 		}
@@ -89,12 +78,6 @@ void Stage::Update(void)
 
 void Stage::Draw(void)
 {
-
-	// ワープスター
-	for (const auto& s : warpStars_)
-	{
-		s->Draw();
-	}
 
 	// 惑星
 	for (const auto& s : planets_)
@@ -119,8 +102,6 @@ void Stage::ChangeStage(NAME type)
 
 	// 重力制御に惑星を渡す
 	GravityManager::GetInstance().ChangeActivePlanet(activePlanet_);
-
-	step_ = TIME_STAGE_CHANGE;
 
 }
 

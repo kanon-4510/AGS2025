@@ -390,10 +390,6 @@ void Player::DrawDebug(void)
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
-	// アクティブな惑星
-	DrawFormatString(20, 100, white, "惑星　　　 ： %d",
-		(int)grvMng_.GetActivePlanet().lock()->GetName()
-	);
 	if (isAttack_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
