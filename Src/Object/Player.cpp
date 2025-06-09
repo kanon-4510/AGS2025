@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <EffekseerForDXLib.h>
 #include "../Application.h"
 #include "../Utility/AsoUtility.h"
@@ -41,7 +42,7 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
-
+	
 	//ステ関連
 	hp_ = 30;
 	water_ = 0;
@@ -72,7 +73,7 @@ void Player::Init(void)
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::PLAYER));
 	transform_.scl = AsoUtility::VECTOR_ONE;
-	transform_.pos = { 0.0f, -30.0f, 0.0f };
+	transform_.pos = { 300.0f, -30.0f, 0.0f };
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
@@ -169,6 +170,11 @@ void Player::SetEnemy(EnemyBase* enemy)
 	enemy_ = enemy;
 }
 
+VECTOR Player::GetPos() const
+{
+	return transform_.pos;
+}
+
 const Capsule& Player::GetCapsule(void) const
 {
 	return *capsule_;
@@ -246,7 +252,7 @@ void Player::UpdatePlay(void)
 
 		// 攻撃処理
 		ProcessAttack();
-
+		
 		// 重力による移動量
 		CalcGravityPow();
 
@@ -439,7 +445,8 @@ void Player::ProcessMove(void)
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
 	}
 
-	if ((!AsoUtility::EqualsVZero(dir)) && (isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
+	if ((!AsoUtility::EqualsVZero(dir)) && 
+		(isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
@@ -842,10 +849,18 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
-int Player::GetWater(void)
+int Player::GetWater(void) const
 {
 	return water_;
 }
+
+void Player::UseWater(int amount)
+{
+	int newWater = water_ - amount;
+	if (newWater < 0) newWater = 0;
+	water_ = newWater;
+}
+
 void Player::eHit(void)
 {
 

@@ -19,7 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\EnemyGhost.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyCactus.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyMimic.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyMushroom.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyOnion.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyThorn.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyVirus.cpp" />
     <ClCompile Include="Src\Object\Item.cpp" />
     <ClCompile Include="Src\Object\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\ActorBase.cpp" />
@@ -53,7 +58,12 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\EnemyGhost.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyCactus.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyMimic.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyMushroom.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyOnion.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyThorn.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyVirus.h" />
     <ClInclude Include="Src\Object\Item.h" />
     <ClInclude Include="Src\Object\EnemyBase.h" />
     <ClInclude Include="Src\Object\ActorBase.h" />

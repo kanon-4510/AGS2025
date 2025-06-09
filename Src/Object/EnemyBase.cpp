@@ -11,13 +11,12 @@
 #include "Common/AnimationController.h"
 #include "ActorBase.h"
 #include "Player.h"
-#include "EnemyGhost.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(int baseModelId)
 {
 	// 敵のモデル
-	baseModelId_[static_cast<int>(TYPE::BIRD)] = baseModelId;
+	baseModelId_[static_cast<int>(TYPE::DOG)] = baseModelId;
 
 	animationController_ = nullptr;
 	//item_ = nullptr;
@@ -61,10 +60,11 @@ void EnemyBase::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::BIRD)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::DOG)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+//transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+	transform_.quaRotLocal = Quaternion::Euler(0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f);//クォータニオンをいじると向きが変わる
 	transform_.pos = { 00.0f, -28.0f, 2000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
@@ -121,17 +121,7 @@ void EnemyBase::EnemyUpdate(void)
 {
 	if (isAlive_)
 	{
-		if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Q)) 
-		{
-			Damage(1);
-		}
-
 		ChasePlayer();
-
-		// モデル反映
-		MV1SetScale(transform_.modelId, transform_.scl);
-		MV1SetRotationXYZ(transform_.modelId, transform_.rot);
-		MV1SetPosition(transform_.modelId, transform_.pos);
 
 		// 衝突判定
 		Collision();
@@ -156,15 +146,9 @@ void EnemyBase::ChasePlayer(void)
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
 
 		transform_.pos = VAdd(transform_.pos, moveVec);
-
-		// 角度計算（X,Z軸）
-		float targetAngle = atan2f(dirToPlayer.x, dirToPlayer.z);
-
-		//Rotate();
-		// モデルの前が +Z軸ならこのままでOK
-		//モデルが反対を向いているから180度プラスする
-		transform_.rot.y = targetAngle + DX_PI_F;
 		
+		// 方向からクォータニオンに変換
+		transform_.quaRot = Quaternion::LookRotation(dirToPlayer);
 	}
 	else
 	{
@@ -179,9 +163,8 @@ void EnemyBase::ChasePlayer(void)
 			VECTOR moveVec = VScale(dirToOrigin, speed_);
 			transform_.pos = VAdd(transform_.pos, moveVec);
 
-			// 向き調整
-			float targetAngle = atan2f(dirToOrigin.x, dirToOrigin.z);
-			transform_.rot.y = targetAngle + DX_PI_F;
+			// 方向からクォータニオンに変換
+			transform_.quaRot = Quaternion::LookRotation(dirToOrigin);
 		}
 	}
 }
@@ -193,11 +176,14 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	if (transform_.modelId == 0)
-	{
-		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
-	}
+	// モデル反映
+	MV1SetScale(transform_.modelId, transform_.scl);
+	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
+	MV1SetPosition(transform_.modelId, transform_.pos);
 
+	Collision();
+
+	//モデルの描画
 	MV1DrawModel(transform_.modelId);
 
 	DrawDebug();
@@ -376,12 +362,7 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	int animNum = MV1GetAnimNum(transform_.modelId);
-	if (animNum == 0) {
-		DrawFormatString(20, 260, 0xff0000, "このモデルにはアニメーションがありません");
-	}
-
-	DrawFormatString(20, 300, white, "エネミーの移動速度 ： %0.2f",speed_);
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f",speed_);
 	
 }
 

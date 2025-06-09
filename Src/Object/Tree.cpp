@@ -56,6 +56,48 @@ bool Tree::Init(void)
 }
 void Tree::Update(void)
 {
+	if (!player_) return;
+
+	// プレイヤーとの距離をXZ平面だけで測る
+	VECTOR playerPos = player_->GetPos();
+	VECTOR treePos = pos_;
+
+	float dx = playerPos.x - treePos.x;
+	float dz = playerPos.z - treePos.z;
+	float distance = sqrtf(dx * dx + dz * dz);
+
+	if (distance < viewRange_ && player_->GetWater() > 0)
+	{
+		water_++;          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
+		player_->UseWater(1);
+	}
+
+	// 水の量に応じて成長処理
+	if (grow_ == GROW::OLD && water_ >= 4)
+	{
+		lv_ += 1;
+		water_ -= 4;
+		ChangeGrow();
+	}
+	else if (grow_ == GROW::ADULT && water_ >= 3)
+	{
+		lv_ += 1;
+		water_ -= 3;
+		ChangeGrow();
+	}
+	else if (grow_ == GROW::KID && water_ >= 2)
+	{
+		lv_ += 1;
+		water_ -= 2;
+		ChangeGrow();
+	}
+	else if (grow_ == GROW::BABY && water_ >= 1)
+	{
+		lv_ += 1;
+		water_ -= 1;
+		ChangeGrow();
+	}
+
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -133,6 +175,7 @@ void Tree::Update(void)
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
 	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
 }
+
 void Tree::Draw(void)
 {
 	// モデルの描画
@@ -181,8 +224,7 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 
 	v = pos_;
-	DrawFormatString(20, 230, white, "木の座標：(%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
-
+	DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 }
 
 void Tree::DrawDebugTree2Player(void)
@@ -203,20 +245,27 @@ void Tree::DrawDebugTree2Player(void)
 
 		float angleStep = DX_PI_F * 2.0f / circleSegments_;
 
-		if (grow_ == GROW::KID)
+		if (grow_ == GROW::BABY) 
+		{
+			
+		}
+		else if (grow_ == GROW::KID)
 		{
 			centerPos.y -= 350.0f;
 			viewRange_ = 200.0f;
+			
 		}
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y -= 705.0f;
 			viewRange_ = 650.0f;
+			
 		}
 		else if(grow_ == GROW::OLD)
 		{
 			centerPos.y -= 1370.0f;
 			viewRange_ = 909.0f;
+			
 		}
 
 		for (int i = 0; i < circleSegments_; ++i)
@@ -251,22 +300,22 @@ int Tree::GetLv(void)
 }
 void Tree::ChangeGrow(void)
 {
-	if (lv_ == 75)
+	if (lv_ >= 75)
 	{
 		grow_ = Tree::GROW::OLD;
 		hp_ = 50;
 	}
-	else if (lv_ == 50)
+	else if (lv_ >= 50)
 	{
 		grow_ = Tree::GROW::ADULT;
 		hp_ = 50;
 	}
-	else if (lv_ == 25)
+	else if (lv_ >= 25)
 	{
 		grow_ = Tree::GROW::KID;
 		hp_ = 50;
 	}
-	else if(lv_ == 1)
+	else if (lv_ >= 1)
 	{
 		grow_ = GROW::BABY;
 		hp_ = 50;

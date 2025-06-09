@@ -32,8 +32,13 @@ public:
 	//敵の種類
 	enum class TYPE
 	{
-		BIRD,
-		GHOST,
+		DOG,	//犬
+		SABO,	//サボテン
+		MIMIC,	//ミミック
+		MUSH,	//キノコ
+		ONION,	//玉ねぎ
+		TOGE,	//トゲゾー
+		VIRUS,	//ウィルス
 		MAX
 	};
 
