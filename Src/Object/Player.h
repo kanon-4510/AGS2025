@@ -160,7 +160,7 @@ private:
 	//UŒ‚‚Ì”»’è
 	bool isAttack_;
 	bool hitAttack_;
-
+	
 	//ƒXƒeŠÖ˜A
 	int hp_;
 	int water_;

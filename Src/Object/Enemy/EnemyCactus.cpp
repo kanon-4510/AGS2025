@@ -1,12 +1,10 @@
-#include "Common/Capsule.h"
-#include "ActorBase.h"
-#include "EnemyGhost.h"
+#include "EnemyCactus.h"
 
-void EnemyGhost::SetParam(void)
+void EnemyCactus::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	modelId_ = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::GHOST)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::SABO)]);
 
 	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
@@ -18,8 +16,8 @@ void EnemyGhost::SetParam(void)
 
 	isAlive_ = true;	// 初期は生存状態
 
-	animAttachNo_ = MV1AttachAnim(modelId_, 10);	// アニメーションをアタッチする
-	animTotalTime_ = MV1GetAttachAnimTotalTime(modelId_, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
+	animAttachNo_ = MV1AttachAnim(transform_.modelId, 10);	// アニメーションをアタッチする
+	animTotalTime_ = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
 	stepAnim_ = 0.0f;	// 再生中のアニメーション時間
 	speedAnim_ = 30.0f;	// アニメーション速度
 
