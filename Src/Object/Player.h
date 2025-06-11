@@ -92,6 +92,7 @@ public:
 	void SetEnemy(EnemyBase* enemy);
 
 	VECTOR GetPos() const;
+	void SetPos(const VECTOR& pos);
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;

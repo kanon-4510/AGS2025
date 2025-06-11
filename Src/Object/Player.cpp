@@ -122,7 +122,7 @@ void Player::Update(void)
 	UpdateD(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_U)) water_--;
+	if (ins.IsNew(KEY_INPUT_U)) water_++;
 }
 
 void Player::UpdateD(float deltaTime)
@@ -173,6 +173,11 @@ void Player::SetEnemy(EnemyBase* enemy)
 VECTOR Player::GetPos() const
 {
 	return transform_.pos;
+}
+
+void Player::SetPos(const VECTOR& pos)
+{
+	transform_.pos = pos;
 }
 
 const Capsule& Player::GetCapsule(void) const
