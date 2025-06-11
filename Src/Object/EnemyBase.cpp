@@ -14,7 +14,7 @@
 
 EnemyBase::EnemyBase(int baseModelId)
 {
-	animationController_ = nullptr;
+	//animationController_ = nullptr;
 	//item_ = nullptr;
 	state_ = STATE::NONE;
 

@@ -147,7 +147,7 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	std::unique_ptr<AnimationController> animationController_;// アニメーション
+	//std::unique_ptr<AnimationController> animationController_;// アニメーション
 
 	void InitLoad(void); //アニメーションロード用
 

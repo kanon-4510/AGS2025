@@ -121,7 +121,7 @@ private:
 	VECTOR gravHitPosUp_;
 
 	// アニメーション
-	std::unique_ptr<AnimationController> animationController_;
+	//std::unique_ptr<AnimationController> animationController_;
 
 	// 状態管理
 	STATE state_;

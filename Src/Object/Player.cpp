@@ -21,7 +21,7 @@
 Player::Player(void)
 {
 
-	animationController_ = nullptr;
+	//animationController_ = nullptr;
 	enemy_ = nullptr;
 
 	state_ = STATE::NONE;
