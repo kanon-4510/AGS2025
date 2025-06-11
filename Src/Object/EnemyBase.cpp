@@ -351,7 +351,8 @@ void EnemyBase::ChangeAnim(ANIM_TYPE type)
 		MV1DetachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
 		currentAnimType_ = type;
 		MV1AttachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
-		animTotalTimes_[static_cast<int>(currentAnimType_)] = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
+		animTotalTimes_[static_cast<int>(currentAnimType_)] =
+			MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
 		stepAnims_[static_cast<int>(type)] = 0.0f;
 	}
 }

@@ -131,9 +131,9 @@ protected:
 	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
 
 	int attachNo_;								   // アニメーションのアタッチ番号
-	std::array<int, static_cast<size_t>(ANIM_TYPE::MAX)> animAttachNos_;       // 各アニメーションのアタッチ番号
-	std::array<float, static_cast<size_t>(ANIM_TYPE::MAX)> animTotalTimes_;    // 各アニメーションの長さ
-	std::array<float, static_cast<size_t>(ANIM_TYPE::MAX)> stepAnims_;         // 各アニメーションの現在時間
+	std::array<int, int(ANIM_TYPE::MAX)> animAttachNos_;       // 各アニメーションのアタッチ番号
+	std::array<float, int(ANIM_TYPE::MAX)> animTotalTimes_;    // 各アニメーションの長さ
+	std::array<float, int(ANIM_TYPE::MAX)> stepAnims_;         // 各アニメーションの現在時間
 	
 	float speedAnim_;                              // 再生速度（共通）
 	ANIM_TYPE currentAnimType_;                    // 現在再生中のアニメーション種別
