@@ -68,6 +68,7 @@ void GameScene::Init(void)
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
 	stage_->Init();
+
 	// ステージの初期設定
 	stage_->ChangeStage(Stage::NAME::MAIN_PLANET);
 

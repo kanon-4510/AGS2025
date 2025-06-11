@@ -122,7 +122,7 @@ void Player::Update(void)
 	UpdateD(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_U)) water_--;
+	if (ins.IsNew(KEY_INPUT_U)) water_++;
 }
 
 void Player::UpdateD(float deltaTime)
@@ -173,6 +173,11 @@ void Player::SetEnemy(EnemyBase* enemy)
 VECTOR Player::GetPos() const
 {
 	return transform_.pos;
+}
+
+void Player::SetPos(const VECTOR& pos)
+{
+	transform_.pos = pos;
 }
 
 const Capsule& Player::GetCapsule(void) const
@@ -389,10 +394,6 @@ void Player::DrawDebug(void)
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
-	// アクティブな惑星
-	DrawFormatString(20, 100, white, "惑星　　　 ： %d",
-		(int)grvMng_.GetActivePlanet().lock()->GetName()
-	);
 	if (isAttack_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();

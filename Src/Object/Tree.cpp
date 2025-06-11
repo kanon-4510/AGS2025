@@ -66,6 +66,40 @@ void Tree::Update(void)
 	float dz = playerPos.z - treePos.z;
 	float distance = sqrtf(dx * dx + dz * dz);
 
+	// 2. 成長段階に応じた最小距離を設定
+	float minDistance = 0.0f;
+	switch (grow_) {
+	case GROW::BABY:
+		minDistance = 70.0f;
+		break;
+	case GROW::KID:
+		minDistance = 200.0f;
+		break;
+	case GROW::ADULT:
+		minDistance = 400.0f;
+		break;
+	case GROW::OLD:
+		minDistance = 600.0f;
+		break;
+	}
+
+	// 3. プレイヤーが円の内側にいたら押し戻す
+	if (distance < minDistance) {
+		float len = sqrtf(dx * dx + dz * dz);
+		if (len > 0.001f) {
+			dx /= len;
+			dz /= len;
+
+			VECTOR newPos = {
+				treePos.x + dx * minDistance,
+				playerPos.y,
+				treePos.z + dz * minDistance
+			};
+
+			player_->SetPos(newPos); // ←PlayerにSetPosが必要
+		}
+	}
+
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
 		water_++;          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
