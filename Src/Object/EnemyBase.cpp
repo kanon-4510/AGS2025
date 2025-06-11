@@ -8,16 +8,12 @@
 #include "../Utility/AsoUtility.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
-#include "Common/AnimationController.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(int baseModelId)
 {
-	// 敵のモデル
-	baseModelId_[static_cast<int>(TYPE::DOG)] = baseModelId;
-
 	animationController_ = nullptr;
 	//item_ = nullptr;
 	state_ = STATE::NONE;
@@ -29,10 +25,8 @@ EnemyBase::EnemyBase(int baseModelId)
 	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
 
 	// 状態管理
-	stateChanges_.emplace(
-		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
-	stateChanges_.emplace(
-		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
+	stateChanges_.emplace(STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
+	stateChanges_.emplace(STATE::ALIVE, std::bind(&EnemyBase::ChangeStatePlay, this));
 
 	// 初期状態関数を必ず設定する！
 	auto it = stateChanges_.find(state_);
@@ -58,7 +52,7 @@ void EnemyBase::Init(void)
 
 void EnemyBase::SetParam(void)
 {
-	// 使用メモリ容量と読み込み時間の削減のため
+	/*// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
 	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::DOG)]);
 
@@ -90,7 +84,7 @@ void EnemyBase::SetParam(void)
 
 
 	// 初期状態
-	ChangeState(STATE::PLAY);
+	ChangeState(STATE::PLAY);*/
 }
 
 void EnemyBase::Update(void)
@@ -101,9 +95,6 @@ void EnemyBase::Update(void)
 	}
 
 	transform_.Update();
-
-	// アニメーション再生
-	animationController_->Update();
 
 	// 更新ステップ
 	if (stateUpdate_)
@@ -171,11 +162,6 @@ void EnemyBase::ChasePlayer(void)
 
 void EnemyBase::Draw(void)
 {
-	if (!isAlive_)
-	{
-		return;
-	}
-
 	// モデル反映
 	MV1SetScale(transform_.modelId, transform_.scl);
 	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
@@ -287,16 +273,6 @@ void EnemyBase::SetGameScene(GameScene* scene)
 void EnemyBase::InitLoad(void)
 {
 	std::string path = Application::PATH_MODEL + "Enemy/";
-
-	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
-
-	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Attack2.mv1", 25.0f);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Damage.mv1", 16.0f);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Die.mv1", 23.0f);
-
-	animationController_->Play((int)ANIM_TYPE::DEATH);
 }
 
 void EnemyBase::ChangeState(STATE state)
@@ -312,7 +288,6 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-
 void EnemyBase::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
@@ -329,7 +304,6 @@ void EnemyBase::ChangeStatePlay(void)
 
 void EnemyBase::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -346,24 +320,17 @@ void EnemyBase::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
+	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
 	capsule_->Draw();
 	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
-		c.x, c.y, c.z
-	);
+	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
-	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
-		s.x, s.y, s.z
-	);
+	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
 
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f",speed_);
-	
 }
 
 void EnemyBase::DrawDebugSearchRange(void)

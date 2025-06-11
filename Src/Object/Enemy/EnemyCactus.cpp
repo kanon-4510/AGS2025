@@ -11,8 +11,7 @@ void EnemyCactus::SetParam(void)
 	transform_.pos = { 100.0f, -28.0f, 1000.0f };				// 位置の設定
 	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
-
-	speed_ = 01.0f;		// 移動スピード
+	speed_ = 02.0f;		// 移動スピード
 
 	//isAlive_ = true;	// 初期は生存状態
 
@@ -21,9 +20,8 @@ void EnemyCactus::SetParam(void)
 	stepAnim_ = 0.0f;	// 再生中のアニメーション時間
 	speedAnim_ = 30.0f;	// アニメーション速度
 
-	hp_ = hpMax_ = 2;	// HPの設定
+	hp_ = 8;			// HPの設定
 
-	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
+	collisionRadius_ = 40.0f;					// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
-
 }

@@ -46,8 +46,8 @@ public:
 	enum class STATE
 	{
 		NONE,
-		PLAY,
-		DEAD,
+		ALIVE,
+		WATER,
 		MAX
 	};
 
@@ -61,6 +61,7 @@ public:
 		MAX
 	};
 
+	EnemyBase() {};	// コンストラクタ
 	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
@@ -93,6 +94,8 @@ public:
 	void DrawDebugSearchRange(void);
 
 	void SetPlayer(std::shared_ptr<Player> player);
+
+	STATE state_;	//状態管理
 protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
 	int modelId_;	// 敵のモデルID
@@ -122,13 +125,8 @@ protected:
 	float stepRotTime_;
 
 	int hp_;	// 体力
-	int hpMax_;	// 体力最大値
-
 	bool isAlive_;	// 生存判定
-
 	bool isAttack_;	//攻撃の判定
-
-	STATE state_;	//状態管理
 
 	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
 	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)

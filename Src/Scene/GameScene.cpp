@@ -11,6 +11,13 @@
 #include "../Object/Stage.h"
 #include "../Object/Player.h"
 #include "../Object/EnemyBase.h"
+#include "../Object/Enemy/EnemyCactus.h"
+#include "../Object/Enemy/EnemyDog.h"
+#include "../Object/Enemy/EnemyMimic.h"
+#include "../Object/Enemy/EnemyMushroom.h"
+#include "../Object/Enemy/EnemyOnion.h"
+#include "../Object/Enemy/EnemyThorn.h"
+#include "../Object/Enemy/EnemyVirus.h"
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "../Object/Item.h"
@@ -39,7 +46,7 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// 敵のモデル
-	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Run.mv1").c_str());
+	//enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Run.mv1").c_str());
 	auto enemy = new EnemyBase(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
@@ -139,7 +146,6 @@ void GameScene::Draw(void)
 	DrawFormatString(30, 540, 0x000000, "ダッシュ：左Shift");
 	DrawFormatString(30, 560, 0x000000, "ジャンプ：Space");
 	DrawFormatString(30, 580, 0x000000, "攻撃　　：Eキー");
-
 }
 
 void GameScene::AddItem(std::shared_ptr<Item> item)
@@ -176,5 +182,31 @@ void GameScene::EnemyCreate(int i)
 	enemys_[i]->Release();
 	delete enemys_[i];
 	EnemyBase::TYPE type_;
-	type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 1));
+	type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX)-1));
+	switch (type_)
+	{
+	case EnemyBase::TYPE::SABO:
+		enemys_[i] = new EnemyCactus();
+		break;
+	case EnemyBase::TYPE::DOG:
+		enemys_[i] = new EnemyDog();
+		break;
+	case EnemyBase::TYPE::MIMIC:
+		enemys_[i] = new EnemyMimic();
+		break;
+	case EnemyBase::TYPE::MUSH:
+		enemys_[i] = new EnemyMushroom();
+		break;
+	case EnemyBase::TYPE::ONION:
+		enemys_[i] = new EnemyOnion();
+		break;
+	case EnemyBase::TYPE::TOGE:
+		enemys_[i] = new EnemyThorn();
+		break;
+	case EnemyBase::TYPE::VIRUS:
+		enemys_[i] = new EnemyVirus();
+		break;
+	case EnemyBase::TYPE::MAX:
+		break;
+	}
 }

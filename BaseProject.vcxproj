@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\Enemy\EnemyCactus.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyDog.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyMimic.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyMushroom.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyOnion.cpp" />
@@ -59,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Enemy\EnemyCactus.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyDog.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyMimic.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyMushroom.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyOnion.h" />

@@ -1,7 +1,7 @@
 #pragma once
 #include "../EnemyBase.h"
 
-class EnemyCactus : public EnemyBase
+class EnemyDog : public EnemyBase
 {
 	// パラメータ設定(純粋仮想関数)
 	virtual void SetParam(void);

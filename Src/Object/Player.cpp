@@ -9,7 +9,7 @@
 #include "../Manager/GravityManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
-#include "Common/AnimationController.h"
+//#include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "Common/SpeechBalloon.h"
@@ -117,7 +117,7 @@ void Player::Update(void)
 	transform_.Update();
 	
 	// アニメーション再生
-	animationController_->Update();
+	//animationController_->Update();
 
 	UpdateD(1.0f);
 
@@ -195,20 +195,19 @@ void Player::InitAnimation(void)
 
 	std::string path = Application::PATH_MODEL + "Player/";
 
-	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+	//animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
+	//animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
+	//animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
+	//animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
+	//animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
+	//animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
+	//animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
+	//animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
+	//animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	//animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
 
-	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
-	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
-
-	animationController_->Play((int)ANIM_TYPE::IDLE);
+	//animationController_->Play((int)ANIM_TYPE::IDLE);
 
 }
 
@@ -468,11 +467,11 @@ void Player::ProcessMove(void)
 			// アニメーション
 			if (ins.IsNew(KEY_INPUT_LSHIFT))
 			{
-				animationController_->Play((int)ANIM_TYPE::FAST_RUN);
+				//animationController_->Play((int)ANIM_TYPE::FAST_RUN);
 			}
 			else
 			{
-				animationController_->Play((int)ANIM_TYPE::RUN);
+				//animationController_->Play((int)ANIM_TYPE::RUN);
 			}
 		}
 	}
@@ -480,7 +479,7 @@ void Player::ProcessMove(void)
 	{
 		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
 		{
-			animationController_->Play((int)ANIM_TYPE::IDLE);
+			//animationController_->Play((int)ANIM_TYPE::IDLE);
 		}
 	}
 
@@ -585,8 +584,8 @@ void Player::CollisionGravity(void)
 			if (isJump_)
 			{
 				// 着地モーション
-				animationController_->Play(
-					(int)ANIM_TYPE::JUMP, false, 29.0f, 45.0f, false, true);
+			/*	animationController_->Play(
+					(int)ANIM_TYPE::JUMP, false, 29.0f, 45.0f, false, true);*/
 			}
 			isJump_ = false;
 
@@ -700,10 +699,9 @@ void Player::ProcessJump(void)
 
 			// この後、いくつかのジャンプパターンを試します
 			//無理やりアニメーション
-
-			animationController_->Play(
-				(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
-			animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+			//animationController_->Play(
+			//	(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
+			//animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 		}
 
 		isJump_ = true;
@@ -731,15 +729,15 @@ bool Player::IsEndLanding(void)
 	bool ret = true;
 
 	// アニメーションがジャンプではない
-	if (animationController_->GetPlayType() != (int)ANIM_TYPE::JUMP)
-	{
-		return ret;
-	}
-	// アニメーションが終了しているか
-	if (animationController_->IsEnd())
-	{
-		return ret;
-	}
+	//if (animationController_->GetPlayType() != (int)ANIM_TYPE::JUMP)
+	//{
+	//	return ret;
+	//}
+	//アニメーションが終了しているか
+	//if (animationController_->IsEnd())
+	//{
+	//	return ret;
+	//}
 	return false;
 
 }
@@ -753,8 +751,8 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_)
 		{
-			animationController_->Play(
-				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			//animationController_->Play(
+			//	(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
@@ -765,10 +763,10 @@ void Player::ProcessAttack(void)
 	}
 
 	// アニメーションが終わったらフラグをリセット
-	if (isAttack_ && animationController_->IsEnd())
-	{
-		isAttack_ = false;
-	}
+	//if (isAttack_ && animationController_->IsEnd())
+	//{
+	//	isAttack_ = false;
+	//}
 }
 
 bool Player::IsEndLandingA(void)
@@ -776,15 +774,15 @@ bool Player::IsEndLandingA(void)
 	bool ret = true;
 
 	// アニメーションがアタックではない
-	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
-	{
-		return ret;
-	}
+	//if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
+	//{
+	//	return ret;
+	//}
 	// アニメーションが終了しているか
-	if (animationController_->IsEnd())
-	{
-		return ret;
-	}
+	//if (animationController_->IsEnd())
+	//{
+	//	return ret;
+	//}
 	return false;
 }
 
@@ -807,7 +805,7 @@ void Player::StartRevival()
 	pstate_ = PlayerState::DOWN;
 	revivalTimer_ = 0.0f;
 
-	animationController_->Play((int)ANIM_TYPE::DOWN, false);
+	//animationController_->Play((int)ANIM_TYPE::DOWN, false);
 	// 必要なら移動や入力を停止させる
 }
 
@@ -863,7 +861,7 @@ void Player::UseWater(int amount)
 
 void Player::eHit(void)
 {
-
+	hp_ -= 1;
 }
 void Player::wHit(void)
 {
