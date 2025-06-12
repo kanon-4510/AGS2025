@@ -23,12 +23,14 @@ void Item::Init(void)
 	// モデルの基本設定
 	transform_.modelId = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
-	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
+	transform_.scl = { 0.2f, 0.2f, 0.2f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 0.0f, -28.0f, 500.0f };					// 位置の設定
+	transform_.pos = { 0.0f, 0.0f, 500.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = false;
+
+	baseY_ = transform_.pos.y; // 初期位置を保存
 
 	collisionRadius_ = 50.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -41,6 +43,13 @@ void Item::Update(void)
 	if (!isAlive_) {
 		return;
 	}
+
+	// アニメーションタイマー更新
+	floatTimer_ += floatSpeed_ * DX_PI_F / 180.0f;
+	if (floatTimer_ > DX_PI_F * 2) floatTimer_ -= DX_PI_F * 2;
+
+	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
+	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
 
 	MV1SetScale(transform_.modelId, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 	MV1SetRotationXYZ(transform_.modelId, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)

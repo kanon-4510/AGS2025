@@ -195,10 +195,12 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	if (transform_.modelId == 0)
-	{
-		DrawFormatString(20, 250, 0xff0000, "Model is not loaded!");
-	}
+	// ƒ‚ƒfƒ‹”½‰f
+	MV1SetScale(transform_.modelId, transform_.scl);
+	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
+	MV1SetPosition(transform_.modelId, transform_.pos);
+
+	Collision();
 
 	// ƒ‚ƒfƒ‹”½‰f
 	MV1SetScale(transform_.modelId, transform_.scl);

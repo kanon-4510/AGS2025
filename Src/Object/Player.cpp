@@ -42,7 +42,7 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
-
+	
 	//ステ関連
 	hp_ = 30;
 	water_ = 0;
@@ -122,7 +122,7 @@ void Player::Update(void)
 	UpdateD(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_U)) water_--;
+	if (ins.IsNew(KEY_INPUT_U)) water_++;
 }
 
 void Player::UpdateD(float deltaTime)
@@ -173,6 +173,11 @@ void Player::SetEnemy(EnemyBase* enemy)
 VECTOR Player::GetPos() const
 {
 	return transform_.pos;
+}
+
+void Player::SetPos(const VECTOR& pos)
+{
+	transform_.pos = pos;
 }
 
 const Capsule& Player::GetCapsule(void) const
@@ -252,7 +257,7 @@ void Player::UpdatePlay(void)
 
 		// 攻撃処理
 		ProcessAttack();
-
+		
 		// 重力による移動量
 		CalcGravityPow();
 
@@ -390,10 +395,6 @@ void Player::DrawDebug(void)
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
-	// アクティブな惑星
-	DrawFormatString(20, 100, white, "惑星　　　 ： %d",
-		(int)grvMng_.GetActivePlanet().lock()->GetName()
-	);
 	if (isAttack_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
@@ -445,7 +446,8 @@ void Player::ProcessMove(void)
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
 	}
 
-	if ((!AsoUtility::EqualsVZero(dir)) && (isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
+	if ((!AsoUtility::EqualsVZero(dir)) && 
+		(isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
 	{
 		//移動量
 		speed_ = SPEED_MOVE;

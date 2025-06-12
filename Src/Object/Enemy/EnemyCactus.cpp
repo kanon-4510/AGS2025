@@ -9,9 +9,13 @@ void EnemyCactus::SetParam(void)
 	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 100.0f, -28.0f, 1000.0f };				// 位置の設定
-	transform_.dir = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
+	transform_.dir = { 0.0f, 0.0f, -1.0f };							// 右方向に移動する
 
 
+	/// <summary>
+	/// なんか無理かも
+	/// </summary>
+	/// <param name=""></param>
 	speed_ = 01.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
@@ -24,7 +28,7 @@ void EnemyCactus::SetParam(void)
 	stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
 	speedAnim_ = 30.0f;
 
-	hp_ = 2;	// HPの設定
+	hp_ = hpMax_ = 2;	// HPの設定
 
 	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標

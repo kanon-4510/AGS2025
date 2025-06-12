@@ -92,6 +92,7 @@ public:
 	void SetEnemy(EnemyBase* enemy);
 
 	VECTOR GetPos() const;
+	void SetPos(const VECTOR& pos);
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
@@ -160,7 +161,7 @@ private:
 	//攻撃の判定
 	bool isAttack_;
 	bool hitAttack_;
-
+	
 	//ステ関連
 	int hp_;
 	int water_;
