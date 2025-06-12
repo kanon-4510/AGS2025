@@ -63,6 +63,7 @@ public:
 		MAX
 	};
 
+	//EnemyBase(){};	// コンストラクタ
 	EnemyBase(TYPE type, int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 

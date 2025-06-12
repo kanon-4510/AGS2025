@@ -75,6 +75,26 @@ void EnemyBase::SetParam(void)
 	ChangeState(STATE::PLAY);
 }
 
+void EnemyBase::InitLoad(void)
+{
+
+	//// アニメーションのアタッチと初期化
+	//for (int i = 0; i < static_cast<int>(ANIM_TYPE::MAX); ++i) {
+	//	animAttachNos_[i] = MV1AttachAnim(transform_.modelId, i);
+	//	if (animAttachNos_[i] == -1) {
+	//		printf("アニメーション%dのアタッチに失敗しました。\n", i);
+	//		continue;
+	//	}
+	//	animTotalTimes_[i] = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[i]);
+	//	stepAnims_[i] = 0.0f;
+	//}
+	speedAnim_ = 0.5f;
+
+	// 初期アニメーション状態
+	ChangeAnim(ANIM_TYPE::ATTACK);
+	//currentAnimType_ = ANIM_TYPE::Idel;
+}
+
 void EnemyBase::Update(void)
 {
 	if (!isAlive_)
@@ -303,26 +323,6 @@ float EnemyBase::GetCollisionRadius(void)
 void EnemyBase::SetGameScene(GameScene* scene)
 {
 	scene_ = scene;
-}
-
-void EnemyBase::InitLoad(void)
-{
-	
-	//// アニメーションのアタッチと初期化
-	//for (int i = 0; i < static_cast<int>(ANIM_TYPE::MAX); ++i) {
-	//	animAttachNos_[i] = MV1AttachAnim(transform_.modelId, i);
-	//	if (animAttachNos_[i] == -1) {
-	//		printf("アニメーション%dのアタッチに失敗しました。\n", i);
-	//		continue;
-	//	}
-	//	animTotalTimes_[i] = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[i]);
-	//	stepAnims_[i] = 0.0f;
-	//}
-	speedAnim_ = 0.5f;
-
-	// 初期アニメーション状態
-	ChangeAnim(ANIM_TYPE::ATTACK);
-	//currentAnimType_ = ANIM_TYPE::Idel;
 }
 
 void EnemyBase::ChangeState(STATE state)
