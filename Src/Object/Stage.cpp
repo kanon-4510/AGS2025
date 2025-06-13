@@ -87,7 +87,7 @@ void Stage::Update(void)
 
 }
 
-void Stage::Draw(void)
+void Stage::Draw(void)const
 {
 
 	// ワープスター
@@ -132,6 +132,16 @@ std::weak_ptr<Planet> Stage::GetPlanet(NAME type)
 	}
 
 	return planets_[type];
+}
+
+std::vector<VECTOR> Stage::GetPlanetsPositions() const
+{
+	std::vector<VECTOR> positions;
+	for (const auto& p : planets_)
+	{
+		positions.push_back(p.second->GetTransform().pos);
+	}
+	return positions;
 }
 
 void Stage::MakeMainStage(void)

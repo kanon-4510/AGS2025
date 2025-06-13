@@ -9,6 +9,7 @@ class SkyDome;
 class Tree;
 class Player;
 class Item;
+class MiniMap;
 
 class GameScene : public SceneBase
 {
@@ -20,6 +21,8 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
+	void DrawMiniMap(void);
+
 	void AddItem(std::shared_ptr<Item> item);
 private:
 	std::unique_ptr<Stage> stage_;		// ステージ
@@ -28,6 +31,7 @@ private:
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
 	std::shared_ptr<Player> player_;	// プレイヤー
 	std::vector<std::shared_ptr<Item>> items_;		//アイテム
+	std::unique_ptr<MiniMap> map_;		//ミニマップ
 
 	int enemyModelId_;
 	std::vector<EnemyBase*> enemys_;

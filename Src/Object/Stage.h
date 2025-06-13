@@ -40,13 +40,15 @@ public:
 
 	void Init(void);
 	void Update(void);
-	void Draw(void);
+	void Draw(void)const;
 
 	// ステージ変更
 	void ChangeStage(NAME type);
 
 	// 対象ステージを取得
 	std::weak_ptr<Planet> GetPlanet(NAME type);
+
+	std::vector<VECTOR> GetPlanetsPositions() const;
 
 private:
 
