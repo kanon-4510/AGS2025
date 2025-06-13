@@ -2,23 +2,25 @@
 
 void EnemyDog::SetParam(void)
 {
-	// 使用メモリ容量と読み込み時間の削減のため
-	// モデルデータをいくつもメモリ上に存在させない
-	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::DOG)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::TOGE)]);
 
 	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	transform_.pos = { 100.0f, -28.0f, 1000.0f };				// 位置の設定
-	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
+	transform_.dir = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
-	speed_ = 03.0f;		// 移動スピード
 
-	//isAlive_ = true;	// 初期は生存状態
+	speed_ = 04.0f;		// 移動スピード
 
-	animAttachNo_ = MV1AttachAnim(transform_.modelId, 10);	// アニメーションをアタッチする
-	animTotalTime_ = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
-	stepAnim_ = 0.0f;	// 再生中のアニメーション時間
-	speedAnim_ = 30.0f;	// アニメーション速度
+	isAlive_ = true;	// 初期は生存状態
+
+	currentAnimType_ = ANIM_TYPE::RUN;	//アニメーションタイプ
+
+	attachNo_ = MV1AttachAnim(transform_.modelId, 0);
+	animAttachNos_[static_cast<int>(currentAnimType_)] = attachNo_;
+	animTotalTimes_[static_cast<int>(currentAnimType_)] = MV1GetAttachAnimTotalTime(transform_.modelId, attachNo_);
+	stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
+	speedAnim_ = 30.0f;
 
 	hp_ = 5;	// HPの設定
 

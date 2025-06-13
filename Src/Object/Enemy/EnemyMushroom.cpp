@@ -23,7 +23,7 @@ void EnemyMushroom::SetParam(void)
 	animTotalTimes_[static_cast<int>(currentAnimType_)] = MV1GetAttachAnimTotalTime(transform_.modelId, attachNo_);
 	stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
 	speedAnim_ = 30.0f;
-	hp_ = hpMax_ = 2;	// HPの設定
+	hp_ = 2;	// HPの設定
 
 	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
