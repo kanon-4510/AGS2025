@@ -25,15 +25,15 @@ void Item::Init(void)
 
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 0.0f, -28.0f, 500.0f };					// 位置の設定
+	transform_.pos = { 0.0f, 10.0f, 500.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = false;
 
-	collisionRadius_ = 50.0f;							// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 100.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
+	baseY_ = transform_.pos.y; // 初期位置を保存
 
-	Update();
+	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 }
 
 void Item::Update(void)
@@ -42,9 +42,12 @@ void Item::Update(void)
 		return;
 	}
 
-	MV1SetScale(transform_.modelId, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-	MV1SetRotationXYZ(transform_.modelId, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-	MV1SetPosition(transform_.modelId, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+	// アニメーションタイマー更新
+	floatTimer_ += floatSpeed_ * DX_PI_F / 180.0f;
+	if (floatTimer_ > DX_PI_F * 2) floatTimer_ -= DX_PI_F * 2;
+
+	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
+	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
 
 	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), transform_.pos);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
@@ -56,15 +59,6 @@ void Item::Update(void)
 		return;
 	}
 
-	/*VECTOR diff1 = VSub(enemy_.GetCollisionPos(), pos_);
-	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
-	if (dis1 < collisionRadius_ * collisionRadius_)
-	{
-		//範囲に入った
-		isAlive_ = false;
-		return;
-	}*/
-
 	Collision();
 }
 
@@ -72,6 +66,11 @@ void Item::Draw(void)
 {
 	if (isAlive_)
 	{
+
+		MV1SetScale(transform_.modelId, transform_.scl);		// ３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
+		MV1SetRotationXYZ(transform_.modelId, transform_.rot);	// ３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
+		MV1SetPosition(transform_.modelId, transform_.pos);		// ３Ｄモデルの位置(引数は、３Ｄ座標)
+
 		// モデルの描画
 		MV1DrawModel(transform_.modelId);
 		DrawDebug();
@@ -144,7 +143,7 @@ void Item::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 120, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+	DrawFormatString(20, 90, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
 

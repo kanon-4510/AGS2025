@@ -1,47 +1,37 @@
+#include <DxLib.h>
 #include <string>
 #include <vector>
 #include "../Application.h"
-#include "../Manager/GravityManager.h"
-#include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
+#include "../Manager/SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
+#include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
-#include "Common/AnimationController.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(int baseModelId)
+EnemyBase::EnemyBase(int baseModelId) : state_(STATE::NONE), scene_(nullptr),
+gravHitPosDown_(AsoUtility::VECTOR_ZERO),
+gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 {
+	animationController_ = nullptr;
+
 	// 敵のモデル
 	baseModelId_[static_cast<int>(TYPE::DOG)] = baseModelId;
-
-	animationController_ = nullptr;
-	//item_ = nullptr;
-	state_ = STATE::NONE;
-
 	scene_ = nullptr;
-
-	// 衝突チェック
-	gravHitPosDown_ = AsoUtility::VECTOR_ZERO;
-	gravHitPosUp_ = AsoUtility::VECTOR_ZERO;
+	item_ = nullptr;
+	state_ = STATE::NONE;
 
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
-
-	// 初期状態関数を必ず設定する！
-	auto it = stateChanges_.find(state_);
-	if (it != stateChanges_.end()) {
-		stateUpdate_ = it->second;
-	}
-	else {
-		stateUpdate_ = []() {};  // デフォルト空関数でクラッシュ回避
-	}
+	stateChanges_.emplace(
+		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
 EnemyBase::~EnemyBase(void)
@@ -52,32 +42,41 @@ EnemyBase::~EnemyBase(void)
 void EnemyBase::Init(void)
 {
 	SetParam();
-	InitLoad();
-	//Update();
+	InitAnimation();
+}
+
+void EnemyBase::InitAnimation(void)
+{
+	speedAnim_ = 0.5f;
+
+	std::string path = Application::PATH_MODEL + "Enemy/";
+
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Yellow.mv1", 20.0f,1);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 20.0f,2);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f,3);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f,4);
+
+	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
 void EnemyBase::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::DOG)]);
+	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(currentType_)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-//transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.quaRotLocal = Quaternion::Euler(0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f);//クォータニオンをいじると向きが変わる
-	transform_.pos = { 00.0f, -28.0f, 2000.0f };				// 位置の設定
-	dir_ = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
+	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(180.0f) , 0.0f);//クォータニオンをいじると向きが変わる
+	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
+	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	speed_ = 3.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
-
-	//animAttachNo_ = MV1AttachAnim(modelId_, 0);	// アニメーションをアタッチする
-	//animTotalTime_ = MV1GetAttachAnimTotalTime(modelId_, animAttachNo_);	// アタッチしているアニメーションの総再生時間を取得する
-	stepAnim_ = 0.0f;	// 再生中のアニメーション時間
-	speedAnim_ = 30.0f;	// アニメーション速度
-
-	hp_ = hpMax_ = 2;	// HPの設定
+	
+	hp_ = 2;	// HPの設定
 
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
@@ -87,7 +86,6 @@ void EnemyBase::SetParam(void)
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
 	capsule_->SetRadius(30.0f);
-
 
 	// 初期状態
 	ChangeState(STATE::PLAY);
@@ -102,35 +100,60 @@ void EnemyBase::Update(void)
 
 	transform_.Update();
 
-	// アニメーション再生
+	//アニメーション再生
 	animationController_->Update();
+
 
 	// 更新ステップ
 	if (stateUpdate_)
 	{
 		stateUpdate_();
 	}
-
 }
 
 void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::EnemyUpdate(void)
+#pragma region StateごとのUpdate
+
+void EnemyBase::UpdatePlay(void)
 {
 	if (isAlive_)
 	{
-		ChasePlayer();
-
 		// 衝突判定
 		Collision();
+
+		ChasePlayer();
+	}
+}
+void EnemyBase::UpdateDeath(void)
+{
+
+	animationController_->Play((int)ANIM_TYPE::DEATH, false);
+
+	if (animationController_->IsEnd())
+	{
+		isAlive_ = false;
+		//アイテムドロップ
+		if (!item_) {
+
+			auto newItem = std::make_shared<Item>(*player_, Transform{});
+			newItem->Init();
+			newItem->SetPos(transform_.pos);
+			newItem->SetIsAlive(true);
+			scene_->AddItem(newItem);
+		}
 	}
 }
 
+
+#pragma endregion
+
+
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_) {
+	if (!player_ || currentAnimType_ != ANIM_TYPE::RUN) {
 		return;
 	}
 	VECTOR playerPos = player_->GetTransform().pos;
@@ -140,15 +163,16 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE)
+	if (distance <= VIEW_RANGE && currentAnimType_ == ANIM_TYPE::RUN)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
 
 		transform_.pos = VAdd(transform_.pos, moveVec);
-		
+
 		// 方向からクォータニオンに変換
 		transform_.quaRot = Quaternion::LookRotation(dirToPlayer);
+		
 	}
 	else
 	{
@@ -176,16 +200,15 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	// モデル反映
-	MV1SetScale(transform_.modelId, transform_.scl);
-	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
-	MV1SetPosition(transform_.modelId, transform_.pos);
-
 	Collision();
 
-	//モデルの描画
+	// モデル反映
+	MV1SetScale(transform_.modelId, transform_.scl);
+	MV1SetPosition(transform_.modelId, transform_.pos);
+
 	MV1DrawModel(transform_.modelId);
 
+	//デッバグ
 	DrawDebug();
 
 	// 視野範囲の描画
@@ -195,6 +218,9 @@ void EnemyBase::Draw(void)
 void EnemyBase::Release(void)
 {
 	MV1DeleteModel(transform_.modelId);
+
+	capsule_.reset();
+
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -222,18 +248,8 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		hp_ = 0;
-		isAlive_ = false;
-		printf("Enemy is dead.\n");
-
-		if (!item_) {
-
-			auto newItem = std::make_shared<Item>(*player_, Transform{});
-			newItem->Init();
-			newItem->SetPos(transform_.pos);
-			newItem->SetIsAlive(true);
-			scene_->AddItem(newItem);
-		}
+		ChangeState(STATE::DEATH);
+		
 	}
 }
 
@@ -279,21 +295,6 @@ void EnemyBase::SetGameScene(GameScene* scene)
 	scene_ = scene;
 }
 
-void EnemyBase::InitLoad(void)
-{
-	std::string path = Application::PATH_MODEL + "Enemy/";
-
-	//modelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow.mv1").c_str());
-
-	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Attack2.mv1", 25.0f);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Damage.mv1", 16.0f);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Die.mv1", 23.0f);
-
-	animationController_->Play((int)ANIM_TYPE::DEATH);
-}
-
 void EnemyBase::ChangeState(STATE state)
 {
 	// 状態変更
@@ -310,17 +311,34 @@ void EnemyBase::ChangeStateNone(void)
 
 void EnemyBase::ChangeStatePlay(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
 }
 
-//void EnemyBase::Rotate(void)
+void EnemyBase::ChangeStateDeath(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
+}
+
+//void EnemyBase::ChangeAnim(ANIM_TYPE type)
 //{
-//	stepRotTime_ -= scnMng_.GetDeltaTime();
-//
-//	// 回転の球面補間
-//	enemyRotY_ = Quaternion::Slerp(
-//		enemyRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
+//	if (currentAnimType_ != type)
+//	{
+//		if (currentAnimType_ != type)
+//		{
+//			MV1DetachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
+//			currentAnimType_ = type;
+//			MV1AttachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
+//			animTotalTimes_[static_cast<int>(currentAnimType_)] =
+//				MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
+//			stepAnims_[static_cast<int>(type)] = 0.0f;
+//		}
+//	}
 //}
+
+void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
+{
+	player_ = player;
+}
 
 void EnemyBase::DrawDebug(void)
 {
@@ -345,6 +363,7 @@ void EnemyBase::DrawDebug(void)
 		v.x, v.y, v.z
 	);
 
+
 	capsule_->Draw();
 	c = capsule_->GetPosDown();
 	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
@@ -357,8 +376,12 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f",speed_);
-	
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
+
+	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",
+		currentAnimType_
+	);
+
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
@@ -405,26 +428,4 @@ void EnemyBase::DrawDebugSearchRange(void)
 	}
 
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
-}
-
-void EnemyBase::Attack(void)
-{
-	VECTOR diff1 = VSub(player_->GetCapsule().GetCenter(), pos_);
-	float dis1 = AsoUtility::SqrMagnitudeF(diff1);
-	if (dis1 < collisionRadius_ * collisionRadius_)
-	{
-		//範囲に入った
-		isAlive_ = false;
-		return;
-	}
-}
-
-//bool EnemyBase::IsEndLandingA(void)
-//{
-//	return false;
-//}
-
-void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
-{
-	player_ = player;
 }

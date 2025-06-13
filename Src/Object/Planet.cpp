@@ -3,7 +3,6 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/GravityManager.h"
 #include "Common/Transform.h"
-#include "WarpStar.h"
 #include "Planet.h"
 
 Planet::Planet(const Stage::NAME& name, const TYPE& type, const Transform& transform)

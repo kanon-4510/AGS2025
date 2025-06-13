@@ -50,6 +50,11 @@ private:
 
 	bool isAlive_;
 
+	float floatTimer_ = 0.0f;  // アニメーション用のタイマー
+	float floatHeight_ = 20.0f; // 上下に動く振幅（高さ）
+	float floatSpeed_ = 4.0f;   // 動きの速さ
+	float baseY_ = 0.0f;
+
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 

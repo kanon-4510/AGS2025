@@ -40,7 +40,7 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// 敵のモデル
-	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Run.mv1").c_str());
+	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Yellow.mv1").c_str());
 	auto enemy = new EnemyBase(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
@@ -62,6 +62,7 @@ void GameScene::Init(void)
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
 	stage_->Init();
+
 	// ステージの初期設定
 	stage_->ChangeStage(Stage::NAME::MAIN_PLANET);
 
