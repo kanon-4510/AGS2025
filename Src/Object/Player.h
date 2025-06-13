@@ -135,6 +135,9 @@ private:
 	// 丸影
 	int imgShadow_;
 
+	// 影描画に使う頂点バッファ
+	std::vector<VERTEX3D> verts_; 
+
 	// 移動スピード
 	float speed_;
 	

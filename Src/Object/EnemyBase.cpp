@@ -147,7 +147,6 @@ void EnemyBase::UpdateDeath(void)
 	}
 }
 
-
 #pragma endregion
 
 
@@ -322,22 +321,6 @@ void EnemyBase::ChangeStateDeath(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
 }
-
-//void EnemyBase::ChangeAnim(ANIM_TYPE type)
-//{
-//	if (currentAnimType_ != type)
-//	{
-//		if (currentAnimType_ != type)
-//		{
-//			MV1DetachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
-//			currentAnimType_ = type;
-//			MV1AttachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
-//			animTotalTimes_[static_cast<int>(currentAnimType_)] =
-//				MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
-//			stepAnims_[static_cast<int>(type)] = 0.0f;
-//		}
-//	}
-//}
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {

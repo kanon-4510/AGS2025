@@ -3,6 +3,9 @@
 
 class EnemyCactus : public EnemyBase
 {
+	//アニメーションロード用
+	void InitAnimation(void) override;
+
 	// パラメータ設定(純粋仮想関数)
-	virtual void SetParam(void);
+	void SetParam(void) override;
 };
