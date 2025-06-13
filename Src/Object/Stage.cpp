@@ -125,7 +125,7 @@ void Stage::MakeMainStage(void)
 		resMng_.LoadModelDuplicate(ResourceManager::SRC::MAIN_PLANET));
 	planetTrans.scl = AsoUtility::VECTOR_ONE;
 	planetTrans.quaRot = Quaternion();
-	planetTrans.pos = { 0.0f, 2670.0f, 0.0f };
+	planetTrans.pos = { 0.0f, 0.0f, 0.0f };
 
 	// “–‚½‚è”»’è(ƒRƒ‰ƒCƒ_)ì¬
 	planetTrans.MakeCollider(Collider::TYPE::STAGE);

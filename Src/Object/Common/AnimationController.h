@@ -12,7 +12,7 @@ public :
 	struct Animation
 	{
 		int model = -1;
-		int attachNo = -1;
+		int attachNo = 1;
 		int animIndex = 0;
 		float speed = 0.0f;
 		float totalTime = 0.0f;
@@ -25,7 +25,7 @@ public :
 	~AnimationController(void);
 
 	// アニメーション追加
-	void Add(int type, const std::string& path, float speed);
+	void Add(int type, const std::string& path, float speed,int number = 1);
 
 	// アニメーション再生
 	void Play(int type, bool isLoop = true, 

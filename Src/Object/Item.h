@@ -51,7 +51,7 @@ private:
 	bool isAlive_;
 
 	float floatTimer_ = 0.0f;  // アニメーション用のタイマー
-	float floatHeight_ = 30.0f; // 上下に動く振幅（高さ）
+	float floatHeight_ = 20.0f; // 上下に動く振幅（高さ）
 	float floatSpeed_ = 4.0f;   // 動きの速さ
 	float baseY_ = 0.0f;
 

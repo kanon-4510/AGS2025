@@ -1,17 +1,17 @@
 #pragma once
 #include <memory>
-#include <map>
+#include <array>
+#include<map>
 #include <functional>
 #include <vector>
-#include <DxLib.h>
 #include "ActorBase.h"
 #include "Item.h" 
 
+class AnimationController;
 class GameScene;
 class Collider;
 class Capsule;
 class Player;
-class AnimationController;
 
 class EnemyBase : public ActorBase
 {
@@ -47,13 +47,14 @@ public:
 	{
 		NONE,
 		PLAY,
-		DEAD,
+		DEATH,
 		MAX
 	};
 
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
+		IDLE,
 		RUN,
 		ATTACK,
 		DAMAGE,
@@ -61,6 +62,7 @@ public:
 		MAX
 	};
 
+	//EnemyBase(){};	// コンストラクタ
 	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
@@ -95,19 +97,14 @@ public:
 
 protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
-	int modelId_;	// 敵のモデルID
+	TYPE currentType_;  // 自身のタイプ（例：DOG, GHOST など）
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Item>item_;
 	GameScene* scene_;
 
-	VECTOR jumpPow_;// ジャンプ量
 	float speed_;	// 移動速度
-	VECTOR scl_;	// 大きさ
-	VECTOR rot_;	// 角度
-	VECTOR pos_;	// 表示座標
-	VECTOR dir_;	// 移動方向
-
+	
 	VECTOR moveDir_;	// 移動方向
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
@@ -116,27 +113,21 @@ protected:
 
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 
-	// 回転
-	Quaternion enemyRotY_;
-	Quaternion goalQuaRot_;
-	float stepRotTime_;
-
 	int hp_;	// 体力
 	int hpMax_;	// 体力最大値
 
 	bool isAlive_;	// 生存判定
-
-	bool isAttack_;	//攻撃の判定
 
 	STATE state_;	//状態管理
 
 	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
 	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
 
-	int animAttachNo_;		// アニメーションをアタッチ番号
-	float animTotalTime_;	// アニメーションの総再生時間
-	float stepAnim_;		// 再生中のアニメーション時間
-	float speedAnim_;		// アニメーション速度
+	// アニメーション
+	std::unique_ptr<AnimationController> animationController_;
+	
+	float speedAnim_;                              // 再生速度（共通）
+	ANIM_TYPE currentAnimType_;                    // 現在再生中のアニメーション種別
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
@@ -149,22 +140,24 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	std::unique_ptr<AnimationController> animationController_;// アニメーション
-
-	void InitLoad(void); //アニメーションロード用
+	void InitAnimation(void); //アニメーションロード用
 
 	void UpdateNone(void);			// 更新ステップ
-	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
-	//攻撃モーション
-	void Attack(void);	
+	
+	void Attack(void);	//攻撃モーション
+
 	// 状態遷移
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
+	void ChangeStateDeath(void);
 
-	void Rotate(void);	 //回転
+	
+	void UpdateAnim(void);//アニメーションアップデート
 
 	void Collision(void);// 衝突判定
 };

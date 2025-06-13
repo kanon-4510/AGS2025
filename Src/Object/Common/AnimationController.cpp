@@ -24,7 +24,7 @@ AnimationController::~AnimationController(void)
 	}
 }
 
-void AnimationController::Add(int type, const std::string& path, float speed)
+void AnimationController::Add(int type, const std::string& path, float speed, int number)
 {
 
 	Animation anim;
@@ -32,6 +32,7 @@ void AnimationController::Add(int type, const std::string& path, float speed)
 	anim.model = MV1LoadModel(path.c_str());
 	anim.animIndex = type;
 	anim.speed = speed;
+	anim.attachNo = number;
 
 	if (animations_.count(type) == 0)
 	{
@@ -73,8 +74,12 @@ void AnimationController::Play(int type, bool isLoop,
 		if (MV1GetAnimNum(playAnim_.model) > 1)
 		{
 			// アニメーションが複数保存されていたら、番号1を指定
-			animIdx = 1;
+			//animIdx = 1;
+			animIdx = animations_[type].attachNo;
 		}
+		//ここに何か追加
+
+
 		playAnim_.attachNo = MV1AttachAnim(modelId_, animIdx, playAnim_.model);
 
 		// アニメーション総時間の取得
