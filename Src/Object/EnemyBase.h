@@ -4,15 +4,14 @@
 #include<map>
 #include <functional>
 #include <vector>
-#include <DxLib.h>
 #include "ActorBase.h"
 #include "Item.h" 
 
+class AnimationController;
 class GameScene;
 class Collider;
 class Capsule;
 class Player;
-//class AnimationController;
 
 class EnemyBase : public ActorBase
 {
@@ -55,7 +54,7 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
-		Idel,
+		IDLE,
 		RUN,
 		ATTACK,
 		DAMAGE,
@@ -64,7 +63,7 @@ public:
 	};
 
 	//EnemyBase(){};	// コンストラクタ
-	EnemyBase(TYPE type, int baseModelId);	// コンストラクタ
+	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
 	virtual void Init(void);		// 初期処理(最初の１回のみ実行)
@@ -116,22 +115,16 @@ protected:
 
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 
-	// 回転
-	Quaternion enemyRotY_;
-	Quaternion goalQuaRot_;
-	float stepRotTime_;
-
 	int hp_;	// 体力
 	bool isAlive_;	// 生存判定
-	bool isAttack_;	//攻撃の判定
+
+	STATE state_;	//状態管理
 
 	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
 	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
 
-	int attachNo_;								   // アニメーションのアタッチ番号
-	std::array<int, int(ANIM_TYPE::MAX)> animAttachNos_;       // 各アニメーションのアタッチ番号
-	std::array<float, int(ANIM_TYPE::MAX)> animTotalTimes_;    // 各アニメーションの長さ
-	std::array<float, int(ANIM_TYPE::MAX)> stepAnims_;         // 各アニメーションの現在時間
+	// アニメーション
+	std::unique_ptr<AnimationController> animationController_;
 	
 	float speedAnim_;                              // 再生速度（共通）
 	ANIM_TYPE currentAnimType_;                    // 現在再生中のアニメーション種別
@@ -147,24 +140,24 @@ protected:
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
 
-	//std::unique_ptr<AnimationController> animationController_;// アニメーション
-
-	void InitLoad(void); //アニメーションロード用
+	void InitAnimation(void); //アニメーションロード用
 
 	void UpdateNone(void);			// 更新ステップ
-	virtual void EnemyUpdate(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
-	//攻撃モーション
-	void Attack(void);	
+	
+	void Attack(void);	//攻撃モーション
+
 	// 状態遷移
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
-	void ChangeAnim(ANIM_TYPE type);
+	void ChangeStateDeath(void);
 
-	//アニメーションアップデート
-	void UpdateAnim(void);
+	
+	void UpdateAnim(void);//アニメーションアップデート
 
 	void Collision(void);// 衝突判定
 };

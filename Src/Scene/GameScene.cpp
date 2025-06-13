@@ -46,8 +46,8 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// “G‚Ìƒ‚ƒfƒ‹
-	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/mimic/mimic.mv1").c_str());
-	auto enemy = new EnemyBase(EnemyBase::TYPE::MIMIC,enemyModelId_);
+	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Yellow.mv1").c_str());
+	auto enemy = new EnemyBase(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
 

@@ -60,7 +60,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
 
 	// 最初の惑星
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Stage/s.mv1");
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Stage/Stage.mv1");
 	resourcesMap_.emplace(SRC::MAIN_PLANET, std::move(res));
 
 	// 足煙
@@ -71,10 +71,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Congratulations.png");
 	resourcesMap_.emplace(SRC::CLEAR, std::move(res));
 
-	//敵
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Yellow.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
-
 	//水
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
 	resourcesMap_.emplace(SRC::ITEM, std::move(res));
@@ -82,6 +78,36 @@ void ResourceManager::Init(void)
 	//木
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Wood/1.mv1");
 	resourcesMap_.emplace(SRC::WOOD, std::move(res));
+
+	//エネミー
+	//----------------------------------
+	//犬
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Yellow/Yellow.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//サボテン
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/cactus/cactus.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//ミミック
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/mimic/mimic.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//キノコ
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/mushroom/mushroom.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//玉ねぎ
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/onion/onion.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));//敵
+	
+	//トゲゾー
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/thorn/thorn.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+
+	//ウィルス
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/virus/vrius.mv1");
+	resourcesMap_.emplace(SRC::ITEM, std::move(res));
 }
 
 void ResourceManager::Release(void)

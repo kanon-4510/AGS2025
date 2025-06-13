@@ -18,10 +18,6 @@ void EnemyVirus::SetParam(void)
 
 	currentAnimType_ = ANIM_TYPE::RUN;	//アニメーションタイプ
 
-	attachNo_ = MV1AttachAnim(transform_.modelId, 0);
-	animAttachNos_[static_cast<int>(currentAnimType_)] = attachNo_;
-	animTotalTimes_[static_cast<int>(currentAnimType_)] = MV1GetAttachAnimTotalTime(transform_.modelId, attachNo_);
-	stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
 	speedAnim_ = 30.0f;
 
 	hp_ = 4;	// HPの設定

@@ -101,7 +101,7 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
-	enemy_ = new EnemyBase(EnemyBase::TYPE::MAX, 0); // OK
+	enemy_ = new EnemyBase(0); // OK
 	enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// ‰Šúó‘Ô

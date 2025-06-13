@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Enemy\Dog.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyCactus.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyDog.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyMimic.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Enemy\Dog.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyCactus.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyDog.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyMimic.h" />
