@@ -11,21 +11,12 @@ void EnemyCactus::SetParam(void)
 	transform_.pos = { 100.0f, -28.0f, 1000.0f };				// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, -1.0f };							// 右方向に移動する
 
-
-	/// <summary>
-	/// なんか無理かも
-	/// </summary>
-	/// <param name=""></param>
 	speed_ = 01.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
 
 	currentAnimType_ = ANIM_TYPE::RUN;	//アニメーションタイプ
 
-	attachNo_ = MV1AttachAnim(transform_.modelId, 0);
-	animAttachNos_[static_cast<int>(currentAnimType_)] = attachNo_;
-	animTotalTimes_[static_cast<int>(currentAnimType_)] = MV1GetAttachAnimTotalTime(transform_.modelId, attachNo_);
-	stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
 	speedAnim_ = 30.0f;
 
 	hp_ = hpMax_ = 2;	// HPの設定

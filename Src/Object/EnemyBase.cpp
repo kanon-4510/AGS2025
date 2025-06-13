@@ -6,19 +6,21 @@
 #include "../Manager/SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
+#include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(TYPE type, int baseModelId) : state_(STATE::NONE), scene_(nullptr),
+EnemyBase::EnemyBase(int baseModelId) : state_(STATE::NONE), scene_(nullptr),
 gravHitPosDown_(AsoUtility::VECTOR_ZERO),
-gravHitPosUp_(AsoUtility::VECTOR_ZERO),
-currentType_(type)
+gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 {
+	animationController_ = nullptr;
+
 	// 敵のモデル
-	baseModelId_[static_cast<int>(type)] = baseModelId;
+	baseModelId_[static_cast<int>(TYPE::DOG)] = baseModelId;
 	scene_ = nullptr;
 	item_ = nullptr;
 	state_ = STATE::NONE;
@@ -28,9 +30,8 @@ currentType_(type)
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
-
-	// 状態更新関数セット
-	stateUpdate_ = stateChanges_.count(state_) ? stateChanges_[state_] : []() {};
+	stateChanges_.emplace(
+		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
 EnemyBase::~EnemyBase(void)
@@ -41,7 +42,23 @@ EnemyBase::~EnemyBase(void)
 void EnemyBase::Init(void)
 {
 	SetParam();
-	InitLoad();
+	InitAnimation();
+}
+
+void EnemyBase::InitAnimation(void)
+{
+	speedAnim_ = 0.5f;
+
+	std::string path = Application::PATH_MODEL + "Enemy/";
+
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Yellow.mv1", 20.0f,1);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 20.0f,2);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f,3);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f,4);
+
+	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
 void EnemyBase::SetParam(void)
@@ -51,7 +68,7 @@ void EnemyBase::SetParam(void)
 	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(currentType_)]);
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF (0.0f),AsoUtility::Deg2RadF( 0.0f) , 0.0f);//クォータニオンをいじると向きが変わる
+	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(180.0f) , 0.0f);//クォータニオンをいじると向きが変わる
 	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
@@ -74,26 +91,6 @@ void EnemyBase::SetParam(void)
 	ChangeState(STATE::PLAY);
 }
 
-void EnemyBase::InitLoad(void)
-{
-
-	//// アニメーションのアタッチと初期化
-	//for (int i = 0; i < static_cast<int>(ANIM_TYPE::MAX); ++i) {
-	//	animAttachNos_[i] = MV1AttachAnim(transform_.modelId, i);
-	//	if (animAttachNos_[i] == -1) {
-	//		printf("アニメーション%dのアタッチに失敗しました。\n", i);
-	//		continue;
-	//	}
-	//	animTotalTimes_[i] = MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[i]);
-	//	stepAnims_[i] = 0.0f;
-	//}
-	speedAnim_ = 0.5f;
-
-	// 初期アニメーション状態
-	ChangeAnim(ANIM_TYPE::ATTACK);
-	//currentAnimType_ = ANIM_TYPE::Idel;
-}
-
 void EnemyBase::Update(void)
 {
 	if (!isAlive_)
@@ -103,24 +100,8 @@ void EnemyBase::Update(void)
 
 	transform_.Update();
 
-	ANIM_TYPE anim = currentAnimType_;
-
-	if (animAttachNos_[static_cast<int>(anim)] == -1 || animTotalTimes_[static_cast<int>(anim)] == 0.0f) {
-		return;
-	}
-		
-
-	stepAnims_[static_cast<int>(anim)] += speedAnim_;
-	if (stepAnims_[static_cast<int>(anim)] > animTotalTimes_[static_cast<int>(anim)]) {
-		stepAnims_[static_cast<int>(anim)] = 0.0f;
-	}
-
-	// アニメーションの再生時間を反映
-	MV1SetAttachAnimTime(
-		transform_.modelId,
-		animAttachNos_[static_cast<int>(anim)],
-		stepAnims_[static_cast<int>(anim)]
-	);
+	//アニメーション再生
+	animationController_->Update();
 
 
 	// 更新ステップ
@@ -134,20 +115,45 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::EnemyUpdate(void)
+#pragma region StateごとのUpdate
+
+void EnemyBase::UpdatePlay(void)
 {
 	if (isAlive_)
 	{
 		// 衝突判定
 		Collision();
 
-		//ChasePlayer();
+		ChasePlayer();
+	}
+}
+void EnemyBase::UpdateDeath(void)
+{
+
+	animationController_->Play((int)ANIM_TYPE::DEATH, false);
+
+	if (animationController_->IsEnd())
+	{
+		isAlive_ = false;
+		//アイテムドロップ
+		if (!item_) {
+
+			auto newItem = std::make_shared<Item>(*player_, Transform{});
+			newItem->Init();
+			newItem->SetPos(transform_.pos);
+			newItem->SetIsAlive(true);
+			scene_->AddItem(newItem);
+		}
 	}
 }
 
+
+#pragma endregion
+
+
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_) {
+	if (!player_ || currentAnimType_ != ANIM_TYPE::RUN) {
 		return;
 	}
 	VECTOR playerPos = player_->GetTransform().pos;
@@ -157,7 +163,7 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE)
+	if (distance <= VIEW_RANGE && currentAnimType_ == ANIM_TYPE::RUN)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -194,23 +200,15 @@ void EnemyBase::Draw(void)
 		return;
 	}
 
-	// モデル反映
-	MV1SetScale(transform_.modelId, transform_.scl);
-	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
-	MV1SetPosition(transform_.modelId, transform_.pos);
-
 	Collision();
 
 	// モデル反映
 	MV1SetScale(transform_.modelId, transform_.scl);
-	//MV1SetRotationXYZ(transform_.modelId, transform_.rot);
-	//MV1SetRotationQuaternion(transform_.modelId, transform_.quaRotLocal);
 	MV1SetPosition(transform_.modelId, transform_.pos);
-
-	//Collision();
 
 	MV1DrawModel(transform_.modelId);
 
+	//デッバグ
 	DrawDebug();
 
 	// 視野範囲の描画
@@ -223,10 +221,6 @@ void EnemyBase::Release(void)
 
 	capsule_.reset();
 
-	// アニメーション情報のクリア
-	animAttachNos_.fill(0.0f);
-	animTotalTimes_.fill(0.0f);
-	stepAnims_.fill(0.0f);
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -254,18 +248,8 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		hp_ = 0;
-		isAlive_ = false;
-		printf("Enemy is dead.\n");
-
-		if (!item_) {
-
-			auto newItem = std::make_shared<Item>(*player_, Transform{});
-			newItem->Init();
-			newItem->SetPos(transform_.pos);
-			newItem->SetIsAlive(true);
-			scene_->AddItem(newItem);
-		}
+		ChangeState(STATE::DEATH);
+		
 	}
 }
 
@@ -277,21 +261,6 @@ const Capsule& EnemyBase::GetCapsule(void) const
 const Item& EnemyBase::GetItem(void) const
 {
 	return *item_;
-}
-
-void EnemyBase::UpdateAnim(void)
-{
-	
-
-	// 毎フレーム Update（EnemyBase::Update 等）
-	stepAnims_[static_cast<int>(currentAnimType_)] += speedAnim_;
-	if (stepAnims_[static_cast<int>(currentAnimType_)] > animTotalTimes_[static_cast<int>(currentAnimType_)]) {
-		stepAnims_[static_cast<int>(currentAnimType_)] = 0.0f;
-	}
-
-	// アニメ時間・ブレンドを設定
-	MV1SetAttachAnimTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)], stepAnims_[static_cast<int>(currentAnimType_)]);
-	MV1SetAttachAnimBlendRate(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)], 1.0f);
 }
 
 void EnemyBase::Collision(void)
@@ -342,20 +311,33 @@ void EnemyBase::ChangeStateNone(void)
 
 void EnemyBase::ChangeStatePlay(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::EnemyUpdate, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
 }
 
-void EnemyBase::ChangeAnim(ANIM_TYPE type)
+void EnemyBase::ChangeStateDeath(void)
 {
-	if (currentAnimType_ != type)
-	{
-		MV1DetachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
-		currentAnimType_ = type;
-		MV1AttachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
-		animTotalTimes_[static_cast<int>(currentAnimType_)] =
-			MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
-		stepAnims_[static_cast<int>(type)] = 0.0f;
-	}
+	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
+}
+
+//void EnemyBase::ChangeAnim(ANIM_TYPE type)
+//{
+//	if (currentAnimType_ != type)
+//	{
+//		if (currentAnimType_ != type)
+//		{
+//			MV1DetachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
+//			currentAnimType_ = type;
+//			MV1AttachAnim(transform_.modelId, static_cast<int>(currentAnimType_));
+//			animTotalTimes_[static_cast<int>(currentAnimType_)] =
+//				MV1GetAttachAnimTotalTime(transform_.modelId, animAttachNos_[static_cast<int>(currentAnimType_)]);
+//			stepAnims_[static_cast<int>(type)] = 0.0f;
+//		}
+//	}
+//}
+
+void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
+{
+	player_ = player;
 }
 
 void EnemyBase::DrawDebug(void)
@@ -381,6 +363,7 @@ void EnemyBase::DrawDebug(void)
 		v.x, v.y, v.z
 	);
 
+
 	capsule_->Draw();
 	c = capsule_->GetPosDown();
 	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
@@ -393,11 +376,10 @@ void EnemyBase::DrawDebug(void)
 		s.x, s.y, s.z
 	);
 
-	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f",speed_);
-	
-	DrawFormatString(20, 300, 0xffffff, "AnimTime: %.2f / %.2f",
-		stepAnims_[static_cast<int>(currentAnimType_)],
-		animTotalTimes_[static_cast<int>(currentAnimType_)]
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
+
+	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",
+		currentAnimType_
 	);
 
 }
@@ -446,9 +428,4 @@ void EnemyBase::DrawDebugSearchRange(void)
 	}
 
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
-}
-
-void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
-{
-	player_ = player;
 }
