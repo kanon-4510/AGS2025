@@ -29,9 +29,9 @@ gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
-		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
+		STATE::ALIVE, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
-		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::WATER, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
 EnemyBase::~EnemyBase(void)
@@ -253,7 +253,7 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::DEATH);
+		ChangeState(STATE::WATER);
 		
 	}
 }
