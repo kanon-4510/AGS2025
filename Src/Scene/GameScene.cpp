@@ -14,6 +14,7 @@
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "../Object/Item.h"
+#include "MiniMap.h"
 #include "GameScene.h"
 
 //担当いけだ
@@ -69,6 +70,8 @@ void GameScene::Init(void)
 	skyDome_ = std::make_unique<SkyDome>(player_->GetTransform());
 	skyDome_->Init();
 
+	map_ = std::make_unique<MiniMap>(16000.0f, 300);
+
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
 }
@@ -121,6 +124,8 @@ void GameScene::Draw(void)
 		enemy->Draw();
 	}
 
+	DrawMiniMap();
+	
 	// ヘルプ
 	DrawFormatString(30, 500, 0x000000, "移動　　：WASD");
 	DrawFormatString(30, 520, 0x000000, "カメラ　：矢印キー");
@@ -128,6 +133,64 @@ void GameScene::Draw(void)
 	DrawFormatString(30, 560, 0x000000, "ジャンプ：Space");
 	DrawFormatString(30, 580, 0x000000, "攻撃　　：Eキー");
 
+}
+
+void GameScene::DrawMiniMap(void)
+{
+	if (!map_) return;
+
+	// プレイヤーの座標
+	MapVector2 playerPos;
+	playerPos.x = player_->GetTransform().pos.x;
+	playerPos.z = player_->GetTransform().pos.z;
+
+	// 敵の座標リストを作成
+	std::vector<MapVector2> enemyPositions;
+	for (const auto& enemy : enemys_)
+	{
+		if (enemy->IsAlive())
+		{
+			MapVector2 e;
+			e.x = enemy->GetTransform().pos.x;
+			e.z = enemy->GetTransform().pos.z;
+			enemyPositions.push_back(e);
+		}
+	}
+
+	// アイテムの座標リストを作成
+	std::vector<MapVector2> itemPositions;
+	for (const auto& item : items_)
+	{
+		if (item->GetIsAlive())
+		{
+			MapVector2 i;
+			i.x = item->GetTransform().pos.x;
+			i.z = item->GetTransform().pos.z;
+			itemPositions.push_back(i);
+		}
+	}
+
+	// ミニマップ描画呼び出し
+	map_->Draw(playerPos, enemyPositions, itemPositions);
+
+	/*if (!map_) return;
+
+	map_->SetPlayerPosition(player_->GetTransform().pos);
+
+	map_->BeginRender();
+
+	// ミニマップに表示したいオブジェクトだけ描画
+	stage_->Draw();             // 地形
+	tree_->Draw();              // 木
+	player_->Draw();            // プレイヤー
+	for (auto enemy : enemys_) {
+		enemy->Draw();
+	}
+
+	map_->EndRender();
+
+	// ミニマップを画面右上に表示
+	map_->Draw(1024, 0);*/
 }
 
 void GameScene::AddItem(std::shared_ptr<Item> item)
