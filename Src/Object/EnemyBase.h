@@ -66,11 +66,12 @@ public:
 	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
-	virtual void Init(void);		// 初期処理(最初の１回のみ実行)
-	virtual void SetParam(void);	// パラメータ設定(純粋仮想関数)
-	virtual void Update(void);		// 更新処理(毎フレーム実行)
-	virtual void Draw(void);		// 描画処理(毎フレーム実行)
-	virtual void Release(void);		// 解放処理(最後の１回のみ実行)
+	virtual void Init(void);		 // 初期処理(最初の１回のみ実行)
+	virtual void InitAnimation(void);//アニメーションロード用
+	virtual void SetParam(void);	 // パラメータ設定(純粋仮想関数)
+	virtual void Update(void);		 // 更新処理(毎フレーム実行)
+	virtual void Draw(void);		 // 描画処理(毎フレーム実行)
+	virtual void Release(void);		 // 解放処理(最後の１回のみ実行)
 
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
@@ -139,8 +140,6 @@ protected:
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;
 	VECTOR gravHitPosUp_;
-
-	void InitAnimation(void); //アニメーションロード用
 
 	void UpdateNone(void);			// 更新ステップ
 	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
