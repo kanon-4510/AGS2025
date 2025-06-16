@@ -83,31 +83,31 @@ void ResourceManager::Init(void)
 	//----------------------------------
 	//犬
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Yellow/Yellow.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::DOG, std::move(res));
 
 	//サボテン
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/cactus/cactus.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Cactus/Cactus.mv1");
+	resourcesMap_.emplace(SRC::SABO, std::move(res));
 
 	//ミミック
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/mimic/mimic.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::MIMIC, std::move(res));
 
 	//キノコ
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/mushroom/mushroom.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::MUSH, std::move(res));
 
 	//玉ねぎ
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/onion/onion.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));//敵
+	resourcesMap_.emplace(SRC::ONION, std::move(res));//敵
 	
 	//トゲゾー
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/thorn/thorn.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::TOGE, std::move(res));
 
 	//ウィルス
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/virus/vrius.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::VIRUS, std::move(res));
 }
 
 void ResourceManager::Release(void)

@@ -4,6 +4,9 @@
 
 class EnemyOnion : public EnemyBase
 {
+public:
+	EnemyOnion(int baseModelId);
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 

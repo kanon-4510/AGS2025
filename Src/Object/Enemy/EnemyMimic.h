@@ -4,6 +4,9 @@
 
 class EnemyMimic : public EnemyBase
 {
+public:
+	EnemyMimic(int baseModelId);
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 

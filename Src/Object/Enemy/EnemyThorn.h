@@ -4,6 +4,9 @@
 
 class EnemyThorn : public EnemyBase
 {
+public:
+	EnemyThorn(int baseModelId);
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 
