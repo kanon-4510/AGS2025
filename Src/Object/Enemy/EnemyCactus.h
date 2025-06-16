@@ -3,6 +3,9 @@
 
 class EnemyCactus : public EnemyBase
 {
+public:
+	EnemyCactus(int baseModelId);
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 

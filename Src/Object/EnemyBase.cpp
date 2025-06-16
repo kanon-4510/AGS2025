@@ -41,13 +41,13 @@ EnemyBase::~EnemyBase(void)
 
 void EnemyBase::Init(void)
 {
-	SetParam();
+ 	SetParam();
 	InitAnimation();
 }
 
 void EnemyBase::InitAnimation(void)
 {
-	speedAnim_ = 0.5f;
+	/*speedAnim_ = 0.5f;
 
 	std::string path = Application::PATH_MODEL + "Enemy/";
 
@@ -58,7 +58,7 @@ void EnemyBase::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f,3);
 	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f,4);
 
-	animationController_->Play((int)ANIM_TYPE::RUN);
+	animationController_->Play((int)ANIM_TYPE::RUN);*/
 }
 
 void EnemyBase::SetParam(void)
@@ -111,11 +111,11 @@ void EnemyBase::Update(void)
 	}
 }
 
+#pragma region State‚²‚Æ‚ÌUpdate
+
 void EnemyBase::UpdateNone(void)
 {
 }
-
-#pragma region State‚²‚Æ‚ÌUpdate
 
 void EnemyBase::UpdatePlay(void)
 {

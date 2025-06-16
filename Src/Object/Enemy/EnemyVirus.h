@@ -4,6 +4,9 @@
 
 class EnemyVirus : public EnemyBase
 {
+public:
+	EnemyVirus(int baseModelId);
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 

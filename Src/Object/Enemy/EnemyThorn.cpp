@@ -1,6 +1,13 @@
 #include "EnemyThorn.h"
 #include "../../Application.h"
 #include "../Common/AnimationController.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Utility/AsoUtility.h"
+#include "../Common/Capsule.h"
+
+EnemyThorn::EnemyThorn(int baseModelId):EnemyBase(baseModelId)
+{
+}
 
 void EnemyThorn::InitAnimation(void)
 {
@@ -22,7 +29,7 @@ void EnemyThorn::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::TOGE)]);
+	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::TOGE));
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
@@ -36,4 +43,13 @@ void EnemyThorn::SetParam(void)
 
 	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+
+	// カプセルコライダ
+	capsule_ = std::make_unique<Capsule>(transform_);
+	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
+	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
+	capsule_->SetRadius(30.0f);
+
+	// 初期状態
+	ChangeState(STATE::PLAY);
 }

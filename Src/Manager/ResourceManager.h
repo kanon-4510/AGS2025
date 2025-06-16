@@ -35,9 +35,16 @@ public:
 		TANK_BODY,
 		TANK_BARREL,
 		TANK_WHEEL,
-		ENEMY,
 		ITEM,
 		WOOD,
+		//エネミー
+		DOG,
+		SABO,
+		MIMIC,
+		MUSH,
+		ONION,
+		TOGE,
+		VIRUS,
 	};
 
 	// 明示的にインステンスを生成する

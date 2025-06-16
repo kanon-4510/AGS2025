@@ -10,6 +10,7 @@
 #include "../Object/SkyDome.h"
 #include "../Object/Stage.h"
 #include "../Object/Player.h"
+
 #include "../Object/EnemyBase.h"
 #include "../Object/Enemy/EnemyCactus.h"
 #include "../Object/Enemy/EnemyDog.h"
@@ -47,8 +48,8 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// “G‚Ìƒ‚ƒfƒ‹
-	enemyModelId_ = MV1LoadModel((Application::PATH_MODEL + "Enemy/Yellow/Yellow.mv1").c_str());
-	auto enemy = new EnemyBase(enemyModelId_);
+	//auto enemy = new EnemyMimic(enemyModelId_);
+	auto enemy = new EnemyCactus(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
 
