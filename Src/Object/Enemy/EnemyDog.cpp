@@ -1,15 +1,16 @@
-#include "EnemyVirus.h"
+#include "EnemyDog.h"
 #include "../../Application.h"
 #include "../Common/AnimationController.h"
 #include "../../Manager/ResourceManager.h"
-#include "../../Utility/AsoUtility.h"
-//#include "../Common/Capsule.h"
+#include "../../Utility/AsoUtility.h"/*
+#include "../Common/Capsule.h"*/
 
-EnemyVirus::EnemyVirus():EnemyBase()
+EnemyDog::EnemyDog() :EnemyBase()
 {
+
 }
 
-void EnemyVirus::InitAnimation(void)
+void EnemyDog::InitAnimation(void)
 {
 	speedAnim_ = 0.5f;
 
@@ -17,22 +18,25 @@ void EnemyVirus::InitAnimation(void)
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "virus/virus.mv1", 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "virus/virus.mv1", 20.0f, 2);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "virus/virus.mv1", 20.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "virus/virus.mv1", 20.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "mimic/mimic.mv1", 20.0f, 1);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "mimic/mimic.mv1", 20.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "mimic/mimic.mv1", 20.0f, 3);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "mimic/mimic.mv1", 20.0f, 4);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
-void EnemyVirus::SetParam(void)
+void EnemyDog::SetParam(void)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
-	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::VIRUS));
+	//transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::MIMIC)]);
+	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MIMIC));
+
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	transform_.pos = { 00.0f, 0.0f, 2000.0f };					// 位置の設定
+	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f), AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる
+	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	speed_ = 3.0f;		// 移動スピード
