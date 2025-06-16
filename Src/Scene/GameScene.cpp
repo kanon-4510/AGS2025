@@ -16,6 +16,8 @@
 #include "../Object/Enemy/EnemyMimic.h"
 #include "../Object/Enemy/EnemyMushroom.h"
 #include "../Object/Enemy/EnemyOnion.h"
+#include "../Object/Enemy/Enemythorn.h"
+#include "../Object/Enemy/EnemyVirus.h"
 
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
@@ -47,7 +49,7 @@ void GameScene::Init(void)
 
 	// “G‚Ìƒ‚ƒfƒ‹
 	//auto enemy = new EnemyMimic(enemyModelId_);
-	auto enemy = new EnemyCactus(enemyModelId_);
+	auto enemy = new EnemyVirus(enemyModelId_);
 	enemy->Init();
 	enemys_.push_back(enemy);
 
