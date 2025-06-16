@@ -10,7 +10,7 @@
 class AnimationController;
 class GameScene;
 class Collider;
-class Capsule;
+//class Capsule;
 class Player;
 
 class EnemyBase : public ActorBase
@@ -62,8 +62,8 @@ public:
 		MAX
 	};
 
-	EnemyBase(){};	// コンストラクタ
-	EnemyBase(int baseModelId);	// コンストラクタ
+	//EnemyBase(){};	// コンストラクタ
+	EnemyBase();	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
 	virtual void Init(void);		 // 初期処理(最初の１回のみ実行)
@@ -82,7 +82,7 @@ public:
 
 	void Damage(int damage);	// ダメージを与える
 
-	const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+	//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 	
 	const Item& GetItem(void) const;	// アイテム取得
 
@@ -91,6 +91,8 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetGameScene(GameScene* scene);
+
+	STATE GetState(void);
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
@@ -134,7 +136,7 @@ protected:
 
 	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
-	std::unique_ptr<Capsule> capsule_;//カプセル
+	//std::unique_ptr<Capsule> capsule_;//カプセル
 
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;

@@ -49,7 +49,7 @@ void GameScene::Init(void)
 
 	// “G‚Ìƒ‚ƒfƒ‹
 	//auto enemy = new EnemyMimic(enemyModelId_);
-	auto enemy = new EnemyVirus(enemyModelId_);
+	auto enemy = new EnemyVirus();
 	enemy->Init();
 	enemys_.push_back(enemy);
 

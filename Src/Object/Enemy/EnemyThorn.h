@@ -5,7 +5,7 @@
 class EnemyThorn : public EnemyBase
 {
 public:
-	EnemyThorn(int baseModelId);
+	EnemyThorn();
 
 	//アニメーションロード用
 	void InitAnimation(void) override;

@@ -6,21 +6,21 @@
 #include "../Manager/SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
-#include "Common/AnimationController.h"
-#include "Common/Capsule.h"
+#include "Common/AnimationController.h"/*
+#include "Common/Capsule.h"*/
 #include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(int baseModelId) : scene_(nullptr),
+EnemyBase::EnemyBase() : scene_(nullptr),
 gravHitPosDown_(AsoUtility::VECTOR_ZERO),
 gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 {
 	animationController_ = nullptr;
 
 	// 敵のモデル
-	baseModelId_[static_cast<int>(TYPE::DOG)] = baseModelId;
+	baseModelId_[static_cast<int>(TYPE::DOG)];
 	scene_ = nullptr;
 	item_ = nullptr;
 	state_ = STATE::NONE;
@@ -152,7 +152,7 @@ void EnemyBase::UpdateDeath(void)
 
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_ || currentAnimType_ != ANIM_TYPE::RUN) {
+	if (!player_ /*|| currentAnimType_ != ANIM_TYPE::RUN*/) {
 		return;
 	}
 	VECTOR playerPos = player_->GetTransform().pos;
@@ -162,7 +162,7 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE && currentAnimType_ == ANIM_TYPE::RUN)
+	if (distance <= VIEW_RANGE)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -218,7 +218,7 @@ void EnemyBase::Release(void)
 {
 	MV1DeleteModel(transform_.modelId);
 
-	capsule_.reset();
+	//capsule_.reset();
 
 }
 
@@ -257,10 +257,10 @@ void EnemyBase::Damage(int damage)
 	}
 }
 
-const Capsule& EnemyBase::GetCapsule(void) const
-{
-	return *capsule_;
-}
+//const Capsule& EnemyBase::GetCapsule(void) const
+//{
+//	return *capsule_;
+//}
 
 const Item& EnemyBase::GetItem(void) const
 {
@@ -297,6 +297,11 @@ float EnemyBase::GetCollisionRadius(void)
 void EnemyBase::SetGameScene(GameScene* scene)
 {
 	scene_ = scene;
+}
+
+EnemyBase::STATE EnemyBase::GetState(void)
+{
+	return state_;
 }
 
 void EnemyBase::ChangeState(STATE state)
@@ -348,9 +353,11 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
 
-	capsule_->Draw();
+	/*capsule_->Draw();
 	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);
+	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
+		c.x, c.y, c.z
+	);*/
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
