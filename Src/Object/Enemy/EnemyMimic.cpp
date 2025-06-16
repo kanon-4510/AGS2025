@@ -3,9 +3,9 @@
 #include "../Common/AnimationController.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Utility/AsoUtility.h"
-#include "../Common/Capsule.h"
+//#include "../Common/Capsule.h"
 
-EnemyMimic::EnemyMimic(int baseModelId):EnemyBase(baseModelId)
+EnemyMimic::EnemyMimic():EnemyBase()
 {
 
 }
@@ -48,11 +48,11 @@ void EnemyMimic::SetParam(void)
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
-	// カプセルコライダ
-	capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
-	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
-	capsule_->SetRadius(30.0f);
+	//// カプセルコライダ
+	//capsule_ = std::make_unique<Capsule>(transform_);
+	//capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
+	//capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
+	//capsule_->SetRadius(30.0f);
 
 	// 初期状態
 	ChangeState(STATE::PLAY);

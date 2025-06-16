@@ -5,7 +5,7 @@
 class EnemyCactus : public EnemyBase
 {
 public:
-	EnemyCactus(int baseModelId);
+	EnemyCactus();
 
 	//アニメーションロード用
 	void InitAnimation(void) override;

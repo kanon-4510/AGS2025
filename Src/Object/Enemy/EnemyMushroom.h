@@ -5,7 +5,7 @@
 class EnemyMushroom : public EnemyBase
 {
 public:
-	EnemyMushroom(int baseModelId);
+	EnemyMushroom();
 
 	//アニメーションロード用
 	void InitAnimation(void) override;

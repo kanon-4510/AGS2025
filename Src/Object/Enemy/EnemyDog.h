@@ -4,6 +4,9 @@
 
 class EnemyDog : public EnemyBase
 {
+public:
+	EnemyDog();
+
 	//アニメーションロード用
 	void InitAnimation(void) override;
 
