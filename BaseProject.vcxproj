@@ -62,6 +62,7 @@
     <ClInclude Include="Src\Object\Enemy\EnemyDog.h" />
     <ClInclude Include="Src\Scene\MiniMap.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyCactus.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyDog.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyMimic.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyMushroom.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyOnion.h" />
