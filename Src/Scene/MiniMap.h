@@ -9,16 +9,16 @@ struct MapVector2
 class MiniMap
 {
 public:
-    MiniMap(float worldSize, int screenSize, int offsetX = 1600, int offsetY = 50);
+    MiniMap(float worldSize, int screenSize, int mapPosX = 1600, int mapPosY = 50);
 
     void Draw(const MapVector2& playerPos, const std::vector<MapVector2>& enemies, 
         const std::vector<MapVector2>& items);
 
 private:
-    float m_worldHalfSize;      // ゲーム空間の広さ（片側）
-    int m_mapPixelSize;         // ミニマップの表示サイズ（ピクセル）
-    int m_offsetX, m_offsetY;   // ミニマップの画面上の描画位置（左上）
-    float m_scale;              // ワールド座標からミニマップ座標へのスケーリング係数
+    float worldHalfSize;      // ゲーム空間の広さ（片側）
+    int mapPixelSize;         // ミニマップの表示サイズ（ピクセル）
+    int mapPosX, mapPosY;   // ミニマップの画面上の描画位置（左上）
+    float scale;              // ワールド座標からミニマップ座標へのスケーリング係数
 
     int size;
     // 頂点座標

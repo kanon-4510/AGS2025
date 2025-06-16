@@ -1,11 +1,13 @@
 #include "MiniMap.h"
 #include "DxLib.h"
+#include <algorithm> // std::clamp
+#include <cmath>     // std::atan2, std::cos, std::sin
 
-MiniMap::MiniMap(float worldSize, int screenSize, int offsetX, int offsetY)
-    : m_mapPixelSize(screenSize), m_offsetX(offsetX), m_offsetY(offsetY)
+MiniMap::MiniMap(float worldSize, int screenSize, int mapPosX, int mapPosY)
+    : mapPixelSize(screenSize), mapPosX(mapPosX), mapPosY(mapPosY)
 {
-    m_worldHalfSize = worldSize / 2.0f;
-    m_scale = static_cast<float>(m_mapPixelSize) / worldSize;
+    worldHalfSize = worldSize / 2.0f;
+    scale = static_cast<float>(mapPixelSize) / worldSize;
 }
 
 void MiniMap::Draw(const MapVector2& playerPos, const std::vector<MapVector2>& enemies, 
@@ -19,18 +21,34 @@ void MiniMap::Draw(const MapVector2& playerPos, const std::vector<MapVector2>& e
 
 void MiniMap::DrawBackground()
 {
-    DrawBox(m_offsetX, m_offsetY,
-        m_offsetX + m_mapPixelSize, m_offsetY + m_mapPixelSize,
+    DrawBox(mapPosX, mapPosY,
+        mapPosX + mapPixelSize, mapPosY + mapPixelSize,
         GetColor(100, 255, 0), TRUE);
+
+    // === ミニマップの中心 ===
+    int centerX = mapPosX + mapPixelSize / 2;
+    int centerY = mapPosY + mapPixelSize / 2;
+
+    //中心に木を描画(仮で黒点)
+    DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);
 }
 
 void MiniMap::DrawPlayer(const MapVector2& playerPos)
 {
-    // +m_worldHalfSize で中心原点を左上基準にずらす
-    // * m_scale で画面上のスケールに変換
+    // +worldHalfSize で中心原点を左上基準にずらす
+    // * scale で画面上のスケールに変換
     // + offsetX / Y で画面上に配置
-    int px = static_cast<int>((playerPos.x + m_worldHalfSize) * m_scale) + m_offsetX;
-    int pz = static_cast<int>((-playerPos.z + m_worldHalfSize) * m_scale) + m_offsetY;
+    int px = static_cast<int>((playerPos.x + worldHalfSize) * scale) + mapPosX;
+    int pz = static_cast<int>((-playerPos.z + worldHalfSize) * scale) + mapPosY;
+
+    // === ミニマップ内に収まるように制限（クランプ） ===
+    int minX = mapPosX + 2;
+    int maxX = mapPosX + mapPixelSize - 2;
+    int minY = mapPosY + 2;
+    int maxY = mapPosY + mapPixelSize - 2;
+
+    px = std::clamp(px, minX, maxX);
+    pz = std::clamp(pz, minY, maxY);
 
     // プレイヤー(青)
     DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
@@ -40,11 +58,11 @@ void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)
 {
     for (const auto& e : enemies)
     {
-        // +m_worldHalfSize で中心原点を左上基準にずらす
-        // * m_scale で画面上のスケールに変換
+        // +worldHalfSize で中心原点を左上基準にずらす
+        // * scale で画面上のスケールに変換
         // + offsetX / Y で画面上に配置
-        int ex = static_cast<int>((e.x + m_worldHalfSize) * m_scale) + m_offsetX;
-        int ez = static_cast<int>((-e.z + m_worldHalfSize) * m_scale) + m_offsetY;
+        int ex = static_cast<int>((e.x + worldHalfSize) * scale) + mapPosX;
+        int ez = static_cast<int>((-e.z + worldHalfSize) * scale) + mapPosY;
 
         // 敵(赤)
         DrawCircle(ex, ez, 3, GetColor(255, 0, 0), TRUE);
@@ -55,8 +73,8 @@ void MiniMap::DrawItems(const std::vector<MapVector2>& items)
 {
     for (const auto& item : items)
     {
-        int ix = static_cast<int>((item.x + m_worldHalfSize) * m_scale) + m_offsetX;
-        int iz = static_cast<int>((-item.z + m_worldHalfSize) * m_scale) + m_offsetY;
+        int ix = static_cast<int>((item.x + worldHalfSize) * scale) + mapPosX;
+        int iz = static_cast<int>((-item.z + worldHalfSize) * scale) + mapPosY;
 
 
         size = 5;
