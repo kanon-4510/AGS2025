@@ -51,5 +51,5 @@ void EnemyThorn::SetParam(void)
 	capsule_->SetRadius(30.0f);
 
 	// ‰Šúó‘Ô
-	ChangeState(STATE::PLAY);
+	ChangeState(STATE::ALIVE);
 }
