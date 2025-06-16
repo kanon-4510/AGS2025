@@ -299,11 +299,6 @@ void EnemyBase::SetGameScene(GameScene* scene)
 	scene_ = scene;
 }
 
-EnemyBase::STATE EnemyBase::GetState(void)
-{
-	return state_;
-}
-
 void EnemyBase::ChangeState(STATE state)
 {
 	// ó‘Ô•ÏX

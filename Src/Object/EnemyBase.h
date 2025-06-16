@@ -46,6 +46,7 @@ public:
 	enum class STATE
 	{
 		NONE,
+		PLAY,
 		ALIVE,
 		WATER,
 		MAX
@@ -91,8 +92,6 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetGameScene(GameScene* scene);
-
-	STATE GetState(void);
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
