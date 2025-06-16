@@ -106,7 +106,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::TOGE, std::move(res));
 
 	//ÉEÉBÉãÉX
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/virus/vrius.mv1");
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/virus/virus.mv1");
 	resourcesMap_.emplace(SRC::VIRUS, std::move(res));
 }
 
