@@ -10,10 +10,10 @@ EnemyMimic::EnemyMimic(int baseModelId):EnemyBase(baseModelId)
 
 }
 
-EnemyMimic::EnemyMimic(int baseModelId)
-{
-	EnemyBase(baseModelId);
-}
+//EnemyMimic::EnemyMimic(int baseModelId)
+//{
+//	EnemyBase(baseModelId);
+//}
 
 void EnemyMimic::InitAnimation(void)
 {

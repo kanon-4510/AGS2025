@@ -251,25 +251,25 @@ void GameScene::EnemyCreate(int i)
 	switch (type_)
 	{
 	case EnemyBase::TYPE::SABO:
-		enemys_[i] = new EnemyCactus();
+		enemys_[i] = new EnemyCactus(0);
 		break;
 	case EnemyBase::TYPE::DOG:
 		enemys_[i] = new EnemyDog();
 		break;
 	case EnemyBase::TYPE::MIMIC:
-		enemys_[i] = new EnemyMimic();
+		enemys_[i] = new EnemyMimic(0);
 		break;
 	case EnemyBase::TYPE::MUSH:
-		enemys_[i] = new EnemyMushroom();
+		enemys_[i] = new EnemyMushroom(0);
 		break;
 	case EnemyBase::TYPE::ONION:
-		enemys_[i] = new EnemyOnion();
+		enemys_[i] = new EnemyOnion(0);
 		break;
 	case EnemyBase::TYPE::TOGE:
-		enemys_[i] = new EnemyThorn();
+		enemys_[i] = new EnemyThorn(0);
 		break;
 	case EnemyBase::TYPE::VIRUS:
-		enemys_[i] = new EnemyVirus();
+		enemys_[i] = new EnemyVirus(0);
 		break;
 	case EnemyBase::TYPE::MAX:
 		break;
