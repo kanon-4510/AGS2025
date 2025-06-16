@@ -46,8 +46,8 @@ public:
 	enum class STATE
 	{
 		NONE,
-		PLAY,
-		DEATH,
+		ALIVE,
+		WATER,
 		MAX
 	};
 
@@ -75,6 +75,7 @@ public:
 
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
+	STATE GetState(void);		// 状態獲得
 
 	bool IsAlive(void);			// 生存判定
 	void SetAlive(bool alive);	// 生存判定
@@ -117,8 +118,6 @@ protected:
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 
 	int hp_;	// 体力
-	int hpMax_;	// 体力最大値
-
 	bool isAlive_;	// 生存判定
 
 	STATE state_;	//状態管理

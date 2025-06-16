@@ -1,7 +1,6 @@
 #pragma once
 #include "../EnemyBase.h"
 
-
 class EnemyCactus : public EnemyBase
 {
 public:

@@ -8,6 +8,7 @@
 #include "ActorBase.h"
 #include "EnemyBase.h"
 #include "Stage.h"
+
 class AnimationController;
 class Collider;
 class Capsule;
