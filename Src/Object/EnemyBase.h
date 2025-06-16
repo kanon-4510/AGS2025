@@ -62,7 +62,7 @@ public:
 		MAX
 	};
 
-	//EnemyBase(){};	// コンストラクタ
+	EnemyBase(){};	// コンストラクタ
 	EnemyBase(int baseModelId);	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
@@ -97,7 +97,6 @@ public:
 
 	void SetPlayer(std::shared_ptr<Player> player);
 
-	STATE state_;	//状態管理
 protected:
 	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
 	TYPE currentType_;  // 自身のタイプ（例：DOG, GHOST など）

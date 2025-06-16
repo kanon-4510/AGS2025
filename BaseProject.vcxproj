@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="Src\Scene\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyCactus.cpp" />
-    <ClCompile Include="Src\Object\Enemy\EnemyDog.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyMimic.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyMushroom.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyOnion.cpp" />

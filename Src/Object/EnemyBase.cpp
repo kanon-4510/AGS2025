@@ -13,7 +13,7 @@
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(int baseModelId) : state_(STATE::NONE), scene_(nullptr),
+EnemyBase::EnemyBase(int baseModelId) : scene_(nullptr),
 gravHitPosDown_(AsoUtility::VECTOR_ZERO),
 gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 {
@@ -63,7 +63,7 @@ void EnemyBase::InitAnimation(void)
 
 void EnemyBase::SetParam(void)
 {
-	/*// 使用メモリ容量と読み込み時間の削減のため
+	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
 	transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(currentType_)]);
 
@@ -88,7 +88,7 @@ void EnemyBase::SetParam(void)
 	capsule_->SetRadius(30.0f);
 
 	// 初期状態
-	ChangeState(STATE::PLAY);*/
+	//ChangeState(STATE::PLAY);
 }
 
 void EnemyBase::Update(void)

@@ -9,7 +9,7 @@
 #include "../Manager/GravityManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
-//#include "Common/AnimationController.h"
+#include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "Common/SpeechBalloon.h"
@@ -200,19 +200,19 @@ void Player::InitAnimation(void)
 
 	std::string path = Application::PATH_MODEL + "Player/";
 
-	//animationController_ = std::make_unique<AnimationController>(transform_.modelId);
+	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
-	//animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
-	//animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	//animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
-	//animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
-	//animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
-	//animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
-	//animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
-	//animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
-	//animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
+	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
 
-	//animationController_->Play((int)ANIM_TYPE::IDLE);
+	animationController_->Play((int)ANIM_TYPE::IDLE);
 
 }
 
