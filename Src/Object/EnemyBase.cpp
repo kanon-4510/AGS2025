@@ -6,8 +6,8 @@
 #include "../Manager/SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
-#include "Common/AnimationController.h"/*
-#include "Common/Capsule.h"*/
+#include "Common/AnimationController.h"
+//#include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
