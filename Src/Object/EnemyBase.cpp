@@ -245,6 +245,12 @@ void EnemyBase::SetAlive(bool alive)
 	isAlive_ = alive;
 }
 
+void EnemyBase::Attack(void)
+{
+
+}
+
+
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;

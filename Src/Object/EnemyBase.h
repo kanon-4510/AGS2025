@@ -144,8 +144,6 @@ protected:
 	virtual void UpdateAllive(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	void ChasePlayer(void);			//プレイヤーを追いかける
-
-	
 	void Attack(void);	//攻撃モーション
 
 	// 状態遷移
@@ -153,9 +151,6 @@ protected:
 	void ChangeStateNone(void);
 	void ChangeStateAlive(void);
 	void ChangeStateDeath(void);
-
-	
-	void UpdateAnim(void);//アニメーションアップデート
 
 	void Collision(void);// 衝突判定
 };
