@@ -114,7 +114,7 @@ void GameScene::Update(void)
 		enemy->Update();
 	}
 	//敵のエンカウント
-	enCounter++;
+	/*enCounter++;
 	if (enCounter > ENCOUNT)
 	{
 		enCounter = 0;//エンカウントのリセット
@@ -127,7 +127,7 @@ void GameScene::Update(void)
 				break;
 			}
 		}
-	}
+	}*/
 }
 
 void GameScene::Draw(void)
