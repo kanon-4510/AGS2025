@@ -73,13 +73,13 @@ void Tree::Update(void)
 		minDistance = 70.0f;
 		break;
 	case GROW::KID:
-		minDistance = 200.0f;
+		minDistance = 100.0f;
 		break;
 	case GROW::ADULT:
-		minDistance = 400.0f;
+		minDistance = 450.0f;
 		break;
 	case GROW::OLD:
-		minDistance = 600.0f;
+		minDistance = 800.0f;
 		break;
 	}
 

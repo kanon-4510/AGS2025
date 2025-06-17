@@ -33,6 +33,10 @@ void EnemyDog::SetParam(void)
 	//transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::MIMIC)]);
 	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MIMIC));
 
+	transform_.scl = { 0.5f, 0.5f, 0.5f };						// 大きさの設定
+	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
+	transform_.pos = { 100.0f, -28.0f, 1000.0f };				// 位置の設定
+	transform_.dir = { 0.0f, 0.0f, -1.0f };								// 右方向に移動する
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f), AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる

@@ -10,6 +10,11 @@ EnemyMimic::EnemyMimic():EnemyBase()
 
 }
 
+//EnemyMimic::EnemyMimic(int baseModelId)
+//{
+//	EnemyBase(baseModelId);
+//}
+
 void EnemyMimic::InitAnimation(void)
 {
 	speedAnim_ = 0.5f;
@@ -28,6 +33,7 @@ void EnemyMimic::InitAnimation(void)
 
 void EnemyMimic::SetParam(void)
 {
+	EnemyBase::SetParam();
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
 	//transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(TYPE::MIMIC)]);
@@ -55,5 +61,5 @@ void EnemyMimic::SetParam(void)
 	//capsule_->SetRadius(30.0f);
 
 	// 初期状態
-	ChangeState(STATE::PLAY);
+	ChangeState(STATE::ALIVE);
 }

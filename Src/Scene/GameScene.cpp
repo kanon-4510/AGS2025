@@ -13,12 +13,12 @@
 
 #include "../Object/EnemyBase.h"
 #include "../Object/Enemy/EnemyCactus.h"
+#include "../Object/Enemy/EnemyDog.h"
 #include "../Object/Enemy/EnemyMimic.h"
 #include "../Object/Enemy/EnemyMushroom.h"
 #include "../Object/Enemy/EnemyOnion.h"
-#include "../Object/Enemy/Enemythorn.h"
+#include "../Object/Enemy/EnemyThorn.h"
 #include "../Object/Enemy/EnemyVirus.h"
-
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "../Object/Item.h"
@@ -78,7 +78,7 @@ void GameScene::Init(void)
 	skyDome_ = std::make_unique<SkyDome>(player_->GetTransform());
 	skyDome_->Init();
 
-	map_ = std::make_unique<MiniMap>(16000.0f, 300);
+	map_ = std::make_unique<MiniMap>(20000.0f, 300);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
@@ -113,8 +113,21 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 	}
+	//敵のエンカウント
+	enCounter++;
+	if (enCounter > ENCOUNT)
+	{
+		enCounter = 0;//エンカウントのリセット
 
-
+		for (int i = 0; i < ENEMY_MAX; i++)
+		{
+			if (enemys_[i]->GetState() == EnemyBase::STATE::NONE)
+			{
+				EnemyCreate(i);
+				break;
+			}
+		}
+	}
 }
 
 void GameScene::Draw(void)
@@ -140,7 +153,6 @@ void GameScene::Draw(void)
 	DrawFormatString(30, 540, 0x000000, "ダッシュ：左Shift");
 	DrawFormatString(30, 560, 0x000000, "ジャンプ：Space");
 	DrawFormatString(30, 580, 0x000000, "攻撃　　：Eキー");
-
 }
 
 void GameScene::DrawMiniMap(void)
@@ -204,4 +216,62 @@ void GameScene::DrawMiniMap(void)
 void GameScene::AddItem(std::shared_ptr<Item> item)
 {
 	items_.push_back(item);
+}
+
+void GameScene::EnemyCreate(int i)
+{
+	int randDir = GetRand(3);
+	VECTOR randPos;
+	switch (randDir)//位置
+	{
+	case 0://前
+		randPos.x = GetRand(29000) - 14500;
+		randPos.z = 14500;
+		break;
+	case 1://後
+		randPos.x = GetRand(29000) - 14500;
+		randPos.z = -14500;
+		break;
+	case 2://左
+		randPos.x = -14500;
+		randPos.z = GetRand(29000) - 14500;
+		break;
+	case 3://右
+		randPos.x = 14500;
+		randPos.z = GetRand(29000) - 14500;
+		break;
+	default:
+		break;
+	}
+	//敵のtype
+	enemys_[i]->Release();
+	delete enemys_[i];
+	EnemyBase::TYPE type_;
+	type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX)-1));
+	switch (type_)
+	{
+	case EnemyBase::TYPE::SABO:
+		enemys_[i] = new EnemyCactus();
+		break;
+	case EnemyBase::TYPE::DOG:
+		enemys_[i] = new EnemyDog();
+		break;
+	case EnemyBase::TYPE::MIMIC:
+		enemys_[i] = new EnemyMimic();
+		break;
+	case EnemyBase::TYPE::MUSH:
+		enemys_[i] = new EnemyMushroom();
+		break;
+	case EnemyBase::TYPE::ONION:
+		enemys_[i] = new EnemyOnion();
+		break;
+	case EnemyBase::TYPE::TOGE:
+		enemys_[i] = new EnemyThorn();
+		break;
+	case EnemyBase::TYPE::VIRUS:
+		enemys_[i] = new EnemyVirus();
+		break;
+	case EnemyBase::TYPE::MAX:
+		break;
+	}
 }

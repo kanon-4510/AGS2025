@@ -6,8 +6,8 @@
 #include "../Manager/SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
-#include "Common/AnimationController.h"/*
-#include "Common/Capsule.h"*/
+#include "Common/AnimationController.h"
+//#include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
@@ -29,9 +29,9 @@ gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
-		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
+		STATE::ALIVE, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
-		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::WATER, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
 EnemyBase::~EnemyBase(void)
@@ -232,6 +232,11 @@ void EnemyBase::SetPos(VECTOR pos)
 	transform_.pos = pos;
 }
 
+EnemyBase::STATE EnemyBase::GetState(void)
+{
+	return state_;
+}
+
 bool EnemyBase::IsAlive(void)
 {
 	return isAlive_;
@@ -247,7 +252,7 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::DEATH);
+		ChangeState(STATE::WATER);
 		
 	}
 }
@@ -294,11 +299,6 @@ void EnemyBase::SetGameScene(GameScene* scene)
 	scene_ = scene;
 }
 
-EnemyBase::STATE EnemyBase::GetState(void)
-{
-	return state_;
-}
-
 void EnemyBase::ChangeState(STATE state)
 {
 	// 状態変更
@@ -312,7 +312,6 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-
 void EnemyBase::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
@@ -330,7 +329,6 @@ void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 
 void EnemyBase::DrawDebug(void)
 {
-
 	int white = 0xffffff;
 	int black = 0x000000;
 	int red = 0xff0000;
@@ -347,9 +345,7 @@ void EnemyBase::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",
-		v.x, v.y, v.z
-	);
+	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
 
 	/*capsule_->Draw();
@@ -360,9 +356,7 @@ void EnemyBase::DrawDebug(void)
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
-	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",
-		s.x, s.y, s.z
-	);
+	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
 
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
 

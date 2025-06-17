@@ -47,7 +47,8 @@ public:
 	{
 		NONE,
 		PLAY,
-		DEATH,
+		ALIVE,
+		WATER,
 		MAX
 	};
 
@@ -75,6 +76,7 @@ public:
 
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
+	STATE GetState(void);		// 状態獲得
 
 	bool IsAlive(void);			// 生存判定
 	void SetAlive(bool alive);	// 生存判定
@@ -90,8 +92,6 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetGameScene(GameScene* scene);
-
-	STATE GetState(void);
 
 	void DrawDebug(void);	//デバッグ用
 	void DrawDebugSearchRange(void);
@@ -117,8 +117,6 @@ protected:
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 
 	int hp_;	// 体力
-	int hpMax_;	// 体力最大値
-
 	bool isAlive_;	// 生存判定
 
 	STATE state_;	//状態管理

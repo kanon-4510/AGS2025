@@ -55,6 +55,12 @@
     <Filter Include="ソース ファイル\Object\Common">
       <UniqueIdentifier>{e1d2c310-5096-4122-b6f2-acf3b54d243c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Object\Enemy">
+      <UniqueIdentifier>{989e7066-6152-46b8-a95b-4286c2d41d2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object\Enemy">
+      <UniqueIdentifier>{dee7b08a-0993-4c3a-8eea-d927da3b957f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp">
@@ -285,7 +291,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Enemy\EnemyDog.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
