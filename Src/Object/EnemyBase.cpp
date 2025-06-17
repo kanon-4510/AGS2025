@@ -29,9 +29,9 @@ gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
-		STATE::ALIVE, std::bind(&EnemyBase::ChangeStatePlay, this));
+		STATE::ALIVE, std::bind(&EnemyBase::ChangeStateAlive, this));
 	stateChanges_.emplace(
-		STATE::WATER, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
 EnemyBase::~EnemyBase(void)
@@ -117,7 +117,7 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::UpdatePlay(void)
+void EnemyBase::UpdateAllive(void)
 {
 	if (isAlive_)
 	{
@@ -136,14 +136,12 @@ void EnemyBase::UpdateDeath(void)
 	{
 		isAlive_ = false;
 		//アイテムドロップ
-		if (!item_) {
-
+		
 			auto newItem = std::make_shared<Item>(*player_, Transform{});
 			newItem->Init();
 			newItem->SetPos(transform_.pos);
 			newItem->SetIsAlive(true);
 			scene_->AddItem(newItem);
-		}
 	}
 }
 
@@ -252,7 +250,7 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::WATER);
+		ChangeState(STATE::DEATH);
 		
 	}
 }
@@ -312,9 +310,9 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-void EnemyBase::ChangeStatePlay(void)
+void EnemyBase::ChangeStateAlive(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
 }
 
 void EnemyBase::ChangeStateDeath(void)

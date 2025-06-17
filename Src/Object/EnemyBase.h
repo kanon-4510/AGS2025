@@ -46,9 +46,8 @@ public:
 	enum class STATE
 	{
 		NONE,
-		PLAY,
 		ALIVE,
-		WATER,
+		DEATH,
 		MAX
 	};
 
@@ -142,7 +141,7 @@ protected:
 	VECTOR gravHitPosUp_;
 
 	void UpdateNone(void);			// 更新ステップ
-	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateAllive(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
@@ -152,7 +151,7 @@ protected:
 	// 状態遷移
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
-	void ChangeStatePlay(void);
+	void ChangeStateAlive(void);
 	void ChangeStateDeath(void);
 
 	
