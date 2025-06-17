@@ -27,6 +27,13 @@ private:
 	int imgTitle_;
 	int imgBackTitle_;
 	int imgPush_;
+	int imgGame_;
+	int imgRule_;
+
+	int imgCursor_;
+	int selectedIndex_;
+
+	int blinkFrameCount_ = 0;
 
 	// スカイドーム用
 	Transform spaceDomeTran_;
