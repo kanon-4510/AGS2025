@@ -46,7 +46,7 @@ public:
 	enum class STATE
 	{
 		NONE,
-		ALIVE,
+		PLAY,
 		DEATH,
 		MAX
 	};
