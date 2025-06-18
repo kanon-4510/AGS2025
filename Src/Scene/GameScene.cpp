@@ -10,7 +10,6 @@
 #include "../Object/SkyDome.h"
 #include "../Object/Stage.h"
 #include "../Object/Player.h"
-
 #include "../Object/EnemyBase.h"
 #include "../Object/Enemy/EnemyCactus.h"
 #include "../Object/Enemy/EnemyDog.h"
@@ -55,7 +54,6 @@ void GameScene::Init(void)
 	//木
 	tree_ = std::make_shared<Tree>();
 	tree_->Init();
-
 	tree_->SetPlayer(player_.get());
 
 	//アイテム
@@ -110,7 +108,7 @@ void GameScene::Update(void)
 	}
 
 	//敵のエンカウント
-	/*enCounter++;
+	enCounter++;
 	if (enCounter > ENCOUNT)
 	{
 		enCounter = 0;
@@ -119,12 +117,10 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
-
 	//敵のエンカウント
 	//enCounter++;
 	//if (enCounter > ENCOUNT)
 	//{
-
 	//	bool spawned = false;
 	//	size_t size = enemys_.size();
 	//	for (int i = 0; i < size; i++)
