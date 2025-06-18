@@ -41,30 +41,3 @@ private:
     void DrawItems(const std::vector<MapVector2>& items);
 
 };
-
-
-/*#ifndef MINIMAP_H
-#define MINIMAP_H
-
-#include <DxLib.h>
-#include <memory>
-#include <vector> // VECTORŽg—p
-
-class MiniMap {
-public:
-    MiniMap(float mapRange = 16000.0f, int size = 256);
-    ~MiniMap();
-
-    void SetPlayerPosition(const VECTOR& pos);
-    void BeginRender();
-    void EndRender();
-    void Draw(int x, int y);
-
-private:
-    float mapRange_;
-    int size_;
-    int renderTargetGraph_;
-    VECTOR playerPos_;
-};
-
-#endif*/
