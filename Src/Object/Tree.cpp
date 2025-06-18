@@ -145,7 +145,7 @@ void Tree::Update(void)
 	case Tree::GROW::KID:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
 		scl_ = { 15.0f, 10.0f, 15.0};
-		pos_ = { 0.0f, -0.8f, 0.0f };
+		pos_ = { 0.0f, -2.0f, 0.0f };
 		MV1SetScale(modelIdK_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdK_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdK_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
@@ -153,7 +153,7 @@ void Tree::Update(void)
 	case Tree::GROW::ADULT:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
 		scl_ = { 30.0f, 25.0f, 30.0f };
-		pos_ = { 0.0f, 0.0f, 0.0f };
+		pos_ = { 0.0f, -2.5f, 0.0f };
 		MV1SetScale(modelIdA_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdA_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdA_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
@@ -161,7 +161,7 @@ void Tree::Update(void)
 	case Tree::GROW::OLD:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
 		scl_ = { 50.0f, 45.0f, 50.0f };
-		pos_ = { 0.0f, 0.0f, 0.0f };
+		pos_ = { 0.0f, -23.5f, 0.0f };
 		MV1SetScale(modelIdO_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdO_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdO_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
