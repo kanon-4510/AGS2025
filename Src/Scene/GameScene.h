@@ -28,7 +28,7 @@ public:
 
 	void AddItem(std::shared_ptr<Item> item);
 private:
-	void EnemyCreate(int i);
+	void EnemyCreate(void);
 
 	std::unique_ptr<Stage> stage_;		// ステージ
 	std::shared_ptr<Tree>tree_;			// ツリー
@@ -39,6 +39,6 @@ private:
 	std::unique_ptr<MiniMap> map_;		//ミニマップ
 
 	int enemyModelId_;
-	std::vector<EnemyBase*> enemys_;
+	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 };

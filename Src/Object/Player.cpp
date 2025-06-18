@@ -20,7 +20,6 @@
 
 Player::Player(void)
 {
-
 	animationController_ = nullptr;
 	enemy_ = nullptr;
 
@@ -64,12 +63,10 @@ Player::Player(void)
 
 Player::~Player(void)
 {
-	delete enemy_;
 }
 
 void Player::Init(void)
 {
-
 	// モデルの基本設定
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::PLAYER));
@@ -102,12 +99,11 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
-	enemy_ = new EnemyBase(); // OK
-	enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
+	//enemy_ = new EnemyBase(); // OK
+	//enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// 初期状態
 	ChangeState(STATE::PLAY);
-
 }
 
 void Player::Update(void)
@@ -166,7 +162,7 @@ void Player::ClearCollider(void)
 	colliders_.clear();
 }
 
-void Player::SetEnemy(EnemyBase* enemy)
+void Player::SetEnemy(std::shared_ptr<EnemyBase> enemy)
 {
 	enemy_ = enemy;
 }
@@ -634,13 +630,11 @@ void Player::ProcessJump(void)
 		if (!isJump_)
 		{
 			// 制御無しジャンプ
-			//animationController_->Play((int)ANIM_TYPE::JUMP);
+			animationController_->Play((int)ANIM_TYPE::JUMP);
 
 			// この後、いくつかのジャンプパターンを試します
 			//無理やりアニメーション
-
-			animationController_->Play(
-				(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
+			animationController_->Play((int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
 			animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 		}
 
@@ -673,7 +667,7 @@ bool Player::IsEndLanding(void)
 	{
 		return ret;
 	}
-	// アニメーションが終了しているか
+	//アニメーションが終了しているか
 	if (animationController_->IsEnd())
 	{
 		return ret;
@@ -691,8 +685,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_)
 		{
-			animationController_->Play(
-				(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			animationController_->Play((int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
@@ -757,7 +750,7 @@ void Player::Revival()
 	// プレイヤーが移動可能になる
 	canMove_ = true;   // 移動再開
 
-	//animationController_->Play((int)ANIM_TYPE::IDLE, true);
+	animationController_->Play((int)ANIM_TYPE::IDLE, true);
 	// 他の再開処理（無敵終了、移動可能など）をここで
 }
 

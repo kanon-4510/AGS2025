@@ -51,5 +51,5 @@ void EnemyCactus::SetParam(void)
 	//capsule_->SetRadius(30.0f);
 
 	// ‰Šúó‘Ô
-	ChangeState(STATE::ALIVE);
+	ChangeState(STATE::PLAY);
 }
