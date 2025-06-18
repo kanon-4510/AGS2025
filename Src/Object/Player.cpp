@@ -21,7 +21,7 @@
 Player::Player(void)
 {
 
-	//animationController_ = nullptr;
+	animationController_ = nullptr;
 	enemy_ = nullptr;
 
 	state_ = STATE::NONE;
@@ -64,7 +64,6 @@ Player::Player(void)
 
 Player::~Player(void)
 {
-	delete enemy_;
 }
 
 void Player::Init(void)
@@ -102,8 +101,8 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
-	enemy_ = new EnemyBase(); // OK
-	enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
+	//enemy_ = new EnemyBase(); // OK
+	//enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// 初期状態
 	ChangeState(STATE::PLAY);
@@ -118,7 +117,7 @@ void Player::Update(void)
 	transform_.Update();
 	
 	// アニメーション再生
-	//animationController_->Update();
+	animationController_->Update();
 
 	UpdateD(1.0f);
 
@@ -166,7 +165,7 @@ void Player::ClearCollider(void)
 	colliders_.clear();
 }
 
-void Player::SetEnemy(EnemyBase* enemy)
+void Player::SetEnemy(std::shared_ptr<EnemyBase> enemy)
 {
 	enemy_ = enemy;
 }
@@ -434,11 +433,11 @@ void Player::ProcessMove(void)
 			// アニメーション
 			if (ins.IsNew(KEY_INPUT_LSHIFT))
 			{
-				//animationController_->Play((int)ANIM_TYPE::FAST_RUN);
+				animationController_->Play((int)ANIM_TYPE::FAST_RUN);
 			}
 			else
 			{
-				//animationController_->Play((int)ANIM_TYPE::RUN);
+				animationController_->Play((int)ANIM_TYPE::RUN);
 			}
 		}
 	}
@@ -446,7 +445,7 @@ void Player::ProcessMove(void)
 	{
 		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
 		{
-			//animationController_->Play((int)ANIM_TYPE::IDLE);
+			animationController_->Play((int)ANIM_TYPE::IDLE);
 		}
 	}
 
@@ -633,13 +632,12 @@ void Player::ProcessJump(void)
 		if (!isJump_)
 		{
 			// 制御無しジャンプ
-			//animationController_->Play((int)ANIM_TYPE::JUMP);
+			animationController_->Play((int)ANIM_TYPE::JUMP);
 
 			// この後、いくつかのジャンプパターンを試します
 			//無理やりアニメーション
-			//animationController_->Play(
-			//	(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
-			//animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+			animationController_->Play((int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
+			animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 		}
 
 		isJump_ = true;
@@ -667,15 +665,15 @@ bool Player::IsEndLanding(void)
 	bool ret = true;
 
 	// アニメーションがジャンプではない
-	//if (animationController_->GetPlayType() != (int)ANIM_TYPE::JUMP)
-	//{
-	//	return ret;
-	//}
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::JUMP)
+	{
+		return ret;
+	}
 	//アニメーションが終了しているか
-	//if (animationController_->IsEnd())
-	//{
-	//	return ret;
-	//}
+	if (animationController_->IsEnd())
+	{
+		return ret;
+	}
 	return false;
 
 }
@@ -689,8 +687,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_)
 		{
-			//animationController_->Play(
-			//	(int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			animationController_->Play((int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
@@ -699,10 +696,10 @@ void Player::ProcessAttack(void)
 	}
 
 	// アニメーションが終わったらフラグをリセット
-	//if (isAttack_ && animationController_->IsEnd())
-	//{
-	//	isAttack_ = false;
-	//}
+	if (isAttack_ && animationController_->IsEnd())
+	{
+		isAttack_ = false;
+	}
 }
 
 bool Player::IsEndLandingA(void)
@@ -710,15 +707,15 @@ bool Player::IsEndLandingA(void)
 	bool ret = true;
 
 	// アニメーションがアタックではない
-	//if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
-	//{
-	//	return ret;
-	//}
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
+	{
+		return ret;
+	}
 	// アニメーションが終了しているか
-	//if (animationController_->IsEnd())
-	//{
-	//	return ret;
-	//}
+	if (animationController_->IsEnd())
+	{
+		return ret;
+	}
 	return false;
 }
 
@@ -741,7 +738,7 @@ void Player::StartRevival()
 	pstate_ = PlayerState::DOWN;
 	revivalTimer_ = 0.0f;
 
-	//animationController_->Play((int)ANIM_TYPE::DOWN, false);
+	animationController_->Play((int)ANIM_TYPE::DOWN, false);
 	// 必要なら移動や入力を停止させる
 }
 
@@ -755,7 +752,7 @@ void Player::Revival()
 	// プレイヤーが移動可能になる
 	canMove_ = true;   // 移動再開
 
-	//animationController_->Play((int)ANIM_TYPE::IDLE, true);
+	animationController_->Play((int)ANIM_TYPE::IDLE, true);
 	// 他の再開処理（無敵終了、移動可能など）をここで
 }
 

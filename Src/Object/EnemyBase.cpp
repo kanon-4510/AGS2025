@@ -13,10 +13,14 @@
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase() : scene_(nullptr),
-gravHitPosDown_(AsoUtility::VECTOR_ZERO),
-gravHitPosUp_(AsoUtility::VECTOR_ZERO)
+EnemyBase::EnemyBase() 
+	: 
+	scene_(nullptr),
+	gravHitPosDown_(AsoUtility::VECTOR_ZERO),
+	gravHitPosUp_(AsoUtility::VECTOR_ZERO),
+	movePow_(AsoUtility::VECTOR_ZERO)
 {
+
 	animationController_ = nullptr;
 
 	// “G‚Ìƒ‚ƒfƒ‹
@@ -29,9 +33,10 @@ gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
-		STATE::ALIVE, std::bind(&EnemyBase::ChangeStatePlay, this));
+		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
-		STATE::WATER, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
+
 }
 
 EnemyBase::~EnemyBase(void)
@@ -252,7 +257,7 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::WATER);
+		ChangeState(STATE::DEATH);
 		
 	}
 }

@@ -47,8 +47,7 @@ public:
 	{
 		NONE,
 		PLAY,
-		ALIVE,
-		WATER,
+		DEATH,
 		MAX
 	};
 
