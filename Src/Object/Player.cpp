@@ -20,7 +20,6 @@
 
 Player::Player(void)
 {
-
 	animationController_ = nullptr;
 	enemy_ = nullptr;
 
@@ -68,7 +67,6 @@ Player::~Player(void)
 
 void Player::Init(void)
 {
-
 	// ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::PLAYER));
@@ -106,7 +104,6 @@ void Player::Init(void)
 
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
-
 }
 
 void Player::Update(void)

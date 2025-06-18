@@ -302,7 +302,6 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 //	}
 //}
 
-
 void GameScene::EnemyCreate(void)
 {
 

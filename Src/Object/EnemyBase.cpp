@@ -20,7 +20,6 @@ EnemyBase::EnemyBase()
 	gravHitPosUp_(AsoUtility::VECTOR_ZERO),
 	movePow_(AsoUtility::VECTOR_ZERO)
 {
-
 	animationController_ = nullptr;
 
 	// 敵のモデル
@@ -36,7 +35,6 @@ EnemyBase::EnemyBase()
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
-
 }
 
 EnemyBase::~EnemyBase(void)
@@ -224,7 +222,6 @@ void EnemyBase::Release(void)
 	MV1DeleteModel(transform_.modelId);
 
 	//capsule_.reset();
-
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -257,8 +254,7 @@ void EnemyBase::Damage(int damage)
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::DEATH);
-		
+		ChangeState(STATE::DEATH);	
 	}
 }
 
@@ -352,28 +348,19 @@ void EnemyBase::DrawDebug(void)
 	v = transform_.pos;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-
 	/*capsule_->Draw();
 	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
-		c.x, c.y, c.z
-	);*/
+	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);*/
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
-
-	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",
-		currentAnimType_
-	);
-
+	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",currentAnimType_);
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
-
 	VECTOR centerPos = transform_.pos;
 	float radius = VIEW_RANGE;
 	int segments = 60;
@@ -404,15 +391,12 @@ void EnemyBase::DrawDebugSearchRange(void)
 			centerPos.y,
 			centerPos.z + radius * cosf(angle1)
 		};
-
 		VECTOR p2 = {
 			centerPos.x + radius * sinf(angle2),
 			centerPos.y,
 			centerPos.z + radius * cosf(angle2)
 		};
-
 		DrawTriangle3D(centerPos, p1, p2, color, false);
 	}
-
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
 }
