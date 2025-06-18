@@ -317,7 +317,7 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-void EnemyBase::ChangeStateAlive(void)
+void EnemyBase::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
 }

@@ -149,7 +149,7 @@ protected:
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
-	void ChangeStateAlive(void);
+	void ChangeStatePlay(void);
 	void ChangeStateDeath(void);
 
 	void Collision(void);// Õ“Ë”»’è
