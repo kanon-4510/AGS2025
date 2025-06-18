@@ -2,7 +2,6 @@
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
-#include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include"../Application.h"
 #include"Player.h"

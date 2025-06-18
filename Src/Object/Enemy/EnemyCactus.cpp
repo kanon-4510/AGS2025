@@ -32,7 +32,8 @@ void EnemyCactus::SetParam(void)
 	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::SABO));
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
+	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f), AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる
+//	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	speed_ = 3.0f;		// 移動スピード
@@ -42,7 +43,7 @@ void EnemyCactus::SetParam(void)
 	hp_ = 2;	// HPの設定
 
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
 	//// カプセルコライダ
 	//capsule_ = std::make_unique<Capsule>(transform_);
