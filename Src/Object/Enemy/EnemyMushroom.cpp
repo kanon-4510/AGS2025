@@ -42,8 +42,8 @@ void EnemyMushroom::SetParam(void)
 
 	hp_ = 2;	// HPの設定
 
-	collisionRadius_ = 40.0f;	// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 0.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
 	// カプセルコライダ
 	/*capsule_ = std::make_unique<Capsule>(transform_);
