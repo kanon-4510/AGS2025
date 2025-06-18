@@ -120,7 +120,7 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::UpdatePlay(void)
+void EnemyBase::UpdateAllive(void)
 {
 	if (isAlive_)
 	{
@@ -139,14 +139,12 @@ void EnemyBase::UpdateDeath(void)
 	{
 		isAlive_ = false;
 		//アイテムドロップ
-		if (!item_) {
-
+		
 			auto newItem = std::make_shared<Item>(*player_, Transform{});
 			newItem->Init();
 			newItem->SetPos(transform_.pos);
 			newItem->SetIsAlive(true);
 			scene_->AddItem(newItem);
-		}
 	}
 }
 
@@ -249,6 +247,12 @@ void EnemyBase::SetAlive(bool alive)
 	isAlive_ = alive;
 }
 
+void EnemyBase::Attack(void)
+{
+
+}
+
+
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
@@ -313,9 +317,9 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-void EnemyBase::ChangeStatePlay(void)
+void EnemyBase::ChangeStateAlive(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
 }
 
 void EnemyBase::ChangeStateDeath(void)

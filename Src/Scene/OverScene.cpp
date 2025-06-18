@@ -32,7 +32,7 @@ void OverScene::Init(void)
 	// ‰æ‘œ“Ç‚İ‚İ
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
 	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;
-	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
+	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH).handleId_;
 
 	float size;
 

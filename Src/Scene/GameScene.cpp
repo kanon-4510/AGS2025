@@ -110,7 +110,7 @@ void GameScene::Update(void)
 	}
 
 	//敵のエンカウント
-	enCounter++;
+	/*enCounter++;
 	if (enCounter > ENCOUNT)
 	{
 		enCounter = 0;

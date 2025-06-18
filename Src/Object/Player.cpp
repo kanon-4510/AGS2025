@@ -24,7 +24,7 @@ Player::Player(void)
 	enemy_ = nullptr;
 
 	state_ = STATE::NONE;
-	
+
 	effectSmokeResId_ = -1;
 	effectSmokePleyId_ = -1;
 
@@ -41,7 +41,7 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
-	
+
 	//ステ関連
 	hp_ = 30;
 	water_ = 0;
@@ -112,7 +112,7 @@ void Player::Update(void)
 	stateUpdate_();
 
 	transform_.Update();
-	
+
 	// アニメーション再生
 	animationController_->Update();
 
@@ -145,8 +145,8 @@ void Player::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if(hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 20 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
-	if(hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_+50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 20 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
 #pragma endregion
@@ -199,6 +199,7 @@ void Player::InitAnimation(void)
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
+
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
@@ -240,7 +241,7 @@ void Player::UpdateNone(void)
 
 void Player::UpdatePlay(void)
 {
-	if (canMove_) 
+	if (canMove_)
 	{
 		//移動処理
 		ProcessMove();
@@ -253,7 +254,7 @@ void Player::UpdatePlay(void)
 
 		// 攻撃処理
 		ProcessAttack();
-		
+
 		// 重力による移動量
 		CalcGravityPow();
 
@@ -352,7 +353,7 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d",v.x, v.y, v.z,hp_);
+	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
 	//-------------------------------------------------------
 
 	// 衝突
@@ -407,7 +408,7 @@ void Player::ProcessMove(void)
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
 	}
 
-	if ((!AsoUtility::EqualsVZero(dir)) && 
+	if ((!AsoUtility::EqualsVZero(dir)) &&
 		(isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
 	{
 		//移動量
@@ -452,20 +453,20 @@ void Player::SetGoalRotate(double rotRad)
 {
 
 	VECTOR cameraRot = mainCamera->GetAngles();
-	
+
 	Quaternion axis =
 		Quaternion::AngleAxis(
 			(double)cameraRot.y + rotRad, AsoUtility::AXIS_Y);
-	
+
 	// 現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
-	
+
 	// しきい値
 	if (angleDiff > 0.1)
 	{
 		stepRotTime_ = TIME_ROT;
 	}
-	
+
 	goalQuaRot_ = axis;
 }
 
@@ -473,7 +474,7 @@ void Player::Rotate(void)
 {
 
 	stepRotTime_ -= scnMng_.GetDeltaTime();
-	
+
 	// 回転の球面補間
 	playerRotY_ = Quaternion::Slerp(
 		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
@@ -484,13 +485,13 @@ void Player::Collision(void)
 {
 	// 現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
-	
+
 	// 衝突(カプセル)
 	CollisionCapsule();
 
 	// 衝突(重力)
 	CollisionGravity();
-	
+
 	// 移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
@@ -599,15 +600,15 @@ void Player::CalcGravityPow(void)
 {
 	// 重力方向
 	VECTOR dirGravity = grvMng_.GetDirGravity();
-	
+
 	// 重力の強さ
 	float gravityPow = grvMng_.GetPower();
-	
+
 	// 重力
 	// 重力を作る
 	// メンバ変数 jumpPow_ に重力計算を行う(加速度)
 	VECTOR gravity = VScale(dirGravity, gravityPow);
-	jumpPow_ = VAdd(jumpPow_,gravity);
+	jumpPow_ = VAdd(jumpPow_, gravity);
 
 	// 内積
 	float dot = VDot(dirGravity, jumpPow_);
@@ -760,11 +761,11 @@ void Player::EffectFootSmoke(void)
 	stepFootSmoke_ -= scnMng_.GetDeltaTime();
 
 	//if (!AsoUtility::EqualsVZero(moveDiff_))
-	if (stepFootSmoke_ <0.0f && len >= 1.0f && !isJump_)
+	if (stepFootSmoke_ < 0.0f && len >= 1.0f && !isJump_)
 	{
 
 		stepFootSmoke_ = TERM_FOOT_SMOKE;
-		
+
 		// エフェクト再生
 		effectSmokePleyId_ = PlayEffekseer3DEffect(effectSmokeResId_);
 
@@ -791,7 +792,7 @@ void Player::UseWater(int amount)
 
 void Player::eHit(void)
 {
-	hp_ -= 1;
+
 }
 void Player::wHit(void)
 {

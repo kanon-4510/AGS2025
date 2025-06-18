@@ -39,9 +39,21 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackTitle.png");
 	resourcesMap_.emplace(SRC::BACK_TITLE, std::move(res));
 
-	// PushSpace
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PushSpace.png");
-	resourcesMap_.emplace(SRC::PUSH_SPACE, std::move(res));
+	// Push
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Push.png");
+	resourcesMap_.emplace(SRC::PUSH, std::move(res));
+
+	// Playgame
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PlayGame.png");
+	resourcesMap_.emplace(SRC::PLAY, std::move(res));
+
+	// ÇÈÅ[ÇÈ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Rule.png");
+	resourcesMap_.emplace(SRC::RULE, std::move(res));
+
+	//ÅÀ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Cursor.png");
+	resourcesMap_.emplace(SRC::CURSOR, std::move(res));
 
 	// êÅÇ´èoÇµ
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SpeechBalloon.png");
