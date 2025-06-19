@@ -19,9 +19,10 @@ TitleScene::TitleScene(void)
 	imgCursor_ = -1;
 	imgGame_ = -1;
 	imgRule_ = -1;
+	imgUDCursor_ = -1;
 
-	skyDome_ = nullptr;
-	animationController_ = nullptr;
+	animationControllerPlayer_ = nullptr;
+	animationControllerEnemy_ = nullptr;
 }
 
 TitleScene::~TitleScene(void)
@@ -46,35 +47,32 @@ void TitleScene::Init(void)
 
 	float size;
 
-	// メイン惑星
-	planet_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::FALL_PLANET));
-	planet_.pos = AsoUtility::VECTOR_ZERO;
-	planet_.scl = AsoUtility::VECTOR_ONE;
-	planet_.Update();
-
-	// 回転する惑星
-	movePlanet_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::LAST_PLANET));
-	movePlanet_.pos = { -250.0f, -100.0f, -100.0f };
-	size = 0.7f;
-	movePlanet_.scl = { size, size, size };
-	movePlanet_.quaRotLocal = Quaternion::Euler(
-		AsoUtility::Deg2RadF(90.0f), 0.0f, 0.0f);
-	movePlanet_.Update();
-
-	// キャラ
+	// 初期位置は左端付近にプレイヤー、その左側に敵
 	charactor_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
-	charactor_.pos = { 0.0f,-400.0f,100.0f };
-	size = 1.4f;
-	charactor_.scl = { size, size, size };
-	charactor_.quaRot = Quaternion::Euler(
-		0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
+	charactor_.pos = { -900.0f, -400.0f, 100.0f };
+	charactor_.scl = { 1.4f, 1.4f, 1.4f };
+	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
 	charactor_.Update();
 
-	// アニメーションの設定
+	enemy_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::DOG));
+	enemy_.pos = { -1100.0f, -400.0f, 100.0f };
+	enemy_.scl = { 1.3f, 1.3f, 1.3f };
+	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
+	enemy_.Update();
+
+	// 右向きスタート（1:右向き、-1:左向き）
+	enemyDirection_ = 1;
+
+	// プレイヤーのアニメーション
 	std::string path = Application::PATH_MODEL + "Player/";
-	animationController_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationController_->Add(0, path + "Watering.mv1", 20.0f);
-	animationController_->Play(0);
+	animationControllerPlayer_ = std::make_unique<AnimationController>(charactor_.modelId);
+	animationControllerPlayer_->Add(0, path + "Run.mv1", 20.0f);
+	animationControllerPlayer_->Play(0);
+
+	// 敵のアニメーション
+	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
+	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Run.mv1", 20.0f);
+	animationControllerEnemy_->Play(0);
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
@@ -83,42 +81,72 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
+	// 点滅フレーム更新（1秒周期）
 	blinkFrameCount_++;
-	if (blinkFrameCount_ > 60) {  // 60フレーム（1秒）でリセット
+	if (blinkFrameCount_ > 60) {
 		blinkFrameCount_ = 0;
 	}
 
-	// シーン遷移
+	// 入力処理
 	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
-	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
-	}
-
 	if (ins.IsTrgDown(KEY_INPUT_DOWN) || ins.IsTrgDown(KEY_INPUT_UP)) {
 		selectedIndex_ = (selectedIndex_ + 1) % 2;
 	}
-
 	if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
 		if (selectedIndex_ == 0) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 		}
 		else if (selectedIndex_ == 1) {
-			//SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RULE); // ← ルールシーンが未実装なら保留でOK
+			// SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RULE);
 		}
 	}
 
+	const float playerSpeed = 5.0f;
+	const float enemySpeed = 5.0f;
+	const float leftBound = -1150.0f;
+	const float rightBound = 1150.0f;
+	const float safeDistance = 250.0f;
 
-	// 惑星の回転
-	movePlanet_.quaRot = movePlanet_.quaRot.Mult(
-		Quaternion::Euler(0.0f, 0.0f, AsoUtility::Deg2RadF(-1.0f)));
-	movePlanet_.Update();
+	// プレイヤーは向き(enemyDirection_)に従い移動
+	charactor_.pos.x += playerSpeed * enemyDirection_;
 
-	// キャラアニメーション
-	animationController_->Update();
+	// 敵はプレイヤーを追いかける
+	float diffX = charactor_.pos.x - enemy_.pos.x;
+	if (enemyDirection_ == 1) {
+		// 右向きの時、敵はプレイヤーの後ろを追いかける（safeDistanceを保つ）
+		if (diffX > safeDistance) {
+			enemy_.pos.x += enemySpeed;
+			if (enemy_.pos.x > charactor_.pos.x - safeDistance)
+				enemy_.pos.x = charactor_.pos.x - safeDistance;
+		}
+	}
+	else {
+		// 左向きの時、敵はプレイヤーの後ろを追いかける
+		if (diffX < -safeDistance) {
+			enemy_.pos.x -= enemySpeed;
+			if (enemy_.pos.x < charactor_.pos.x + safeDistance)
+				enemy_.pos.x = charactor_.pos.x + safeDistance;
+		}
+	}
 
-	//skyDome_->Update();
+	// 端に来たら向きを反転
+	if (charactor_.pos.x > rightBound) {
+		enemyDirection_ = -1; // 左向きへ
+	}
+	else if (charactor_.pos.x < leftBound) {
+		enemyDirection_ = 1; // 右向きへ
+	}
 
+	// 向き更新（右向きは-90°、左向きは90°）
+	float yRotDeg = (enemyDirection_ == 1) ? -90.0f : 90.0f;
+	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
+	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
+
+	enemy_.Update();
+	charactor_.Update();
+
+	animationControllerPlayer_->Update();
+	animationControllerEnemy_->Update();
 }
 
 void TitleScene::Draw(void)
@@ -177,10 +205,15 @@ void TitleScene::Draw(void)
 	// カーソル（矢印）表示（選択ボタンの左に）
 	int indicatorX = centerX - buttonW / 2 - 50;
 	int indicatorY = (selectedIndex_ == 0) ? yGame : yRule;
-	indicatorY -= 13; // 少し上にずらす
+	indicatorY += 8; 
 
 	DrawRotaGraph(indicatorX, indicatorY, 0.5, 0.0, imgCursor_, true);
 
+	//十字キー
+	DrawGraph(1400, 500, imgPush_, true);
+
 	// キャラモデル描画
 	MV1DrawModel(charactor_.modelId);
+
+	MV1DrawModel(enemy_.modelId);
 }

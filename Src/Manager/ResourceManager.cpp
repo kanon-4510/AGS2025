@@ -52,15 +52,19 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::RULE, std::move(res));
 
 	//⇒
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Cursor.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Cursor1.png");
 	resourcesMap_.emplace(SRC::CURSOR, std::move(res));
+
+	//十字キーの上下
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");
+	resourcesMap_.emplace(SRC::UPDOWN, std::move(res));
 
 	// 吹き出し
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SpeechBalloon.png");
 	resourcesMap_.emplace(SRC::SPEECH_BALLOON, std::move(res));
 	
 	// プレイヤー
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Player/Player.mv1");
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "NPlayer/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, std::move(res));
 
 	// プレイヤー影

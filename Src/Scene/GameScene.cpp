@@ -49,7 +49,7 @@ void GameScene::Init(void)
 	// “G‚Ìƒ‚ƒfƒ‹
 	EnemyCreate();
 
-	player_->SetEnemy(enemys_[0]);
+	player_->SetEnemy(&enemys_);
 
 	//–Ø
 	tree_ = std::make_shared<Tree>();

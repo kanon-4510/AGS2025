@@ -29,27 +29,30 @@ private:
 	int imgPush_;
 	int imgGame_;
 	int imgRule_;
-
 	int imgCursor_;
+	int imgUDCursor_;
+
 	int selectedIndex_;
 
 	int blinkFrameCount_ = 0;
 
-	// スカイドーム用
-	Transform spaceDomeTran_;
+	int enemyDirection_ = 1;  // 敵の向き（1:右, -1:左）
+	int playerDirection_ = 1; // プレイヤーの向き（1:右, -1:左）
+	float enemySpeed_ = 5.0f; // 敵の移動速度
+	float playerSpeed_ = 4.0f; // プレイヤーの移動速度
 
-	// スカイドーム(背景)
-	//SkyDome* skyDome_;
-	std::unique_ptr<SkyDome> skyDome_;
-
-	// 惑星
-	Transform planet_;
-	Transform movePlanet_;
+	// 画面の移動制限範囲（例）
+	const float leftLimit_ = -1000.0f;
+	const float rightLimit_ = 1000.0f;
 
 	// キャラクター
 	Transform charactor_;
 
+	// 敵キャラクター
+	Transform enemy_;
+
 	// アニメーション
-	std::unique_ptr<AnimationController> animationController_;
+	std::unique_ptr<AnimationController> animationControllerPlayer_;
+	std::unique_ptr<AnimationController> animationControllerEnemy_;
 
 };

@@ -17,17 +17,11 @@ class EnemyBase : public ActorBase
 {
 public:
 
-	//影の大きさ
-	static constexpr float ENEMY_SHADOW_SIZE = 30.0f;
-	static constexpr float ENEMY_SHADOW_HEIGHT = 300.0f;
+	static constexpr float VIEW_RANGE = 500.0f;	// 視野の広さ
 
-	// 視野の広さ
-	static constexpr float VIEW_RANGE = 500.0f;
+	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
-	// 視野角
-	static constexpr float VIEW_ANGLE = 15.0f;
-
-	static constexpr float TIME_ROT = 1.0f;	// 回転完了までの時間
+	static constexpr float TIME_ROT = 1.0f;		// 回転完了までの時間
 
 	//敵の種類
 	enum class TYPE
@@ -62,7 +56,6 @@ public:
 		MAX
 	};
 
-	//EnemyBase(){};	// コンストラクタ
 	EnemyBase();	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
@@ -81,13 +74,11 @@ public:
 	void SetAlive(bool alive);	// 生存判定
 
 	void Damage(int damage);	// ダメージを与える
-
-	//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 	
 	const Item& GetItem(void) const;	// アイテム取得
 
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
-	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetGameScene(GameScene* scene);
@@ -132,9 +123,10 @@ protected:
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
-	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
+	float attackCollisionRadius_;	 // 攻撃判定用と攻撃範囲の球体半径
+	VECTOR attackCollisionLocalPos_; // 攻撃判定用と攻撃範囲の調整座標
 
-	//std::unique_ptr<Capsule> capsule_;//カプセル
+	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
 	// 衝突チェック 衝突用線分
 	VECTOR gravHitPosDown_;

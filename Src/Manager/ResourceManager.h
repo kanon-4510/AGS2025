@@ -18,6 +18,7 @@ public:
 		CURSOR,
 		PLAY,
 		RULE,
+		UPDOWN,
 		SPEECH_BALLOON,
 		PLAYER,
 		PLAYER_SHADOW,
