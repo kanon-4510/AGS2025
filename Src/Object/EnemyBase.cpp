@@ -34,6 +34,8 @@ EnemyBase::EnemyBase()
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
+		STATE::PLAY, std::bind(&EnemyBase::ChangeStateAttack, this));
+	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
@@ -81,7 +83,7 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::UpdateAllive(void)
+void EnemyBase::UpdatePlay(void)
 {
 	if (isAlive_)
 	{
@@ -90,6 +92,10 @@ void EnemyBase::UpdateAllive(void)
 
 		ChasePlayer();
 	}
+}
+void EnemyBase::UpdateAttack(void)
+{
+	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 }
 void EnemyBase::UpdateDeath(void)
 {
@@ -108,8 +114,8 @@ void EnemyBase::UpdateDeath(void)
 			scene_->AddItem(newItem);
 	}
 }
-
 #pragma endregion
+
 
 
 void EnemyBase::ChasePlayer(void)
@@ -265,6 +271,9 @@ void EnemyBase::SetGameScene(GameScene* scene)
 	scene_ = scene;
 }
 
+
+#pragma region Stateの切り替え
+
 void EnemyBase::ChangeState(STATE state)
 {
 	// 状態変更
@@ -280,13 +289,20 @@ void EnemyBase::ChangeStateNone(void)
 }
 void EnemyBase::ChangeStatePlay(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
+}
+
+void EnemyBase::ChangeStateAttack(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateAttack, this);
 }
 
 void EnemyBase::ChangeStateDeath(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
 }
+
+#pragma endregion
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {
@@ -306,6 +322,7 @@ void EnemyBase::DrawDebug(void)
 	VECTOR v;
 	VECTOR c;
 	VECTOR s;
+	VECTOR a;
 
 	// キャラ基本情報
 	//-------------------------------------------------------
@@ -313,15 +330,14 @@ void EnemyBase::DrawDebug(void)
 	v = transform_.pos;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-	/*capsule_->Draw();
-	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);*/
-
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
-	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",currentAnimType_);
+	
+	a = attackCollisionLocalPos_;
+	DrawSphere3D(s, attackCollisionRadius_, 8, purpl, purpl, false);
+
 }
 
 void EnemyBase::DrawDebugSearchRange(void)

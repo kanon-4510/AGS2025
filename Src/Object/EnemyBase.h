@@ -133,7 +133,8 @@ protected:
 	VECTOR gravHitPosUp_;
 
 	void UpdateNone(void);			// 更新ステップ
-	virtual void UpdateAllive(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateAttack(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	void ChasePlayer(void);			//プレイヤーを追いかける
 	void Attack(void);	//攻撃モーション
@@ -142,6 +143,7 @@ protected:
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
+	void ChangeStateAttack(void);
 	void ChangeStateDeath(void);
 
 	void Collision(void);// 衝突判定
