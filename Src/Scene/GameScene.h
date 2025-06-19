@@ -15,7 +15,7 @@ class GameScene : public SceneBase
 {
 public:
 	static constexpr int ENCOUNT = 200;	//エンカウンタ
-	static constexpr int ENEMY_MAX = 1;//最大出現数
+	static constexpr int ENEMY_MAX = 4;//最大出現数
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ

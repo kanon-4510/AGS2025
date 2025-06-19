@@ -68,9 +68,6 @@ public:
 		FAST_RUN,
 		JUMP,
 		DOWN,
-		FLY,
-		FALLING,
-		VICTORY,
 		ATTACK,
 	};
 
@@ -90,14 +87,14 @@ public:
 	void ClearCollider(void);
 
 
-	void SetEnemy(std::shared_ptr<EnemyBase> enemy);
+	void SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys);
 
 	VECTOR GetPos() const;
 	void SetPos(const VECTOR& pos);
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
-	const EnemyBase& GetCollision(void) const;
+	const std::vector<std::shared_ptr<EnemyBase>>& GetCollision(void) const;
 
 	//状態確認
 	bool IsPlay(void) const;
@@ -242,7 +239,7 @@ private:
 	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
-	std::shared_ptr<EnemyBase> enemy_;
+	const std::vector<std::shared_ptr<EnemyBase>>* enemy_;
 
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
