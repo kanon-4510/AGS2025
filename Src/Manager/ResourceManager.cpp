@@ -91,10 +91,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
 	resourcesMap_.emplace(SRC::ITEM, std::move(res));
 
-	//木
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Wood/1.mv1");
-	resourcesMap_.emplace(SRC::WOOD, std::move(res));
-
 	//エネミー
 	//----------------------------------
 	//犬

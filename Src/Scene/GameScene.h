@@ -14,8 +14,8 @@ class MiniMap;
 class GameScene : public SceneBase
 {
 public:
-	static constexpr int ENCOUNT = 30;	//エンカウンタ
-	static constexpr int ENEMY_MAX = 20;//最大出現数
+	static constexpr int ENCOUNT = 200;	//エンカウンタ
+	static constexpr int ENEMY_MAX = 1;//最大出現数
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ
@@ -28,7 +28,7 @@ public:
 
 	void AddItem(std::shared_ptr<Item> item);
 private:
-	void EnemyCreate(int i);
+	void EnemyCreate(void);
 
 	std::unique_ptr<Stage> stage_;		// ステージ
 	std::shared_ptr<Tree>tree_;			// ツリー
@@ -39,6 +39,6 @@ private:
 	std::unique_ptr<MiniMap> map_;		//ミニマップ
 
 	int enemyModelId_;
-	std::vector<EnemyBase*> enemys_;
+	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 };

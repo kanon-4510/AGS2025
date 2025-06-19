@@ -48,13 +48,9 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// 敵のモデル
-	//auto enemy = new EnemyMimic(enemyModelId_);
-	auto enemy = new EnemyVirus();
-	enemy->Init();
-	enemys_.push_back(enemy);
+	EnemyCreate();
 
 	player_->SetEnemy(enemys_[0]);
-	enemy->SetPlayer(player_);
 
 	//木
 	tree_ = std::make_shared<Tree>();
@@ -65,7 +61,6 @@ void GameScene::Init(void)
 	//アイテム
 	/*item_ = std::make_shared<Item>(*player_, Transform{});
 	item_->Init();*/
-	enemy->SetGameScene(this);
 
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
@@ -113,21 +108,42 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 	}
+
 	//敵のエンカウント
-	/*enCounter++;
+	enCounter++;
 	if (enCounter > ENCOUNT)
 	{
-		enCounter = 0;//エンカウントのリセット
-
-		for (int i = 0; i < ENEMY_MAX; i++)
+		enCounter = 0;
+		if (ENEMY_MAX >= enemys_.size())
 		{
-			if (enemys_[i]->GetState() == EnemyBase::STATE::NONE)
-			{
-				EnemyCreate(i);
-				break;
-			}
+			EnemyCreate();
 		}
-	}*/
+	}
+
+	//敵のエンカウント
+	//enCounter++;
+	//if (enCounter > ENCOUNT)
+	//{
+
+	//	bool spawned = false;
+	//	size_t size = enemys_.size();
+	//	for (int i = 0; i < size; i++)
+	//	{
+	//		//if (enemys_[i]->GetState() == EnemyBase::STATE::NONE)
+	//		if (enemys_[i] != nullptr && enemys_[i]->GetState() == EnemyBase::STATE::NONE)
+	//		{
+	//			EnemyCreate(i);
+	//			spawned = true;
+	//			break;
+	//		}
+	//	}
+	//	if (!spawned)
+	//	{
+	//		// ログ出力や警告処理
+	//		OutputDebugStringA("警告：敵を生成できるスロットが見つかりませんでした。\n");
+	//	}
+	//	enCounter = 0;//エンカウントのリセット
+	//}
 }
 
 void GameScene::Draw(void)
@@ -218,10 +234,79 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 	items_.push_back(item);
 }
 
-void GameScene::EnemyCreate(int i)
+//void GameScene::EnemyCreate(int i)
+//{
+//	int randDir = GetRand(3);
+//	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
+//	switch (randDir)//位置
+//	{
+//	case 0://前
+//		randPos.x = GetRand(29000) - 14500;
+//		randPos.z = 14500;
+//		break;
+//	case 1://後
+//		randPos.x = GetRand(29000) - 14500;
+//		randPos.z = -14500;
+//		break;
+//	case 2://左
+//		randPos.x = -14500;
+//		randPos.z = GetRand(29000) - 14500;
+//		break;
+//	case 3://右
+//		randPos.x = 14500;
+//		randPos.z = GetRand(29000) - 14500;
+//		break;
+//	default:
+//		break;
+//	}
+//	//敵の開放	
+//	if (enemys_[i])
+//	{
+//		enemys_[i]->Release();
+//		delete enemys_[i];
+//		enemys_[i] = nullptr;
+//	}
+//	//敵のtype
+//	EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX)));
+//	switch (type_)
+//	{
+//	case EnemyBase::TYPE::SABO:
+//		enemys_[i] = new EnemyCactus();
+//		break;
+//	case EnemyBase::TYPE::DOG:
+//		enemys_[i] = new EnemyDog();
+//		break;
+//	case EnemyBase::TYPE::MIMIC:
+//		enemys_[i] = new EnemyMimic();
+//		break;
+//	case EnemyBase::TYPE::MUSH:
+//		enemys_[i] = new EnemyMushroom();
+//		break;
+//	case EnemyBase::TYPE::ONION:
+//		enemys_[i] = new EnemyOnion();
+//		break;
+//	case EnemyBase::TYPE::TOGE:
+//		enemys_[i] = new EnemyThorn();
+//		break;
+//	case EnemyBase::TYPE::VIRUS:
+//		enemys_[i] = new EnemyVirus();
+//		break;
+//	default:
+//		break;
+//	}
+//	// 生成された敵の初期化
+//	if (enemys_[i])
+//	{
+//		enemys_[i]->SetPos(randPos);
+//		enemys_[i]->Init();
+//	}
+//}
+
+void GameScene::EnemyCreate(void)
 {
+
 	int randDir = GetRand(3);
-	VECTOR randPos;
+	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
 	switch (randDir)//位置
 	{
 	case 0://前
@@ -243,35 +328,44 @@ void GameScene::EnemyCreate(int i)
 	default:
 		break;
 	}
+
+	std::shared_ptr<EnemyBase> enemy;
+
 	//敵のtype
-	enemys_[i]->Release();
-	delete enemys_[i];
-	EnemyBase::TYPE type_;
-	type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX)-1));
+	EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 1));
 	switch (type_)
 	{
 	case EnemyBase::TYPE::SABO:
-		enemys_[i] = new EnemyCactus();
+		enemy = std::make_shared<EnemyCactus>();
 		break;
 	case EnemyBase::TYPE::DOG:
-		enemys_[i] = new EnemyDog();
+		enemy = std::make_shared<EnemyDog>();
 		break;
 	case EnemyBase::TYPE::MIMIC:
-		enemys_[i] = new EnemyMimic();
+		enemy = std::make_shared<EnemyMimic>();
 		break;
 	case EnemyBase::TYPE::MUSH:
-		enemys_[i] = new EnemyMushroom();
+		enemy = std::make_shared<EnemyMushroom>();
 		break;
 	case EnemyBase::TYPE::ONION:
-		enemys_[i] = new EnemyOnion();
+		enemy = std::make_shared<EnemyOnion>();
 		break;
 	case EnemyBase::TYPE::TOGE:
-		enemys_[i] = new EnemyThorn();
+		enemy = std::make_shared<EnemyThorn>();
 		break;
 	case EnemyBase::TYPE::VIRUS:
-		enemys_[i] = new EnemyVirus();
+		enemy = std::make_shared<EnemyVirus>();
 		break;
-	case EnemyBase::TYPE::MAX:
+	default:
+		enemy = std::make_shared<EnemyCactus>();
 		break;
 	}
+	// 生成された敵の初期化
+	enemy->SetGameScene(this);
+	enemy->SetPos(randPos);
+	enemy->SetPlayer(player_);
+	enemy->Init();
+
+	enemys_.emplace_back(std::move(enemy));
+
 }

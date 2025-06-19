@@ -13,9 +13,12 @@
 #include "Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase() : scene_(nullptr),
-gravHitPosDown_(AsoUtility::VECTOR_ZERO),
-gravHitPosUp_(AsoUtility::VECTOR_ZERO)
+EnemyBase::EnemyBase() 
+	: 
+	scene_(nullptr),
+	gravHitPosDown_(AsoUtility::VECTOR_ZERO),
+	gravHitPosUp_(AsoUtility::VECTOR_ZERO),
+	movePow_(AsoUtility::VECTOR_ZERO)
 {
 	animationController_ = nullptr;
 
@@ -29,7 +32,7 @@ gravHitPosUp_(AsoUtility::VECTOR_ZERO)
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
-		STATE::ALIVE, std::bind(&EnemyBase::ChangeStateAlive, this));
+		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
@@ -47,48 +50,10 @@ void EnemyBase::Init(void)
 
 void EnemyBase::InitAnimation(void)
 {
-	/*speedAnim_ = 0.5f;
-
-	std::string path = Application::PATH_MODEL + "Enemy/";
-
-	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Yellow.mv1", 20.0f,1);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 20.0f,2);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f,3);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f,4);
-
-	animationController_->Play((int)ANIM_TYPE::RUN);*/
 }
 
 void EnemyBase::SetParam(void)
-{
-	//// 使用メモリ容量と読み込み時間の削減のため
-	//// モデルデータをいくつもメモリ上に存在させない
-	//transform_.modelId = MV1DuplicateModel(baseModelId_[static_cast<int>(currentType_)]);
-
-	//transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	//transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(180.0f) , 0.0f);//クォータニオンをいじると向きが変わる
-	//transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
-	//transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
-
-	//speed_ = 3.0f;		// 移動スピード
-
-	//isAlive_ = true;	// 初期は生存状態
-	//
-	//hp_ = 2;	// HPの設定
-
-	//collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
-	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
-
-	//// カプセルコライダ
-	//capsule_ = std::make_unique<Capsule>(transform_);
-	//capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
-	//capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
-	//capsule_->SetRadius(30.0f);
-
-	//// 初期状態
-	//ChangeState(STATE::PLAY);
+{	
 }
 
 void EnemyBase::Update(void)
@@ -217,7 +182,6 @@ void EnemyBase::Release(void)
 	MV1DeleteModel(transform_.modelId);
 
 	//capsule_.reset();
-
 }
 
 VECTOR EnemyBase::GetPos(void)
@@ -250,14 +214,12 @@ void EnemyBase::Attack(void)
 
 }
 
-
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
 	if (hp_ <= 0 && isAlive_)
 	{
-		ChangeState(STATE::DEATH);
-		
+		ChangeState(STATE::DEATH);	
 	}
 }
 
@@ -316,7 +278,7 @@ void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
 }
-void EnemyBase::ChangeStateAlive(void)
+void EnemyBase::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
 }
@@ -351,28 +313,19 @@ void EnemyBase::DrawDebug(void)
 	v = transform_.pos;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-
 	/*capsule_->Draw();
 	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",
-		c.x, c.y, c.z
-	);*/
+	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);*/
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
-
-	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",
-		currentAnimType_
-	);
-
+	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",currentAnimType_);
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
-
 	VECTOR centerPos = transform_.pos;
 	float radius = VIEW_RANGE;
 	int segments = 60;
@@ -403,15 +356,12 @@ void EnemyBase::DrawDebugSearchRange(void)
 			centerPos.y,
 			centerPos.z + radius * cosf(angle1)
 		};
-
 		VECTOR p2 = {
 			centerPos.x + radius * sinf(angle2),
 			centerPos.y,
 			centerPos.z + radius * cosf(angle2)
 		};
-
 		DrawTriangle3D(centerPos, p1, p2, color, false);
 	}
-
 	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
 }

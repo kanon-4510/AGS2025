@@ -2,7 +2,6 @@
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
-#include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include"../Application.h"
 #include"Player.h"
@@ -137,15 +136,15 @@ void Tree::Update(void)
 	case Tree::GROW::BABY:
 		scl_ = { 3.0f, 2.5f, 3.0f };						// ‘å‚«‚³‚ÌÝ’è
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚ÌÝ’è
-		pos_ = { 0.0f, 100.0f, 0.0f };						// ˆÊ’u‚ÌÝ’è
+		pos_ = { 0.0f, -3.5f, 0.0f };						// ˆÊ’u‚ÌÝ’è
 		MV1SetScale(modelIdB_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ðÝ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
 		MV1SetRotationXYZ(modelIdB_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
 		MV1SetPosition(modelIdB_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
 		break;
 	case Tree::GROW::KID:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚ÌÝ’è
-		scl_ = { 15.0f, 10.0f, 15.0f };
-		pos_ = { 0.0f, 450.0f, 0.0f };
+		scl_ = { 15.0f, 10.0f, 15.0};
+		pos_ = { 0.0f, -2.0f, 0.0f };
 		MV1SetScale(modelIdK_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ðÝ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
 		MV1SetRotationXYZ(modelIdK_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
 		MV1SetPosition(modelIdK_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
@@ -153,7 +152,7 @@ void Tree::Update(void)
 	case Tree::GROW::ADULT:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚ÌÝ’è
 		scl_ = { 30.0f, 25.0f, 30.0f };
-		pos_ = { 0.0f, 805.0f, 0.0f };
+		pos_ = { 0.0f, -2.5f, 0.0f };
 		MV1SetScale(modelIdA_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ðÝ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
 		MV1SetRotationXYZ(modelIdA_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
 		MV1SetPosition(modelIdA_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
@@ -161,7 +160,7 @@ void Tree::Update(void)
 	case Tree::GROW::OLD:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚ÌÝ’è
 		scl_ = { 50.0f, 45.0f, 50.0f };
-		pos_ = { 0.0f, 1470.0f, 0.0f };
+		pos_ = { 0.0f, -23.5f, 0.0f };
 		MV1SetScale(modelIdO_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ðÝ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
 		MV1SetRotationXYZ(modelIdO_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
 		MV1SetPosition(modelIdO_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
@@ -267,7 +266,7 @@ void Tree::DrawDebugTree2Player(void)
 	if (player_ != nullptr)
 	{
 		VECTOR centerPos = pos_;  // –Ø‚Ì’†SÀ•W
-		centerPos.y -= 100.0f;  // ‰~‚ð‰º‚°‚é
+		centerPos.y = 0.0f;		  // ‰~‚ð‰º‚°‚é
 		VECTOR playerPos = player_->GetTransform().pos;
 
 		float dx = playerPos.x - centerPos.x;
@@ -285,19 +284,19 @@ void Tree::DrawDebugTree2Player(void)
 		}
 		else if (grow_ == GROW::KID)
 		{
-			centerPos.y -= 350.0f;
+			centerPos.y = 0.0f;
 			viewRange_ = 200.0f;
 			
 		}
 		else if(grow_ == GROW::ADULT)
 		{
-			centerPos.y -= 705.0f;
+			centerPos.y = 0.0f;
 			viewRange_ = 650.0f;
 			
 		}
 		else if(grow_ == GROW::OLD)
 		{
-			centerPos.y -= 1370.0f;
+			centerPos.y = 0.0f;
 			viewRange_ = 909.0f;
 			
 		}

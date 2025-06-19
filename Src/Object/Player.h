@@ -90,7 +90,7 @@ public:
 	void ClearCollider(void);
 
 
-	void SetEnemy(EnemyBase* enemy);
+	void SetEnemy(std::shared_ptr<EnemyBase> enemy);
 
 	VECTOR GetPos() const;
 	void SetPos(const VECTOR& pos);
@@ -242,7 +242,7 @@ private:
 	void Revival();
 
 	std::unique_ptr<Capsule> capsule_;
-	EnemyBase* enemy_;
+	std::shared_ptr<EnemyBase> enemy_;
 
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
