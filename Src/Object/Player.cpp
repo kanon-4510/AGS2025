@@ -21,7 +21,6 @@
 Player::Player(void)
 {
 	animationController_ = nullptr;
-	enemy_ = nullptr;
 
 	state_ = STATE::NONE;
 
@@ -162,9 +161,9 @@ void Player::ClearCollider(void)
 	colliders_.clear();
 }
 
-void Player::SetEnemy(std::shared_ptr<EnemyBase> enemy)
+void Player::SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys)
 {
-	enemy_ = enemy;
+	enemy_ = enemys;
 }
 
 VECTOR Player::GetPos() const
@@ -182,7 +181,7 @@ const Capsule& Player::GetCapsule(void) const
 	return *capsule_;
 }
 
-const EnemyBase& Player::GetCollision(void) const
+const std::vector<std::shared_ptr<EnemyBase>>& Player::GetCollision(void) const
 {
 	return *enemy_;
 }
@@ -367,6 +366,11 @@ void Player::DrawDebug(void)
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
 	//capsule_->Draw();
+	/*for (size_t i = 0; i < enemy_.size(); ++i) {
+		if (!enemy_[i]) continue;
+		printfDx("Enemy %zu Pos: (%f, %f, %f) Alive: %d\n",
+			i, enemy_[i]->GetCollisionPos().x, enemy_[i]->GetCollisionPos().y, enemy_[i]->GetCollisionPos().z, enemy_[i]->IsAlive());
+	}*/
 }
 
 void Player::ProcessMove(void)
@@ -384,22 +388,22 @@ void Player::ProcessMove(void)
 
 	double rotRad = 0;
 
-	if (ins.IsNew(KEY_INPUT_W))
+	if (ins.IsNew(KEY_INPUT_W) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetForward();
 		rotRad = AsoUtility::Deg2RadF(0.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_S))
+	if (ins.IsNew(KEY_INPUT_S) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetBack();
 		rotRad = AsoUtility::Deg2RadF(180.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_D))
+	if (ins.IsNew(KEY_INPUT_D) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetRight();
 		rotRad = AsoUtility::Deg2RadF(90.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_A))
+	if (ins.IsNew(KEY_INPUT_A) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetLeft();
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
@@ -410,7 +414,7 @@ void Player::ProcessMove(void)
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
-		if (ins.IsNew(KEY_INPUT_LSHIFT))
+		if (ins.IsNew(KEY_INPUT_LSHIFT) && (!isAttack_ && IsEndLandingA()))
 		{
 			speed_ = SPEED_RUN;
 		}
@@ -582,14 +586,33 @@ void Player::CollisionAttack(void)
 		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
 		attackStart.y += 100.0f;  // 攻撃の高さ調整
 
-		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
-		float dis = AsoUtility::SqrMagnitudeF(diff);
-		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
+		for (const auto& enemy : *enemy_)
 		{
-			//範囲に入った
-			enemy_->Damage(2);
-			return;
+
+			if (!enemy || !enemy->IsAlive()) continue;
+
+			VECTOR diff = VSub(enemy->GetCollisionPos(), attackStart);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+			float radius = enemy->GetCollisionRadius();
+			printfDx("Enemy pos: (%f,%f,%f) DistSq: %f RadiusSq: %f\n",
+				enemy->GetCollisionPos().x, enemy->GetCollisionPos().y, enemy->GetCollisionPos().z, dis, radius * radius);
+
+			if (dis < radius * radius)
+			{
+				enemy->Damage(2);
+				// 複数ヒットさせたいなら continue;
+				// 1体のみヒットさせたいなら break;
+			}
 		}
+
+		//VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
+		//float dis = AsoUtility::SqrMagnitudeF(diff);
+		//if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
+		//{
+		//	//範囲に入った
+		//	enemy_->Damage(2);
+		//	return;
+		//}
 	}
 }
 
@@ -627,7 +650,7 @@ void Player::ProcessJump(void)
 		if (!isJump_)
 		{
 			// 制御無しジャンプ
-			animationController_->Play((int)ANIM_TYPE::JUMP);
+			//animationController_->Play((int)ANIM_TYPE::JUMP);
 
 			// この後、いくつかのジャンプパターンを試します
 			//無理やりアニメーション
@@ -682,7 +705,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
