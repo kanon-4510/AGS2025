@@ -230,74 +230,6 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 	items_.push_back(item);
 }
 
-//void GameScene::EnemyCreate(int i)
-//{
-//	int randDir = GetRand(3);
-//	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
-//	switch (randDir)//ˆÊ’u
-//	{
-//	case 0://‘O
-//		randPos.x = GetRand(29000) - 14500;
-//		randPos.z = 14500;
-//		break;
-//	case 1://Œã
-//		randPos.x = GetRand(29000) - 14500;
-//		randPos.z = -14500;
-//		break;
-//	case 2://¶
-//		randPos.x = -14500;
-//		randPos.z = GetRand(29000) - 14500;
-//		break;
-//	case 3://‰E
-//		randPos.x = 14500;
-//		randPos.z = GetRand(29000) - 14500;
-//		break;
-//	default:
-//		break;
-//	}
-//	//“G‚ÌŠJ•ú	
-//	if (enemys_[i])
-//	{
-//		enemys_[i]->Release();
-//		delete enemys_[i];
-//		enemys_[i] = nullptr;
-//	}
-//	//“G‚Ìtype
-//	EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX)));
-//	switch (type_)
-//	{
-//	case EnemyBase::TYPE::SABO:
-//		enemys_[i] = new EnemyCactus();
-//		break;
-//	case EnemyBase::TYPE::DOG:
-//		enemys_[i] = new EnemyDog();
-//		break;
-//	case EnemyBase::TYPE::MIMIC:
-//		enemys_[i] = new EnemyMimic();
-//		break;
-//	case EnemyBase::TYPE::MUSH:
-//		enemys_[i] = new EnemyMushroom();
-//		break;
-//	case EnemyBase::TYPE::ONION:
-//		enemys_[i] = new EnemyOnion();
-//		break;
-//	case EnemyBase::TYPE::TOGE:
-//		enemys_[i] = new EnemyThorn();
-//		break;
-//	case EnemyBase::TYPE::VIRUS:
-//		enemys_[i] = new EnemyVirus();
-//		break;
-//	default:
-//		break;
-//	}
-//	// ¶¬‚³‚ê‚½“G‚Ì‰Šú‰»
-//	if (enemys_[i])
-//	{
-//		enemys_[i]->SetPos(randPos);
-//		enemys_[i]->Init();
-//	}
-//}
-
 void GameScene::EnemyCreate(void)
 {
 
@@ -363,5 +295,4 @@ void GameScene::EnemyCreate(void)
 	enemy->Init();
 
 	enemys_.emplace_back(std::move(enemy));
-
 }
