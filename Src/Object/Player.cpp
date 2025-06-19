@@ -366,11 +366,6 @@ void Player::DrawDebug(void)
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
 	//capsule_->Draw();
-	/*for (size_t i = 0; i < enemy_.size(); ++i) {
-		if (!enemy_[i]) continue;
-		printfDx("Enemy %zu Pos: (%f, %f, %f) Alive: %d\n",
-			i, enemy_[i]->GetCollisionPos().x, enemy_[i]->GetCollisionPos().y, enemy_[i]->GetCollisionPos().z, enemy_[i]->IsAlive());
-	}*/
 }
 
 void Player::ProcessMove(void)
@@ -594,8 +589,6 @@ void Player::CollisionAttack(void)
 			VECTOR diff = VSub(enemy->GetCollisionPos(), attackStart);
 			float dis = AsoUtility::SqrMagnitudeF(diff);
 			float radius = enemy->GetCollisionRadius();
-			printfDx("Enemy pos: (%f,%f,%f) DistSq: %f RadiusSq: %f\n",
-				enemy->GetCollisionPos().x, enemy->GetCollisionPos().y, enemy->GetCollisionPos().z, dis, radius * radius);
 
 			if (dis < radius * radius)
 			{
