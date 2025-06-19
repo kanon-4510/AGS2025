@@ -18,6 +18,7 @@ public:
 		CURSOR,
 		PLAY,
 		RULE,
+		UPDOWN,
 		SPEECH_BALLOON,
 		PLAYER,
 		PLAYER_SHADOW,
@@ -39,7 +40,6 @@ public:
 		TANK_BARREL,
 		TANK_WHEEL,
 		ITEM,
-		WOOD,
 		//エネミー
 		DOG,
 		SABO,

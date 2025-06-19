@@ -2,7 +2,6 @@
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
-#include"../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include"../Application.h"
 #include"Player.h"
@@ -38,9 +37,9 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	scl_ = { 2.0f, 2.0f, 2.0f };							// ëÂÇ´Ç≥ÇÃê›íË
+	scl_ = { 3.0f, 2.5f, 3.0f };							// ëÂÇ´Ç≥ÇÃê›íË
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// äpìxÇÃê›íË
-	pos_ = { 0.0f, 60.0f, 0.0f };							// à íuÇÃê›íË
+	pos_ = { 0.0f, -3.5f, 0.0f };							// à íuÇÃê›íË
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -216,6 +215,9 @@ void Tree::Draw(void)
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
+		MV1SetScale(modelIdB_, scl_);
+		MV1SetRotationXYZ(modelIdB_, rot_);
+		MV1SetPosition(modelIdB_, pos_);
 		MV1DrawModel(modelIdB_);
 		break;
 	case Tree::GROW::KID:
