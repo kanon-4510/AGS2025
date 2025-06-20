@@ -203,7 +203,8 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Player.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Player.mv1", 17.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 5);
 	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
@@ -593,7 +594,8 @@ void Player::CollisionAttack(void)
 			if (dis < radius * radius)
 			{
 				enemy->Damage(2);
-				// 複数ヒットさせたいなら continue;
+				// 複数ヒットさせたいなら 
+				continue;
 				// 1体のみヒットさせたいなら break;
 			}
 		}
@@ -692,13 +694,22 @@ bool Player::IsEndLanding(void)
 void Player::ProcessAttack(void)
 {
 	bool isHit = CheckHitKey(KEY_INPUT_E);
+	bool isHit_N = CheckHitKey(KEY_INPUT_Q);
 
 	// アタック
-	if (isHit && !isJump_ && (isAttack_ || IsEndLandingA()))
+	if ((isHit_N || isHit) && !isJump_ && (isAttack_ || IsEndLandingA()))
 	{
-		if (!isAttack_)
+		if (!isAttack_ || isHit)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK, false);
+			animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
+			isAttack_ = true;
+
+			// 衝突(攻撃)
+			CollisionAttack();
+		}
+		else if (!isAttack_ || isHit_N)
+		{
+			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
@@ -718,7 +729,7 @@ bool Player::IsEndLandingA(void)
 	bool ret = true;
 
 	// アニメーションがアタックではない
-	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK)
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK1)
 	{
 		return ret;
 	}

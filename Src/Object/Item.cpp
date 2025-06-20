@@ -25,14 +25,14 @@ void Item::Init(void)
 
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 0.0f, 10.0f, 500.0f };					// 位置の設定
+	transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = false;
 
 	baseY_ = transform_.pos.y; // 初期位置を保存
 
-	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
+	collisionRadius_ = 60.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 }
 

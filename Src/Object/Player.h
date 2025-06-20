@@ -68,7 +68,8 @@ public:
 		FAST_RUN,
 		JUMP,
 		DOWN,
-		ATTACK,
+		ATTACK1,
+		ATTACK2,
 	};
 
 	// コンストラクタ
@@ -106,6 +107,10 @@ public:
 	void eHit(void);//敵
 	void wHit(void);//水
 	void tHit(void);//木
+					
+	//ダメージ
+	void Damage(int damage);
+
 private:
 
 	// ジャンプ量
@@ -231,8 +236,7 @@ private:
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
 
-	//ダメージ
-	void Damage(int damage);
+	
 
 	//復活処理
 	void StartRevival();

@@ -21,8 +21,6 @@ public:
 
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
-	static constexpr float TIME_ROT = 1.0f;		// 回転完了までの時間
-
 	//敵の種類
 	enum class TYPE
 	{
@@ -41,6 +39,7 @@ public:
 	{
 		NONE,
 		PLAY,
+		ATTACK,
 		DEATH,
 		MAX
 	};
@@ -66,7 +65,6 @@ public:
 	virtual void Draw(void);		 // 描画処理(毎フレーム実行)
 	virtual void Release(void);		 // 解放処理(最後の１回のみ実行)
 
-	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
 	STATE GetState(void);		// 状態獲得
 
@@ -75,7 +73,7 @@ public:
 
 	void Damage(int damage);	// ダメージを与える
 	
-	const Item& GetItem(void) const;	// アイテム取得
+	//const Item& GetItem(void) const;	// アイテム取得
 
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
@@ -89,8 +87,6 @@ public:
 	void SetPlayer(std::shared_ptr<Player> player);
 
 protected:
-	int baseModelId_[static_cast<int>(TYPE::MAX)];	// 元となる敵のモデルID
-	TYPE currentType_;  // 自身のタイプ（例：DOG, GHOST など）
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Item>item_;
@@ -98,16 +94,17 @@ protected:
 
 	float speed_;	// 移動速度
 	
-	VECTOR moveDir_;	// 移動方向
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
 
 	VECTOR moveDiff_;	// フレームごとの移動値
 
 	VECTOR collisionPos_;	//赤い球体の移動後座標
+	VECTOR attackCollisionPos_; //紫の球体の移動後座標
 
 	int hp_;	// 体力
 	bool isAlive_;	// 生存判定
+	bool isAttack_ = false;	//攻撃判定
 
 	STATE state_;	//状態管理
 
@@ -117,8 +114,7 @@ protected:
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
 	
-	float speedAnim_;                              // 再生速度（共通）
-	ANIM_TYPE currentAnimType_;                    // 現在再生中のアニメーション種別
+	float speedAnim_; // 再生速度（共通）
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
@@ -128,16 +124,13 @@ protected:
 
 	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
 
-	// 衝突チェック 衝突用線分
-	VECTOR gravHitPosDown_;
-	VECTOR gravHitPosUp_;
-
 	void UpdateNone(void);			// 更新ステップ
 	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateAttack(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
+	
 	void ChasePlayer(void);			//プレイヤーを追いかける
-	void Attack(void);	//攻撃モーション
+	void CollisionAttack(void);	//攻撃モーション
 
 	// 状態遷移
 	void ChangeState(STATE state);

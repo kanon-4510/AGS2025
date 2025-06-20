@@ -106,25 +106,20 @@ void Tree::Update(void)
 	}
 
 	// …‚Ì—Ê‚É‰ž‚¶‚Ä¬’·ˆ—
-	if (grow_ == GROW::OLD && water_ >= 4)
-	{
-		lv_ += 1;
-		water_ -= 4;
-		ChangeGrow();
-	}
-	else if (grow_ == GROW::ADULT && water_ >= 3)
+	// …‚Ì—Ê‚É‰ž‚¶‚Ä¬’·ˆ—
+	if (lv_ >= 67 && water_ >= 3)
 	{
 		lv_ += 1;
 		water_ -= 3;
 		ChangeGrow();
 	}
-	else if (grow_ == GROW::KID && water_ >= 2)
+	else if (lv_ >= 34 && water_ >= 2)
 	{
 		lv_ += 1;
 		water_ -= 2;
 		ChangeGrow();
 	}
-	else if (grow_ == GROW::BABY && water_ >= 1)
+	else if (lv_ >= 1 && water_ >= 1)
 	{
 		lv_ += 1;
 		water_ -= 1;
