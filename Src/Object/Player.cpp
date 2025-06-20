@@ -162,9 +162,9 @@ void Player::ClearCollider(void)
 	colliders_.clear();
 }
 
-void Player::SetEnemy(std::shared_ptr<EnemyBase> enemy)
+void Player::SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys)
 {
-	enemy_ = enemy;
+	enemy_ = enemys;
 }
 
 VECTOR Player::GetPos() const
@@ -182,7 +182,7 @@ const Capsule& Player::GetCapsule(void) const
 	return *capsule_;
 }
 
-const EnemyBase& Player::GetCollision(void) const
+const std::vector<std::shared_ptr<EnemyBase>>& Player::GetCollision(void) const
 {
 	return *enemy_;
 }
@@ -195,20 +195,17 @@ bool Player::IsPlay(void) const
 void Player::InitAnimation(void)
 {
 
-	std::string path = Application::PATH_MODEL + "Player/";
+	std::string path = Application::PATH_MODEL + "NPlayer/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
 
-	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "FastRun.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::FLY, path + "Flying.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::FALLING, path + "Falling.mv1", 80.0f);
-	animationController_->Add((int)ANIM_TYPE::VICTORY, path + "Victory.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Attack.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Sword And Shield Death.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Player.mv1", 60.0f, 1);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
+	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
+	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Player.mv1", 60.0f);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Player.mv1", 17.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
@@ -365,7 +362,7 @@ void Player::DrawDebug(void)
 		VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
 		capStart.y += 100.0f;
 		VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
-		float capRadius = 30.0f;
+		float capRadius = 100.0f;
 		// カプセルの描画確認用	
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
@@ -387,22 +384,22 @@ void Player::ProcessMove(void)
 
 	double rotRad = 0;
 
-	if (ins.IsNew(KEY_INPUT_W))
+	if (ins.IsNew(KEY_INPUT_W) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetForward();
 		rotRad = AsoUtility::Deg2RadF(0.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_S))
+	if (ins.IsNew(KEY_INPUT_S) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetBack();
 		rotRad = AsoUtility::Deg2RadF(180.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_D))
+	if (ins.IsNew(KEY_INPUT_D) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetRight();
 		rotRad = AsoUtility::Deg2RadF(90.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_A))
+	if (ins.IsNew(KEY_INPUT_A) && (!isAttack_ && IsEndLandingA()))
 	{
 		dir = cameraRot.GetLeft();
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
@@ -413,7 +410,7 @@ void Player::ProcessMove(void)
 	{
 		//移動量
 		speed_ = SPEED_MOVE;
-		if (ins.IsNew(KEY_INPUT_LSHIFT))
+		if (ins.IsNew(KEY_INPUT_LSHIFT) && (!isAttack_ && IsEndLandingA()))
 		{
 			speed_ = SPEED_RUN;
 		}
@@ -576,22 +573,40 @@ void Player::CollisionCapsule(void)
 
 void Player::CollisionAttack(void)
 {
-	if (isAttack_)
+	if (isAttack_ || enemy_)
 	{
 		//エネミーとの衝突判定
+		
+		// 攻撃の球の半径（例: 50.0f）
+		float attackRadius = 100.0f;
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
-		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackStart.y += 100.0f;  // 攻撃の高さ調整
+		VECTOR attackCenter = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackCenter.y += 100.0f;  // 攻撃の高さ調整
 
-		VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
-		float dis = AsoUtility::SqrMagnitudeF(diff);
-		if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
+		for (const auto& enemy : *enemy_)
 		{
-			//範囲に入った
-			enemy_->Damage(2);
-			return;
+			if (!enemy || !enemy->IsAlive()) continue;
+
+			//敵の当たり判定とサイズ
+			VECTOR enemyCenter = enemy->GetCollisionPos();
+			float enemyRadius = enemy->GetCollisionRadius();
+
+			//判定の距離の比較
+			VECTOR diff = VSub(enemyCenter, attackCenter);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+
+			// 半径の合計
+			float radiusSum = attackRadius + enemyRadius;
+
+			if (dis < radiusSum * radiusSum)
+			{
+				enemy->Damage(2);
+				// 複数ヒットさせたいなら
+				continue;
+				// 1体のみヒットさせたいなら break;
+			}
 		}
 	}
 }
@@ -630,7 +645,7 @@ void Player::ProcessJump(void)
 		if (!isJump_)
 		{
 			// 制御無しジャンプ
-			animationController_->Play((int)ANIM_TYPE::JUMP);
+			//animationController_->Play((int)ANIM_TYPE::JUMP);
 
 			// この後、いくつかのジャンプパターンを試します
 			//無理やりアニメーション
@@ -685,7 +700,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK, false, 13.0f, 40.0f);
+			animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 			isAttack_ = true;
 
 			// 衝突(攻撃)

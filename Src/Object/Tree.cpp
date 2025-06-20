@@ -37,9 +37,9 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	scl_ = { 2.0f, 2.0f, 2.0f };							// ‘å‚«‚³‚ÌÝ’è
+	scl_ = { 3.0f, 2.5f, 3.0f };							// ‘å‚«‚³‚ÌÝ’è
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// Šp“x‚ÌÝ’è
-	pos_ = { 0.0f, 60.0f, 0.0f };							// ˆÊ’u‚ÌÝ’è
+	pos_ = { 0.0f, -3.5f, 0.0f };							// ˆÊ’u‚ÌÝ’è
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -106,25 +106,19 @@ void Tree::Update(void)
 	}
 
 	// …‚Ì—Ê‚É‰ž‚¶‚Ä¬’·ˆ—
-	if (grow_ == GROW::OLD && water_ >= 4)
-	{
-		lv_ += 1;
-		water_ -= 4;
-		ChangeGrow();
-	}
-	else if (grow_ == GROW::ADULT && water_ >= 3)
+	if (lv_>=67 && water_ >= 3)
 	{
 		lv_ += 1;
 		water_ -= 3;
 		ChangeGrow();
 	}
-	else if (grow_ == GROW::KID && water_ >= 2)
+	else if (lv_ >= 34 && water_ >= 2)
 	{
 		lv_ += 1;
 		water_ -= 2;
 		ChangeGrow();
 	}
-	else if (grow_ == GROW::BABY && water_ >= 1)
+	else if (lv_ >= 1 && water_ >= 1)
 	{
 		lv_ += 1;
 		water_ -= 1;
@@ -215,6 +209,9 @@ void Tree::Draw(void)
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
+		MV1SetScale(modelIdB_, scl_);
+		MV1SetRotationXYZ(modelIdB_, rot_);
+		MV1SetPosition(modelIdB_, pos_);
 		MV1DrawModel(modelIdB_);
 		break;
 	case Tree::GROW::KID:

@@ -28,6 +28,10 @@ void MiniMap::DrawBackground()
     // === ミニマップの中心 ===
     int centerX = mapPosX + mapPixelSize / 2;
     int centerY = mapPosY + mapPixelSize / 2;
+    int radius = mapPixelSize / 2;
+
+    // 丸い背景
+    //DrawCircle(centerX, centerY, radius, GetColor(100, 255, 0), TRUE);
 
     //中心に木を描画(仮で黒点)
     DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);
@@ -41,14 +45,8 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos)
     int px = static_cast<int>((playerPos.x + worldHalfSize) * scale) + mapPosX;
     int pz = static_cast<int>((-playerPos.z + worldHalfSize) * scale) + mapPosY;
 
-    // === ミニマップ内に収まるように制限（クランプ） ===
-    int minX = mapPosX + 2;
-    int maxX = mapPosX + mapPixelSize - 2;
-    int minY = mapPosY + 2;
-    int maxY = mapPosY + mapPixelSize - 2;
-
-    px = std::clamp(px, minX, maxX);
-    pz = std::clamp(pz, minY, maxY);
+    // === ミニマップ内に収まるように制限===
+    if (!IsInsideCircle(px, pz)) return;
 
     // プレイヤー(青)
     DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
@@ -64,6 +62,9 @@ void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)
         int ex = static_cast<int>((e.x + worldHalfSize) * scale) + mapPosX;
         int ez = static_cast<int>((-e.z + worldHalfSize) * scale) + mapPosY;
 
+        // === ミニマップ内に収まるように制限===
+        //if (!IsInsideCircle(ex, ez)) return;
+
         // 敵(赤)
         DrawCircle(ex, ez, 3, GetColor(255, 0, 0), TRUE);
     }
@@ -76,6 +77,8 @@ void MiniMap::DrawItems(const std::vector<MapVector2>& items)
         int ix = static_cast<int>((item.x + worldHalfSize) * scale) + mapPosX;
         int iz = static_cast<int>((-item.z + worldHalfSize) * scale) + mapPosY;
 
+        // === ミニマップ内に収まるように制限===
+        if (!IsInsideCircle(ix, iz)) return;
 
         size = 5;
         // 頂点座標
@@ -96,4 +99,16 @@ void MiniMap::DrawItems(const std::vector<MapVector2>& items)
         // 水(水色)
         //DrawBox(ix - 3, iz - 3, ix + 3, iz + 3, GetColor(0, 120, 255), TRUE);
     }
+}
+
+bool MiniMap::IsInsideCircle(int x, int y) const
+{
+    int centerX = mapPosX + mapPixelSize / 2;
+    int centerY = mapPosY + mapPixelSize / 2;
+    int radius = mapPixelSize / 2;
+
+    int dx = x - centerX;
+    int dy = y - centerY;
+
+    return dx * dx + dy * dy <= radius * radius;
 }

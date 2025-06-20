@@ -39,7 +39,6 @@ EnemyBase::EnemyBase()
 
 EnemyBase::~EnemyBase(void)
 {
-
 }
 
 void EnemyBase::Init(void)
@@ -82,7 +81,7 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::UpdateAllive(void)
+void EnemyBase::UpdatePlay(void)
 {
 	if (isAlive_)
 	{
@@ -115,7 +114,7 @@ void EnemyBase::UpdateDeath(void)
 
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_ /*|| currentAnimType_ != ANIM_TYPE::RUN*/) {
+	if (!player_ ) {
 		return;
 	}
 	VECTOR playerPos = player_->GetTransform().pos;
@@ -125,7 +124,7 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE)
+	if (distance <= VIEW_RANGE && player_->IsPlay())
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -214,6 +213,7 @@ void EnemyBase::Attack(void)
 
 }
 
+
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
@@ -280,7 +280,7 @@ void EnemyBase::ChangeStateNone(void)
 }
 void EnemyBase::ChangeStatePlay(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
 }
 
 void EnemyBase::ChangeStateDeath(void)

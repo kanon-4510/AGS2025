@@ -40,4 +40,6 @@ private:
     //アイテムをリストで受け取り、ミニマップ上に変換して描画
     void DrawItems(const std::vector<MapVector2>& items);
 
+    // 円の範囲
+    bool IsInsideCircle(int x, int y) const;
 };
