@@ -32,7 +32,7 @@ void Item::Init(void)
 
 	baseY_ = transform_.pos.y; // 初期位置を保存
 
-	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
+	collisionRadius_ = 80.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 }
 

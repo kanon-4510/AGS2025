@@ -5,6 +5,7 @@
 #include "../Manager/Camera.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/ResourceManager.h"
 #include "../Object/Common/Capsule.h"
 #include "../Object/Common/Collider.h"
 #include "../Object/SkyDome.h"
@@ -33,6 +34,7 @@ GameScene::GameScene(void)
 	tree_ = nullptr;
 	skyDome_ = nullptr;
 	stage_ = nullptr;
+	imgGameUi1_ = -1;
 	//item_ = nullptr;
 }
 
@@ -74,6 +76,8 @@ void GameScene::Init(void)
 	skyDome_->Init();
 
 	map_ = std::make_unique<MiniMap>(20000.0f, 300);
+
+	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
@@ -162,6 +166,7 @@ void GameScene::Draw(void)
 	}
 
 	DrawMiniMap();
+	DrawGraph(400, 50, imgGameUi1_, true);
 	
 	// ヘルプ
 	DrawFormatString(30, 500, 0x000000, "移動　　：WASD");
