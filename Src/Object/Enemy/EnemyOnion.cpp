@@ -40,7 +40,7 @@ void EnemyOnion::SetParam(void)
 
 	isAlive_ = true;	// 初期は生存状態
 
-	hp_ = 2;	// HPの設定
+	hp_ = 5;	// HPの設定
 
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標

@@ -81,7 +81,7 @@ void EnemyBase::UpdateNone(void)
 {
 }
 
-void EnemyBase::UpdateAllive(void)
+void EnemyBase::UpdatePlay(void)
 {
 	if (isAlive_)
 	{
@@ -280,7 +280,7 @@ void EnemyBase::ChangeStateNone(void)
 }
 void EnemyBase::ChangeStatePlay(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdateAllive, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
 }
 
 void EnemyBase::ChangeStateDeath(void)
