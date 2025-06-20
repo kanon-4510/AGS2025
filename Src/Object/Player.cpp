@@ -21,6 +21,7 @@
 Player::Player(void)
 {
 	animationController_ = nullptr;
+	enemy_ = nullptr;
 
 	state_ = STATE::NONE;
 
@@ -573,41 +574,41 @@ void Player::CollisionCapsule(void)
 
 void Player::CollisionAttack(void)
 {
-	if (isAttack_)
+	if (isAttack_ || enemy_)
 	{
 		//エネミーとの衝突判定
+		
+		// 攻撃の球の半径（例: 50.0f）
+		float attackRadius = 50.0f;
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
-		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackStart.y += 100.0f;  // 攻撃の高さ調整
+		VECTOR attackCenter = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackCenter.y += 100.0f;  // 攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
-
 			if (!enemy || !enemy->IsAlive()) continue;
 
-			VECTOR diff = VSub(enemy->GetCollisionPos(), attackStart);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-			float radius = enemy->GetCollisionRadius();
+			//敵の当たり判定とサイズ
+			VECTOR enemyCenter = enemy->GetCollisionPos();
+			float enemyRadius = enemy->GetCollisionRadius();
 
-			if (dis < radius * radius)
+			//判定の距離の比較
+			VECTOR diff = VSub(enemyCenter, attackCenter);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+
+			// 半径の合計
+			float radiusSum = attackRadius + enemyRadius;
+
+			if (dis < radiusSum * radiusSum)
 			{
 				enemy->Damage(2);
-				// 複数ヒットさせたいなら 
+				// 複数ヒットさせたいなら
 				continue;
 				// 1体のみヒットさせたいなら break;
 			}
 		}
-
-		//VECTOR diff = VSub(enemy_->GetCollisionPos(), attackStart);
-		//float dis = AsoUtility::SqrMagnitudeF(diff);
-		//if (dis < enemy_->GetCollisionRadius() * enemy_->GetCollisionRadius() && enemy_->IsAlive())
-		//{
-		//	//範囲に入った
-		//	enemy_->Damage(2);
-		//	return;
-		//}
 	}
 }
 
