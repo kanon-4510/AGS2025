@@ -363,7 +363,7 @@ void Player::DrawDebug(void)
 		VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
 		capStart.y += 100.0f;
 		VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
-		float capRadius = 30.0f;
+		float capRadius = 100.0f;
 		// カプセルの描画確認用	
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
@@ -579,7 +579,7 @@ void Player::CollisionAttack(void)
 		//エネミーとの衝突判定
 		
 		// 攻撃の球の半径（例: 50.0f）
-		float attackRadius = 50.0f;
+		float attackRadius = 100.0f;
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置

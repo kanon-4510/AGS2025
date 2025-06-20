@@ -18,6 +18,7 @@ public:
 		CURSOR,
 		PLAY,
 		RULE,
+		GAMEUI_1,
 		UPDOWN,
 		SPEECH_BALLOON,
 		PLAYER,

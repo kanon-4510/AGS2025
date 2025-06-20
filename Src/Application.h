@@ -15,6 +15,7 @@ public:
 	static const std::string PATH_IMAGE;
 	static const std::string PATH_MODEL;
 	static const std::string PATH_EFFECT;
+	static const std::string PATH_SOUND;
 	//-------------------------------------------
 
 	// 明示的にインステンスを生成する
