@@ -39,6 +39,8 @@ private:
 	std::unique_ptr<MiniMap> map_;		//ミニマップ
 
 	int enemyModelId_;
+	int imgGameUi1_;
+
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 };

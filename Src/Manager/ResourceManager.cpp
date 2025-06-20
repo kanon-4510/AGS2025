@@ -59,6 +59,10 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");
 	resourcesMap_.emplace(SRC::UPDOWN, std::move(res));
 
+	//ÉQÅ[ÉÄâÊñ ÇÃUI
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameUI1.png");
+	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
+
 	// êÅÇ´èoÇµ
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SpeechBalloon.png");
 	resourcesMap_.emplace(SRC::SPEECH_BALLOON, std::move(res));

@@ -6,6 +6,7 @@
 #include "../Manager/ResourceManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Common/AnimationController.h"
 #include "../Object/SkyDome.h" 
@@ -42,6 +43,9 @@ void TitleScene::Init(void)
 	imgGame_ = resMng_.Load(ResourceManager::SRC::PLAY).handleId_;
 	imgRule_ = resMng_.Load(ResourceManager::SRC::RULE).handleId_;
 	imgCursor_ = resMng_.Load(ResourceManager::SRC::CURSOR).handleId_; // ← カーソル画像
+
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
 
 	selectedIndex_ = 0;
 
@@ -216,4 +220,9 @@ void TitleScene::Draw(void)
 	MV1DrawModel(charactor_.modelId);
 
 	MV1DrawModel(enemy_.modelId);
+}
+
+void TitleScene::Release(void)
+{
+	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
 }

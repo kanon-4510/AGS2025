@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Sound.cpp" />
+    <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyDog.cpp" />
     <ClCompile Include="Src\Scene\MiniMap.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyCactus.cpp" />
@@ -59,6 +61,8 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Sound.h" />
+    <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyDog.h" />
     <ClInclude Include="Src\Scene\MiniMap.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyCactus.h" />
