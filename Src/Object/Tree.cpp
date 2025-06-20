@@ -106,19 +106,19 @@ void Tree::Update(void)
 	}
 
 	// 水の量に応じて成長処理
-	if (lv_>=67 && water_ >= 3)
+	if (lv_>=67 && water_>=3)
 	{
 		lv_ += 1;
 		water_ -= 3;
 		ChangeGrow();
 	}
-	else if (lv_ >= 34 && water_ >= 2)
+	else if (lv_>=34 && water_>=2)
 	{
 		lv_ += 1;
 		water_ -= 2;
 		ChangeGrow();
 	}
-	else if (lv_ >= 1 && water_ >= 1)
+	else if (lv_>=1 && water_>=1)
 	{
 		lv_ += 1;
 		water_ -= 1;
@@ -161,42 +161,6 @@ void Tree::Update(void)
 		break;
 	}
 
-	if (grow_ == GROW::OLD   && water_ >= 4)
-	{
-		lv_ += 1;
-		water_ -= 4;
-		ChangeGrow();
-	}
-	if (grow_ == GROW::ADULT && water_ >= 3)
-	{
-		lv_ += 1;
-		water_ -= 3;
-		ChangeGrow();
-	}
-	if (grow_ == GROW::KID   && water_ >= 2)
-	{
-		lv_ += 1;
-		water_ -= 2;
-		ChangeGrow();
-	}
-	if (grow_ == GROW::BABY  && water_ >= 1)
-	{
-		lv_ += 1;
-		water_ -= 1;
-		ChangeGrow();
-	}
-
-	/*VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), pos_);
-	float dis = AsoUtility::SqrMagnitudeF(diff);
-	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
-	{
-		//範囲に入った
-		player_.wHit();
-		isAlive_ = false;
-		return;
-	}
-	isAlive_ = true;*/
-
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
@@ -230,10 +194,9 @@ void Tree::Draw(void)
 	DrawBox(50, Application::SCREEN_SIZE_Y - 140, 650, Application::SCREEN_SIZE_Y - 120, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0x00ff00, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 115, 650, Application::SCREEN_SIZE_Y - 105, 0x0, true);
-	if(grow_ == GROW::BABY) DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	if(grow_ == GROW::KID)  DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	if(grow_ == GROW::ADULT)DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	if(grow_ == GROW::OLD)  DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*150+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	if(lv_>=67)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else if(lv_>=34)DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else if(lv_>=1)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 #pragma endregion
 
 	DrawDebugTree2Player();
@@ -330,22 +293,22 @@ int Tree::GetLv(void)
 }
 void Tree::ChangeGrow(void)
 {
-	if (lv_ >= 75)
+	if (lv_ == 75)
 	{
 		grow_ = Tree::GROW::OLD;
 		hp_ = 50;
 	}
-	else if (lv_ >= 50)
+	else if (lv_ == 50)
 	{
 		grow_ = Tree::GROW::ADULT;
 		hp_ = 50;
 	}
-	else if (lv_ >= 25)
+	else if (lv_ == 25)
 	{
 		grow_ = Tree::GROW::KID;
 		hp_ = 50;
 	}
-	else if (lv_ >= 1)
+	else if (lv_ == 1)
 	{
 		grow_ = GROW::BABY;
 		hp_ = 50;
@@ -356,26 +319,6 @@ void Tree::SetPlayer(Player* player)
 {
 	player_ = player;
 }
-
-/*const Capsule& Tree::GetCapsule(void) const
-{
-	return *capsule_;
-}
-
-//void Tree::SetCollisionPos(const VECTOR collision)
-//{
-//	spherePos_ = collision;
-//}
-
-//VECTOR Tree::GetCollisionPos(void) const
-//{
-//	return VAdd(collisionLocalPos_,pos_);
-//}
-
-float Tree::GetCollisionRadius(void)
-{
-	return collisionRadius_;
-}*/
 
 void Tree::eHit(void)//エネミーとのあたり判定
 {
