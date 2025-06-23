@@ -95,7 +95,9 @@ public:
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
-	const std::vector<std::shared_ptr<EnemyBase>>& GetCollision(void) const;
+	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
 
 	//状態確認
 	bool IsPlay(void) const;
@@ -152,6 +154,10 @@ private:
 	
 	// 移動後の座標
 	VECTOR movedPos_;
+
+	VECTOR collisionPos_;		//プレイヤーの当たり判定移動後座標
+	float collisionRadius_;		// 衝突判定用の球体半径
+	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
 	// 回転
 	Quaternion playerRotY_;

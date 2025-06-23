@@ -180,6 +180,8 @@ void GameScene::DrawMiniMap(void)
 	MapVector2 playerPos;
 	playerPos.x = player_->GetTransform().pos.x;
 	playerPos.z = player_->GetTransform().pos.z;
+	// Y軸回転角を使用(ラジアン or 度数)
+	float playerAngle = player_->GetTransform().rot.y;
 
 	// 敵の座標リストを作成
 	std::vector<MapVector2> enemyPositions;
@@ -208,7 +210,7 @@ void GameScene::DrawMiniMap(void)
 	}
 
 	// ミニマップ描画呼び出し
-	map_->Draw(playerPos, enemyPositions, itemPositions);
+	map_->Draw(playerPos, playerAngle, enemyPositions, itemPositions);
 
 	/*if (!map_) return;
 
