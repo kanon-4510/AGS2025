@@ -101,28 +101,8 @@ void Tree::Update(void)
 
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
-		water_++;          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
-		player_->UseWater(1);
-	}
-
-	// 水の量に応じて成長処理
-	if (lv_>=67 && water_>=3)
-	{
-		lv_ += 1;
-		water_ -= 3;
-		ChangeGrow();
-	}
-	else if (lv_>=34 && water_>=2)
-	{
-		lv_ += 1;
-		water_ -= 2;
-		ChangeGrow();
-	}
-	else if (lv_>=1 && water_>=1)
-	{
-		lv_ += 1;
-		water_ -= 1;
-		ChangeGrow();
+		player_->tHit();
+		pHit();          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
 	}
 
 	switch (grow_)
@@ -162,7 +142,6 @@ void Tree::Update(void)
 	}
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_P))	lv_ -= 1;
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
 	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
 }
@@ -194,9 +173,10 @@ void Tree::Draw(void)
 	DrawBox(50, Application::SCREEN_SIZE_Y - 140, 650, Application::SCREEN_SIZE_Y - 120, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0x00ff00, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 115, 650, Application::SCREEN_SIZE_Y - 105, 0x0, true);
-	if(lv_>=67)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	else if(lv_>=34)DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	else if(lv_>=1)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 #pragma endregion
 
 	DrawDebugTree2Player();
@@ -291,6 +271,34 @@ int Tree::GetLv(void)
 {
 	return lv_;
 }
+
+void Tree::LvUp(void)
+{
+	if (grow_ == GROW::OLD && water_ >= 3)
+	{
+		lv_ += 1;
+		water_ -= 3;
+		ChangeGrow();
+	}
+	if (grow_ == GROW::ADULT && water_ >= 2)
+	{
+		lv_ += 1;
+		water_ -= 2;
+		ChangeGrow();
+	}
+	if (grow_ == GROW::KID && water_ >= 2)
+	{
+		lv_ += 1;
+		water_ -= 2;
+		ChangeGrow();
+	}
+	if (grow_ == GROW::BABY && water_ >= 1)
+	{
+		lv_ += 1;
+		water_ -= 1;
+		ChangeGrow();
+	}
+}
 void Tree::ChangeGrow(void)
 {
 	if (lv_ == 75)
@@ -326,5 +334,21 @@ void Tree::eHit(void)//エネミーとのあたり判定
 }
 void Tree::pHit(void)//プレイヤーとのあたり判定
 {
-	water_++;
+	if (player_->IsMax() == true)
+	{
+		player_->SetIsMax();
+		for (int l = 0; l <= 14; l++)
+		{
+			DrawFormatString(0, 0, 0xff0000, "SPSPSPSPSP");
+			water_++;
+			LvUp();
+			ChangeGrow();
+		}
+	}
+	else
+	{
+		water_++;
+		LvUp();
+		ChangeGrow();
+	}
 }
