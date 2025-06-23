@@ -31,6 +31,8 @@ EnemyBase::EnemyBase()
 	stateChanges_.emplace(
 		STATE::ATTACK, std::bind(&EnemyBase::ChangeStateAttack, this));
 	stateChanges_.emplace(
+		STATE::DAMAGE, std::bind(&EnemyBase::ChangeStateDamage, this));
+	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
 
@@ -86,6 +88,8 @@ void EnemyBase::UpdatePlay(void)
 		Collision();
 
 		ChasePlayer();
+
+		UpdateAttackCollisionPos();
 	}
 }
 
@@ -94,7 +98,7 @@ void EnemyBase::UpdateAttack(void)
 	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 
 	// 攻撃タイミング例：フレーム20あたりでヒット
-	if (!isAttack_)
+	if (isAttack_ != true)
 	{
 		CollisionAttack();
 		isAttack_ = true; // 多重ヒット防止用フラグ
@@ -104,6 +108,15 @@ void EnemyBase::UpdateAttack(void)
 	if (animationController_->IsEnd()) {
 		ChangeState(STATE::PLAY);
 		isAttack_ = false;
+	}
+}
+
+void EnemyBase::UpdateDamage(void)
+{
+	animationController_->Play((int)ANIM_TYPE::DAMAGE, false);
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::PLAY);
 	}
 }
 
@@ -132,6 +145,9 @@ void EnemyBase::ChasePlayer(void)
 	if (!player_ ) {
 		return;
 	}
+
+	animationController_->Play((int)ANIM_TYPE::RUN, true);
+
 	VECTOR playerPos = player_->GetTransform().pos;
 
 	VECTOR toPlayer = VSub(playerPos, transform_.pos);
@@ -215,22 +231,6 @@ void EnemyBase::SetAlive(bool alive)
 	isAlive_ = alive;
 }
 
-void EnemyBase::CollisionAttack(void)
-{
-	if (isAttack_)
-	{
-
-		//プレイヤーとの衝突判定
-		// 攻撃の方向（エネミー）
-		VECTOR forward = transform_.quaRot.GetForward();
-		// 攻撃の開始位置と終了位置
-		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackStart.y += 100.0f;  // 攻撃の高さ調整
-
-	}
-}
-
-
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
@@ -238,8 +238,13 @@ void EnemyBase::Damage(int damage)
 	{
 		ChangeState(STATE::DEATH);	
 	}
+	else if (hp_ >= 1 && isAlive_)
+	{
+		ChangeState(STATE::DAMAGE);
+	}
 }
 
+#pragma region コリジョン
 void EnemyBase::Collision(void)
 {
 	// 現在座標を起点に移動後座標を決める
@@ -266,6 +271,35 @@ float EnemyBase::GetCollisionRadius(void)
 {
 	return collisionRadius_;
 }
+#pragma endregion
+
+void EnemyBase::UpdateAttackCollisionPos(void)
+{
+	// 前方ベクトルを使って、Zオフセット分だけ回転
+	VECTOR forward = transform_.quaRot.GetForward();
+
+	// 前方へオフセット（ローカルZだけ使う）
+	VECTOR rotatedOffset = VScale(forward, attackCollisionLocalPos_.z);
+
+	// 敵の位置に加算して、球体のワールド位置を決定
+	attackCollisionPos_ = VAdd(transform_.pos, rotatedOffset);
+}
+
+void EnemyBase::CollisionAttack(void)
+{
+	if (isAttack_)
+	{
+
+		//プレイヤーとの衝突判定
+		// 攻撃の方向（エネミー）
+		VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+
+	}
+}
+
 
 void EnemyBase::SetGameScene(GameScene* scene)
 {
@@ -297,6 +331,11 @@ void EnemyBase::ChangeStateAttack(void)
 	stateUpdate_ = std::bind(&EnemyBase::UpdateAttack, this);
 }
 
+void EnemyBase::ChangeStateDamage(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateDamage, this);
+}
+
 void EnemyBase::ChangeStateDeath(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
@@ -326,14 +365,14 @@ void EnemyBase::DrawDebug(void)
 
 	// キャラ基本情報
 	//-------------------------------------------------------
-	// キャラ座標
-	v = transform_.pos;
-	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
+	//// キャラ座標
+	//v = transform_.pos;
+	//DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-	s = collisionPos_;
+	/*s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);*/
 	
 	a = attackCollisionLocalPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, purpl, purpl, false);

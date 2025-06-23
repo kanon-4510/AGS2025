@@ -40,6 +40,7 @@ public:
 		NONE,
 		PLAY,
 		ATTACK,
+		DAMAGE,
 		DEATH,
 		MAX
 	};
@@ -127,9 +128,12 @@ protected:
 	void UpdateNone(void);			// 更新ステップ
 	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateAttack(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateDamage(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	
 	void ChasePlayer(void);			//プレイヤーを追いかける
+
+	void UpdateAttackCollisionPos(void);
 	void CollisionAttack(void);	//攻撃モーション
 
 	// 状態遷移
@@ -137,6 +141,7 @@ protected:
 	void ChangeStateNone(void);
 	void ChangeStatePlay(void);
 	void ChangeStateAttack(void);
+	void ChangeStateDamage(void);
 	void ChangeStateDeath(void);
 
 	void Collision(void);// 衝突判定
