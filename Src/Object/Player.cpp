@@ -99,6 +99,9 @@ void Player::Init(void)
 	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
+	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, capsule_->GetCenter().y, 0.0f};	// 衝突判定用の球体中心の調整座標
+
 	//enemy_ = new EnemyBase(); // OK
 	//enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
@@ -182,7 +185,17 @@ const Capsule& Player::GetCapsule(void) const
 	return *capsule_;
 }
 
-const std::vector<std::shared_ptr<EnemyBase>>& Player::GetCollision(void) const
+VECTOR Player::GetCollisionPos(void) const
+{
+	return VAdd(collisionLocalPos_, transform_.pos);
+}
+
+float Player::GetCollisionRadius(void)
+{
+	return collisionRadius_;
+}
+
+const std::vector<std::shared_ptr<EnemyBase>>& Player::GetEnemyCollision(void) const
 {
 	return *enemy_;
 }
@@ -368,6 +381,11 @@ void Player::DrawDebug(void)
 		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
 	//capsule_->Draw();
+
+	VECTOR s;
+	s = collisionPos_;
+	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
+	DrawFormatString(200, 180, white, "プレイヤーのスフィア座標 ： (%0.2f, %0.2f, %0.2f)", s.x, s.y, s.z);
 }
 
 void Player::ProcessMove(void)
@@ -494,6 +512,7 @@ void Player::Collision(void)
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
 
+	collisionPos_ = VAdd(transform_.pos, collisionLocalPos_);
 }
 
 void Player::CollisionGravity(void)
@@ -700,7 +719,7 @@ void Player::ProcessAttack(void)
 	// アタック
 	if ((isHit_N || isHit) && !isJump_ && (isAttack_ || IsEndLandingA()))
 	{
-		if (!isAttack_ || isHit)
+		if (!isAttack_ && isHit)
 		{
 			animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
 			isAttack_ = true;
@@ -708,7 +727,7 @@ void Player::ProcessAttack(void)
 			// 衝突(攻撃)
 			CollisionAttack();
 		}
-		else if (!isAttack_ || isHit_N)
+		else if (!isAttack_ && isHit_N)
 		{
 			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
 			isAttack_ = true;
