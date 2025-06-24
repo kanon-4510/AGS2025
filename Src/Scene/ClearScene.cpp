@@ -37,21 +37,6 @@ void ClearScene::Init(void)
 
 	float size;
 
-	// ƒƒCƒ“˜f¯
-	planet_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::FALL_PLANET));
-	planet_.pos = AsoUtility::VECTOR_ZERO;
-	planet_.scl = AsoUtility::VECTOR_ONE;
-	planet_.Update();
-
-	// ‰ñ“]‚·‚é˜f¯
-	movePlanet_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::LAST_PLANET));
-	movePlanet_.pos = { -250.0f, -100.0f, -100.0f };
-	size = 0.7f;
-	movePlanet_.scl = { size, size, size };
-	movePlanet_.quaRotLocal = Quaternion::Euler(
-		AsoUtility::Deg2RadF(90.0f), 0.0f, 0.0f);
-	movePlanet_.Update();
-
 	// ƒLƒƒƒ‰
 	charactor_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
 	charactor_.pos = { 0.0f,-200.0f,0.0f };
@@ -96,11 +81,5 @@ void ClearScene::Update(void)
 
 void ClearScene::Draw(void)
 {
-	//skyDome_->Draw();
-
-	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2, 1.0, 0.0, imgBackTitle_, true);
-	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgTitle_, true);
-	//DrawRotaGraph(Application::SCREEN_SIZE_X / 2, 500, 1.0, 0.0, imgPush_, true);
-
 	MV1DrawModel(charactor_.modelId);
 }

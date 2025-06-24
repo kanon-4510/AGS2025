@@ -68,14 +68,14 @@ void TitleScene::Init(void)
 	enemyDirection_ = 1;
 
 	// プレイヤーのアニメーション
-	std::string path = Application::PATH_MODEL + "Player/";
+	std::string path = Application::PATH_MODEL + "NPlayer/";
 	animationControllerPlayer_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationControllerPlayer_->Add(0, path + "Run.mv1", 20.0f);
+	animationControllerPlayer_->Add(0, path + "Player.mv1", 20.0f, 2);
 	animationControllerPlayer_->Play(0);
 
 	// 敵のアニメーション
 	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
-	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Run.mv1", 20.0f);
+	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Yellow.mv1", 20.0f, 1);
 	animationControllerEnemy_->Play(0);
 
 	// 定点カメラ
