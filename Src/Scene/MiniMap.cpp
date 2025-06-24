@@ -10,13 +10,14 @@ MiniMap::MiniMap(float worldSize, int screenSize, int mapPosX, int mapPosY)
     scale = static_cast<float>(mapPixelSize) / worldSize;
 }
 
-void MiniMap::Draw(const MapVector2& playerPos, const std::vector<MapVector2>& enemies, 
+void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad, 
+    const std::vector<MapVector2>& enemies, 
     const std::vector<MapVector2>& items)
 {
     DrawBackground();
     DrawEnemies(enemies);
     DrawItems(items);
-    DrawPlayer(playerPos);
+    DrawPlayer(playerPos, playerAngleRad);
 }
 
 void MiniMap::DrawBackground()
@@ -37,7 +38,7 @@ void MiniMap::DrawBackground()
     DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);
 }
 
-void MiniMap::DrawPlayer(const MapVector2& playerPos)
+void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)
 {
     // +worldHalfSize で中心原点を左上基準にずらす
     // * scale で画面上のスケールに変換
@@ -50,6 +51,35 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos)
 
     // プレイヤー(青)
     DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
+
+    // === 向きを示す三角形（矢印） ===
+    // プレイヤー座標 (px, pz) は既に計算済み
+    float offsetDist = 15.0f; // 点から離す距離
+
+    // 向きの角度（ラジアン）
+    float angle = playerAngleRad - DX_PI / 2.0f; // 適宜調整してね
+
+    // 基準点をプレイヤー位置から少しオフセット（向きの反対側にずらすこともできる）
+    float baseX = px + std::cos(angle) * offsetDist;
+    float baseY = pz + std::sin(angle) * offsetDist;
+
+    // 矢印のサイズ
+    float size = 8.0f;
+
+    // 矢印の3頂点を計算（先端と左右の角）
+    float frontX = baseX + std::cos(angle) * size * 0.6f;
+    float frontY = baseY + std::sin(angle) * size * 0.6f;
+    float leftX = baseX + std::cos(angle + 2.5f) * size;
+    float leftY = baseY + std::sin(angle + 2.5f) * size;
+    float rightX = baseX + std::cos(angle - 2.5f) * size;
+    float rightY = baseY + std::sin(angle - 2.5f) * size;
+
+    // 三角形を描画
+    DrawTriangle(
+        static_cast<int>(frontX), static_cast<int>(frontY),
+        static_cast<int>(leftX), static_cast<int>(leftY),
+        static_cast<int>(rightX), static_cast<int>(rightY),
+        GetColor(0, 0, 255), TRUE);
 }
 
 void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)

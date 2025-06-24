@@ -40,7 +40,7 @@ public:
 	//ステ関連
 	static constexpr int HP = 30;
 	static constexpr int D_COUNT = 600;
-	static constexpr int WATER_WAX = 10;
+	static constexpr int WATER_MAX = 10;
 
 	// 状態
 	enum class STATE
@@ -68,7 +68,8 @@ public:
 		FAST_RUN,
 		JUMP,
 		DOWN,
-		ATTACK,
+		ATTACK1,
+		ATTACK2,
 	};
 
 	// コンストラクタ
@@ -94,18 +95,28 @@ public:
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
-	const std::vector<std::shared_ptr<EnemyBase>>& GetCollision(void) const;
+	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
+	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
 
 	//状態確認
 	bool IsPlay(void) const;
 
 	//判定
 	int GetWater(void) const;
-	void UseWater(int amount);
+	//水獲得量特別増加
+	bool IsMax(void);
+	void SetIsMax(void);
 
 	void eHit(void);//敵
 	void wHit(void);//水
+	//void tHit(int amount);//木
+	void tHit();//木
 	void tHit(void);//木
+					
+	//ダメージ
+	void Damage(int damage);
+
 private:
 
 	// ジャンプ量
@@ -147,6 +158,10 @@ private:
 	
 	// 移動後の座標
 	VECTOR movedPos_;
+
+	VECTOR collisionPos_;		//プレイヤーの当たり判定移動後座標
+	float collisionRadius_;		// 衝突判定用の球体半径
+	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 
 	// 回転
 	Quaternion playerRotY_;
@@ -231,8 +246,7 @@ private:
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
 
-	//ダメージ
-	void Damage(int damage);
+	
 
 	//復活処理
 	void StartRevival();
@@ -244,4 +258,5 @@ private:
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
 
+	bool isMax_;//水の所持上限
 };

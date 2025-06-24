@@ -33,6 +33,8 @@ public:
 
 	int GetHp(void);
 	int GetLv(void);
+
+	void LvUp(void);
 	void ChangeGrow(void);
 
 	// プレイヤーのポインタをセットする関数

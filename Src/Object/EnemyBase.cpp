@@ -7,7 +7,6 @@
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
-//#include "Common/Capsule.h"
 #include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
@@ -16,14 +15,10 @@
 EnemyBase::EnemyBase() 
 	: 
 	scene_(nullptr),
-	gravHitPosDown_(AsoUtility::VECTOR_ZERO),
-	gravHitPosUp_(AsoUtility::VECTOR_ZERO),
 	movePow_(AsoUtility::VECTOR_ZERO)
 {
 	animationController_ = nullptr;
 
-	// 敵のモデル
-	baseModelId_[static_cast<int>(TYPE::DOG)];
 	scene_ = nullptr;
 	item_ = nullptr;
 	state_ = STATE::NONE;
@@ -33,6 +28,8 @@ EnemyBase::EnemyBase()
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
+	stateChanges_.emplace(
+		STATE::ATTACK, std::bind(&EnemyBase::ChangeStateAttack, this));
 	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 }
@@ -91,6 +88,25 @@ void EnemyBase::UpdatePlay(void)
 		ChasePlayer();
 	}
 }
+
+void EnemyBase::UpdateAttack(void)
+{
+	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
+
+	// 攻撃タイミング例：フレーム20あたりでヒット
+	if (!isAttack_)
+	{
+		CollisionAttack();
+		isAttack_ = true; // 多重ヒット防止用フラグ
+	}
+
+	// アニメーション終了で次の状態に遷移
+	if (animationController_->IsEnd()) {
+		ChangeState(STATE::PLAY);
+		isAttack_ = false;
+	}
+}
+
 void EnemyBase::UpdateDeath(void)
 {
 
@@ -108,7 +124,6 @@ void EnemyBase::UpdateDeath(void)
 			scene_->AddItem(newItem);
 	}
 }
-
 #pragma endregion
 
 
@@ -133,7 +148,6 @@ void EnemyBase::ChasePlayer(void)
 
 		// 方向からクォータニオンに変換
 		transform_.quaRot = Quaternion::LookRotation(dirToPlayer);
-		
 	}
 	else
 	{
@@ -179,13 +193,6 @@ void EnemyBase::Draw(void)
 void EnemyBase::Release(void)
 {
 	MV1DeleteModel(transform_.modelId);
-
-	//capsule_.reset();
-}
-
-VECTOR EnemyBase::GetPos(void)
-{
-	return transform_.pos;
 }
 
 void EnemyBase::SetPos(VECTOR pos)
@@ -208,9 +215,19 @@ void EnemyBase::SetAlive(bool alive)
 	isAlive_ = alive;
 }
 
-void EnemyBase::Attack(void)
+void EnemyBase::CollisionAttack(void)
 {
+	if (isAttack_)
+	{
 
+		//プレイヤーとの衝突判定
+		// 攻撃の方向（エネミー）
+		VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackStart.y += 100.0f;  // 攻撃の高さ調整
+
+	}
 }
 
 
@@ -221,16 +238,6 @@ void EnemyBase::Damage(int damage)
 	{
 		ChangeState(STATE::DEATH);	
 	}
-}
-
-//const Capsule& EnemyBase::GetCapsule(void) const
-//{
-//	return *capsule_;
-//}
-
-const Item& EnemyBase::GetItem(void) const
-{
-	return *item_;
 }
 
 void EnemyBase::Collision(void)
@@ -265,6 +272,8 @@ void EnemyBase::SetGameScene(GameScene* scene)
 	scene_ = scene;
 }
 
+#pragma region Stateの切り替え
+
 void EnemyBase::ChangeState(STATE state)
 {
 	// 状態変更
@@ -283,10 +292,17 @@ void EnemyBase::ChangeStatePlay(void)
 	stateUpdate_ = std::bind(&EnemyBase::UpdatePlay, this);
 }
 
+void EnemyBase::ChangeStateAttack(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateAttack, this);
+}
+
 void EnemyBase::ChangeStateDeath(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
 }
+
+#pragma endregion
 
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {
@@ -306,6 +322,7 @@ void EnemyBase::DrawDebug(void)
 	VECTOR v;
 	VECTOR c;
 	VECTOR s;
+	VECTOR a;
 
 	// キャラ基本情報
 	//-------------------------------------------------------
@@ -313,15 +330,14 @@ void EnemyBase::DrawDebug(void)
 	v = transform_.pos;
 	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-	/*capsule_->Draw();
-	c = capsule_->GetPosDown();
-	DrawFormatString(20, 150, white, "コリジョン座標 ： (%0.2f, %0.2f, %0.2f)",c.x, c.y, c.z);*/
-
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
-	DrawFormatString(20, 330, 0xffffff, "アタッチNo.%2d",currentAnimType_);
+	
+	a = attackCollisionLocalPos_;
+	DrawSphere3D(a, attackCollisionRadius_, 8, purpl, purpl, false);
+
 }
 
 void EnemyBase::DrawDebugSearchRange(void)

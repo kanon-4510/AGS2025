@@ -11,7 +11,7 @@ class MiniMap
 public:
     MiniMap(float worldSize, int screenSize, int mapPosX = 1600, int mapPosY = 50);
 
-    void Draw(const MapVector2& playerPos, const std::vector<MapVector2>& enemies, 
+    void Draw(const MapVector2& playerPos, float playerAngleRad, const std::vector<MapVector2>& enemies, 
         const std::vector<MapVector2>& items);
 
 private:
@@ -34,7 +34,7 @@ private:
     //Map背景描画
     void DrawBackground();
     //プレイヤーの位置をミニマップ上に変換して描画
-    void DrawPlayer(const MapVector2& playerPos);
+    void DrawPlayer(const MapVector2& playerPos, float playerAngleRad);
     //敵をリストで受け取り、ミニマップ上に変換して描画
     void DrawEnemies(const std::vector<MapVector2>& enemies);
     //アイテムをリストで受け取り、ミニマップ上に変換して描画
