@@ -100,14 +100,14 @@ void EnemyBase::UpdateAttack(void)
 	// 攻撃タイミング例：フレーム20あたりでヒット
 	if (isAttack_ != true)
 	{
-		CollisionAttack();
 		isAttack_ = true; // 多重ヒット防止用フラグ
+		CollisionAttack();
 	}
 
-	// アニメーション終了で次の状態に遷移
+	 //アニメーション終了で次の状態に遷移
 	if (animationController_->IsEnd()) {
-		ChangeState(STATE::PLAY);
 		isAttack_ = false;
+		ChangeState(STATE::PLAY);
 	}
 }
 
@@ -142,7 +142,7 @@ void EnemyBase::UpdateDeath(void)
 
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_ ) {
+	if (!player_) {
 		return;
 	}
 
@@ -155,7 +155,7 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE && player_->IsPlay())
+	if (distance <= VIEW_RANGE && player_->pstate_ == Player::PlayerState::NORMAL)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -275,28 +275,43 @@ float EnemyBase::GetCollisionRadius(void)
 
 void EnemyBase::UpdateAttackCollisionPos(void)
 {
-	// 前方ベクトルを使って、Zオフセット分だけ回転
+	//プレイヤーとの衝突判定
+	// 攻撃の方向（エネミー）
 	VECTOR forward = transform_.quaRot.GetForward();
+	// 攻撃の開始位置と終了位置
+	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
+	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
+	VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
+	
+	if (player_->pstate_ == Player::PlayerState::DOWN)
+	{
+		return;
+	}
 
-	// 前方へオフセット（ローカルZだけ使う）
-	VECTOR rotatedOffset = VScale(forward, attackCollisionLocalPos_.z);
+	//プレイヤーの当たり判定とサイズ
+	VECTOR playerCenter = player_->GetCollisionPos();
+	float playerRadius = player_->GetCollisionRadius();
 
-	// 敵の位置に加算して、球体のワールド位置を決定
-	attackCollisionPos_ = VAdd(transform_.pos, rotatedOffset);
+	//判定の距離の比較
+	VECTOR diff = VSub(playerCenter, attackCollisionPos_);
+	float dis = AsoUtility::SqrMagnitudeF(diff);
+
+	// 半径の合計
+	float radiusSum = attackCollisionRadius_ + playerRadius;
+
+	if (dis < radiusSum * radiusSum)
+	{
+		speed_ = 0;
+
+		ChangeState(STATE::ATTACK);
+	}
 }
 
 void EnemyBase::CollisionAttack(void)
 {
 	if (isAttack_)
 	{
-
-		//プレイヤーとの衝突判定
-		// 攻撃の方向（エネミー）
-		VECTOR forward = transform_.quaRot.GetForward();
-		// 攻撃の開始位置と終了位置
-		VECTOR attackStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackStart.y += 100.0f;  // 攻撃の高さ調整
-
+		player_->Damage(1);
 	}
 }
 
@@ -374,8 +389,8 @@ void EnemyBase::DrawDebug(void)
 	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);*/
 	
-	a = attackCollisionLocalPos_;
-	DrawSphere3D(a, attackCollisionRadius_, 8, purpl, purpl, false);
+	a = attackCollisionPos_;
+	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
 
 }
 
