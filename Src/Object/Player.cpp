@@ -50,6 +50,8 @@ Player::Player(void)
 	invincible_ = false;
 	// ˆÚ“®‚ª‰Â”\‚©‚Ç‚¤‚©
 	canMove_ = true;
+	// ŠãŒÀ‚©‚Ç‚¤‚©
+	isMax_ = false;
 
 	//ƒ[ƒv‚Ì‰Šú‰»
 	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
@@ -122,7 +124,7 @@ void Player::Update(void)
 	UpdateD(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_U)) water_++;
+	if (ins.IsNew(KEY_INPUT_U)) wHit();
 }
 
 void Player::UpdateD(float deltaTime)
@@ -827,11 +829,13 @@ int Player::GetWater(void) const
 	return water_;
 }
 
-void Player::UseWater(int amount)
+bool Player::IsMax(void)
 {
-	int newWater = water_ - amount;
-	if (newWater < 0) newWater = 0;
-	water_ = newWater;
+	return isMax_;
+}
+void Player::SetIsMax(void)
+{
+	isMax_ = false;
 }
 
 void Player::eHit(void)
@@ -841,11 +845,20 @@ void Player::eHit(void)
 void Player::wHit(void)
 {
 	water_++;
-	if (water_ > WATER_WAX)water_ = WATER_WAX;
+	if (water_ > WATER_MAX)water_ = WATER_MAX;
 }
-void Player::tHit(void)
+void Player::tHit()
 {
-	water_--;
-	hp_ += 5;
+	if (water_ == WATER_MAX)
+	{
+		isMax_ = true;
+		water_ = 0;
+		hp_ = 45;
+	}
+	else
+	{
+		water_--;
+		hp_ += 3;
+	}
 	if (hp_ > HP)hp_ = HP;
 }

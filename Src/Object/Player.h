@@ -40,7 +40,7 @@ public:
 	//ステ関連
 	static constexpr int HP = 30;
 	static constexpr int D_COUNT = 600;
-	static constexpr int WATER_WAX = 10;
+	static constexpr int WATER_MAX = 10;
 
 	// 状態
 	enum class STATE
@@ -104,10 +104,14 @@ public:
 
 	//判定
 	int GetWater(void) const;
-	void UseWater(int amount);
+	//水獲得量特別増加
+	bool IsMax(void);
+	void SetIsMax(void);
 
 	void eHit(void);//敵
 	void wHit(void);//水
+	//void tHit(int amount);//木
+	void tHit();//木
 	void tHit(void);//木
 					
 	//ダメージ
@@ -254,4 +258,5 @@ private:
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
 
+	bool isMax_;//水の所持上限
 };
