@@ -39,6 +39,9 @@ public:
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
 
+	// アプリケーションの実行状態（ゲーム終了フラグ）
+	static bool isRunning_;  // ← 追加！
+
 private:
 
 	// 静的インスタンス
@@ -58,5 +61,4 @@ private:
 
 	// Effekseerの初期化
 	void InitEffekseer(void);
-
 };

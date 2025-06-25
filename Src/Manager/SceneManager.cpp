@@ -211,18 +211,18 @@ void SceneManager::ResetDeltaTime(void)
 
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
-
 	// リソースの解放
 	ResourceManager::GetInstance().Release();
 
-	// シーンを変更する
-	sceneId_ = sceneId;
-
-	// 現在のシーンを解放
+	// 現在のシーンの終了処理を呼ぶ
 	if (scene_ != nullptr)
 	{
+		scene_->Release();
 		scene_.reset();
 	}
+
+	// シーンを変更する
+	sceneId_ = sceneId;
 
 	switch (sceneId_)
 	{
@@ -249,7 +249,6 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	}
 
 	waitSceneId_ = SCENE_ID::NONE;
-
 }
 
 void SceneManager::Fade(void)

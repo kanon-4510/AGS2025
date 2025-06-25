@@ -94,3 +94,7 @@ void OverScene::Draw(void)
 
 	MV1DrawModel(charactor_.modelId);
 }
+
+void OverScene::Release(void)
+{
+}
