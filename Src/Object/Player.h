@@ -80,7 +80,8 @@ public:
 
 	void Init(void) override;
 	void Update(void) override;
-	void UpdateD(float deltaTime);
+	//ダウン中の処理
+	void UpdateDown(float deltaTime);
 	void Draw(void) override;
 
 	// 衝突判定に用いられるコライダ制御
@@ -95,6 +96,7 @@ public:
 
 	// 衝突用カプセルの取得
 	const Capsule& GetCapsule(void) const;
+
 	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
@@ -110,7 +112,6 @@ public:
 
 	void eHit(void);//敵
 	void wHit(void);//水
-	//void tHit(int amount);//木
 	void tHit(void);//木
 					
 	//ダメージ
