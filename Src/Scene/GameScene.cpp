@@ -172,6 +172,10 @@ void GameScene::Draw(void)
 	DrawFormatString(30, 580, 0x000000, "攻撃　　：Eキー");
 }
 
+void GameScene::Release(void)
+{
+}
+
 void GameScene::DrawMiniMap(void)
 {
 	if (!map_) return;

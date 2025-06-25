@@ -21,6 +21,9 @@ public:
 	// 描画処理
 	virtual void Draw(void) = 0;
 
+	// リリース
+	virtual void Release(void) = 0;
+
 protected:
 
 	// リソース管理
