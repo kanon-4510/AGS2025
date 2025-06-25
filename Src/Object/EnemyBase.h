@@ -9,7 +9,7 @@
 
 class AnimationController;
 class GameScene;
-class Collider;
+//class Collider;
 //class Capsule;
 class Player;
 
@@ -60,8 +60,8 @@ public:
 	virtual ~EnemyBase(void);	// デストラクタ
 
 	virtual void Init(void);		 // 初期処理(最初の１回のみ実行)
-	virtual void InitAnimation(void);//アニメーションロード用
-	virtual void SetParam(void);	 // パラメータ設定(純粋仮想関数)
+	virtual void InitAnimation(void) {};//アニメーションロード用
+	virtual void SetParam(void){};	 // パラメータ設定(純粋仮想関数)
 	virtual void Update(void);		 // 更新処理(毎フレーム実行)
 	virtual void Draw(void);		 // 描画処理(毎フレーム実行)
 	virtual void Release(void);		 // 解放処理(最後の１回のみ実行)
@@ -97,13 +97,13 @@ protected:
 	
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
-
 	VECTOR moveDiff_;	// フレームごとの移動値
 
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 	VECTOR attackCollisionPos_; //紫の球体の移動後座標
 
 	int hp_;	// 体力
+
 	bool isAlive_;	// 生存判定
 	bool isAttack_ = false;	//攻撃判定
 
@@ -123,8 +123,6 @@ protected:
 	float attackCollisionRadius_;	 // 攻撃判定用と攻撃範囲の球体半径
 	VECTOR attackCollisionLocalPos_; // 攻撃判定用と攻撃範囲の調整座標
 
-	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
-
 	void UpdateNone(void);			// 更新ステップ
 	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
 	virtual void UpdateAttack(void);	// 更新処理(毎フレーム実行)
@@ -133,8 +131,7 @@ protected:
 	
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
-	void UpdateAttackCollisionPos(void);
-	void CollisionAttack(void);	//攻撃モーション
+	void UpdateAttackCollisionPos(void);//攻撃用関数
 
 	// 状態遷移
 	void ChangeState(STATE state);

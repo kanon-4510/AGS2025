@@ -7,7 +7,7 @@
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
-#include "Common/Collider.h"
+//#include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "EnemyBase.h"
@@ -46,14 +46,6 @@ void EnemyBase::Init(void)
 	InitAnimation();
 }
 
-void EnemyBase::InitAnimation(void)
-{
-}
-
-void EnemyBase::SetParam(void)
-{	
-}
-
 void EnemyBase::Update(void)
 {
 	if (!isAlive_)
@@ -82,30 +74,31 @@ void EnemyBase::UpdateNone(void)
 
 void EnemyBase::UpdatePlay(void)
 {
-	if (isAlive_)
+	if (!isAlive_)
 	{
+		return;
+	}
 		// 衝突判定
 		Collision();
 
 		ChasePlayer();
 
 		UpdateAttackCollisionPos();
-	}
 }
 
 void EnemyBase::UpdateAttack(void)
 {
-	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
-
-	// 攻撃タイミング例：フレーム20あたりでヒット
-	if (isAttack_ != true)
+	// 攻撃タイミング
+	if (!isAttack_)
 	{
+		animationController_->Play((int)ANIM_TYPE::ATTACK, false);
+
 		isAttack_ = true; // 多重ヒット防止用フラグ
-		CollisionAttack();
+		player_->Damage(1);
 	}
 
 	 //アニメーション終了で次の状態に遷移
-	if (animationController_->IsEnd()) {
+	if (animationController_->IsEnd() || state_ != STATE::ATTACK) {
 		isAttack_ = false;
 		ChangeState(STATE::PLAY);
 	}
@@ -234,6 +227,7 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
+	isAttack_ = false;
 	if (hp_ <= 0 && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
@@ -301,20 +295,10 @@ void EnemyBase::UpdateAttackCollisionPos(void)
 
 	if (dis < radiusSum * radiusSum)
 	{
-		speed_ = 0;
-
 		ChangeState(STATE::ATTACK);
 	}
+	
 }
-
-void EnemyBase::CollisionAttack(void)
-{
-	if (isAttack_)
-	{
-		player_->Damage(1);
-	}
-}
-
 
 void EnemyBase::SetGameScene(GameScene* scene)
 {
@@ -384,10 +368,10 @@ void EnemyBase::DrawDebug(void)
 	//v = transform_.pos;
 	//DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-	/*s = collisionPos_;
-	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
-	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);*/
+	s = collisionPos_;
+	DrawSphere3D(s, collisionRadius_, 8, black, black, false);
+	//DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
+	//DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
 	
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);

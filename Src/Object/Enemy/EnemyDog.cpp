@@ -18,7 +18,7 @@ void EnemyDog::InitAnimation(void)
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Yellow.mv1", 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 20.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 16.0f, 2);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f, 3);
 	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f, 4);
 
