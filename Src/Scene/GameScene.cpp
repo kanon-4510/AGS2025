@@ -48,15 +48,15 @@ void GameScene::Init(void)
 	GravityManager::GetInstance().SetPlayer(player_);
 	player_->Init();
 
-	// 敵のモデル
-	EnemyCreate();
-
-	player_->SetEnemy(&enemys_);
-
 	//木
 	tree_ = std::make_shared<Tree>();
 	tree_->Init();
 	tree_->SetPlayer(player_.get());
+
+	// 敵のモデル
+	EnemyCreate();
+
+	player_->SetEnemy(&enemys_);
 
 	//アイテム
 	/*item_ = std::make_shared<Item>(*player_, Transform{});
@@ -150,8 +150,6 @@ void GameScene::Draw(void)
 {
 	skyDome_->Draw();
 	stage_->Draw();
-	tree_->Draw();
-	player_->Draw();
 	for (auto& item : items_)
 	{
 		item->Draw();
@@ -160,6 +158,8 @@ void GameScene::Draw(void)
 	{
 		enemy->Draw();
 	}
+	tree_->Draw();
+	player_->Draw();
 
 	DrawMiniMap();
 	DrawGraph(400, 50, imgGameUi1_, true);
@@ -303,6 +303,7 @@ void GameScene::EnemyCreate(void)
 	enemy->SetGameScene(this);
 	enemy->SetPos(randPos);
 	enemy->SetPlayer(player_);
+	enemy->SetTree(tree_);
 	enemy->Init();
 
 	enemys_.emplace_back(std::move(enemy));

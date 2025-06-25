@@ -12,6 +12,7 @@ class GameScene;
 //class Collider;
 //class Capsule;
 class Player;
+class Tree;
 
 class EnemyBase : public ActorBase
 {
@@ -86,10 +87,12 @@ public:
 	void DrawDebugSearchRange(void);
 
 	void SetPlayer(std::shared_ptr<Player> player);
+	void SetTree(std::shared_ptr<Tree> tree);
 
 protected:
 
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Tree> tree_;
 	std::shared_ptr<Item>item_;
 	GameScene* scene_;
 
@@ -106,6 +109,8 @@ protected:
 
 	bool isAlive_;	// ¶‘¶”»’è
 	bool isAttack_ = false;	//UŒ‚”»’è
+	bool isAttack_P = false;	//UŒ‚”»’è
+	bool isAttack_T = false;	//UŒ‚”»’è
 
 	STATE state_;	//ó‘ÔŠÇ—
 
@@ -131,7 +136,8 @@ protected:
 	
 	void ChasePlayer(void);			//ƒvƒŒƒCƒ„[‚ğ’Ç‚¢‚©‚¯‚é
 
-	void UpdateAttackCollisionPos(void);//UŒ‚—pŠÖ”
+	void AttackCollisionPos(void);//UŒ‚—pŠÖ”
+	void EnemyToTree(void);
 
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);

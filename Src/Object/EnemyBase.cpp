@@ -10,6 +10,7 @@
 //#include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
+#include "Tree.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase() 
@@ -82,19 +83,28 @@ void EnemyBase::UpdatePlay(void)
 		Collision();
 
 		ChasePlayer();
-
-		UpdateAttackCollisionPos();
+		//プレイヤーを見る
+		AttackCollisionPos();
+		//treeを見る
+		EnemyToTree();
 }
 
 void EnemyBase::UpdateAttack(void)
 {
-	// 攻撃タイミング
-	if (!isAttack_)
-	{
-		animationController_->Play((int)ANIM_TYPE::ATTACK, false);
+	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 
+	// 攻撃タイミング
+	if (!isAttack_ && isAttack_P)
+	{
 		isAttack_ = true; // 多重ヒット防止用フラグ
+		isAttack_P = false;
 		player_->Damage(1);
+	}
+	else if (!isAttack_ && isAttack_T)
+	{
+		isAttack_ = true;
+		isAttack_T = false;
+		tree_->eHit();
 	}
 
 	 //アニメーション終了で次の状態に遷移
@@ -267,7 +277,7 @@ float EnemyBase::GetCollisionRadius(void)
 }
 #pragma endregion
 
-void EnemyBase::UpdateAttackCollisionPos(void)
+void EnemyBase::AttackCollisionPos(void)
 {
 	//プレイヤーとの衝突判定
 	// 攻撃の方向（エネミー）
@@ -294,24 +304,30 @@ void EnemyBase::UpdateAttackCollisionPos(void)
 
 	if (p_Dis < p_RadiusSum * p_RadiusSum)
 	{
+		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
 	
+}
+
+void EnemyBase::EnemyToTree(void)
+{
 	//プレイヤーの当たり判定とサイズ
-	//VECTOR treeCenter = tree_->GetCollisionPos();
-	//float treeRadius = tree_->GetCollisionRadius();
+	VECTOR treeCenter = tree_->GetCollisionPos();
+	float treeRadius = tree_->GetCollisionRadius();
 
-	////判定の距離の比較
-	//VECTOR t_Diff = VSub(treeCenter, attackCollisionPos_);
-	//float t_Dis = AsoUtility::SqrMagnitudeF(t_Diff);
+	//判定の距離の比較
+	VECTOR t_Diff = VSub(treeCenter, attackCollisionPos_);
+	float t_Dis = AsoUtility::SqrMagnitudeF(t_Diff);
 
-	////半径の合計
-	//float t_RadiusSum = attackCollisionRadius_ + treeRadius;
+	//半径の合計
+	float t_RadiusSum = attackCollisionRadius_ + treeRadius;
 
-	//if (t_Dis < t_RadiusSum * t_RadiusSum)
-	//{
-	//	ChangeState(STATE::ATTACK);
-	//}
+	if (t_Dis < t_RadiusSum * t_RadiusSum)
+	{
+		isAttack_T = true;
+		ChangeState(STATE::ATTACK);
+	}
 }
 
 void EnemyBase::SetGameScene(GameScene* scene)
@@ -359,6 +375,11 @@ void EnemyBase::ChangeStateDeath(void)
 void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 {
 	player_ = player;
+}
+
+void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
+{
+	tree_ = tree;
 }
 
 void EnemyBase::DrawDebug(void)
