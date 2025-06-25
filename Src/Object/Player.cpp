@@ -121,18 +121,19 @@ void Player::Update(void)
 	// アニメーション再生
 	animationController_->Update();
 
-	UpdateD(1.0f);
+	UpdateDown(1.0f);
 
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_U)) wHit();
 }
 
-void Player::UpdateD(float deltaTime)
+void Player::UpdateDown(float deltaTime)
 {
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_I)) Damage(1);
 
 	if (pstate_ == PlayerState::DOWN) {
+		isAttack_ = false;
 		revivalTimer_ += deltaTime;
 		if (revivalTimer_ >= D_COUNT) {
 			Revival();
@@ -375,12 +376,11 @@ void Player::DrawDebug(void)
 	if (isAttack_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
-		VECTOR capStart = VAdd(transform_.pos, VScale(forward, 100.0f));
-		capStart.y += 100.0f;
-		VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
-		float capRadius = 100.0f;
+		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 100.0f;
 		// カプセルの描画確認用	
-		DrawSphere3D(capStart, capRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
 	//capsule_->Draw();
 
@@ -604,19 +604,19 @@ void Player::CollisionAttack(void)
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
-		VECTOR attackCenter = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackCenter.y += 100.0f;  // 攻撃の高さ調整
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackPos.y += 100.0f;  // 攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
 			if (!enemy || !enemy->IsAlive()) continue;
 
 			//敵の当たり判定とサイズ
-			VECTOR enemyCenter = enemy->GetCollisionPos();
+			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
 			//判定の距離の比較
-			VECTOR diff = VSub(enemyCenter, attackCenter);
+			VECTOR diff = VSub(enemyPos, attackPos);
 			float dis = AsoUtility::SqrMagnitudeF(diff);
 
 			// 半径の合計
