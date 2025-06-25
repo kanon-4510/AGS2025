@@ -11,7 +11,7 @@ EnemyDog::EnemyDog() :EnemyBase()
 
 void EnemyDog::InitAnimation(void)
 {
-	speedAnim_ = 0.5f;
+	//speedAnim_ = 0.5f;
 
 	std::string path = Application::PATH_MODEL + "Enemy/";
 

@@ -275,7 +275,6 @@ void EnemyBase::UpdateAttackCollisionPos(void)
 	// 攻撃の開始位置と終了位置
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
 	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
-	VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
 	
 	if (player_->pstate_ == Player::PlayerState::DOWN)
 	{
@@ -287,17 +286,32 @@ void EnemyBase::UpdateAttackCollisionPos(void)
 	float playerRadius = player_->GetCollisionRadius();
 
 	//判定の距離の比較
-	VECTOR diff = VSub(playerCenter, attackCollisionPos_);
-	float dis = AsoUtility::SqrMagnitudeF(diff);
+	VECTOR p_Diff = VSub(playerCenter, attackCollisionPos_);
+	float p_Dis = AsoUtility::SqrMagnitudeF(p_Diff);
 
 	// 半径の合計
-	float radiusSum = attackCollisionRadius_ + playerRadius;
+	float p_RadiusSum = attackCollisionRadius_ + playerRadius;
 
-	if (dis < radiusSum * radiusSum)
+	if (p_Dis < p_RadiusSum * p_RadiusSum)
 	{
 		ChangeState(STATE::ATTACK);
 	}
 	
+	//プレイヤーの当たり判定とサイズ
+	//VECTOR treeCenter = tree_->GetCollisionPos();
+	//float treeRadius = tree_->GetCollisionRadius();
+
+	////判定の距離の比較
+	//VECTOR t_Diff = VSub(treeCenter, attackCollisionPos_);
+	//float t_Dis = AsoUtility::SqrMagnitudeF(t_Diff);
+
+	////半径の合計
+	//float t_RadiusSum = attackCollisionRadius_ + treeRadius;
+
+	//if (t_Dis < t_RadiusSum * t_RadiusSum)
+	//{
+	//	ChangeState(STATE::ATTACK);
+	//}
 }
 
 void EnemyBase::SetGameScene(GameScene* scene)
