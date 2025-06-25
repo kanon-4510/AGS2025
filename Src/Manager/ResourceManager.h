@@ -25,7 +25,12 @@ public:
 		REPLAY,
 		RETRY,
 		ENDGAME,
-		//
+		CONFIRM_END,
+		YES,
+		NO,
+		SELECT_YES,
+		SELECT_NO,
+		//---------
 		SPEECH_BALLOON,
 		PLAYER,
 		PLAYER_SHADOW,

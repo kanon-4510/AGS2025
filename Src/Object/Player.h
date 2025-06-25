@@ -111,7 +111,6 @@ public:
 	void eHit(void);//“G
 	void wHit(void);//…
 	//void tHit(int amount);//–Ø
-	void tHit();//–Ø
 	void tHit(void);//–Ø
 					
 	//ƒ_ƒ[ƒW

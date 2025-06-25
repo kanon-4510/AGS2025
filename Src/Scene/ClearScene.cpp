@@ -83,3 +83,7 @@ void ClearScene::Draw(void)
 {
 	MV1DrawModel(charactor_.modelId);
 }
+
+void ClearScene::Release(void)
+{
+}

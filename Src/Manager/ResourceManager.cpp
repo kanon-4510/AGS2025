@@ -32,6 +32,7 @@ void ResourceManager::Init(void)
 	std::unique_ptr<Resource> res;
 
 	// UI画像系
+	// -----------------------------------------------------------------
 	// タイトル画像
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameTitle.png");
 	resourcesMap_.emplace(SRC::TITLE, std::move(res));
@@ -79,6 +80,26 @@ void ResourceManager::Init(void)
 	// ゲームを終了する
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndGame.png");
 	resourcesMap_.emplace(SRC::ENDGAME, std::move(res));
+
+	// ゲームを終了確認
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndCheck.png");
+	resourcesMap_.emplace(SRC::CONFIRM_END, std::move(res));
+
+	// はい
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Yes.png");
+	resourcesMap_.emplace(SRC::YES, std::move(res));
+
+	// いいえ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "No.png");
+	resourcesMap_.emplace(SRC::NO, std::move(res));
+
+	// はい選択中
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectYes.png");
+	resourcesMap_.emplace(SRC::SELECT_YES, std::move(res));
+
+	// いいえ選択中
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectNo.png");
+	resourcesMap_.emplace(SRC::SELECT_NO, std::move(res));
 
 	// 吹き出し
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SpeechBalloon.png");
