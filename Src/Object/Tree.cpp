@@ -76,11 +76,11 @@ void Tree::Update(void)
 		collisionRadius_ = 200.0f;
 		break;
 	case GROW::ADULT:
-		minDistance = 450.0f;
+		minDistance = 350.0f;
 		collisionRadius_ = 350.0f;
 		break;
 	case GROW::OLD:
-		minDistance = 800.0f;
+		minDistance = 700.0f;
 		collisionRadius_ = 800.0f;
 		break;
 	}
