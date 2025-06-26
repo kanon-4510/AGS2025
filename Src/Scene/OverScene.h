@@ -10,6 +10,14 @@ class AnimationController;
 class OverScene : public SceneBase
 {
 public:
+
+	struct VECTOR4
+	{
+		float x, y, z, w;
+		VECTOR4() : x(0), y(0), z(0), w(0) {}
+		VECTOR4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
+	};
+
 	OverScene(void);	// コンストラクタ
 	~OverScene(void);	// デストラクタ
 
@@ -18,25 +26,33 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 private:
+
 	// 画像
-	int imgTitle_;
-	int imgBackTitle_;
-	int imgPush_;
+	int imgGameOver_;
+	int imgReplay_;
+	int imgReturn_;	//タイトルに戻る
+	int imgCursor_;
+	int imgDieTree_;
+	int imgLightCircle_;	// 光
 
-	// スカイドーム用
-	Transform spaceDomeTran_;
+	// メニュー
+	int selectedIndex_;       // 選択中のメニューインデックス（0:リプレイ, 1:タイトルへ）
+	int blinkFrameCount_;     // 点滅エフェクト用
 
-	// スカイドーム(背景)
-	//SkyDome* skyDome_;
-	std::unique_ptr<SkyDome> skyDome_;
+	// 死んでしまった…
+	int maskLeftX_;   // 黒帯の左端X座標
+	int maskRightX_;  // 黒帯の右端X座標（固定）
 
-	// 惑星
-	Transform planet_;
-	Transform movePlanet_;
+	static constexpr int maskWidthMax_ = 1600;  // 画像横幅
+	static constexpr int revealSpeed_ = 4;
 
 	// キャラクター
 	Transform charactor_;
 
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
+
+	// 3D→2D変換用補助関数
+	VECTOR4 MulMatVec(const MATRIX& m, const VECTOR4& v);
+	bool WorldToScreen(const VECTOR& worldPos, VECTOR& screenPos);
 };

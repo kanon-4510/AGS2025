@@ -69,6 +69,14 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
 	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
 
+	// ゲームオーバー
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over.png");
+	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
+
+	// ユグドラシルは死んでしまった…
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "DieTree.png");
+	resourcesMap_.emplace(SRC::DIETREE, std::move(res));
+
 	// もう一度遊ぶ
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "RePlay.png");
 	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
@@ -112,6 +120,10 @@ void ResourceManager::Init(void)
 	// プレイヤー影
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, std::move(res));
+
+	// ライト
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Light.png");
+	resourcesMap_.emplace(SRC::LIGHT, std::move(res));
 
 	// スカイドーム
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
