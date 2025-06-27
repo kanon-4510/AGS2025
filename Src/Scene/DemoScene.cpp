@@ -109,3 +109,7 @@ void DemoScene::Draw(void)
 	}
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y-175,0.8,0, waku_, true);
 }
+
+void DemoScene::Release(void)
+{
+}
