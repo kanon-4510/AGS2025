@@ -101,7 +101,7 @@ void TitleScene::Update(void)
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 		}
 		else if (selectedIndex_ == 1) {
-			// SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RULE);
+			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::DEMO);
 		}
 	}
 

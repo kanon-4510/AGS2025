@@ -121,29 +121,6 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
-	//敵のエンカウント
-	//enCounter++;
-	//if (enCounter > ENCOUNT)
-	//{
-	//	bool spawned = false;
-	//	size_t size = enemys_.size();
-	//	for (int i = 0; i < size; i++)
-	//	{
-	//		//if (enemys_[i]->GetState() == EnemyBase::STATE::NONE)
-	//		if (enemys_[i] != nullptr && enemys_[i]->GetState() == EnemyBase::STATE::NONE)
-	//		{
-	//			EnemyCreate(i);
-	//			spawned = true;
-	//			break;
-	//		}
-	//	}
-	//	if (!spawned)
-	//	{
-	//		// ログ出力や警告処理
-	//		OutputDebugStringA("警告：敵を生成できるスロットが見つかりませんでした。\n");
-	//	}
-	//	enCounter = 0;//エンカウントのリセット
-	//}
 }
 
 void GameScene::Draw(void)
@@ -245,20 +222,20 @@ void GameScene::EnemyCreate(void)
 	switch (randDir)//位置
 	{
 	case 0://前
-		randPos.x = GetRand(29000) - 14500;
-		randPos.z = 14500;
+		randPos.x = GetRand(20000) - 10000;
+		randPos.z = 10000;
 		break;
 	case 1://後
-		randPos.x = GetRand(29000) - 14500;
-		randPos.z = -14500;
+		randPos.x = GetRand(20000) - 10000;
+		randPos.z = -10000;
 		break;
 	case 2://左
-		randPos.x = -14500;
-		randPos.z = GetRand(29000) - 14500;
+		randPos.x = -10000;
+		randPos.z = GetRand(20000) - 10000;
 		break;
 	case 3://右
-		randPos.x = 14500;
-		randPos.z = GetRand(29000) - 14500;
+		randPos.x = 10000;
+		randPos.z = GetRand(29000) - 10000;
 		break;
 	default:
 		break;

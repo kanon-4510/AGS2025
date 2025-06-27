@@ -4,6 +4,7 @@
 #include "../Common/Fader.h"
 #include "../Manager/GravityManager.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/DemoScene.h"
 #include "../Scene/GameScene.h"
 #include "../Scene/OverScene.h"
 #include "../Scene/ClearScene.h"
@@ -51,7 +52,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// èâä˙ÉVÅ[ÉìÇÃê›íË
-	DoChangeScene(SCENE_ID::GAME);
+	DoChangeScene(SCENE_ID::TITLE);
 
 }
 
@@ -228,6 +229,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::TITLE:
 		scene_ = std::make_unique<TitleScene>();
+		break;
+	case SCENE_ID::DEMO:
+		scene_ = std::make_unique<DemoScene>();
 		break;
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
