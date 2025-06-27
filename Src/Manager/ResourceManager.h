@@ -12,7 +12,7 @@ public:
 	// ÉäÉ\Å[ÉXñº
 	enum class SRC
 	{
-		//âÊëú
+		//âÊëú(UI)
 		TITLE,
 		BACK_TITLE,
 		PUSH,
@@ -22,6 +22,8 @@ public:
 		GAMEUI_1,
 		UPDOWN,
 		GOTITLE,
+		GAMEOVER,
+		DIETREE,
 		REPLAY,
 		RETRY,
 		ENDGAME,
@@ -34,6 +36,7 @@ public:
 		SPEECH_BALLOON,
 		PLAYER,
 		PLAYER_SHADOW,
+		LIGHT,
 		SKY_DOME,
 		MAIN_PLANET,
 		FALL_PLANET,
