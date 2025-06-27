@@ -33,8 +33,8 @@ Tree::~Tree(void)
 bool Tree::Init(void)
 {
 	modelIdB_ = MV1LoadModel((Application::PATH_MODEL + "wood/Baby.mv1").c_str());
-	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/Kid.mv1").c_str());
-	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult.mv1").c_str());
+	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/Kid_ver2.mv1").c_str());
+	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
 	scl_ = { 3.0f, 2.5f, 3.0f };							// ëÂÇ´Ç≥ÇÃê›íË
@@ -187,7 +187,7 @@ void Tree::Draw(void)
 
 	DrawDebugTree2Player();
 
-	DrawDebug();
+	//DrawDebug();
 }
 
 void Tree::DrawDebug(void)

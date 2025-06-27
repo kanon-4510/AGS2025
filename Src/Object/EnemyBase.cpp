@@ -7,7 +7,6 @@
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
-//#include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
 #include "Tree.h"
@@ -27,6 +26,8 @@ EnemyBase::EnemyBase()
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
+	stateChanges_.emplace(
+		STATE::IDLE, std::bind(&EnemyBase::ChangeStateIdle, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
@@ -68,9 +69,14 @@ void EnemyBase::Update(void)
 }
 
 #pragma region StateごとのUpdate
-
-void EnemyBase::UpdateNone(void)
+void EnemyBase::UpdateIdle(void)
 {
+	animationController_->Play((int)ANIM_TYPE::IDLE, false, 0.0f, 10.0f);
+	if (animationController_->IsEnd() || state_ != STATE::IDLE)
+	{
+		AttackCollisionPos();
+	}
+
 }
 
 void EnemyBase::UpdatePlay(void)
@@ -85,8 +91,6 @@ void EnemyBase::UpdatePlay(void)
 		ChasePlayer();
 		//プレイヤーを見る
 		AttackCollisionPos();
-		//treeを見る
-		EnemyToTree();
 }
 
 void EnemyBase::UpdateAttack(void)
@@ -110,7 +114,7 @@ void EnemyBase::UpdateAttack(void)
 	 //アニメーション終了で次の状態に遷移
 	if (animationController_->IsEnd() || state_ != STATE::ATTACK) {
 		isAttack_ = false;
-		ChangeState(STATE::PLAY);
+		ChangeState(STATE::IDLE);
 	}
 }
 
@@ -149,16 +153,20 @@ void EnemyBase::ChasePlayer(void)
 		return;
 	}
 
-	animationController_->Play((int)ANIM_TYPE::RUN, true);
-
 	VECTOR playerPos = player_->GetTransform().pos;
 
 	VECTOR toPlayer = VSub(playerPos, transform_.pos);
 	toPlayer.y = 0;  // 高さ無視
 
 	float distance = VSize(toPlayer);
+
+	//アニメーションをRUNにする
+	animationController_->Play((int)ANIM_TYPE::RUN, true);
+
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE && player_->pstate_ == Player::PlayerState::NORMAL)
+	if (distance <= VIEW_RANGE 
+		&& state_ == STATE::PLAY 
+		&& player_->pstate_ == Player::PlayerState::NORMAL)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -291,6 +299,14 @@ void EnemyBase::AttackCollisionPos(void)
 		return;
 	}
 
+	//プレイヤーを見る
+	EnemyToPlayer();
+	//treeを見る
+	EnemyToTree();
+}
+
+void EnemyBase::EnemyToPlayer(void)
+{
 	//プレイヤーの当たり判定とサイズ
 	VECTOR playerCenter = player_->GetCollisionPos();
 	float playerRadius = player_->GetCollisionRadius();
@@ -307,7 +323,10 @@ void EnemyBase::AttackCollisionPos(void)
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	
+	else if (p_Dis >= p_RadiusSum * p_RadiusSum)
+	{
+		ChangeState(STATE::PLAY);
+	}
 }
 
 void EnemyBase::EnemyToTree(void)
@@ -327,7 +346,11 @@ void EnemyBase::EnemyToTree(void)
 	{
 		isAttack_T = true;
 		ChangeState(STATE::ATTACK);
-	}
+	}/*
+	else if (t_Dis >= t_RadiusSum * t_RadiusSum)
+	{
+		ChangeState(STATE::PLAY);
+	}*/
 }
 
 void EnemyBase::SetGameScene(GameScene* scene)
@@ -349,6 +372,11 @@ void EnemyBase::ChangeState(STATE state)
 void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
+}
+
+void EnemyBase::ChangeStateIdle(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateIdle, this);
 }
 void EnemyBase::ChangeStatePlay(void)
 {
