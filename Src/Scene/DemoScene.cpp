@@ -18,7 +18,6 @@ void DemoScene::Init(void)
 	now_ = 0;
 	demoSound_ = LoadMusicMem("sound/SE/set.mp3");
 	waku_ = LoadGraph("Data/Image/waku.png");
-	tree_ = LoadGraph("Data/Image/God.png");
 	player_ = LoadGraph("bmp/Player/player.png");
 	player2_ = LoadGraph("bmp/Player'/player.png");
 	god_[0] = LoadGraph("Data/Image/God/god.png");
@@ -30,7 +29,6 @@ void DemoScene::Init(void)
 	gNo_ = 0;
 	txt_ = -2;
 	cnt_ = 0;
-	SetFontSize(55);
 }
 void DemoScene::Update(void)
 {
@@ -66,7 +64,7 @@ void DemoScene::Draw(void)
 	DrawString(385,900+83*0 -83*txt_,"私を知っている？何を寝ぼけている。",			0xffffff);
 	DrawString(385,900+83*1 -83*txt_,"お前は生まれ堕ちたばかりだろう。",			0xffffff);
 	DrawString(385,900+83*2 -83*txt_,"まぁいい うまれてすぐだろうが神託だ。",		0xffffff);
-	DrawString(385,900+83*3 -83*txt_,"お前にはある使命を与える。"				,	0xffffff);
+	DrawString(385,900+83*3 -83*txt_,"お前にはある使命を与える。",					0xffffff);
 	DrawString(385,900+83*4 -83*txt_,"これから生まれる世界の礎となる植物",			0xffffff);
 	DrawString(385,900+83*5 -83*txt_,"「ユグドラシル」の守護と育成だ。",			0xffffff);
 	DrawString(385,900+83*6 -83*txt_,"植物の生命力を狙うモンスターを倒し、",		0xffffff);
@@ -88,7 +86,11 @@ void DemoScene::Draw(void)
 
 	if (cnt_ % 90 <= 45)DrawRotaGraph(1490, 985, 1.2, 0, tri_, true);
 	else(DrawRotaGraph(1490, 975, 1.2, 0, tri_, true));
-	DrawRotaGraph(450, 120, 0.5, 0, god_[gNo_], true);
+
+	DrawFormatString(20, 30, 0xffffff, "%d",cnt_);
+	if(cnt_%139<=69)	DrawRotaGraph(Application::SCREEN_SIZE_X/2,(Application::SCREEN_SIZE_Y/2-(cnt_%69))+69,1,0,god_[gNo_],true);
+	else				DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2+(cnt_%69),1,0,god_[gNo_],true);
+
 	if (txt_ > 1 && txt_ < 5)
 	{
 		DrawOval(600, 300, 60, 20, 0xaaaaaa, true);
@@ -108,4 +110,8 @@ void DemoScene::Draw(void)
 		DrawRotaGraph(600, 255, 2.5f, 0.0f, player2_, true, false);
 	}
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y-175,0.8,0, waku_, true);
+}
+void DemoScene::Release(void)
+{
+
 }

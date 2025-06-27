@@ -52,7 +52,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// èâä˙ÉVÅ[ÉìÇÃê›íË
-	DoChangeScene(SCENE_ID::TITLE);
+	DoChangeScene(SCENE_ID::DEMO);
 
 }
 
@@ -229,9 +229,11 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::TITLE:
 		scene_ = std::make_unique<TitleScene>();
+		SetFontSize(16);
 		break;
 	case SCENE_ID::DEMO:
 		scene_ = std::make_unique<DemoScene>();
+		SetFontSize(55);
 		break;
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
