@@ -48,8 +48,8 @@ bool Tree::Init(void)
 	water_ = 0;
 	//gameScene_ = parent;
 
-	//collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
-	//collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
 
 	return true;
 }
@@ -73,12 +73,15 @@ void Tree::Update(void)
 		break;
 	case GROW::KID:
 		minDistance = 100.0f;
+		collisionRadius_ = 200.0f;
 		break;
 	case GROW::ADULT:
-		minDistance = 450.0f;
+		minDistance = 350.0f;
+		collisionRadius_ = 350.0f;
 		break;
 	case GROW::OLD:
-		minDistance = 800.0f;
+		minDistance = 700.0f;
+		collisionRadius_ = 800.0f;
 		break;
 	}
 
@@ -141,6 +144,9 @@ void Tree::Update(void)
 		break;
 	}
 
+	collisionPos_ = VAdd(pos_, collisionLocalPos_);
+
+
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
 	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
@@ -195,9 +201,12 @@ void Tree::DrawDebug(void)
 	int purpl = 0x800080;
 
 	VECTOR v;
+	VECTOR c;
 
 	v = pos_;
 	DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
+	 c= collisionPos_;
+	DrawSphere3D(c, collisionRadius_, 8, red, red, false);
 }
 
 void Tree::DrawDebugTree2Player(void)
@@ -326,6 +335,16 @@ void Tree::ChangeGrow(void)
 void Tree::SetPlayer(Player* player)
 {
 	player_ = player;
+}
+
+VECTOR Tree::GetCollisionPos(void) const
+{
+	return VAdd(collisionLocalPos_, pos_);
+}
+
+float Tree::GetCollisionRadius(void)
+{
+	return collisionRadius_;
 }
 
 void Tree::eHit(void)//エネミーとのあたり判定

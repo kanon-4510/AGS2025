@@ -14,12 +14,13 @@
 
 TitleScene::TitleScene(void)
 {
-	imgPush_ = -1;
 	imgTitle_ = -1;
 	imgBackTitle_ = -1;
-	imgCursor_ = -1;
-	imgGame_ = -1;
+	imgPush_ = -1;
+	imgGoGame_ = -1;
 	imgRule_ = -1;
+	imgEndGame_ = -1;
+	imgCursor_ = -1;
 	imgUDCursor_ = -1;
 
 	animationControllerPlayer_ = nullptr;
@@ -37,12 +38,18 @@ void TitleScene::Init(void)
 	GravityManager::GetInstance().Init();
 
 	// 画像読み込み
-	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
-	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;
-	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH).handleId_;
-	imgGame_ = resMng_.Load(ResourceManager::SRC::PLAY).handleId_;
-	imgRule_ = resMng_.Load(ResourceManager::SRC::RULE).handleId_;
-	imgCursor_ = resMng_.Load(ResourceManager::SRC::CURSOR).handleId_; // ← カーソル画像
+	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;			//タイトル名前画像
+	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;	//タイトル背景
+	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH).handleId_;				//
+	imgGoGame_ = resMng_.Load(ResourceManager::SRC::PLAY).handleId_;			//ゲームに進む画像
+	imgRule_ = resMng_.Load(ResourceManager::SRC::RULE).handleId_;				//ルールを見る画像
+	imgEndGame_ = resMng_.Load(ResourceManager::SRC::ENDGAME).handleId_;		//ゲームを終了する画像
+	imgCursor_ = resMng_.Load(ResourceManager::SRC::CURSOR).handleId_;			//カーソル画像
+	imgConfirmEnd_ = resMng_.Load(ResourceManager::SRC::CONFIRM_END).handleId_;	//本当に終了しますか？画像
+	imgYes_ = resMng_.Load(ResourceManager::SRC::YES).handleId_;				//はい画像
+	imgNo_ = resMng_.Load(ResourceManager::SRC::NO).handleId_;					//いいえ画像
+	imgYesSel_ = resMng_.Load(ResourceManager::SRC::SELECT_YES).handleId_;		//選択中はい画像
+	imgNoSel_ = resMng_.Load(ResourceManager::SRC::SELECT_NO).handleId_;		//選択中いいえ画像
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
@@ -68,14 +75,14 @@ void TitleScene::Init(void)
 	enemyDirection_ = 1;
 
 	// プレイヤーのアニメーション
-	std::string path = Application::PATH_MODEL + "Player/";
+	std::string path = Application::PATH_MODEL + "NPlayer/";
 	animationControllerPlayer_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationControllerPlayer_->Add(0, path + "Run.mv1", 20.0f);
+	animationControllerPlayer_->Add(0, path + "Player.mv1", 20.0f, 2);
 	animationControllerPlayer_->Play(0);
 
 	// 敵のアニメーション
 	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
-	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Run.mv1", 20.0f);
+	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Yellow.mv1", 20.0f, 1);
 	animationControllerEnemy_->Play(0);
 
 	// 定点カメラ
@@ -85,39 +92,73 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
-	// 点滅フレーム更新（1秒周期）
+	InputManager& ins = InputManager::GetInstance();
+
+	// === 終了確認中の入力処理 ===
+	if (isConfirmingExit_)
+	{
+		// アニメーション進行（最大まで）
+		if (confirmAnimFrame_ < CONFIRM_ANIM_DURATION) {
+			confirmAnimFrame_++;
+		}
+
+		if (confirmAnimFrame_ >= CONFIRM_ANIM_DURATION) {
+			// 入力受付はアニメーション終了後に
+			if (ins.IsTrgDown(KEY_INPUT_LEFT) || ins.IsTrgDown(KEY_INPUT_RIGHT)) {
+				confirmIndex_ = 1 - confirmIndex_; // 「はい」「いいえ」切替
+			}
+			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+				if (confirmIndex_ == 0) {
+					Application::isRunning_ = false;
+				}
+				else {
+					isConfirmingExit_ = false;
+				}
+			}
+		}
+		return;
+	}
+
+	// === 点滅更新 ===
 	blinkFrameCount_++;
 	if (blinkFrameCount_ > 60) {
 		blinkFrameCount_ = 0;
 	}
 
-	// 入力処理
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_DOWN) || ins.IsTrgDown(KEY_INPUT_UP)) {
-		selectedIndex_ = (selectedIndex_ + 1) % 2;
+	// === メニュー選択操作 ===
+	if (ins.IsTrgDown(KEY_INPUT_DOWN)) {
+		selectedIndex_ = (selectedIndex_ + 1) % 3;
 	}
-	if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+	else if (ins.IsTrgDown(KEY_INPUT_UP)) {
+		selectedIndex_ = (selectedIndex_ + 2) % 3;
+	}
+
+	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	{
 		if (selectedIndex_ == 0) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 		}
 		else if (selectedIndex_ == 1) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::DEMO);
 		}
+		else if (selectedIndex_ == 2) {
+			isConfirmingExit_ = true;
+			confirmIndex_ = 1;
+			confirmAnimFrame_ = 0;  // ← アニメーション開始
+		}
 	}
 
+	// === キャラクターの移動・向き制御 ===
 	const float playerSpeed = 5.0f;
 	const float enemySpeed = 5.0f;
 	const float leftBound = -1150.0f;
 	const float rightBound = 1150.0f;
 	const float safeDistance = 250.0f;
 
-	// プレイヤーは向き(enemyDirection_)に従い移動
 	charactor_.pos.x += playerSpeed * enemyDirection_;
 
-	// 敵はプレイヤーを追いかける
 	float diffX = charactor_.pos.x - enemy_.pos.x;
 	if (enemyDirection_ == 1) {
-		// 右向きの時、敵はプレイヤーの後ろを追いかける（safeDistanceを保つ）
 		if (diffX > safeDistance) {
 			enemy_.pos.x += enemySpeed;
 			if (enemy_.pos.x > charactor_.pos.x - safeDistance)
@@ -125,7 +166,6 @@ void TitleScene::Update(void)
 		}
 	}
 	else {
-		// 左向きの時、敵はプレイヤーの後ろを追いかける
 		if (diffX < -safeDistance) {
 			enemy_.pos.x -= enemySpeed;
 			if (enemy_.pos.x < charactor_.pos.x + safeDistance)
@@ -133,15 +173,13 @@ void TitleScene::Update(void)
 		}
 	}
 
-	// 端に来たら向きを反転
 	if (charactor_.pos.x > rightBound) {
-		enemyDirection_ = -1; // 左向きへ
+		enemyDirection_ = -1;
 	}
 	else if (charactor_.pos.x < leftBound) {
-		enemyDirection_ = 1; // 右向きへ
+		enemyDirection_ = 1;
 	}
 
-	// 向き更新（右向きは-90°、左向きは90°）
 	float yRotDeg = (enemyDirection_ == 1) ? -90.0f : 90.0f;
 	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
 	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
@@ -159,70 +197,100 @@ void TitleScene::Draw(void)
 
 	DrawGraph(0, 0, imgBackTitle_, true);
 
-	// タイトルロゴ（中央上に表示、等倍）
+	// タイトルロゴ表示
 	int titleW, titleH;
 	GetGraphSize(imgTitle_, &titleW, &titleH);
 	DrawGraph(centerX - titleW / 2, -150, imgTitle_, true);
 
-	int buttonW = 400;
-	int buttonH = 100;
+	// ボタン設定
+	const int buttonW = 400;
+	const int buttonH = 100;
+	const int baseY = 450;
+	const int buttonOffset = 120;
 
-	int yGame = 600;
-	int yRule = 720;
+	const int yGame = baseY;
+	const int yRule = baseY + buttonOffset;
+	const int yExit = baseY + buttonOffset * 2;
 
-	// フェード用の透明度計算
-	int fadeCycle = 60; // 60フレーム（1秒）で1周期
+	const int fadeCycle = 60;
 	int phase = blinkFrameCount_ % fadeCycle;
-	int alpha = 0;
-	if (phase < fadeCycle / 2) {
-		alpha = (255 * phase) / (fadeCycle / 2);
-	}
-	else {
-		alpha = 255 - (255 * (phase - fadeCycle / 2)) / (fadeCycle / 2);
-	}
+	int alpha = (phase < fadeCycle / 2)
+		? (255 * phase) / (fadeCycle / 2)
+		: 255 - (255 * (phase - fadeCycle / 2)) / (fadeCycle / 2);
 
-	// 通常のボタン描画
-	// 選択中ボタンだけ透明度付きで点滅させる
-	if (selectedIndex_ == 0) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawExtendGraph(centerX - buttonW / 2, yGame - buttonH / 2,
-			centerX + buttonW / 2, yGame + buttonH / 2,
-			imgGame_, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	const int buttonCount = 3;
+	int yPositions[buttonCount] = { yGame, yRule, yExit };
+	int images[buttonCount] = { imgGoGame_, imgRule_, imgEndGame_ };
 
-		DrawExtendGraph(centerX - buttonW / 2, yRule - buttonH / 2,
-			centerX + buttonW / 2, yRule + buttonH / 2,
-			imgRule_, true);
-	}
-	else if (selectedIndex_ == 1) {
-		DrawExtendGraph(centerX - buttonW / 2, yGame - buttonH / 2,
-			centerX + buttonW / 2, yGame + buttonH / 2,
-			imgGame_, true);
-
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawExtendGraph(centerX - buttonW / 2, yRule - buttonH / 2,
-			centerX + buttonW / 2, yRule + buttonH / 2,
-			imgRule_, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	// メニュー描画
+	for (int i = 0; i < buttonCount; ++i) {
+		if (selectedIndex_ == i) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		}
+		DrawExtendGraph(centerX - buttonW / 2, yPositions[i] - buttonH / 2,
+			centerX + buttonW / 2, yPositions[i] + buttonH / 2,
+			images[i], true);
+		if (selectedIndex_ == i) {
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
 	}
 
-	// カーソル（矢印）表示（選択ボタンの左に）
+	// カーソル描画
 	int indicatorX = centerX - buttonW / 2 - 50;
-	int indicatorY = (selectedIndex_ == 0) ? yGame : yRule;
-	indicatorY += 8; 
-
+	int indicatorY = yPositions[selectedIndex_] + 8;
 	DrawRotaGraph(indicatorX, indicatorY, 0.5, 0.0, imgCursor_, true);
 
-	//十字キー
+	// ヒント表示など
 	DrawGraph(1400, 500, imgPush_, true);
 
-	// キャラモデル描画
+	// モデル描画
 	MV1DrawModel(charactor_.modelId);
-
 	MV1DrawModel(enemy_.modelId);
+
+	if (isConfirmingExit_) {
+		float t = static_cast<float>(confirmAnimFrame_) / CONFIRM_ANIM_DURATION;
+		if (t > 1.0f) t = 1.0f;
+
+		int alpha = static_cast<int>(220 * t);  // 背景透明度
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		int centerX = Application::SCREEN_SIZE_X / 2;
+		int centerY = Application::SCREEN_SIZE_Y / 2;
+
+		// ウィンドウ背景画像がある場合はここに描画（省略可）
+
+		// 「本当に終了しますか？」画像描画
+		int textW, textH;
+		GetGraphSize(imgConfirmEnd_, &textW, &textH);
+		DrawGraph(centerX - textW / 2, centerY - 300, imgConfirmEnd_, TRUE);
+
+		// ボタン画像
+		int btnY = centerY + 100;
+		int yesX = centerX - 450;
+		int noX = centerX + 80;
+
+		// 選択中で画像を切り替え
+		if (confirmIndex_ == 0) {
+			DrawGraph(yesX, btnY, imgYesSel_, TRUE);
+			DrawGraph(noX, btnY, imgNo_, TRUE);
+		}
+		else {
+			DrawGraph(yesX, btnY, imgYes_, TRUE);
+			DrawGraph(noX, btnY, imgNoSel_, TRUE);
+		}
+	}
 }
 
 void TitleScene::Release(void)
 {
+	if (charactor_.modelId != -1)
+	{
+		MV1DeleteModel(charactor_.modelId);
+		charactor_.modelId = -1;
+	}
+
+
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
 }

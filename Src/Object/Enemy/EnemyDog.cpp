@@ -11,14 +11,14 @@ EnemyDog::EnemyDog() :EnemyBase()
 
 void EnemyDog::InitAnimation(void)
 {
-	speedAnim_ = 0.5f;
+	//speedAnim_ = 0.5f;
 
 	std::string path = Application::PATH_MODEL + "Enemy/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Yellow/Yellow.mv1", 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 20.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Yellow/Yellow.mv1", 16.0f, 2);
 	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Yellow/Yellow.mv1", 20.0f, 3);
 	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Yellow/Yellow.mv1", 20.0f, 4);
 
@@ -44,6 +44,8 @@ void EnemyDog::SetParam(void)
 
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
+
+	attackCollisionRadius_ = 60.0f;		// 攻撃判定用と攻撃範囲の球体半径
 
 	//// カプセルコライダ
 	//capsule_ = std::make_unique<Capsule>(transform_);

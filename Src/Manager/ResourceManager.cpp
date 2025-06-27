@@ -31,11 +31,13 @@ void ResourceManager::Init(void)
 
 	std::unique_ptr<Resource> res;
 
+	// UI画像系
+	// -----------------------------------------------------------------
 	// タイトル画像
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameTitle.png");
 	resourcesMap_.emplace(SRC::TITLE, std::move(res));
 
-	//
+	// タイトル背景
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackTitle.png");
 	resourcesMap_.emplace(SRC::BACK_TITLE, std::move(res));
 
@@ -47,21 +49,65 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PlayGame.png");
 	resourcesMap_.emplace(SRC::PLAY, std::move(res));
 
-	// るーる
+	// ルールUI
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Rule.png");
 	resourcesMap_.emplace(SRC::RULE, std::move(res));
 
-	//⇒
+	// ⇒
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Cursor1.png");
 	resourcesMap_.emplace(SRC::CURSOR, std::move(res));
 
-	//十字キーの上下
+	// 十字キーの上下
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");
 	resourcesMap_.emplace(SRC::UPDOWN, std::move(res));
 
-	//ゲーム画面のUI
+	// ゲーム画面のUI
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameUI1.png");
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
+
+	// タイトルに戻る
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
+	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
+
+	// ゲームオーバー
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over.png");
+	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
+
+	// ユグドラシルは死んでしまった…
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "DieTree.png");
+	resourcesMap_.emplace(SRC::DIETREE, std::move(res));
+
+	// もう一度遊ぶ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "RePlay.png");
+	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
+
+	// リトライ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "ReTry.png");
+	resourcesMap_.emplace(SRC::RETRY, std::move(res));
+
+	// ゲームを終了する
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndGame.png");
+	resourcesMap_.emplace(SRC::ENDGAME, std::move(res));
+
+	// ゲームを終了確認
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndCheck.png");
+	resourcesMap_.emplace(SRC::CONFIRM_END, std::move(res));
+
+	// はい
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Yes.png");
+	resourcesMap_.emplace(SRC::YES, std::move(res));
+
+	// いいえ
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "No.png");
+	resourcesMap_.emplace(SRC::NO, std::move(res));
+
+	// はい選択中
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectYes.png");
+	resourcesMap_.emplace(SRC::SELECT_YES, std::move(res));
+
+	// いいえ選択中
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectNo.png");
+	resourcesMap_.emplace(SRC::SELECT_NO, std::move(res));
 
 	// 吹き出し
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SpeechBalloon.png");
@@ -74,6 +120,10 @@ void ResourceManager::Init(void)
 	// プレイヤー影
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, std::move(res));
+
+	// ライト
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Light.png");
+	resourcesMap_.emplace(SRC::LIGHT, std::move(res));
 
 	// スカイドーム
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");

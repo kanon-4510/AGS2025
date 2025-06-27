@@ -22,9 +22,9 @@ void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad,
 
 void MiniMap::DrawBackground()
 {
-    DrawBox(mapPosX, mapPosY,
+    /*DrawBox(mapPosX, mapPosY,
         mapPosX + mapPixelSize, mapPosY + mapPixelSize,
-        GetColor(100, 255, 0), TRUE);
+        GetColor(100, 255, 0), TRUE);*/
 
     // === ミニマップの中心 ===
     int centerX = mapPosX + mapPixelSize / 2;
@@ -32,7 +32,7 @@ void MiniMap::DrawBackground()
     int radius = mapPixelSize / 2;
 
     // 丸い背景
-    //DrawCircle(centerX, centerY, radius, GetColor(100, 255, 0), TRUE);
+    DrawCircle(centerX, centerY, radius, GetColor(100, 255, 0), TRUE);
 
     //中心に木を描画(仮で黒点)
     DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);
@@ -50,7 +50,7 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)
     if (!IsInsideCircle(px, pz)) return;
 
     // プレイヤー(青)
-    DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
+    //DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
 
     // === 向きを示す三角形（矢印） ===
     // プレイヤー座標 (px, pz) は既に計算済み
@@ -67,12 +67,12 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)
     float size = 8.0f;
 
     // 矢印の3頂点を計算（先端と左右の角）
-    float frontX = baseX + std::cos(angle) * size * 0.6f;
-    float frontY = baseY + std::sin(angle) * size * 0.6f;
-    float leftX = baseX + std::cos(angle + 2.5f) * size;
-    float leftY = baseY + std::sin(angle + 2.5f) * size;
-    float rightX = baseX + std::cos(angle - 2.5f) * size;
-    float rightY = baseY + std::sin(angle - 2.5f) * size;
+    float frontX = px + std::cos(angle) * size;
+    float frontY = pz + std::sin(angle) * size;
+    float leftX = px + std::cos(angle + 2.5f) * size;
+    float leftY = pz + std::sin(angle + 2.5f) * size;
+    float rightX = px + std::cos(angle - 2.5f) * size;
+    float rightY = pz + std::sin(angle - 2.5f) * size;
 
     // 三角形を描画
     DrawTriangle(
@@ -93,7 +93,7 @@ void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)
         int ez = static_cast<int>((-e.z + worldHalfSize) * scale) + mapPosY;
 
         // === ミニマップ内に収まるように制限===
-        //if (!IsInsideCircle(ex, ez)) return;
+        if (!IsInsideCircle(ex, ez)) return;
 
         // 敵(赤)
         DrawCircle(ex, ez, 3, GetColor(255, 0, 0), TRUE);

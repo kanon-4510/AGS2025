@@ -40,13 +40,14 @@ public:
 	// プレイヤーのポインタをセットする関数
 	void SetPlayer(Player* player);
 
-	/*//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
+	//const Capsule& GetCapsule(void) const;	// 衝突用カプセルの取得
 
 	//void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
-	//VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
-	//float GetCollisionRadius(void);		// 衝突用の球体半径の取得*/
+	VECTOR GetCollisionPos(void)const;		// 衝突用の中心座標の取得
+	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+	VECTOR collisionPos_;
 
 	void eHit(void);
 	void pHit(void);
@@ -67,6 +68,8 @@ private:
 	VECTOR pos_;	//位置が来る
 	VECTOR rot_;	//廻天
 	VECTOR dir_;	//移動せんよ
+
+
 
 	int lv_;
 	int hp_;
