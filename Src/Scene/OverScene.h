@@ -38,6 +38,7 @@ private:
 	// メニュー
 	int selectedIndex_;       // 選択中のメニューインデックス（0:リプレイ, 1:タイトルへ）
 	int blinkFrameCount_;     // 点滅エフェクト用
+	bool isMenuActive_;
 
 	// 死んでしまった…
 	int maskLeftX_;   // 黒帯の左端X座標

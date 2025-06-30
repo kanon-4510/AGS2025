@@ -109,3 +109,10 @@ void DemoScene::Draw(void)
 	}
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y-175,0.8,0, waku_, true);
 }
+
+void DemoScene::Release(void)
+{
+	// フォントサイズと種類をデフォルトに戻す
+	SetFontSize(16); // ゲーム内の標準サイズに合わせて変更
+	ChangeFont("ＭＳ ゴシック"); // またはゲーム全体で使う基本フォントに
+}
