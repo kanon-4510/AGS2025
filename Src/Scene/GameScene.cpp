@@ -241,6 +241,39 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 	items_.push_back(item);
 }
 
+std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos)
+{
+	// 現在のアクティブ（生きている）アイテム数を数える
+	int aliveCount = 0;
+	for (const auto& item : items_) {
+		if (item->GetIsAlive()) {
+			aliveCount++;
+		}
+	}
+
+	// 上限に達していたら生成しない
+	/*if (aliveCount >= MAX_ITEMS) {
+		return nullptr;
+	}*/
+
+	// 再利用可能なアイテムを探す
+	for (auto& item : items_) {
+		if (!item->GetIsAlive()) {
+			OutputDebugStringA("再利用アイテムを使用\n");
+			item->Respawn(spawnPos);
+			return item;
+		}
+	}
+
+	// 再利用できなければ新しく作成
+	OutputDebugStringA("新規アイテムを作成\n");
+	auto newItem = std::make_shared<Item>(*player_, Transform{});
+	newItem->Init(); // 初期化（モデル読み込み等）
+	newItem->Respawn(spawnPos);
+	items_.push_back(newItem);
+	return newItem;
+}
+
 void GameScene::EnemyCreate(void)
 {
 

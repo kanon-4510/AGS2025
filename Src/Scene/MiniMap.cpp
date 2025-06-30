@@ -93,7 +93,7 @@ void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)
         int ez = static_cast<int>((-e.z + worldHalfSize) * scale) + mapPosY;
 
         // === ミニマップ内に収まるように制限===
-        if (!IsInsideCircle(ex, ez)) return;
+        //if (!IsInsideCircle(ex, ez)) return;
 
         // 敵(赤)
         DrawCircle(ex, ez, 3, GetColor(255, 0, 0), TRUE);
