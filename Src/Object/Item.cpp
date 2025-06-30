@@ -122,6 +122,17 @@ bool Item::GetIsAlive()
 	return isAlive_;
 }
 
+void Item::Respawn(const VECTOR& newPos)
+{
+	// 新しい位置で復活
+	transform_.pos = newPos;
+	baseY_ = newPos.y;
+	isAlive_ = true;
+	floatTimer_ = 0.0f;
+
+	// 必要なら他の状態もリセット
+}
+
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;

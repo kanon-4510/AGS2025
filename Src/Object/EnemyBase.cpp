@@ -135,13 +135,10 @@ void EnemyBase::UpdateDeath(void)
 	if (animationController_->IsEnd())
 	{
 		isAlive_ = false;
-		//アイテムドロップ
 		
-			auto newItem = std::make_shared<Item>(*player_, Transform{});
-			newItem->Init();
-			newItem->SetPos(transform_.pos);
-			newItem->SetIsAlive(true);
-			scene_->AddItem(newItem);
+		//アイテムドロップ
+		VECTOR dropPos = this->GetTransform().pos;
+		scene_->CreateItem(dropPos);
 	}
 }
 #pragma endregion

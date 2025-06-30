@@ -16,6 +16,7 @@ class GameScene : public SceneBase
 public:
 	static constexpr int ENCOUNT = 300;	//エンカウンタ
 	static constexpr int ENEMY_MAX = 30;//最大出現数
+	static constexpr int MAX_ITEMS = 10;//水の最大出現数
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ
@@ -28,6 +29,8 @@ public:
 	void DrawMiniMap(void);
 
 	void AddItem(std::shared_ptr<Item> item);
+	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos);
+
 private:
 	void EnemyCreate(void);
 

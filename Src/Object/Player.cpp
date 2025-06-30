@@ -659,7 +659,7 @@ void Player::CalcGravityPow(void)
 void Player::ProcessJump(void)
 {
 
-	bool isHit = CheckHitKey(KEY_INPUT_SPACE);
+	bool isHit = CheckHitKey(KEY_INPUT_BACK);
 
 	// ƒWƒƒƒ“ƒv
 	if (isHit && !isAttack_ && (isJump_ || IsEndLanding()))
