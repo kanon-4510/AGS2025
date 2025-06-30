@@ -39,7 +39,7 @@ public:
 	void Init(void)override;      //初期化処理
 	void Update(void)override;    //更新処理
 	void Draw(void)override;      //描画処理
-	void Release(void) override;
+	void Release(void)override;
 private:
 	SceneManager* sceneManager_;   //シーンマネジャーのポインタ格納領域
 	int demoSound_;
