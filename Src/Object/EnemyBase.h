@@ -9,9 +9,10 @@
 
 class AnimationController;
 class GameScene;
-class Collider;
+//class Collider;
 //class Capsule;
 class Player;
+class Tree;
 
 class EnemyBase : public ActorBase
 {
@@ -38,6 +39,7 @@ public:
 	enum class STATE
 	{
 		NONE,
+		IDLE,
 		PLAY,
 		ATTACK,
 		DAMAGE,
@@ -48,6 +50,7 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
+		NONE,
 		IDLE,
 		RUN,
 		ATTACK,
@@ -59,12 +62,12 @@ public:
 	EnemyBase();	// コンストラクタ
 	virtual ~EnemyBase(void);	// デストラクタ
 
-	virtual void Init(void);		 // 初期処理(最初の１回のみ実行)
-	virtual void InitAnimation(void);//アニメーションロード用
-	virtual void SetParam(void);	 // パラメータ設定(純粋仮想関数)
-	virtual void Update(void);		 // 更新処理(毎フレーム実行)
-	virtual void Draw(void);		 // 描画処理(毎フレーム実行)
-	virtual void Release(void);		 // 解放処理(最後の１回のみ実行)
+	virtual void Init(void);			// 初期処理(最初の１回のみ実行)
+	virtual void InitAnimation(void) {};//アニメーションロード用
+	virtual void SetParam(void){};		// パラメータ設定(純粋仮想関数)
+	virtual void Update(void);			 // 更新処理(毎フレーム実行)
+	virtual void Draw(void);			 // 描画処理(毎フレーム実行)
+	virtual void Release(void);			 // 解放処理(最後の１回のみ実行)
 
 	void SetPos(VECTOR pos);	// 座標の設定
 	STATE GetState(void);		// 状態獲得
@@ -86,10 +89,12 @@ public:
 	void DrawDebugSearchRange(void);
 
 	void SetPlayer(std::shared_ptr<Player> player);
+	void SetTree(std::shared_ptr<Tree> tree);
 
 protected:
 
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<Tree> tree_;
 	std::shared_ptr<Item>item_;
 	GameScene* scene_;
 
@@ -97,15 +102,17 @@ protected:
 	
 	VECTOR movePow_;	// 移動量
 	VECTOR movedPos_;	// 移動後の座標
-
 	VECTOR moveDiff_;	// フレームごとの移動値
 
 	VECTOR collisionPos_;	//赤い球体の移動後座標
 	VECTOR attackCollisionPos_; //紫の球体の移動後座標
 
 	int hp_;	// 体力
+
 	bool isAlive_;	// 生存判定
-	bool isAttack_ = false;	//攻撃判定
+	bool isAttack_ = false;		//攻撃判定
+	bool isAttack_P = false;	//攻撃判定
+	bool isAttack_T = false;	//攻撃判定
 
 	STATE state_;	//状態管理
 
@@ -123,22 +130,23 @@ protected:
 	float attackCollisionRadius_;	 // 攻撃判定用と攻撃範囲の球体半径
 	VECTOR attackCollisionLocalPos_; // 攻撃判定用と攻撃範囲の調整座標
 
-	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
-
-	void UpdateNone(void);			// 更新ステップ
+	void UpdateNone(void){};		// 更新ステップ
+	virtual void UpdateIdle(void);	// 更新ステップ
 	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
-	virtual void UpdateAttack(void);	// 更新処理(毎フレーム実行)
-	virtual void UpdateDamage(void);	// 更新処理(毎フレーム実行)
+	virtual void UpdateAttack(void);// 更新処理(毎フレーム実行)
+	virtual void UpdateDamage(void);// 更新処理(毎フレーム実行)
 	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
 	
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
-	void UpdateAttackCollisionPos(void);
-	void CollisionAttack(void);	//攻撃モーション
+	void AttackCollisionPos(void);//攻撃用関数
+	void EnemyToPlayer(void);	//敵がプレイヤー攻撃
+	void EnemyToTree(void);		//敵が木を攻撃
 
 	// 状態遷移
 	void ChangeState(STATE state);
 	void ChangeStateNone(void);
+	void ChangeStateIdle(void);
 	void ChangeStatePlay(void);
 	void ChangeStateAttack(void);
 	void ChangeStateDamage(void);

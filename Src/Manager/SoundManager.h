@@ -11,6 +11,7 @@ public:
 	{
 		TITLE_BGM,		//タイトルシーンのBGM
 		GAME_BGM,		//ゲームシーンのBGM
+		GAMEOVER_BGM
 	};
 
 	// 明示的にインステンスを生成する

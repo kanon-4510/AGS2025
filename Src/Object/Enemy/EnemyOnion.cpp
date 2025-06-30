@@ -11,16 +11,15 @@ EnemyOnion::EnemyOnion():EnemyBase()
 
 void EnemyOnion::InitAnimation(void)
 {
-	speedAnim_ = 0.5f;
-
 	std::string path = Application::PATH_MODEL + "Enemy/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "onion/onion.mv1", 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "onion/onion.mv1", 20.0f, 2);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "onion/onion.mv1", 20.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "onion/onion.mv1", 20.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::IDLE, path + "onion/onion.mv1", 20.0f, 1);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "onion/onion.mv1", 20.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "onion/onion.mv1", 16.0f, 3);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "onion/onion.mv1", 20.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path + "onion/onion.mv1", 20.0f, 5);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }

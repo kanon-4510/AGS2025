@@ -26,13 +26,20 @@ void SoundManager::Init(void)
 	static std::string PATH_EFF = Application::PATH_SOUND;
 	Sound res;
 
+	// タイトル
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "TitleBGM.mp3");
 	res.ChengeMaxVolume(0.8);
 	soundMap_.emplace(SRC::TITLE_BGM, res);
 
+	// ゲーム
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameBGM.mp3");
 	res.ChengeMaxVolume(0.8);
 	soundMap_.emplace(SRC::GAME_BGM, res);
+
+	// ゲームオーバー
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameOverBGM.mp3");
+	res.ChengeMaxVolume(0.8);
+	soundMap_.emplace(SRC::GAMEOVER_BGM, res);
 
 }
 

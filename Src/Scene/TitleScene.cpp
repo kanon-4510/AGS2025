@@ -14,14 +14,14 @@
 
 TitleScene::TitleScene(void)
 {
-	int imgTitle_ = -1;
-	int imgBackTitle_ = -1;
-	int imgPush_ = -1;
-	int imgGoGame_ = -1;
-	int imgRule_ = -1;
-	int imgEndGame_ = -1;
-	int imgCursor_ = -1;
-	int imgUDCursor_ = -1;
+	imgTitle_ = -1;
+	imgBackTitle_ = -1;
+	imgPush_ = -1;
+	imgGoGame_ = -1;
+	imgRule_ = -1;
+	imgEndGame_ = -1;
+	imgCursor_ = -1;
+	imgUDCursor_ = -1;
 
 	animationControllerPlayer_ = nullptr;
 	animationControllerEnemy_ = nullptr;
@@ -139,7 +139,7 @@ void TitleScene::Update(void)
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 		}
 		else if (selectedIndex_ == 1) {
-			// SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RULE);
+			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::DEMO);
 		}
 		else if (selectedIndex_ == 2) {
 			isConfirmingExit_ = true;
@@ -285,5 +285,12 @@ void TitleScene::Draw(void)
 
 void TitleScene::Release(void)
 {
+	if (charactor_.modelId != -1)
+	{
+		MV1DeleteModel(charactor_.modelId);
+		charactor_.modelId = -1;
+	}
+
+
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
 }

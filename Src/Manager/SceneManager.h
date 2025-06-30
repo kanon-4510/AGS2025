@@ -22,6 +22,7 @@ public:
 	{
 		NONE,
 		TITLE,
+		DEMO,
 		GAME,
 		OVER,
 		CLEAR

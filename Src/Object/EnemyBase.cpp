@@ -7,9 +7,9 @@
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
-#include "Common/Collider.h"
 #include "ActorBase.h"
 #include "Player.h"
+#include "Tree.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase() 
@@ -26,6 +26,8 @@ EnemyBase::EnemyBase()
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
+	stateChanges_.emplace(
+		STATE::IDLE, std::bind(&EnemyBase::ChangeStateIdle, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&EnemyBase::ChangeStatePlay, this));
 	stateChanges_.emplace(
@@ -44,14 +46,6 @@ void EnemyBase::Init(void)
 {
  	SetParam();
 	InitAnimation();
-}
-
-void EnemyBase::InitAnimation(void)
-{
-}
-
-void EnemyBase::SetParam(void)
-{	
 }
 
 void EnemyBase::Update(void)
@@ -75,39 +69,52 @@ void EnemyBase::Update(void)
 }
 
 #pragma region StateごとのUpdate
-
-void EnemyBase::UpdateNone(void)
+void EnemyBase::UpdateIdle(void)
 {
+	animationController_->Play((int)ANIM_TYPE::IDLE, false, 0.0f, 10.0f);
+	if (animationController_->IsEnd() || state_ != STATE::IDLE)
+	{
+		AttackCollisionPos();
+	}
+
 }
 
 void EnemyBase::UpdatePlay(void)
 {
-	if (isAlive_)
+	if (!isAlive_)
 	{
+		return;
+	}
 		// 衝突判定
 		Collision();
 
 		ChasePlayer();
-
-		UpdateAttackCollisionPos();
-	}
+		//プレイヤーを見る
+		AttackCollisionPos();
 }
 
 void EnemyBase::UpdateAttack(void)
 {
 	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 
-	// 攻撃タイミング例：フレーム20あたりでヒット
-	if (isAttack_ != true)
+	// 攻撃タイミング
+	if (!isAttack_ && isAttack_P)
 	{
 		isAttack_ = true; // 多重ヒット防止用フラグ
-		CollisionAttack();
+		isAttack_P = false;
+		player_->Damage(1);
+	}
+	else if (!isAttack_ && isAttack_T)
+	{
+		isAttack_ = true;
+		isAttack_T = false;
+		tree_->eHit();
 	}
 
 	 //アニメーション終了で次の状態に遷移
-	if (animationController_->IsEnd()) {
+	if (animationController_->IsEnd() || state_ != STATE::ATTACK) {
 		isAttack_ = false;
-		ChangeState(STATE::PLAY);
+		ChangeState(STATE::IDLE);
 	}
 }
 
@@ -143,16 +150,20 @@ void EnemyBase::ChasePlayer(void)
 		return;
 	}
 
-	animationController_->Play((int)ANIM_TYPE::RUN, true);
-
 	VECTOR playerPos = player_->GetTransform().pos;
 
 	VECTOR toPlayer = VSub(playerPos, transform_.pos);
 	toPlayer.y = 0;  // 高さ無視
 
 	float distance = VSize(toPlayer);
+
+	//アニメーションをRUNにする
+	animationController_->Play((int)ANIM_TYPE::RUN, true);
+
 	//エネミーの視野内に入ったら追いかける
-	if (distance <= VIEW_RANGE && player_->pstate_ == Player::PlayerState::NORMAL)
+	if (distance <= VIEW_RANGE 
+		&& state_ == STATE::PLAY 
+		&& player_->pstate_ == Player::PlayerState::NORMAL)
 	{
 		VECTOR dirToPlayer = VNorm(toPlayer);
 		VECTOR moveVec = VScale(dirToPlayer, speed_);
@@ -231,6 +242,7 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
+	isAttack_ = false;
 	if (hp_ <= 0 && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
@@ -270,7 +282,7 @@ float EnemyBase::GetCollisionRadius(void)
 }
 #pragma endregion
 
-void EnemyBase::UpdateAttackCollisionPos(void)
+void EnemyBase::AttackCollisionPos(void)
 {
 	//プレイヤーとの衝突判定
 	// 攻撃の方向（エネミー）
@@ -278,40 +290,65 @@ void EnemyBase::UpdateAttackCollisionPos(void)
 	// 攻撃の開始位置と終了位置
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
 	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
-	VECTOR capEnd = VAdd(transform_.pos, VScale(forward, 100.0f));
 	
 	if (player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		return;
 	}
 
+	//プレイヤーを見る
+	EnemyToPlayer();
+	//treeを見る
+	EnemyToTree();
+}
+
+void EnemyBase::EnemyToPlayer(void)
+{
 	//プレイヤーの当たり判定とサイズ
 	VECTOR playerCenter = player_->GetCollisionPos();
 	float playerRadius = player_->GetCollisionRadius();
 
 	//判定の距離の比較
-	VECTOR diff = VSub(playerCenter, attackCollisionPos_);
-	float dis = AsoUtility::SqrMagnitudeF(diff);
+	VECTOR p_Diff = VSub(playerCenter, attackCollisionPos_);
+	float p_Dis = AsoUtility::SqrMagnitudeF(p_Diff);
 
 	// 半径の合計
-	float radiusSum = attackCollisionRadius_ + playerRadius;
+	float p_RadiusSum = attackCollisionRadius_ + playerRadius;
 
-	if (dis < radiusSum * radiusSum)
+	if (p_Dis < p_RadiusSum * p_RadiusSum)
 	{
-		speed_ = 0;
-
+		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-}
-
-void EnemyBase::CollisionAttack(void)
-{
-	if (isAttack_)
+	else if (p_Dis >= p_RadiusSum * p_RadiusSum)
 	{
-		player_->Damage(1);
+		ChangeState(STATE::PLAY);
 	}
 }
 
+void EnemyBase::EnemyToTree(void)
+{
+	//プレイヤーの当たり判定とサイズ
+	VECTOR treeCenter = tree_->GetCollisionPos();
+	float treeRadius = tree_->GetCollisionRadius();
+
+	//判定の距離の比較
+	VECTOR t_Diff = VSub(treeCenter, attackCollisionPos_);
+	float t_Dis = AsoUtility::SqrMagnitudeF(t_Diff);
+
+	//半径の合計
+	float t_RadiusSum = attackCollisionRadius_ + treeRadius;
+
+	if (t_Dis < t_RadiusSum * t_RadiusSum)
+	{
+		isAttack_T = true;
+		ChangeState(STATE::ATTACK);
+	}/*
+	else if (t_Dis >= t_RadiusSum * t_RadiusSum)
+	{
+		ChangeState(STATE::PLAY);
+	}*/
+}
 
 void EnemyBase::SetGameScene(GameScene* scene)
 {
@@ -332,6 +369,11 @@ void EnemyBase::ChangeState(STATE state)
 void EnemyBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EnemyBase::UpdateNone, this);
+}
+
+void EnemyBase::ChangeStateIdle(void)
+{
+	stateUpdate_ = std::bind(&EnemyBase::UpdateIdle, this);
 }
 void EnemyBase::ChangeStatePlay(void)
 {
@@ -360,6 +402,11 @@ void EnemyBase::SetPlayer(std::shared_ptr<Player> player)
 	player_ = player;
 }
 
+void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
+{
+	tree_ = tree;
+}
+
 void EnemyBase::DrawDebug(void)
 {
 	int white = 0xffffff;
@@ -381,10 +428,10 @@ void EnemyBase::DrawDebug(void)
 	//v = transform_.pos;
 	//DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
-	/*s = collisionPos_;
-	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
-	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);*/
+	s = collisionPos_;
+	DrawSphere3D(s, collisionRadius_, 8, black, black, false);
+	//DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
+	//DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
 	
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
