@@ -33,6 +33,7 @@ public:
 	void SetIsAlive(bool isAlive);
 	bool GetIsAlive();
 
+	void Respawn(const VECTOR& newPos);
 
 	void DrawDebug(void);	//デバッグ用
 private:

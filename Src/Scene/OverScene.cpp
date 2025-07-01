@@ -56,6 +56,7 @@ OverScene::OverScene(void)
 
 	selectedIndex_ = 0;
 	blinkFrameCount_ = 0;
+	isMenuActive_ = false;
 
 	maskLeftX_ = 0;
 	maskRightX_ = 0;
@@ -88,6 +89,8 @@ void OverScene::Init(void)
 	selectedIndex_ = 0;
 	blinkFrameCount_ = 0;
 
+	isMenuActive_ = false;
+
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAMEOVER_BGM, Sound::TIMES::ONCE);
 
 	// キャラ
@@ -116,17 +119,19 @@ void OverScene::Update(void)
 
 	if (ins.IsTrgDown(KEY_INPUT_TAB))SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 
-	// メニュー操作
-	if (ins.IsTrgDown(KEY_INPUT_UP) || ins.IsTrgDown(KEY_INPUT_DOWN)) {
-		selectedIndex_ = 1 - selectedIndex_;
-	}
-
-	if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
-		if (selectedIndex_ == 0) {
-			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME); // リプレイ
+	if (isMenuActive_)
+	{
+		if (ins.IsTrgDown(KEY_INPUT_UP) || ins.IsTrgDown(KEY_INPUT_DOWN)) {
+			selectedIndex_ = 1 - selectedIndex_;
 		}
-		else {
-			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); // タイトルへ
+
+		if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+			if (selectedIndex_ == 0) {
+				SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+			}
+			else {
+				SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+			}
 		}
 	}
 
@@ -134,7 +139,10 @@ void OverScene::Update(void)
 	if (maskLeftX_ < maskRightX_)
 	{
 		maskLeftX_ += revealSpeed_;
-		if (maskLeftX_ > maskRightX_) maskLeftX_ = maskRightX_;
+		if (maskLeftX_ >= maskRightX_) {
+			maskLeftX_ = maskRightX_;
+			isMenuActive_ = true; // ← ここで初めて true にする
+		}
 	}
 
 	animationController_->Update();
@@ -155,7 +163,7 @@ void OverScene::Draw(void)
 	VECTOR screenPos;
 	if (WorldToScreen(charactor_.pos, screenPos))
 	{
-		int alpha = 60;
+		int alpha = 55;
 		SetDrawBlendMode(DX_BLENDMODE_ADD, alpha);
 
 		int w, h;
@@ -166,7 +174,7 @@ void OverScene::Draw(void)
 
 		int drawW = static_cast<int>(w * scaleX);
 		int drawH = static_cast<int>(h * scaleY);
-		int offsetY = 190;
+		int offsetY = 200;
 
 		DrawExtendGraph(
 			(int)screenPos.x - drawW / 2,
@@ -180,43 +188,47 @@ void OverScene::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	// メニュー描画（右下に配置）
-	const int buttonW = 400;
-	const int buttonH = 100;
-	const int baseX = Application::SCREEN_SIZE_X - buttonW - 100;
-	const int baseY = Application::SCREEN_SIZE_Y - 300;
-	const int buttonOffset = 120;
-
-	int yPositions[2] = { baseY, baseY + buttonOffset };
-	int images[2] = { imgReplay_, imgReturn_ };
-
-	const int fadeCycle = 60;
-	int phase = blinkFrameCount_ % fadeCycle;
-	int alpha = (phase < fadeCycle / 2)
-		? (255 * phase) / (fadeCycle / 2)
-		: 255 - (255 * (phase - fadeCycle / 2)) / (fadeCycle / 2);
-
-	for (int i = 0; i < 2; ++i)
+	if (isMenuActive_)
 	{
-		if (selectedIndex_ == i)
+		// メニュー描画（右下に配置）
+		const int buttonW = 400;
+		const int buttonH = 100;
+		const int baseX = Application::SCREEN_SIZE_X - buttonW - 100;
+		const int baseY = Application::SCREEN_SIZE_Y - 300;
+		const int buttonOffset = 120;
+
+		int yPositions[2] = { baseY, baseY + buttonOffset };
+		int images[2] = { imgReplay_, imgReturn_ };
+
+		const int fadeCycle = 60;
+		int phase = blinkFrameCount_ % fadeCycle;
+		int alpha = (phase < fadeCycle / 2)
+			? (255 * phase) / (fadeCycle / 2)
+			: 255 - (255 * (phase - fadeCycle / 2)) / (fadeCycle / 2);
+
+		for (int i = 0; i < 2; ++i)
 		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha); // ← このalphaを上で定義したやつに
+			if (selectedIndex_ == i)
+			{
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha); // ← このalphaを上で定義したやつに
+			}
+			DrawExtendGraph(baseX, yPositions[i], baseX + buttonW, yPositions[i] + buttonH, images[i], TRUE);
+			if (selectedIndex_ == i)
+			{
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			}
 		}
-		DrawExtendGraph(baseX, yPositions[i], baseX + buttonW, yPositions[i] + buttonH, images[i], TRUE);
-		if (selectedIndex_ == i)
+		// 選択中カーソル描画
+		if (imgCursor_ >= 0)
 		{
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			int cursorX = baseX - 50;
+			int cursorY = yPositions[selectedIndex_] + buttonH / 2 + 5;
+			DrawRotaGraph(cursorX, cursorY, 0.5, 0.0, imgCursor_, TRUE);
 		}
-	}
-	// 選択中カーソル描画
-	if (imgCursor_ >= 0)
-	{
-		int cursorX = baseX - 50;
-		int cursorY = yPositions[selectedIndex_] + buttonH / 2 + 5;
-		DrawRotaGraph(cursorX, cursorY, 0.5, 0.0, imgCursor_, TRUE);
+
+
 	}
 
-	
 	// 画像サイズ取得
 	int imgW = 0, imgH = 0;
 	GetGraphSize(imgDieTree_, &imgW, &imgH);
