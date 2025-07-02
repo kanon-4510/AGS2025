@@ -46,7 +46,7 @@ private:
 
 	int tree_;
 	int player_;
-	int player2_;
+	int water_;
 	int god_[5];
 	int gNo_;
 	int waku_;

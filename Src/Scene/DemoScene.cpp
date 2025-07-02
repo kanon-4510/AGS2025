@@ -17,15 +17,16 @@ void DemoScene::Init(void)
 	old_ = 0;
 	now_ = 0;
 	demoSound_ = LoadMusicMem("sound/SE/set.mp3");
-	waku_ = LoadGraph("Data/Image/waku.png");
-	player_ = LoadGraph("bmp/Player/player.png");
-	player2_ = LoadGraph("bmp/Player'/player.png");
-	god_[0] = LoadGraph("Data/Image/God/god.png");
-	god_[1] = LoadGraph("Data/Image/God/goda.png");
-	god_[2] = LoadGraph("Data/Image/God/godb.png");
-	god_[3] = LoadGraph("Data/Image/God/godc.png");
-	god_[4] = LoadGraph("Data/Image/God/godd.png");
-	tri_ = LoadGraph("Data/Image/tri.png");
+	waku_ = LoadGraph("Data/Image/Demo/waku.png");
+	tree_ = LoadGraph("Data/Image/Demo/tree.png");
+	water_ = LoadGraph("Data/Image/Demo/water.png");
+	player_ = LoadGraph("Data/Image/Demo/player.png");
+	god_[0] = LoadGraph("Data/Image/Demo/God/god.png");
+	god_[1] = LoadGraph("Data/Image/Demo/God/goda.png");
+	god_[2] = LoadGraph("Data/Image/Demo/God/godb.png");
+	god_[3] = LoadGraph("Data/Image/Demo/God/godc.png");
+	god_[4] = LoadGraph("Data/Image/Demo/God/godd.png");
+	tri_ = LoadGraph("Data/Image/Demo/tri.png");
 	gNo_ = 0;
 	txt_ = -2;
 	cnt_ = 0;
@@ -44,20 +45,23 @@ void DemoScene::Update(void)
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 #pragma region god eye
-	if (txt_ >=  2)gNo_ = 4;
-	if (txt_ >=  4)gNo_ = 0;
-	if (txt_ >=  6)gNo_ = 3;
-	if (txt_ >=  7)gNo_ = 2;
-	if (txt_ >=  9)gNo_ = 1;
-	if (txt_ >= 10)gNo_ = 0;
-	if (txt_ >= 11)gNo_ = 4;
-	if (txt_ >= 13)gNo_ = 0;
+	if(txt_>= 1)gNo_=1;
+	if(txt_>= 2)gNo_=0;
+	if(txt_>= 4)gNo_=4;
+	if(txt_>= 5)gNo_=0;
+	if(txt_>= 7)gNo_=2;
+	if(txt_>= 8)gNo_=0;
+	if(txt_>= 9)gNo_=4;
+	if(txt_>=10)gNo_=0;
+	if(txt_>=13)gNo_=3;
+	if(txt_>=14)gNo_=0;
+	if(txt_>=15)gNo_=2;
+	if(txt_>=16)gNo_=0;
 #pragma endregion
 }
 void DemoScene::Draw(void)
 {
 	cnt_++;
-	ChangeFont("PixelMplus10");
 	DrawBox(0,0,Application::SCREEN_SIZE_X,Application::SCREEN_SIZE_Y,0x0,true);
 #pragma region テキスト
 	DrawString(385,900+83*-1-83*txt_,"使徒諸君おはよう　神だ。",					0xffffff);
@@ -87,27 +91,25 @@ void DemoScene::Draw(void)
 	if (cnt_ % 90 <= 45)DrawRotaGraph(1490, 985, 1.2, 0, tri_, true);
 	else(DrawRotaGraph(1490, 975, 1.2, 0, tri_, true));
 
-	DrawFormatString(20, 30, 0xffffff, "%d",cnt_);
-	if(cnt_%139<=69)	DrawRotaGraph(Application::SCREEN_SIZE_X/2,(Application::SCREEN_SIZE_Y/2-(cnt_%69))+69,1,0,god_[gNo_],true);
-	else				DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2+(cnt_%69),1,0,god_[gNo_],true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2-200,1,0,god_[gNo_],true);
 
-	if (txt_ > 1 && txt_ < 5)
+	if (txt_>3&&txt_<6)
 	{
-		DrawOval(600, 300, 60, 20, 0xaaaaaa, true);
-		DrawOval(600, 295, 40, 13, 0x888888, true);
-		DrawRotaGraph(600, 250, 0.25, 0, tree_, true);
+		DrawOval(1300,700,150,40,0xaaaaaa,true);
+		DrawOval(1300,695,90,30,0x888888,true);
+		DrawRotaGraph(1300, 630, 0.35, 0, tree_, true);
 	}
-	if (txt_ > 6 && txt_ < 10)
+	if (txt_>6&&txt_<8)
 	{
-		DrawOval(300, 300, 60, 20, 0xaaaaaa, true);
-		DrawOval(300, 295, 40, 13, 0x888888, true);
-		DrawRotaGraph(300, 255, 2.5f, 0.0f, player_, true, false);
+		DrawOval(500, 700, 150, 40, 0xaaaaaa, true);
+		DrawOval(500, 695, 90, 30, 0x888888, true);
+		DrawRotaGraph(500, 655, 7.0f, 0.0f, water_, true);
 	}
-	if (txt_ > 10 && txt_ < 13)
+	if (txt_>8&&txt_<13)
 	{
-		DrawOval(600, 300, 60, 20, 0xaaaaaa, true);
-		DrawOval(600, 295, 40, 13, 0x888888, true);
-		DrawRotaGraph(600, 255, 2.5f, 0.0f, player2_, true, false);
+		DrawOval(1300, 700, 150, 40, 0xaaaaaa, true);
+		DrawOval(1300, 695, 90, 30, 0x888888, true);
+		DrawRotaGraph(1300, 650, 3.5f, 0.0f, player_, true);
 	}
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y-175,0.8,0, waku_, true);
 }
