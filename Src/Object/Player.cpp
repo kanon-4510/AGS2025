@@ -845,9 +845,10 @@ void Player::eHit(void)
 }
 void Player::wHit(float scale)
 {
+	// 増加量
 	int add = 1;
 
-	// スケールに応じて加算量を変える
+	// スケールに応じて増加量を変える
 	if (scale >= 0.2f) {
 		add = 3;
 	}
@@ -855,7 +856,6 @@ void Player::wHit(float scale)
 		add = 2;
 	}
 	// それ未満は1
-
 	water_+= add;
 	if (water_ > WATER_MAX)water_ = WATER_MAX;
 }
