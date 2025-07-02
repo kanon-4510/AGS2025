@@ -124,7 +124,7 @@ void Player::Update(void)
 	UpdateDown(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_U)) wHit();
+	//if (ins.IsNew(KEY_INPUT_U)) wHit();
 }
 
 void Player::UpdateDown(float deltaTime)
@@ -387,7 +387,6 @@ void Player::DrawDebug(void)
 	VECTOR s;
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
-	DrawFormatString(200, 180, white, "プレイヤーのスフィア座標 ： (%0.2f, %0.2f, %0.2f)", s.x, s.y, s.z);
 }
 
 void Player::ProcessMove(void)
@@ -405,66 +404,68 @@ void Player::ProcessMove(void)
 
 	double rotRad = 0;
 
-	if (ins.IsNew(KEY_INPUT_W) && (!isAttack_ && IsEndLandingA()))
+	if (!isAttack_ && IsEndLandingA())
 	{
-		dir = cameraRot.GetForward();
-		rotRad = AsoUtility::Deg2RadF(0.0f);
-	}
-	if (ins.IsNew(KEY_INPUT_S) && (!isAttack_ && IsEndLandingA()))
-	{
-		dir = cameraRot.GetBack();
-		rotRad = AsoUtility::Deg2RadF(180.0f);
-	}
-	if (ins.IsNew(KEY_INPUT_D) && (!isAttack_ && IsEndLandingA()))
-	{
-		dir = cameraRot.GetRight();
-		rotRad = AsoUtility::Deg2RadF(90.0f);
-	}
-	if (ins.IsNew(KEY_INPUT_A) && (!isAttack_ && IsEndLandingA()))
-	{
-		dir = cameraRot.GetLeft();
-		rotRad = AsoUtility::Deg2RadF(-90.0f);
-	}
-
-	if ((!AsoUtility::EqualsVZero(dir)) &&
-		(isJump_ || IsEndLanding()) && (isAttack_ || IsEndLandingA()))
-	{
-		//移動量
-		speed_ = SPEED_MOVE;
-		if (ins.IsNew(KEY_INPUT_LSHIFT) && (!isAttack_ && IsEndLandingA()))
+		if (ins.IsNew(KEY_INPUT_W))
 		{
-			speed_ = SPEED_RUN;
+			dir = cameraRot.GetForward();
+			rotRad = AsoUtility::Deg2RadF(0.0f);
+		}
+		if (ins.IsNew(KEY_INPUT_S))
+		{
+			dir = cameraRot.GetBack();
+			rotRad = AsoUtility::Deg2RadF(180.0f);
+		}
+		if (ins.IsNew(KEY_INPUT_D))
+		{
+			dir = cameraRot.GetRight();
+			rotRad = AsoUtility::Deg2RadF(90.0f);
+		}
+		if (ins.IsNew(KEY_INPUT_A))
+		{
+			dir = cameraRot.GetLeft();
+			rotRad = AsoUtility::Deg2RadF(-90.0f);
 		}
 
-
-		moveDir_ = dir;
-		//移動量
-		movePow_ = VScale(dir, speed_);
-
-		// 回転処理IDLE
-		SetGoalRotate(rotRad);
-
-		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
+		if ((!AsoUtility::EqualsVZero(dir)) &&
+			(isJump_ || IsEndLanding()))
 		{
-			// アニメーション
+			//移動量
+			speed_ = SPEED_MOVE;
 			if (ins.IsNew(KEY_INPUT_LSHIFT))
 			{
-				animationController_->Play((int)ANIM_TYPE::FAST_RUN);
+				speed_ = SPEED_RUN;
 			}
-			else
-			{
-				animationController_->Play((int)ANIM_TYPE::RUN);
-			}
-		}
-	}
-	else
-	{
-		if ((!isJump_ && IsEndLanding()) && (!isAttack_ && IsEndLandingA()))
-		{
-			animationController_->Play((int)ANIM_TYPE::IDLE);
-		}
-	}
 
+
+			moveDir_ = dir;
+			//移動量
+			movePow_ = VScale(dir, speed_);
+
+			// 回転処理IDLE
+			SetGoalRotate(rotRad);
+
+			if ((!isJump_ && IsEndLanding()))
+			{
+				// アニメーション
+				if (ins.IsNew(KEY_INPUT_LSHIFT))
+				{
+					animationController_->Play((int)ANIM_TYPE::FAST_RUN);
+				}
+				else
+				{
+					animationController_->Play((int)ANIM_TYPE::RUN);
+				}
+			}
+		}
+		else
+		{
+			if ((!isJump_ && IsEndLanding()))
+			{
+				animationController_->Play((int)ANIM_TYPE::IDLE);
+			}
+		}
+	}
 }
 
 void Player::SetGoalRotate(double rotRad)
@@ -842,9 +843,20 @@ void Player::eHit(void)
 {
 
 }
-void Player::wHit(void)
+void Player::wHit(float scale)
 {
-	water_++;
+	int add = 1;
+
+	// スケールに応じて加算量を変える
+	if (scale >= 0.2f) {
+		add = 3;
+	}
+	else if (scale >= 0.15f) {
+		add = 2;
+	}
+	// それ未満は1
+
+	water_+= add;
 	if (water_ > WATER_MAX)water_ = WATER_MAX;
 }
 void Player::tHit()

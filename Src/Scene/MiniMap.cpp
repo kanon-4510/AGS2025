@@ -53,26 +53,22 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)
     //DrawCircle(px, pz, 4, GetColor(0, 0, 255), TRUE);
 
     // === 向きを示す三角形（矢印） ===
-    // プレイヤー座標 (px, pz) は既に計算済み
-    float offsetDist = 15.0f; // 点から離す距離
-
     // 向きの角度（ラジアン）
     float angle = playerAngleRad - DX_PI / 2.0f; // 適宜調整してね
-
-    // 基準点をプレイヤー位置から少しオフセット（向きの反対側にずらすこともできる）
-    float baseX = px + std::cos(angle) * offsetDist;
-    float baseY = pz + std::sin(angle) * offsetDist;
 
     // 矢印のサイズ
     float size = 8.0f;
 
-    // 矢印の3頂点を計算（先端と左右の角）
+    // 先端（進行方向）
     float frontX = px + std::cos(angle) * size;
     float frontY = pz + std::sin(angle) * size;
-    float leftX = px + std::cos(angle + 2.5f) * size;
-    float leftY = pz + std::sin(angle + 2.5f) * size;
-    float rightX = px + std::cos(angle - 2.5f) * size;
-    float rightY = pz + std::sin(angle - 2.5f) * size;
+
+    // 左右の角（扇形に広げた方向）
+    float sideOffset = 2.5f; // 三角の広がり角度
+    float leftX = px + std::cos(angle + sideOffset) * size;
+    float leftY = pz + std::sin(angle + sideOffset) * size;
+    float rightX = px + std::cos(angle - sideOffset) * size;
+    float rightY = pz + std::sin(angle - sideOffset) * size;
 
     // 三角形を描画
     DrawTriangle(

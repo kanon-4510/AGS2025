@@ -54,7 +54,7 @@ void Item::Update(void)
 	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//”ÍˆÍ‚É“ü‚Á‚½
-		player_.wHit();
+		player_.wHit(transform_.scl.x);
 		isAlive_ = false;
 		return;
 	}
@@ -120,6 +120,11 @@ void Item::SetIsAlive(bool isAlive)
 bool Item::GetIsAlive()
 {
 	return isAlive_;
+}
+
+void Item::SetScale(float scale)
+{
+	transform_.scl = VGet(scale, scale, scale);
 }
 
 void Item::Respawn(const VECTOR& newPos)

@@ -138,7 +138,20 @@ void EnemyBase::UpdateDeath(void)
 		
 		//アイテムドロップ
 		VECTOR dropPos = this->GetTransform().pos;
-		scene_->CreateItem(dropPos);
+
+		// マップ中心との距離を計算
+		float distance = VSize(VSub(dropPos, VGet(0, 0, 0)));
+
+		float scale = 0.1f;
+		if (distance >= 6000.0f) {
+			scale = 0.2f;
+		}
+		else if (distance >= 3000.0f) {
+			scale = 0.15f;
+		}
+
+		// アイテムを1つ出す（サイズ調整）
+		scene_->CreateItem(dropPos, scale);
 	}
 }
 #pragma endregion

@@ -29,7 +29,7 @@ public:
 	void DrawMiniMap(void);
 
 	void AddItem(std::shared_ptr<Item> item);
-	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos);
+	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale);
 
 private:
 	void EnemyCreate(void);
