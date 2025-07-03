@@ -358,7 +358,6 @@ void Tree::pHit(void)//ƒvƒŒƒCƒ„[‚Æ‚Ì‚ ‚½‚è”»’è
 		player_->SetIsMax();
 		for (int l = 0; l <= 14; l++)
 		{
-			DrawFormatString(0, 0, 0xff0000, "SPSPSPSPSP");
 			water_++;
 			LvUp();
 			ChangeGrow();

@@ -30,7 +30,15 @@ void Item::Init(void)
 
 	isAlive_ = false;
 
-	baseY_ = transform_.pos.y; // 初期位置を保存
+
+	// 振幅ぶん下に行っても地面に埋まらないよう、baseY_を補正
+	const float groundY = 2.0f;
+	const float modelBottomOffset = 3.0f; // モデル中心から底面までの距離（見た目調整）
+	float lowestY = transform_.pos.y - floatHeight_;
+	float targetMinY = groundY + modelBottomOffset;
+	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : 0.0f;
+	baseY_ = transform_.pos.y + safetyMargin;
+	//baseY_ = transform_.pos.y; // 初期位置を保存
 
 	collisionRadius_ = 80.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -49,12 +57,23 @@ void Item::Update(void)
 	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
 	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
 
+	// 地面より下がらないように制限
+	/*const float groundY = 2.0f; // 地面のY座標
+	const float modelBottomOffset = 10.0f; // モデルの底面までの距離（必要に応じて調整）
+
+	// モデルの底が groundY 未満なら強制的に groundY に合わせる
+	float modelBottomY = transform_.pos.y - modelBottomOffset;
+	if (modelBottomY < groundY) 
+	{
+		transform_.pos.y = groundY + modelBottomOffset;
+	}*/
+
 	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), transform_.pos);
 	float dis = AsoUtility::SqrMagnitudeF(diff);
 	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//範囲に入った
-		player_.wHit();
+		player_.wHit(transform_.scl.x);
 		isAlive_ = false;
 		return;
 	}
@@ -120,6 +139,28 @@ void Item::SetIsAlive(bool isAlive)
 bool Item::GetIsAlive()
 {
 	return isAlive_;
+}
+
+void Item::SetScale(float scale)
+{
+	transform_.scl = VGet(scale, scale, scale);
+}
+
+void Item::Respawn(const VECTOR& newPos)
+{
+	// 新しい位置で復活
+
+	const float groundY = 2.0f;              // 地面の高さ
+	const float modelBottomOffset = 3.0f;   // モデル中心から底面までの距離
+	// 地面に触れないよう、baseY_ を調整しておく
+	baseY_ = groundY + modelBottomOffset + floatHeight_;
+
+	transform_.pos = newPos;
+	transform_.pos.y = baseY_;
+	isAlive_ = true;
+	floatTimer_ = 0.0f;
+
+	// 必要なら他の状態もリセット
 }
 
 void Item::Collision(void)

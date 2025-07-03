@@ -52,7 +52,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// èâä˙ÉVÅ[ÉìÇÃê›íË
-	DoChangeScene(SCENE_ID::CLEAR);
+	DoChangeScene(SCENE_ID::TITLE);
 
 }
 
@@ -229,6 +229,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::TITLE:
 		scene_ = std::make_unique<TitleScene>();
+		ChangeFont("PixelMplus10");
 		SetFontSize(16);
 		break;
 	case SCENE_ID::DEMO:

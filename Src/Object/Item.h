@@ -33,6 +33,8 @@ public:
 	void SetIsAlive(bool isAlive);
 	bool GetIsAlive();
 
+	void SetScale(float scale);			//itemのスケールを設定
+	void Respawn(const VECTOR& newPos);	//itemを再利用
 
 	void DrawDebug(void);	//デバッグ用
 private:

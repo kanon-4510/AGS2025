@@ -102,7 +102,6 @@ void EnemyBase::UpdateAttack(void)
 	{
 		isAttack_ = true; // 多重ヒット防止用フラグ
 		isAttack_P = false;
-		player_->Damage(1);
 	}
 	else if (!isAttack_ && isAttack_T)
 	{
@@ -114,6 +113,7 @@ void EnemyBase::UpdateAttack(void)
 	 //アニメーション終了で次の状態に遷移
 	if (animationController_->IsEnd() || state_ != STATE::ATTACK) {
 		isAttack_ = false;
+		CheckHitAttackHit();
 		ChangeState(STATE::IDLE);
 	}
 }
@@ -135,13 +135,24 @@ void EnemyBase::UpdateDeath(void)
 	if (animationController_->IsEnd())
 	{
 		isAlive_ = false;
-		//アイテムドロップ
 		
-			auto newItem = std::make_shared<Item>(*player_, Transform{});
-			newItem->Init();
-			newItem->SetPos(transform_.pos);
-			newItem->SetIsAlive(true);
-			scene_->AddItem(newItem);
+		//アイテムドロップ
+		VECTOR dropPos = this->GetTransform().pos;
+
+		// マップ中心との距離を計算
+		float distance = VSize(VSub(dropPos, VGet(0, 0, 0)));
+
+		// 距離でサイズを変える
+		float scale = 0.1f;
+		if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
+			scale = 0.2f;
+		}
+		else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
+			scale = 0.15f;
+		}
+
+		// アイテムを1つ出す（サイズ調整）
+		scene_->CreateItem(dropPos, scale);
 	}
 }
 #pragma endregion
@@ -308,22 +319,22 @@ void EnemyBase::AttackCollisionPos(void)
 void EnemyBase::EnemyToPlayer(void)
 {
 	//プレイヤーの当たり判定とサイズ
-	VECTOR playerCenter = player_->GetCollisionPos();
-	float playerRadius = player_->GetCollisionRadius();
+	playerCenter_ = player_->GetCollisionPos();
+	playerRadius_ = player_->GetCollisionRadius();
 
 	//判定の距離の比較
-	VECTOR p_Diff = VSub(playerCenter, attackCollisionPos_);
-	float p_Dis = AsoUtility::SqrMagnitudeF(p_Diff);
+	p_Diff_ = VSub(playerCenter_, attackCollisionPos_);
+	p_Dis_ = AsoUtility::SqrMagnitudeF(p_Diff_);
 
 	// 半径の合計
-	float p_RadiusSum = attackCollisionRadius_ + playerRadius;
+	p_RadiusSum_ = attackCollisionRadius_ + playerRadius_;
 
-	if (p_Dis < p_RadiusSum * p_RadiusSum)
+	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
 	{
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	else if (p_Dis >= p_RadiusSum * p_RadiusSum)
+	else if (p_Dis_ >= p_RadiusSum_ * p_RadiusSum_)
 	{
 		ChangeState(STATE::PLAY);
 	}
@@ -332,25 +343,40 @@ void EnemyBase::EnemyToPlayer(void)
 void EnemyBase::EnemyToTree(void)
 {
 	//プレイヤーの当たり判定とサイズ
-	VECTOR treeCenter = tree_->GetCollisionPos();
-	float treeRadius = tree_->GetCollisionRadius();
+	treeCenter_ = tree_->GetCollisionPos();
+	treeRadius_ = tree_->GetCollisionRadius();
 
 	//判定の距離の比較
-	VECTOR t_Diff = VSub(treeCenter, attackCollisionPos_);
-	float t_Dis = AsoUtility::SqrMagnitudeF(t_Diff);
+	t_Diff_ = VSub(treeCenter_, attackCollisionPos_);
+	t_Dis_ = AsoUtility::SqrMagnitudeF(t_Diff_);
 
 	//半径の合計
-	float t_RadiusSum = attackCollisionRadius_ + treeRadius;
+	t_RadiusSum_ = attackCollisionRadius_ + treeRadius_;
 
-	if (t_Dis < t_RadiusSum * t_RadiusSum)
+	if (t_Dis_ < t_RadiusSum_ * t_RadiusSum_)
 	{
 		isAttack_T = true;
 		ChangeState(STATE::ATTACK);
-	}/*
-	else if (t_Dis >= t_RadiusSum * t_RadiusSum)
+	}
+}
+
+void EnemyBase::CheckHitAttackHit(void)
+{
+	//プレイヤーの当たり判定とサイズ
+	playerCenter_ = player_->GetCollisionPos();
+	playerRadius_ = player_->GetCollisionRadius();
+
+	//判定の距離の比較
+	p_Diff_ = VSub(playerCenter_, attackCollisionPos_);
+	p_Dis_ = AsoUtility::SqrMagnitudeF(p_Diff_);
+
+	// 半径の合計
+	p_RadiusSum_ = attackCollisionRadius_ + playerRadius_;
+
+	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
 	{
-		ChangeState(STATE::PLAY);
-	}*/
+		player_->Damage(1);
+	}
 }
 
 void EnemyBase::SetGameScene(GameScene* scene)

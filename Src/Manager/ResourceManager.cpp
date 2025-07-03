@@ -34,7 +34,7 @@ void ResourceManager::Init(void)
 	// UI画像系
 	// -----------------------------------------------------------------
 	// タイトル画像
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameTitle.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Title/GameTitle.png");
 	resourcesMap_.emplace(SRC::TITLE, std::move(res));
 
 	// タイトル背景
@@ -44,18 +44,6 @@ void ResourceManager::Init(void)
 	// Push
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Push.png");
 	resourcesMap_.emplace(SRC::PUSH, std::move(res));
-
-	// Playgame
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PlayGame.png");
-	resourcesMap_.emplace(SRC::PLAY, std::move(res));
-
-	// ルールUI
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Rule.png");
-	resourcesMap_.emplace(SRC::RULE, std::move(res));
-
-	// ⇒
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Cursor1.png");
-	resourcesMap_.emplace(SRC::CURSOR, std::move(res));
 
 	// 十字キーの上下
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");

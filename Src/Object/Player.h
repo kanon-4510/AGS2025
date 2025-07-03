@@ -88,7 +88,7 @@ public:
 	void AddCollider(std::weak_ptr<Collider> collider);
 	void ClearCollider(void);
 
-
+	//“G‚Ìî•ñ‚ğæ“¾
 	void SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys);
 
 	VECTOR GetPos() const;
@@ -111,7 +111,7 @@ public:
 	void SetIsMax(void);
 
 	void eHit(void);//“G
-	void wHit(void);//…
+	void wHit(float scale);//…
 	void tHit(void);//–Ø
 					
 	//ƒ_ƒ[ƒW

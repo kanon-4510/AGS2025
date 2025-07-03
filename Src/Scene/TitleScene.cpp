@@ -16,11 +16,6 @@ TitleScene::TitleScene(void)
 {
 	imgTitle_ = -1;
 	imgBackTitle_ = -1;
-	imgPush_ = -1;
-	imgGoGame_ = -1;
-	imgRule_ = -1;
-	imgEndGame_ = -1;
-	imgCursor_ = -1;
 	imgUDCursor_ = -1;
 
 	animationControllerPlayer_ = nullptr;
@@ -33,6 +28,7 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Init(void)
 {
+	cnt = 0;
 
 	// 重力制御の初期化
 	GravityManager::GetInstance().Init();
@@ -40,16 +36,16 @@ void TitleScene::Init(void)
 	// 画像読み込み
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;			//タイトル名前画像
 	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;	//タイトル背景
-	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH).handleId_;				//
-	imgGoGame_ = resMng_.Load(ResourceManager::SRC::PLAY).handleId_;			//ゲームに進む画像
-	imgRule_ = resMng_.Load(ResourceManager::SRC::RULE).handleId_;				//ルールを見る画像
-	imgEndGame_ = resMng_.Load(ResourceManager::SRC::ENDGAME).handleId_;		//ゲームを終了する画像
-	imgCursor_ = resMng_.Load(ResourceManager::SRC::CURSOR).handleId_;			//カーソル画像
 	imgConfirmEnd_ = resMng_.Load(ResourceManager::SRC::CONFIRM_END).handleId_;	//本当に終了しますか？画像
 	imgYes_ = resMng_.Load(ResourceManager::SRC::YES).handleId_;				//はい画像
 	imgNo_ = resMng_.Load(ResourceManager::SRC::NO).handleId_;					//いいえ画像
 	imgYesSel_ = resMng_.Load(ResourceManager::SRC::SELECT_YES).handleId_;		//選択中はい画像
 	imgNoSel_ = resMng_.Load(ResourceManager::SRC::SELECT_NO).handleId_;		//選択中いいえ画像
+	img3D_ = LoadGraph("Data/Image/Title/3D.png");
+	imgP1_[0] = LoadGraph("Data/Image/Title/1player1.png");
+	imgP1_[1] = LoadGraph("Data/Image/Title/1player2.png");
+	imgP2_[0] = LoadGraph("Data/Image/Title/2player1.png");
+	imgP2_[1] = LoadGraph("Data/Image/Title/2player2.png");
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
@@ -88,11 +84,11 @@ void TitleScene::Init(void)
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
-
 }
 
 void TitleScene::Update(void)
 {
+	cnt++;
 	InputManager& ins = InputManager::GetInstance();
 
 	// === 終了確認中の入力処理 ===
@@ -196,14 +192,17 @@ void TitleScene::Draw(void)
 {
 	int centerX = Application::SCREEN_SIZE_X / 2;
 
-	DrawGraph(0, 0, imgBackTitle_, true);
+	//DrawGraph(0, 0, imgBackTitle_, true);
+	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, 0x0, true);
 
 	// タイトルロゴ表示
 	int titleW, titleH;
 	GetGraphSize(imgTitle_, &titleW, &titleH);
-	DrawGraph(centerX - titleW / 2, -150, imgTitle_, true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X/2,150,1.7,0,imgTitle_,true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X-220,125,0.5,0,img3D_,true);
 
-	// ボタン設定
+	#pragma region		ボタン設定
+
 	const int buttonW = 400;
 	const int buttonH = 100;
 	const int baseY = 450;
@@ -221,28 +220,31 @@ void TitleScene::Draw(void)
 
 	const int buttonCount = 3;
 	int yPositions[buttonCount] = { yGame, yRule, yExit };
-	int images[buttonCount] = { imgGoGame_, imgRule_, imgEndGame_ };
+	#pragma endregion
 
 	// メニュー描画
 	for (int i = 0; i < buttonCount; ++i) {
 		if (selectedIndex_ == i) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		}
-		DrawExtendGraph(centerX - buttonW / 2, yPositions[i] - buttonH / 2,
+		/*DrawExtendGraph(centerX - buttonW / 2, yPositions[i] - buttonH / 2,
 			centerX + buttonW / 2, yPositions[i] + buttonH / 2,
-			images[i], true);
+			images[i], true);*/
 		if (selectedIndex_ == i) {
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 	}
 
 	// カーソル描画
-	int indicatorX = centerX - buttonW / 2 - 50;
-	int indicatorY = yPositions[selectedIndex_] + 8;
-	DrawRotaGraph(indicatorX, indicatorY, 0.5, 0.0, imgCursor_, true);
+	DrawRotaGraph( 720,450+(selectedIndex_*110),4.5,0,imgP1_[static_cast<int>(cnt*0.03) % 2],true);
+	DrawRotaGraph(1200,450+(selectedIndex_*110),4.5,0,imgP2_[static_cast<int>(cnt*0.03) % 2],true);
 
-	// ヒント表示など
-	DrawGraph(1400, 500, imgPush_, true);
+	//テキスト
+	SetFontSize(60);
+	DrawString(Application::SCREEN_SIZE_X/2-180, 420, "ゲームプレイ", 0xffffff);
+	DrawString(Application::SCREEN_SIZE_X/2-180, 530, "神様のお告げ", 0xffffff);
+	DrawString(Application::SCREEN_SIZE_X/2-180, 640, "ゲームを終了", 0xffffff);
+	SetFontSize(16);
 
 	// モデル描画
 	MV1DrawModel(charactor_.modelId);
@@ -291,6 +293,7 @@ void TitleScene::Release(void)
 		MV1DeleteModel(charactor_.modelId);
 		charactor_.modelId = -1;
 	}
+
 
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
 }

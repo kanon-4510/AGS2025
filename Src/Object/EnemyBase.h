@@ -17,9 +17,7 @@ class Tree;
 class EnemyBase : public ActorBase
 {
 public:
-
 	static constexpr float VIEW_RANGE = 500.0f;	// 視野の広さ
-
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
 	//敵の種類
@@ -90,7 +88,6 @@ public:
 
 	void SetPlayer(std::shared_ptr<Player> player);
 	void SetTree(std::shared_ptr<Tree> tree);
-
 protected:
 
 	std::shared_ptr<Player> player_;
@@ -98,6 +95,12 @@ protected:
 	std::shared_ptr<Item>item_;
 	GameScene* scene_;
 
+	// アニメーション
+	std::unique_ptr<AnimationController> animationController_;
+	
+	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
+	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
+	
 	float speed_;	// 移動速度
 	
 	VECTOR movePow_;	// 移動量
@@ -116,12 +119,6 @@ protected:
 
 	STATE state_;	//状態管理
 
-	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
-	std::function<void(void)> stateUpdate_;					 // 状態管理(更新ステップ)
-
-	// アニメーション
-	std::unique_ptr<AnimationController> animationController_;
-	
 	float speedAnim_; // 再生速度（共通）
 
 	float collisionRadius_;		// 衝突判定用の球体半径
@@ -129,6 +126,18 @@ protected:
 
 	float attackCollisionRadius_;	 // 攻撃判定用と攻撃範囲の球体半径
 	VECTOR attackCollisionLocalPos_; // 攻撃判定用と攻撃範囲の調整座標
+
+	VECTOR playerCenter_;	//プレイヤーの球体の座標を取得
+	float playerRadius_;	//プレイヤーの球体の半径を取得
+	VECTOR p_Diff_;			//プレイヤーの位置差分
+	float p_Dis_;			//プレイヤーまでの距離
+	float p_RadiusSum_;		//プレイヤーとの衝突半径の合計
+
+	VECTOR treeCenter_;		//木の球体の座標を取得
+	float treeRadius_;		//木の球体の半径を取得
+	VECTOR t_Diff_;			//木の位置差分
+	float t_Dis_;			//木までの距離
+	float t_RadiusSum_;		//木との衝突半径の合計
 
 	void UpdateNone(void){};		// 更新ステップ
 	virtual void UpdateIdle(void);	// 更新ステップ
@@ -139,9 +148,10 @@ protected:
 	
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
-	void AttackCollisionPos(void);//攻撃用関数
-	void EnemyToPlayer(void);	//敵がプレイヤー攻撃
-	void EnemyToTree(void);		//敵が木を攻撃
+	void AttackCollisionPos(void);	//攻撃用関数
+	void EnemyToPlayer(void);		//敵がプレイヤー攻撃
+	void EnemyToTree(void);			//敵が木を攻撃
+	void CheckHitAttackHit(void);	//攻撃が当たったか確認する
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -152,5 +162,5 @@ protected:
 	void ChangeStateDamage(void);
 	void ChangeStateDeath(void);
 
-	void Collision(void);// 衝突判定
+	void Collision(void);	// 衝突判定
 };

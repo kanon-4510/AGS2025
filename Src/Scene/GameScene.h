@@ -14,8 +14,9 @@ class MiniMap;
 class GameScene : public SceneBase
 {
 public:
-	static constexpr int ENCOUNT = 300;	//エンカウンタ
-	static constexpr int ENEMY_MAX = 30;//最大出現数
+	static constexpr int ENCOUNT = 300;		//エンカウンタ
+	static constexpr int ENEMY_MAX = 200;	//最大出現数
+	static constexpr int ENE_ENC = 30;		//最大許容量
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ
@@ -28,12 +29,14 @@ public:
 	void DrawMiniMap(void);
 
 	void AddItem(std::shared_ptr<Item> item);
+	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale);
+
 private:
 	void EnemyCreate(void);
 
 	std::unique_ptr<Stage> stage_;		// ステージ
 	std::shared_ptr<Tree>tree_;			// ツリー
-	//EnemyBase& enemy_;				// エネミー
+	//std::shared_ptr<EnemyBase>enemys_;// エネミー
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
 	std::shared_ptr<Player> player_;	// プレイヤー
 	std::vector<std::shared_ptr<Item>> items_;		//アイテム

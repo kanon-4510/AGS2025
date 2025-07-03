@@ -8,9 +8,6 @@ public :
 	enum class TYPE
 	{
 		STAGE,
-		PLAYER,
-		ENEMY,
-		ITEM
 	};
 
 	// コンストラクタ
