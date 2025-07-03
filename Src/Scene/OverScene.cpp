@@ -60,6 +60,8 @@ OverScene::OverScene(void)
 
 	maskLeftX_ = 0;
 	maskRightX_ = 0;
+
+	cheackCounter_ = 0;
 }
 
 OverScene::~OverScene(void)
@@ -89,6 +91,8 @@ void OverScene::Init(void)
 	selectedIndex_ = 0;
 	blinkFrameCount_ = 0;
 
+	cheackCounter_ = 0;
+
 	isMenuActive_ = false;
 
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAMEOVER_BGM, Sound::TIMES::ONCE);
@@ -116,8 +120,9 @@ void OverScene::Update(void)
 	InputManager& ins = InputManager::GetInstance();
 
 	blinkFrameCount_++;
+	cheackCounter_++;
 
-	if (ins.IsTrgDown(KEY_INPUT_TAB))SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+	//if (ins.IsTrgDown(KEY_INPUT_TAB))SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 
 	if (isMenuActive_)
 	{
@@ -133,6 +138,11 @@ void OverScene::Update(void)
 				SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 			}
 		}
+	}
+
+	// 一定時間がたてば強制的にタイトルに
+	if (cheackCounter_ >= 3600) {
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	// 黒帯の左端を右へスライド（文字が左から見える）
@@ -225,8 +235,6 @@ void OverScene::Draw(void)
 			int cursorY = yPositions[selectedIndex_] + buttonH / 2 + 5;
 			DrawRotaGraph(cursorX, cursorY, 0.5, 0.0, imgCursor_, TRUE);
 		}
-
-
 	}
 
 	// 画像サイズ取得

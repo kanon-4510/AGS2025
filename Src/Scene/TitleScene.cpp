@@ -81,8 +81,9 @@ void TitleScene::Init(void)
 	animationControllerPlayer_->Play(0);
 
 	// 敵のアニメーション
+	std::string path1 = Application::PATH_MODEL + "Enemy/Yellow/";
 	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
-	animationControllerEnemy_->Add(0, "Data/Model/Enemy/Yellow/Yellow.mv1", 20.0f, 1);
+	animationControllerEnemy_->Add(0, path1 + "Yellow.mv1", 20.0f, 2);
 	animationControllerEnemy_->Play(0);
 
 	// 定点カメラ
@@ -290,7 +291,6 @@ void TitleScene::Release(void)
 		MV1DeleteModel(charactor_.modelId);
 		charactor_.modelId = -1;
 	}
-
 
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
 }
