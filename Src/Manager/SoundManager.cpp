@@ -41,6 +41,11 @@ void SoundManager::Init(void)
 	res.ChengeMaxVolume(0.8);
 	soundMap_.emplace(SRC::GAMEOVER_BGM, res);
 
+	// ÉQÅ[ÉÄÉNÉäÉA
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameClearBGM.mp3");
+	res.ChengeMaxVolume(0.8);
+	soundMap_.emplace(SRC::GAMECLEAR_BGM, res);
+
 }
 
 void SoundManager::Release(void)

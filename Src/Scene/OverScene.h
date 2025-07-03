@@ -44,6 +44,9 @@ private:
 	int maskLeftX_;   // 黒帯の左端X座標
 	int maskRightX_;  // 黒帯の右端X座標（固定）
 
+	// カウンター
+	int cheackCounter_;
+
 	static constexpr int maskWidthMax_ = 1600;  // 画像横幅
 	static constexpr int revealSpeed_ = 4;
 
