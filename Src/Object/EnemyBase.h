@@ -17,9 +17,7 @@ class Tree;
 class EnemyBase : public ActorBase
 {
 public:
-
 	static constexpr float VIEW_RANGE = 500.0f;	// ‹–ì‚ÌL‚³
-
 	static constexpr float VIEW_ANGLE = 15.0f;	// ‹–ìŠp
 
 	//“G‚Ìí—Ş
@@ -90,7 +88,6 @@ public:
 
 	void SetPlayer(std::shared_ptr<Player> player);
 	void SetTree(std::shared_ptr<Tree> tree);
-
 protected:
 
 	std::shared_ptr<Player> player_;
@@ -165,5 +162,5 @@ protected:
 	void ChangeStateDamage(void);
 	void ChangeStateDeath(void);
 
-	void Collision(void);// Õ“Ë”»’è
+	void Collision(void);	// Õ“Ë”»’è
 };
