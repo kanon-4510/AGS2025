@@ -9,9 +9,7 @@ class AnimationController;
 
 class TitleScene : public SceneBase
 {
-
 public:
-
 	// コンストラクタ
 	TitleScene(void);
 
@@ -22,23 +20,21 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	void Release(void) override;
-
 private:
+	int cnt;
 
 	// 画像
 	int imgTitle_;
+	int img3D_;
 	int imgBackTitle_;
-	int imgPush_;
-	int imgGoGame_;
-	int imgRule_;
-	int imgEndGame_;
-	int imgCursor_;
 	int imgUDCursor_;
 	int imgConfirmEnd_;
 	int imgYes_;
 	int imgNo_;
 	int imgYesSel_;
 	int imgNoSel_;
+	int imgP1_[2];
+	int imgP2_[2];
 
 	int selectedIndex_;
 
@@ -68,5 +64,4 @@ private:
 	// アニメーション
 	std::unique_ptr<AnimationController> animationControllerPlayer_;
 	std::unique_ptr<AnimationController> animationControllerEnemy_;
-
 };
