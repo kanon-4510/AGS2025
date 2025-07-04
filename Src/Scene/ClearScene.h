@@ -3,9 +3,8 @@
 #include "SceneBase.h"
 #include "../Object/Common/Transform.h"
 
-class SceneManager;
-class SkyDome;
 class AnimationController;
+class SceneManager;
 
 class ClearScene : public SceneBase
 {
@@ -18,25 +17,45 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 private:
+
 	// 画像
-	int imgTitle_;
-	int imgBackTitle_;
-	int imgPush_;
+	int imgClear_;
+	int imgBackGameClaer_;
+	int imgClearWolrd_;
+	int imgReplay_;
+	int imgReturn_;
+	int imgPressKey_;
 
-	// スカイドーム用
-	Transform spaceDomeTran_;
+	// カウンター
+	int cheackCounter_;
 
-	// スカイドーム(背景)
-	//SkyDome* skyDome_;
-	std::unique_ptr<SkyDome> skyDome_;
+	// アニメーション用
+	// -------------------------------------
+	int maskLeftX_;
+	int msgX_, msgY_;
+	int imgW_, imgH_;
+	int maskSpeed_;
 
-	// 惑星
-	Transform planet_;
-	Transform movePlanet_;
+	int clearAlpha_;     // 透明度（0～255）
+	int fadeSpeed_;      // フェードインの速度
 
-	// キャラクター
-	Transform charactor_;
+	// imgPressKey_に使用するアニメーション
+	int pressKeyY_;				// 表示Y座標（初期は画面外）
+	int targetPressKeyY_;		// 最終的な表示位置
+	int pressKeyAlpha_;			// フェードインの透明度
+	bool isPressKeyAnimStart_;	
+	bool isPressKeyAnimEnd_;	// アニメーション完了フラグ
 
-	// アニメーション
-	std::unique_ptr<AnimationController> animationController_;
+	// 敵キャラクター
+	Transform enemy_;
+
+	// 敵のアニメーション
+	std::unique_ptr<AnimationController> animationControllerEnemy_;
+
+	// アニメーション終わり
+	bool isAnimEnd_;
+
+	// -------------------------------------
+
+
 };

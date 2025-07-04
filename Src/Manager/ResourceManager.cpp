@@ -57,6 +57,22 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
 	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
 
+	// ゲームクリア
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Clear.png");
+	resourcesMap_.emplace(SRC::GAMECLEAR, std::move(res));
+
+	// こうして世界は生まれた
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "ClearWorld.png");
+	resourcesMap_.emplace(SRC::CLEARWOLEDBORN, std::move(res));
+
+	// 何かのキーを押して
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PressKey.png");
+	resourcesMap_.emplace(SRC::PRESS_KEY, std::move(res));
+
+	// ゲームクリア背景
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackGameClear.png");
+	resourcesMap_.emplace(SRC::BACK_GAMECLEAR, std::move(res));
+
 	// ゲームオーバー
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over.png");
 	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
@@ -69,9 +85,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "RePlay.png");
 	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
 
-	// リトライ
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "ReTry.png");
-	resourcesMap_.emplace(SRC::RETRY, std::move(res));
+	// ゲームを終了する
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndGame.png");
+	resourcesMap_.emplace(SRC::ENDGAME, std::move(res));
 
 	// ゲームを終了確認
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndCheck.png");
@@ -120,10 +136,6 @@ void ResourceManager::Init(void)
 	// 足煙
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "Smoke/Smoke.efkefc");
 	resourcesMap_.emplace(SRC::FOOT_SMOKE, std::move(res));
-
-	// Clear
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Congratulations.png");
-	resourcesMap_.emplace(SRC::CLEAR, std::move(res));
 
 	//水
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
