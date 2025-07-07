@@ -22,6 +22,7 @@ public:
 	void Release(void) override;
 private:
 	int cnt;
+	int cn3;
 
 	// ‰æ‘œ
 	int imgTitle_;

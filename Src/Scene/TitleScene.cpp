@@ -90,6 +90,8 @@ void TitleScene::Init(void)
 void TitleScene::Update(void)
 {
 	cnt++;
+	cn3 = cnt*20;
+	if(cn3>=750)cn3=750;
 	InputManager& ins = InputManager::GetInstance();
 
 	// === 終了確認中の入力処理 ===
@@ -200,7 +202,7 @@ void TitleScene::Draw(void)
 	int titleW, titleH;
 	GetGraphSize(imgTitle_, &titleW, &titleH);
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,150,1.7,0,imgTitle_,true);
-	DrawRotaGraph(Application::SCREEN_SIZE_X-220,125,0.5,0,img3D_,true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X-220,cn3-625,0.5,0,img3D_,true);
 
 	#pragma region		ボタン設定
 

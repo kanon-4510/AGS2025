@@ -305,10 +305,10 @@ void EnemyBase::AttackCollisionPos(void)
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
 	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
 	
-	if (player_->pstate_ == Player::PlayerState::DOWN)
+	/*if (player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		return;
-	}
+	}*/
 
 	//プレイヤーを見る
 	EnemyToPlayer();
@@ -329,12 +329,12 @@ void EnemyBase::EnemyToPlayer(void)
 	// 半径の合計
 	p_RadiusSum_ = attackCollisionRadius_ + playerRadius_;
 
-	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
+	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_ && player_->pstate_ != Player::PlayerState::DOWN)
 	{
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	else if (p_Dis_ >= p_RadiusSum_ * p_RadiusSum_)
+	else if (p_Dis_ >= p_RadiusSum_ * p_RadiusSum_ || player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		ChangeState(STATE::PLAY);
 	}
