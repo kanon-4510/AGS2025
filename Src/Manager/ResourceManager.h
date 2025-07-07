@@ -35,7 +35,7 @@ public:
 		NO,
 		SELECT_YES,
 		SELECT_NO,
-		//---------
+		//3Dモデル
 		SPEECH_BALLOON,
 		PLAYER,
 		PLAYER_SHADOW,
@@ -56,7 +56,12 @@ public:
 		TANK_BODY,
 		TANK_BARREL,
 		TANK_WHEEL,
-		ITEM,
+		//アイテム
+		WATER,
+		POWER,
+		SPEED,
+		HEAL,
+		MUTEKI,
 		//エネミー
 		DOG,
 		SABO,
@@ -65,6 +70,7 @@ public:
 		ONION,
 		TOGE,
 		VIRUS,
+		BOSS
 	};
 
 	// 明示的にインステンスを生成する

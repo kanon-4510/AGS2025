@@ -9,6 +9,18 @@ class Collider;
 class Item : public ActorBase
 {
 public:
+
+	//敵の種類
+	enum class TYPE
+	{
+		WATER,	//水
+		POWER,	//パワーアップ
+		SPEED,	//スピードアップ
+		HEAL,	//ヒール
+		MUTEKI,	//無敵
+		MAX
+	};
+
 	// コンストラクタ
 	Item(Player& player, const Transform& transform);
 
@@ -59,9 +71,6 @@ private:
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
-
-	// 衝突判定に用いられるコライダ
-	//std::vector <std::weak_ptr<Collider>> colliders_;
 
 	// 衝突判定
 	void Collision(void);

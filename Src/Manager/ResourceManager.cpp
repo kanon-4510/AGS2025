@@ -139,7 +139,23 @@ void ResourceManager::Init(void)
 
 	//水
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
-	resourcesMap_.emplace(SRC::ITEM, std::move(res));
+	resourcesMap_.emplace(SRC::WATER, std::move(res));
+	
+	//パワーアップ
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/power.mv1");
+	resourcesMap_.emplace(SRC::POWER, std::move(res));
+	
+	//スピードアップ
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/speed.mv1");
+	resourcesMap_.emplace(SRC::SPEED, std::move(res));
+	
+	//回復
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/heal.mv1");
+	resourcesMap_.emplace(SRC::HEAL, std::move(res));
+	
+	//無敵
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/muteki.mv1");
+	resourcesMap_.emplace(SRC::MUTEKI, std::move(res));
 
 	//エネミー
 	//----------------------------------
@@ -170,6 +186,10 @@ void ResourceManager::Init(void)
 	//ウィルス
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/virus/virus.mv1");
 	resourcesMap_.emplace(SRC::VIRUS, std::move(res));
+
+	//ボス
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/boss/boss.mv1");
+	resourcesMap_.emplace(SRC::BOSS, std::move(res));
 }
 
 void ResourceManager::Release(void)
