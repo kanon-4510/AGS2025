@@ -53,6 +53,9 @@ void GameScene::Init(void)
 	tree_->Init();
 	tree_->SetPlayer(player_.get());
 
+	// ƒvƒŒƒCƒ„[‚ÉTree‚ð“n‚·(ðŒ•t‚«UŒ‚—p)
+	player_->SetTree(tree_.get());
+
 	// “G‚Ìƒ‚ƒfƒ‹
 	EnemyCreate();
 
