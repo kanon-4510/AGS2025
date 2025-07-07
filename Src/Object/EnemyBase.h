@@ -30,6 +30,7 @@ public:
 		ONION,	//玉ねぎ
 		TOGE,	//トゲゾー
 		VIRUS,	//ウィルス
+		BOSS,	//ボス
 		MAX
 	};
 
