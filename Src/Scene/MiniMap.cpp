@@ -31,8 +31,15 @@ void MiniMap::DrawBackground()
     int centerY = mapPosY + mapPixelSize / 2;
     int radius = mapPixelSize / 2;
 
-    // ŠÛ‚¢”wŒi
-    DrawCircle(centerX, centerY, radius, GetColor(100, 255, 0), TRUE);
+    int outerRadius = mapPixelSize / 2;
+    int borderWidth = 4; // ŠO˜g‚Ì‘¾‚³
+    int innerRadius = outerRadius - borderWidth;
+
+    // --- ŠO‘¤‚ğ—Î‚Å“h‚é(˜gü‚ğŠÜ‚Ş)
+    DrawCircle(centerX, centerY, outerRadius, GetColor(0, 0, 0), TRUE);
+
+    // --- ã‚©‚ç’†g‚¾‚¯‚ğu‰~‚Å‚­‚è”²‚­v‚±‚Æ‚ÅƒŠƒ“ƒOó‚É‚È‚é
+    DrawCircle(centerX, centerY, innerRadius, GetColor(100, 255, 0), TRUE);
 
     //’†S‚É–Ø‚ğ•`‰æ(‰¼‚Å•“_)
     DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);

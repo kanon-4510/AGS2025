@@ -4,20 +4,24 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
-#include "../Manager/GravityManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Common/AnimationController.h"
-#include "../Object/SkyDome.h" 
 #include "ClearScene.h"
 
 ClearScene::ClearScene(void)
 {
-	imgPush_ = -1;
-	imgTitle_ = -1;
-	imgBackTitle_ = -1;
-	skyDome_ = nullptr;
-	animationController_ = nullptr;
+	imgClear_ = -1;
+	imgBackGameClaer_ = -1;
+	imgClearWolrd_ = -1;
+	imgReplay_ = -1;
+	imgReturn_ = -1;
+	imgPressKey_ = -1;
+
+	cheackCounter_ = 0;
+
+	animationControllerEnemy_ = nullptr;
 }
 
 ClearScene::~ClearScene(void)
@@ -27,63 +31,158 @@ ClearScene::~ClearScene(void)
 void ClearScene::Init(void)
 {
 
-	// 重力制御の初期化
-	GravityManager::GetInstance().Init();
-
 	// 画像読み込み
-	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
-	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;
-	imgPush_ = resMng_.Load(ResourceManager::SRC::PUSH).handleId_;
+	imgClear_ = resMng_.Load(ResourceManager::SRC::GAMECLEAR).handleId_;
+	imgBackGameClaer_ = resMng_.Load(ResourceManager::SRC::BACK_GAMECLEAR).handleId_;
+	imgClearWolrd_ = resMng_.Load(ResourceManager::SRC::CLEARWOLEDBORN).handleId_;
+	imgReplay_ = resMng_.Load(ResourceManager::SRC::REPLAY).handleId_;
+	imgReturn_ = resMng_.Load(ResourceManager::SRC::GOTITLE).handleId_;
+	imgPressKey_ = resMng_.Load(ResourceManager::SRC::PRESS_KEY).handleId_;
 
-	float size;
+	cheackCounter_ = 0;
 
-	// キャラ
-	charactor_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
-	charactor_.pos = { 0.0f,-200.0f,0.0f };
-	size = 1.4f;
-	charactor_.scl = { size, size, size };
-	charactor_.quaRot = Quaternion::Euler(
-		0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
-	charactor_.Update();
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::GAMECLEAR_BGM, Sound::TIMES::LOOP);
 
-	// アニメーションの設定
-	std::string path = Application::PATH_MODEL + "Player/";
-	animationController_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationController_->Add(0, path + "Watering.mv1", 20.0f);
-	animationController_->Play(0);
+	// アニメーション用です
+	// ---------------------------------------------
+	// メッセージ画像のサイズと位置取得
+	// 画像サイズ取得
+
+	GetGraphSize(imgClearWolrd_, &imgW_, &imgH_);
+	msgX_ = Application::SCREEN_SIZE_X / 2 - imgW_ / 2;
+	msgY_ = 800;
+
+	// マスクの初期位置（完全に隠れている状態）
+	maskLeftX_ = msgX_;
+	maskSpeed_ = 5;
+
+	// フェード処理
+	clearAlpha_ = 0;     // 完全に透明から始める
+	fadeSpeed_ = 2;      // 徐々に表示（速さはお好みで）
+
+	// presskey用
+	pressKeyY_ = Application::SCREEN_SIZE_Y + 100;         // 画面下 + α からスタート
+	targetPressKeyY_ = 600;         // 目標位置
+	pressKeyAlpha_ = 0;             // 透明から始める
+	isPressKeyAnimStart_ = false;
+	isPressKeyAnimEnd_ = false;
+
+	// 敵
+	enemy_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::MUSH));
+	enemy_.pos = { -490.0f, -600.0f, 50.0f };
+	enemy_.scl = { 1.3f, 1.3f, 1.3f };
+	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(-20.0f), 0.0f);
+	enemy_.Update();
+
+	// 敵のアニメーション
+	std::string path1 = Application::PATH_MODEL + "Enemy/mushroom/";
+	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
+	animationControllerEnemy_->Add(0, path1 + "mushroom.mv1", 40.0f, 1);
+	animationControllerEnemy_->Play(0);
+	isAnimEnd_ = false;
+	// ---------------------------------------------
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
-
 }
 
 void ClearScene::Update(void)
 {
+	cheackCounter_++;
 
-	// シーン遷移
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
-	{
+	// アニメーション更新
+	if (maskLeftX_ < msgX_ + imgW_) {
+		maskLeftX_ += maskSpeed_;
+		if (maskLeftX_ > msgX_ + imgW_) {
+			maskLeftX_ = msgX_ + imgW_;
+		}
+	}
+
+	if (clearAlpha_ < 255) {
+		clearAlpha_ += fadeSpeed_;
+		if (clearAlpha_ > 255) clearAlpha_ = 255;
+	}
+
+	// アニメーション終了チェック
+	if (!isAnimEnd_ && maskLeftX_ >= msgX_ + imgW_ && clearAlpha_ >= 255) {
+		isAnimEnd_ = true;
+		isPressKeyAnimStart_ = true; // ← ここで pressKey のアニメーション開始
+	}
+
+	// 入力受付（アニメーション後）
+	if (isAnimEnd_ && CheckHitKeyAll() > 0) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
-	// 惑星の回転
-	movePlanet_.quaRot = movePlanet_.quaRot.Mult(
-		Quaternion::Euler(0.0f, 0.0f, AsoUtility::Deg2RadF(-1.0f)));
-	movePlanet_.Update();
+	// 強制遷移
+	if (cheackCounter_ >= 3600) {
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
 
-	// キャラアニメーション
-	animationController_->Update();
+	if (isPressKeyAnimStart_ && !isPressKeyAnimEnd_) {
+		// Y座標を補間（滑らかに近づける）
+		pressKeyY_ -= 6;  // スライドスピード
+		enemy_.pos.y += 4.0f;
+		if (pressKeyY_ <= targetPressKeyY_) {
+			pressKeyY_ = targetPressKeyY_;
+		}
 
-	//skyDome_->Update();
+		// アルファ値を増加（フェードイン）
+		if (pressKeyAlpha_ < 255) {
+			pressKeyAlpha_ += 5;  // フェードスピード
+			if (pressKeyAlpha_ > 255) pressKeyAlpha_ = 255;
+		}
 
+		// アニメーション完了フラグ更新
+		if (pressKeyY_ == targetPressKeyY_ && pressKeyAlpha_ == 255) {
+			isPressKeyAnimEnd_ = true;
+		}
+	}
+
+	enemy_.Update();
+	animationControllerEnemy_->Update();
 }
 
 void ClearScene::Draw(void)
 {
-	MV1DrawModel(charactor_.modelId);
+	// 背景を描く
+	DrawGraph(0, 0, imgBackGameClaer_, true);
+
+	// GAME CLEAR をフェード表示
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, clearAlpha_);
+	DrawGraph(0, -70, imgClear_, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);  // 通常に戻す
+
+	// メッセージ（下のテキスト）を表示
+	DrawGraph(msgX_, msgY_, imgClearWolrd_, TRUE);
+
+	// メッセージの上に背景で覆う（横方向）
+	int horizontalMaskW = msgX_ + imgW_ - maskLeftX_;
+	if (horizontalMaskW > 0) {
+		DrawRectGraph(
+			maskLeftX_, msgY_,                    // 表示先（画面上）
+			maskLeftX_, msgY_, horizontalMaskW, imgH_, // 背景画像の一部
+			imgBackGameClaer_, TRUE, FALSE
+		);
+	}
+
+	// 敵モデル
+	MV1DrawModel(enemy_.modelId);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, pressKeyAlpha_);
+	DrawGraph(0, pressKeyY_, imgPressKey_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void ClearScene::Release(void)
 {
+	DeleteGraph(imgClear_);
+	DeleteGraph(imgBackGameClaer_);
+	DeleteGraph(imgClearWolrd_);
+	DeleteGraph(imgReplay_);
+	DeleteGraph(imgReturn_);
+	DeleteGraph(imgPressKey_);
+
+	SoundManager::GetInstance().Stop(SoundManager::SRC::GAMECLEAR_BGM);
 }

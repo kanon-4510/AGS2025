@@ -180,7 +180,7 @@ void Camera::ProcessRot(void)
 
 	if (ins.IsNew(KEY_INPUT_UP))
 	{
-		angles_.x += AsoUtility::Deg2RadF(1.0);
+		angles_.x += AsoUtility::Deg2RadF(1.5);
 		if (angles_.x > LIMIT_X_UP_RAD)
 		{
 			angles_.x = LIMIT_X_UP_RAD;
@@ -188,7 +188,7 @@ void Camera::ProcessRot(void)
 	}
 	if (ins.IsNew(KEY_INPUT_DOWN))
 	{
-		angles_.x -= AsoUtility::Deg2RadF(1.0);
+		angles_.x -= AsoUtility::Deg2RadF(1.5);
 		if (angles_.x < -LIMIT_X_DW_RAD)
 		{
 			angles_.x = -LIMIT_X_DW_RAD;
@@ -196,11 +196,11 @@ void Camera::ProcessRot(void)
 	}
 	if (ins.IsNew(KEY_INPUT_RIGHT))
 	{
-		angles_.y += AsoUtility::Deg2RadF(1.0);
+		angles_.y += AsoUtility::Deg2RadF(1.5);
 	}
 	if (ins.IsNew(KEY_INPUT_LEFT))
 	{
-		angles_.y -= AsoUtility::Deg2RadF(1.0);
+		angles_.y -= AsoUtility::Deg2RadF(1.5);
 	}
 }
 
