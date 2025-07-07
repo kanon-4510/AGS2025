@@ -41,6 +41,7 @@ void TitleScene::Init(void)
 	imgNo_ = resMng_.Load(ResourceManager::SRC::NO).handleId_;					//‚¢‚¢‚¦‰æ‘œ
 	imgYesSel_ = resMng_.Load(ResourceManager::SRC::SELECT_YES).handleId_;		//‘I‘ð’†‚Í‚¢‰æ‘œ
 	imgNoSel_ = resMng_.Load(ResourceManager::SRC::SELECT_NO).handleId_;		//‘I‘ð’†‚¢‚¢‚¦‰æ‘œ
+
 	img3D_ = LoadGraph("Data/Image/Title/3D.png");
 	imgP1_[0] = LoadGraph("Data/Image/Title/1player1.png");
 	imgP1_[1] = LoadGraph("Data/Image/Title/1player2.png");

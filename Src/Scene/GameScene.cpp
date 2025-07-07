@@ -4,6 +4,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/GravityManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Object/Common/Capsule.h"
@@ -76,6 +77,9 @@ void GameScene::Init(void)
 	map_ = std::make_unique<MiniMap>(30000.0f, 300);
 
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
+
+	// ‰¹Šy
+	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
@@ -150,6 +154,7 @@ void GameScene::Draw(void)
 
 void GameScene::Release(void)
 {
+	SoundManager::GetInstance().Stop(SoundManager::SRC::GAME_BGM);
 }
 
 void GameScene::DrawMiniMap(void)
