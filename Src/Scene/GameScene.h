@@ -44,6 +44,7 @@ private:
 
 	int enemyModelId_;
 	int imgGameUi1_;
+	int uiDisplayFrame_;	//カウンタ
 
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度

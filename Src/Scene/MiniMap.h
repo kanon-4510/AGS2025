@@ -11,6 +11,8 @@ class MiniMap
 public:
     MiniMap(float worldSize, int screenSize, int mapPosX = 1600, int mapPosY = 50);
 
+    void Init(void);
+
     void Draw(const MapVector2& playerPos, float playerAngleRad, const std::vector<MapVector2>& enemies, 
         const std::vector<MapVector2>& items);
 
@@ -30,6 +32,9 @@ private:
     int bottomY;
     int leftX;
     int leftY;
+
+    // ‰æ‘œ
+    int imgMapTree_;
 
     //Map”wŒi•`‰æ
     void DrawBackground();

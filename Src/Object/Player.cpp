@@ -7,6 +7,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "Common/AnimationController.h"
@@ -738,6 +739,9 @@ void Player::ProcessAttack(void)
 			// 衝突(攻撃)
 			CollisionAttack();
 		}
+
+		// 音楽
+		SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE, Sound::TIMES::ONCE);
 	}
 
 	// アニメーションが終わったらフラグをリセット
@@ -745,6 +749,8 @@ void Player::ProcessAttack(void)
 	{
 		isAttack_ = false;
 	}
+
+
 }
 
 bool Player::IsEndLandingA(void)

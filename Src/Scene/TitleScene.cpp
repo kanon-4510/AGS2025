@@ -108,6 +108,8 @@ void TitleScene::Update(void)
 				confirmIndex_ = 1 - confirmIndex_; // 「はい」「いいえ」切替
 			}
 			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+				SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
+
 				if (confirmIndex_ == 0) {
 					Application::isRunning_ = false;
 				}
@@ -116,6 +118,7 @@ void TitleScene::Update(void)
 				}
 			}
 		}
+
 		return;
 	}
 
@@ -137,15 +140,20 @@ void TitleScene::Update(void)
 	{
 		if (selectedIndex_ == 0) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+			SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 		}
 		else if (selectedIndex_ == 1) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::DEMO);
+			SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 		}
 		else if (selectedIndex_ == 2) {
 			isConfirmingExit_ = true;
 			confirmIndex_ = 1;
 			confirmAnimFrame_ = 0;  // ← アニメーション開始
+			SoundManager::GetInstance().Play(SoundManager::SRC::WARNING_SE, Sound::TIMES::ONCE);
 		}
+
+	
 	}
 
 	// === キャラクターの移動・向き制御 ===
@@ -297,6 +305,7 @@ void TitleScene::Release(void)
 		charactor_.modelId = -1;
 	}
 
-
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
+	SoundManager::GetInstance().Stop(SoundManager::SRC::SET_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SRC::WARNING_SE);
 }

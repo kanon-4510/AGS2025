@@ -1,5 +1,6 @@
 #include "MiniMap.h"
 #include "DxLib.h"
+#include "../Manager/ResourceManager.h"
 #include <algorithm> // std::clamp
 #include <cmath>     // std::atan2, std::cos, std::sin
 
@@ -8,6 +9,12 @@ MiniMap::MiniMap(float worldSize, int screenSize, int mapPosX, int mapPosY)
 {
     worldHalfSize = worldSize / 2.0f;
     scale = static_cast<float>(mapPixelSize) / worldSize;
+}
+
+void MiniMap::Init(void)
+{
+    // 画像読み込み
+    imgMapTree_ = LoadGraph("Data/Image/MapTree.png");
 }
 
 void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad, 
@@ -41,8 +48,9 @@ void MiniMap::DrawBackground()
     // --- 上から中身だけを「円でくり抜く」ことでリング状になる
     DrawCircle(centerX, centerY, innerRadius, GetColor(100, 255, 0), TRUE);
 
-    //中心に木を描画(仮で黒点)
-    DrawCircle(centerX, centerY, 2, GetColor(0, 0, 0), TRUE);
+    // 画像
+    DrawRotaGraph(centerX, centerY, 0.15f, 0.0f, imgMapTree_, true);
+
 }
 
 void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)

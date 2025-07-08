@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include"../Application.h"
 #include"../Manager/SceneManager.h"
+#include"../Manager/SoundManager.h"
 #include"DemoScene.h"
 
 DemoScene::DemoScene(void)
@@ -30,6 +31,9 @@ void DemoScene::Init(void)
 	gNo_ = 0;
 	txt_ = -2;
 	cnt_ = 0;
+
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::DEMO_BGM, Sound::TIMES::LOOP);
 }
 void DemoScene::Update(void)
 {
@@ -39,6 +43,8 @@ void DemoScene::Update(void)
 	{
 		PlayMusicMem(demoSound_, DX_PLAYTYPE_BACK);
 		txt_++;
+
+		SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 	}
 	if (txt_ == static_cast<int>(TXT::MAX) - 1)
 	{
@@ -119,4 +125,7 @@ void DemoScene::Release(void)
 	// フォントサイズと種類をデフォルトに戻す
 	SetFontSize(16); // ゲーム内の標準サイズに合わせて変更
 	ChangeFont("ＭＳ ゴシック"); // またはゲーム全体で使う基本フォントに
+
+	SoundManager::GetInstance().Stop(SoundManager::SRC::DEMO_BGM);
+	SoundManager::GetInstance().Stop(SoundManager::SRC::SET_SE);
 }
