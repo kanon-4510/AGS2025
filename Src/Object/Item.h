@@ -71,4 +71,6 @@ private:
 	void Collision(void);
 	
 	void InitModel(void);
+
+	void ItemUse(void);	//ƒAƒCƒeƒ€‚ÌŒø‰Ê–‚Ìˆ—
 };

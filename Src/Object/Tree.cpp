@@ -46,6 +46,7 @@ bool Tree::Init(void)
 
 	lv_ = 1;
 	isAlive_ = true;
+	isD_ = false;
 	grow_ = Tree::GROW::BABY;
 	hp_ = 50;
 	water_ = 0;
@@ -178,10 +179,15 @@ void Tree::Draw(void)
 	}
 
 #pragma region ステータス表示
-	DrawFormatString(55, Application::SCREEN_SIZE_Y - 160, 0x0, "YGGDRASILL : Lv%d", lv_);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 140, 650, Application::SCREEN_SIZE_Y - 120, 0x0, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0x00ff00, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 115, 650, Application::SCREEN_SIZE_Y - 105, 0x0, true);
+	DrawFormatString(55,Application::SCREEN_SIZE_Y-160,0x0,"YGGDRASILL : Lv%d",lv_);
+	DrawBox(50,Application::SCREEN_SIZE_Y-140,650,Application::SCREEN_SIZE_Y-120,0x0,true);
+	if (isD_ == true)
+	{
+		DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0xff0000, true);
+		isD_ = false;
+	}
+	else DrawBox(50,Application::SCREEN_SIZE_Y-140,hp_*12+50,Application::SCREEN_SIZE_Y-120,0x00ff00,true);
+	DrawBox(50,Application::SCREEN_SIZE_Y-115,650,Application::SCREEN_SIZE_Y-105,0x0,true);
 	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
@@ -357,6 +363,7 @@ float Tree::GetCollisionRadius(void)
 void Tree::eHit(void)//エネミーとのあたり判定
 {
 	hp_ -= 1;
+	isD_ = true;
 }
 void Tree::pHit(void)//プレイヤーとのあたり判定
 {

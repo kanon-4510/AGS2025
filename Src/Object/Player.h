@@ -39,7 +39,7 @@ public:
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
 	//ÉXÉeä÷òA
-	static constexpr int HP = 30;
+	static constexpr int HP = 15;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
