@@ -4,6 +4,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/GravityManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Object/Common/Capsule.h"
@@ -77,8 +78,16 @@ void GameScene::Init(void)
 	skyDome_->Init();
 
 	map_ = std::make_unique<MiniMap>(30000.0f, 300);
+	map_->Init();
 
+	// 画像
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
+
+	// カウンタ
+	uiDisplayFrame_ = 0;
+
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
@@ -86,6 +95,8 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
+	uiDisplayFrame_++;
+
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_TAB))
@@ -142,7 +153,16 @@ void GameScene::Draw(void)
 	player_->Draw();
 
 	DrawMiniMap();
-	DrawGraph(400, 50, imgGameUi1_, true);
+
+	if (uiDisplayFrame_ < 600) {
+		int alpha = 255;
+		if (uiDisplayFrame_ > 540) { // 残り60フレームでフェード
+			alpha = static_cast<int>(255 * (600 - uiDisplayFrame_) / 60.0f);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawGraph(400, 40, imgGameUi1_, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 	
 	// ヘルプ
 	DrawFormatString(30, 500, 0x000000, "移動　　：WASD");
@@ -153,6 +173,7 @@ void GameScene::Draw(void)
 
 void GameScene::Release(void)
 {
+	SoundManager::GetInstance().Stop(SoundManager::SRC::GAME_BGM);
 }
 
 void GameScene::DrawMiniMap(void)
@@ -220,7 +241,7 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 	items_.push_back(item);
 }
 
-std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale)
+std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale, Item::TYPE itemType)
 {
 	// 現在のアクティブ（生きている）アイテム数を数える
 	int aliveCount = 0;
@@ -247,7 +268,7 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale)
 
 	// 再利用できなければ新しく作成
 	OutputDebugStringA("新規アイテムを作成\n");
-	auto newItem = std::make_shared<Item>(*player_, Transform{});
+	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType);
 	newItem->Init(); // 初期化（モデル読み込み等）
 	newItem->Respawn(spawnPos);
 	newItem->SetScale(scale);

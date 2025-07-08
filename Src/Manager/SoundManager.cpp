@@ -28,12 +28,17 @@ void SoundManager::Init(void)
 
 	// タイトル
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "TitleBGM.mp3");
-	res.ChengeMaxVolume(0.8);
+	res.ChengeMaxVolume(0.7);
 	soundMap_.emplace(SRC::TITLE_BGM, res);
+
+	//デモ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "DemoBGM.mp3");
+	res.ChengeMaxVolume(0.7);
+	soundMap_.emplace(SRC::DEMO_BGM, res);
 
 	// ゲーム
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameBGM.mp3");
-	res.ChengeMaxVolume(0.8);
+	res.ChengeMaxVolume(0.65);
 	soundMap_.emplace(SRC::GAME_BGM, res);
 
 	// ゲームオーバー
@@ -45,6 +50,26 @@ void SoundManager::Init(void)
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameClearBGM.mp3");
 	res.ChengeMaxVolume(0.8);
 	soundMap_.emplace(SRC::GAMECLEAR_BGM, res);
+
+	// レベルアップ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "LevelUpSE.mp3");
+	res.ChengeMaxVolume(0.8);
+	soundMap_.emplace(SRC::LEVEL_UP_SE, res);
+
+	// アタック
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE.mp3");
+	res.ChengeMaxVolume(1.0);
+	soundMap_.emplace(SRC::ATK_SE, res);
+
+	// 決定
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "SetSE.mp3");
+	res.ChengeMaxVolume(0.8);
+	soundMap_.emplace(SRC::SET_SE, res);
+
+	// 警告
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "WarningSE.mp3");
+	res.ChengeMaxVolume(1.5);
+	soundMap_.emplace(SRC::WARNING_SE, res);
 
 }
 

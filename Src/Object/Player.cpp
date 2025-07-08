@@ -7,6 +7,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "Common/AnimationController.h"

@@ -75,9 +75,10 @@ public:
 	void SetAlive(bool alive);	// 生存判定
 
 	void Damage(int damage);	// ダメージを与える
-	
-	//const Item& GetItem(void) const;	// アイテム取得
 
+	// 死亡時のドロップアイテムを決める関数（デフォルトはNONE）
+	virtual Item::TYPE GetDropItemType() const;
+	
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得

@@ -151,8 +151,11 @@ void EnemyBase::UpdateDeath(void)
 			scale = 0.15f;
 		}
 
+		// ドロップアイテムを取得
+		Item::TYPE dropType = GetDropItemType();
+
 		// アイテムを1つ出す（サイズ調整）
-		scene_->CreateItem(dropPos, scale);
+		scene_->CreateItem(dropPos, scale, dropType);
 	}
 }
 #pragma endregion
@@ -377,6 +380,11 @@ void EnemyBase::CheckHitAttackHit(void)
 	{
 		player_->Damage(1);
 	}
+}
+
+Item::TYPE EnemyBase::GetDropItemType() const
+{
+	return Item::TYPE::WATER;
 }
 
 void EnemyBase::SetGameScene(GameScene* scene)
