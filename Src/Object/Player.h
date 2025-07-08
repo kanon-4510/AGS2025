@@ -71,6 +71,7 @@ public:
 		DOWN,
 		ATTACK1,
 		ATTACK2,
+		EXATTACK,
 	};
 
 	// コンストラクタ
@@ -180,8 +181,11 @@ private:
 	float stepJump_;
 	
 	//攻撃の判定
-	bool isAttack_;
-	bool hitAttack_;
+	bool isAttack_;		//縦斬り
+	bool isAttack2_;	//横斬り
+	bool exAttack_;		//回転斬り
+	int exTimer_;		// クールタイム 10秒（ミリ秒）
+	int lastExTime_;	// 最初から使えるようにする
 	
 	//ステ関連
 	int hp_;
@@ -237,8 +241,10 @@ private:
 	void Collision(void);
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
+
 	void CollisionAttack(void);
 	void CollisionAttack2(void);
+	void CollisionAttackEx(void);
 	
 	// 移動量の計算
 	void CalcGravityPow(void);
@@ -251,8 +257,7 @@ private:
 	//攻撃モーション
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
-
-	
+	bool IsExAttackReady() const;
 
 	//復活処理
 	void StartRevival();
