@@ -3,6 +3,7 @@
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include"../Application.h"
 #include"Player.h"
 #include"Tree.h"
@@ -36,6 +37,8 @@ bool Tree::Init(void)
 	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/Kid_ver2.mv1").c_str());
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
+
+
 
 	scl_ = { 3.0f, 2.5f, 3.0f };							// ëÂÇ´Ç≥ÇÃê›íË
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// äpìxÇÃê›íË
@@ -313,6 +316,10 @@ void Tree::LvUp(void)
 		water_ -= 1;
 		ChangeGrow();
 	}
+
+	// âπäy
+	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
+
 }
 void Tree::ChangeGrow(void)
 {

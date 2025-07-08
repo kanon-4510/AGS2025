@@ -10,9 +10,14 @@ public:
 	enum class SRC
 	{
 		TITLE_BGM,		//タイトルシーンのBGM
+		DEMO_BGM,		//でもシーンのBGM
 		GAME_BGM,		//ゲームシーンのBGM
 		GAMEOVER_BGM,	//ゲームオーバーBGM
-		GAMECLEAR_BGM	//ゲームクリアBGM
+		GAMECLEAR_BGM,	//ゲームクリアBGM
+		LEVEL_UP_SE,	//木のレベルアップSE
+		ATK_SE,			//アタックのSE
+		SET_SE,			//決定のSE
+		WARNING_SE,		//警告音SE
 	};
 
 	// 明示的にインステンスを生成する

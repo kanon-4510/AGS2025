@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include "SceneBase.h"
+#include "../Object/Item.h"
 
 class Stage;
 class EnemyBase;
@@ -29,7 +30,7 @@ public:
 	void DrawMiniMap(void);
 
 	void AddItem(std::shared_ptr<Item> item);
-	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale);
+	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale,Item::TYPE itemType);
 
 private:
 	void EnemyCreate(void);
@@ -44,6 +45,7 @@ private:
 
 	int enemyModelId_;
 	int imgGameUi1_;
+	int uiDisplayFrame_;	//カウンタ
 
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度

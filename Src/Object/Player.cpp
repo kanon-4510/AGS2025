@@ -7,6 +7,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/GravityManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "Common/AnimationController.h"
@@ -14,6 +15,7 @@
 #include "Common/Collider.h"
 #include "Common/SpeechBalloon.h"
 #include "Planet.h"
+#include "Tree.h"
 #include "Player.h"
 
 //担当髙野
@@ -22,6 +24,7 @@ Player::Player(void)
 {
 	animationController_ = nullptr;
 	enemy_ = nullptr;
+	tree_ = nullptr;
 
 	state_ = STATE::NONE;
 
@@ -41,6 +44,10 @@ Player::Player(void)
 
 	//攻撃の初期化
 	isAttack_ = false;
+	isAttack2_ = false;
+	exAttack_ = false;
+	exTimer_ = 10000;
+	lastExTime_ = -exTimer_;
 
 	//ステ関連
 	hp_ = HP;
@@ -134,6 +141,8 @@ void Player::UpdateDown(float deltaTime)
 
 	if (pstate_ == PlayerState::DOWN) {
 		isAttack_ = false;
+		isAttack2_ = false;
+		exAttack_ = false;
 		revivalTimer_ += deltaTime;
 		if (revivalTimer_ >= D_COUNT) {
 			Revival();
@@ -220,9 +229,10 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Player.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 5);
 	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
+	animationController_->Add((int)ANIM_TYPE::EXATTACK, path + "Player.mv1", 15.0f, 8);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
@@ -373,7 +383,8 @@ void Player::DrawDebug(void)
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
-	if (isAttack_) {
+	
+	if (isAttack_ || isAttack2_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
 		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
@@ -382,6 +393,20 @@ void Player::DrawDebug(void)
 		// カプセルの描画確認用	
 		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
+	if (exAttack_) {
+		VECTOR attackCollisionPos = transform_.pos;
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 150.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}
+	if (!IsExAttackReady())
+	{
+		int remaining = (exTimer_ - (GetNowCount() - lastExTime_)) / 1000;
+		DrawFormatString(50, 40, GetColor(255, 0, 0), "回転斬り使用不可: 残り%d秒", remaining);
+	}
+
+
 	//capsule_->Draw();
 
 	VECTOR s;
@@ -404,7 +429,7 @@ void Player::ProcessMove(void)
 
 	double rotRad = 0;
 
-	if (!isAttack_ && IsEndLandingA())
+	if (!isAttack_ && !isAttack2_ && !exAttack_ && IsEndLandingA())
 	{
 		if (ins.IsNew(KEY_INPUT_W))
 		{
@@ -626,9 +651,84 @@ void Player::CollisionAttack(void)
 			if (dis < radiusSum * radiusSum)
 			{
 				enemy->Damage(2);
+				// 1体のみヒット
+				break;
+			}
+		}
+	}
+}
+
+void Player::CollisionAttack2(void)
+{
+	if (isAttack2_ || enemy_)
+	{
+		//エネミーとの衝突判定
+
+		// 攻撃の球の半径（例: 50.0f）
+		float attackRadius = 100.0f;
+		// 攻撃の方向（プレイヤーの前方）
+		VECTOR forward = transform_.quaRot.GetForward();
+		// 攻撃の開始位置と終了位置
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		attackPos.y += 100.0f;  // 攻撃の高さ調整
+
+		for (const auto& enemy : *enemy_)
+		{
+			if (!enemy || !enemy->IsAlive()) continue;
+
+			//敵の当たり判定とサイズ
+			VECTOR enemyPos = enemy->GetCollisionPos();
+			float enemyRadius = enemy->GetCollisionRadius();
+
+			//判定の距離の比較
+			VECTOR diff = VSub(enemyPos, attackPos);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+
+			// 半径の合計
+			float radiusSum = attackRadius + enemyRadius;
+
+			if (dis < radiusSum * radiusSum)
+			{
+				enemy->Damage(1);
+				// 複数ヒット
+				continue;
+			}
+		}
+	}
+}
+
+void Player::CollisionAttackEx(void)
+{
+	if (exAttack_ || enemy_)
+	{
+		//エネミーとの衝突判定
+
+		// 攻撃の球の半径（例: 50.0f）
+		float attackRadius = 150.0f;
+		// 攻撃の開始位置と終了位置
+		VECTOR attackPos = transform_.pos;
+		attackPos.y += 100.0f;  // 攻撃の高さ調整
+
+		for (const auto& enemy : *enemy_)
+		{
+			if (!enemy || !enemy->IsAlive()) continue;
+
+			//敵の当たり判定とサイズ
+			VECTOR enemyPos = enemy->GetCollisionPos();
+			float enemyRadius = enemy->GetCollisionRadius();
+
+			//判定の距離の比較
+			VECTOR diff = VSub(enemyPos, attackPos);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+
+			// 半径の合計
+			float radiusSum = attackRadius + enemyRadius;
+
+			if (dis < radiusSum * radiusSum)
+			{
+				enemy->Damage(2);
 				// 複数ヒットさせたいなら
 				continue;
-				// 1体のみヒットさせたいなら break;
 			}
 		}
 	}
@@ -663,7 +763,7 @@ void Player::ProcessJump(void)
 	bool isHit = CheckHitKey(KEY_INPUT_BACK);
 
 	// ジャンプ
-	if (isHit && !isAttack_ && (isJump_ || IsEndLanding()))
+	if (isHit && !isAttack_ && !isAttack2_ && !exAttack_ && (isJump_ || IsEndLanding()))
 	{
 		if (!isJump_)
 		{
@@ -718,19 +818,12 @@ void Player::ProcessAttack(void)
 {
 	bool isHit = CheckHitKey(KEY_INPUT_E);
 	bool isHit_N = CheckHitKey(KEY_INPUT_Q);
+	bool isHit_E = CheckHitKey(KEY_INPUT_R);
 
 	// アタック
-	if ((isHit_N || isHit) && !isJump_ && (isAttack_ || IsEndLandingA()))
+	if (!isJump_ && (isAttack_ || IsEndLandingA()))
 	{
-		if (!isAttack_ && isHit)
-		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
-			isAttack_ = true;
-
-			// 衝突(攻撃)
-			CollisionAttack();
-		}
-		else if (!isAttack_ && isHit_N)
+		if (!isAttack_ && !isAttack2_ && !exAttack_ && isHit)
 		{
 			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
 			isAttack_ = true;
@@ -738,21 +831,60 @@ void Player::ProcessAttack(void)
 			// 衝突(攻撃)
 			CollisionAttack();
 		}
+		else if (!isAttack2_ && !isAttack_ && !exAttack_ && isHit_N)
+		{
+			// Treeのレベルが25以上でクールタイム10秒がたっているならATTACK1を許可
+			if (tree_ && tree_->GetLv() >= 25 && !isAttack2_)
+			{
+				animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
+				isAttack2_ = true;
+
+				// 衝突(攻撃)
+				CollisionAttack2();
+			}
+		}
+		else if (!exAttack_ && !isAttack_ && !isAttack2_ && isHit_E)
+		{
+			// Treeのレベルが25以上でクールタイム10秒がたっているならATTACK1を許可
+			if (tree_ && tree_->GetLv() >= 50 && !exAttack_ && IsExAttackReady())
+			{
+				animationController_->Play((int)ANIM_TYPE::EXATTACK, false);
+				exAttack_ = true;
+				lastExTime_ = GetNowCount(); // ← クールタイム開始
+
+				// 衝突(攻撃)
+				CollisionAttackEx();
+			}
+		}
 	}
 
 	// アニメーションが終わったらフラグをリセット
-	if (isAttack_ && animationController_->IsEnd())
+	if (animationController_->IsEnd())
 	{
-		isAttack_ = false;
+		if (isAttack_)
+		{
+			isAttack_ = false;
+		}
+		if (isAttack2_)
+		{
+			isAttack2_ = false;
+		}
+		if (exAttack_)
+		{
+			exAttack_ = false;
+		}
 	}
 }
 
 bool Player::IsEndLandingA(void)
 {
 	bool ret = true;
+	int animType = animationController_->GetPlayType();
 
-	// アニメーションがアタックではない
-	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK1)
+	// 現在のアニメーションが ATTACK1,2 または EXATTACK のいずれかで、まだ終了していない場合
+	if ((animType != (int)ANIM_TYPE::ATTACK1 || animType == (int)ANIM_TYPE::ATTACK2 
+		|| animType == (int)ANIM_TYPE::EXATTACK) 
+		&& !animationController_->IsEnd())
 	{
 		return ret;
 	}
@@ -762,6 +894,12 @@ bool Player::IsEndLandingA(void)
 		return ret;
 	}
 	return false;
+}
+
+bool Player::IsExAttackReady() const
+{
+	int now = GetNowCount(); // DxLib の現在時刻（ミリ秒）
+	return (now - lastExTime_) >= exTimer_;
 }
 
 void Player::Damage(int damage)
@@ -835,6 +973,11 @@ bool Player::IsMax(void)
 void Player::SetIsMax(void)
 {
 	isMax_ = false;
+}
+
+void Player::SetTree(Tree* tree)
+{
+	tree_ = tree;
 }
 
 void Player::eHit(void)

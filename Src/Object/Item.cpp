@@ -8,7 +8,8 @@
 #include "Player.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform):player_(player), pos_(transform.pos)
+Item::Item(Player& player, const Transform& transform, TYPE itemType):
+	player_(player), pos_(transform.pos), itemType_(itemType)
 {
 	transform_.dir = {};
 	transform_.modelId = 0;
@@ -20,12 +21,13 @@ Item::~Item(void)
 
 void Item::Init(void)
 {
+
+	InitModel();
 	// モデルの基本設定
-	transform_.modelId = MV1LoadModel((Application::PATH_MODEL + "Item/bottle.mv1").c_str());
 
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
+	//transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	isAlive_ = false;
@@ -96,16 +98,6 @@ void Item::Draw(void)
 	}
 }
 
-void Item::AddCollider(std::weak_ptr<Collider> collider)
-{
-	colliders_.push_back(collider);
-}
-
-void Item::ClearCollider(void)
-{
-	colliders_.clear();
-}
-
 VECTOR Item::GetPos(void)
 {
 	return transform_.pos;
@@ -166,6 +158,32 @@ void Item::Respawn(const VECTOR& newPos)
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;
+}
+
+void Item::InitModel(void)
+{
+	switch (itemType_)
+	{
+	case Item::TYPE::NONE:
+		break;
+	case Item::TYPE::WATER:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::WATER));
+		break;
+	case Item::TYPE::POWER:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::POWER));
+		break;
+	case Item::TYPE::SPEED:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::SPEED));
+		break;
+	case Item::TYPE::HEAL:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::HEAL));
+		break;
+	case Item::TYPE::MUTEKI:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MUTEKI));
+		break;
+	default:
+		break;
+	}
 }
 
 void Item::DrawDebug(void)
