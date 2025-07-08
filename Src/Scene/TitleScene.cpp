@@ -270,29 +270,24 @@ void TitleScene::Draw(void)
 		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		int centerX = Application::SCREEN_SIZE_X / 2;
-		int centerY = Application::SCREEN_SIZE_Y / 2;
-
 		// ウィンドウ背景画像がある場合はここに描画（省略可）
 
 		// 「本当に終了しますか？」画像描画
-		int textW, textH;
-		GetGraphSize(imgConfirmEnd_, &textW, &textH);
-		DrawGraph(centerX - textW / 2, centerY - 300, imgConfirmEnd_, TRUE);
-
-		// ボタン画像
-		int btnY = centerY + 100;
-		int yesX = centerX - 450;
-		int noX = centerX + 80;
+		SetFontSize(125);
+		DrawString(Application::SCREEN_SIZE_X/2-600,280,"本当に終了しますか？",0xffffff);
 
 		// 選択中で画像を切り替え
-		if (confirmIndex_ == 0) {
-			DrawGraph(yesX, btnY, imgYesSel_, TRUE);
-			DrawGraph(noX, btnY, imgNo_, TRUE);
+		if(confirmIndex_==0)
+		{
+			SetFontSize(130);
+			DrawString(Application::SCREEN_SIZE_X/2-400,Application::SCREEN_SIZE_Y/2+100,"はい",0xffff00);
+			DrawString(Application::SCREEN_SIZE_X/2+130,Application::SCREEN_SIZE_Y/2+100,"いいえ",0xffffff);
 		}
-		else {
-			DrawGraph(yesX, btnY, imgYes_, TRUE);
-			DrawGraph(noX, btnY, imgNoSel_, TRUE);
+		else
+		{
+			SetFontSize(130);
+			DrawString(Application::SCREEN_SIZE_X/2-400,Application::SCREEN_SIZE_Y/2+100,"はい",0xffffff);
+			DrawString(Application::SCREEN_SIZE_X/2+130,Application::SCREEN_SIZE_Y/2+100,"いいえ",0xffff00);
 		}
 	}
 }
