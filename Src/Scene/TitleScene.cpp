@@ -41,6 +41,7 @@ void TitleScene::Init(void)
 	imgNo_ = resMng_.Load(ResourceManager::SRC::NO).handleId_;					//いいえ画像
 	imgYesSel_ = resMng_.Load(ResourceManager::SRC::SELECT_YES).handleId_;		//選択中はい画像
 	imgNoSel_ = resMng_.Load(ResourceManager::SRC::SELECT_NO).handleId_;		//選択中いいえ画像
+
 	img3D_ = LoadGraph("Data/Image/Title/3D.png");
 	imgP1_[0] = LoadGraph("Data/Image/Title/1player1.png");
 	imgP1_[1] = LoadGraph("Data/Image/Title/1player2.png");
@@ -107,6 +108,8 @@ void TitleScene::Update(void)
 				confirmIndex_ = 1 - confirmIndex_; // 「はい」「いいえ」切替
 			}
 			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+				SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
+
 				if (confirmIndex_ == 0) {
 					Application::isRunning_ = false;
 				}
@@ -115,6 +118,7 @@ void TitleScene::Update(void)
 				}
 			}
 		}
+
 		return;
 	}
 
@@ -136,15 +140,20 @@ void TitleScene::Update(void)
 	{
 		if (selectedIndex_ == 0) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+			SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 		}
 		else if (selectedIndex_ == 1) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::DEMO);
+			SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 		}
 		else if (selectedIndex_ == 2) {
 			isConfirmingExit_ = true;
 			confirmIndex_ = 1;
 			confirmAnimFrame_ = 0;  // ← アニメーション開始
+			SoundManager::GetInstance().Play(SoundManager::SRC::WARNING_SE, Sound::TIMES::ONCE);
 		}
+
+	
 	}
 
 	// === キャラクターの移動・向き制御 ===
@@ -261,29 +270,24 @@ void TitleScene::Draw(void)
 		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		int centerX = Application::SCREEN_SIZE_X / 2;
-		int centerY = Application::SCREEN_SIZE_Y / 2;
-
 		// ウィンドウ背景画像がある場合はここに描画（省略可）
 
 		// 「本当に終了しますか？」画像描画
-		int textW, textH;
-		GetGraphSize(imgConfirmEnd_, &textW, &textH);
-		DrawGraph(centerX - textW / 2, centerY - 300, imgConfirmEnd_, TRUE);
-
-		// ボタン画像
-		int btnY = centerY + 100;
-		int yesX = centerX - 450;
-		int noX = centerX + 80;
+		SetFontSize(125);
+		DrawString(Application::SCREEN_SIZE_X/2-600,280,"本当に終了しますか？",0xffffff);
 
 		// 選択中で画像を切り替え
-		if (confirmIndex_ == 0) {
-			DrawGraph(yesX, btnY, imgYesSel_, TRUE);
-			DrawGraph(noX, btnY, imgNo_, TRUE);
+		if(confirmIndex_==0)
+		{
+			SetFontSize(130);
+			DrawString(Application::SCREEN_SIZE_X/2-400,Application::SCREEN_SIZE_Y/2+100,"はい",0xffff00);
+			DrawString(Application::SCREEN_SIZE_X/2+130,Application::SCREEN_SIZE_Y/2+100,"いいえ",0xffffff);
 		}
-		else {
-			DrawGraph(yesX, btnY, imgYes_, TRUE);
-			DrawGraph(noX, btnY, imgNoSel_, TRUE);
+		else
+		{
+			SetFontSize(130);
+			DrawString(Application::SCREEN_SIZE_X/2-400,Application::SCREEN_SIZE_Y/2+100,"はい",0xffffff);
+			DrawString(Application::SCREEN_SIZE_X/2+130,Application::SCREEN_SIZE_Y/2+100,"いいえ",0xffff00);
 		}
 	}
 }
@@ -296,6 +300,7 @@ void TitleScene::Release(void)
 		charactor_.modelId = -1;
 	}
 
-
 	SoundManager::GetInstance().Stop(SoundManager::SRC::TITLE_BGM);
+	SoundManager::GetInstance().Stop(SoundManager::SRC::SET_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SRC::WARNING_SE);
 }

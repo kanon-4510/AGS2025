@@ -3,6 +3,7 @@
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include"../Application.h"
 #include"Player.h"
 #include"Tree.h"
@@ -37,12 +38,15 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
+
+
 	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさの設定
 	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 角度の設定
 	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置の設定
 
 	lv_ = 1;
 	isAlive_ = true;
+	isD_ = false;
 	grow_ = Tree::GROW::BABY;
 	hp_ = 50;
 	water_ = 0;
@@ -175,10 +179,15 @@ void Tree::Draw(void)
 	}
 
 #pragma region ステータス表示
-	DrawFormatString(55, Application::SCREEN_SIZE_Y - 160, 0x0, "YGGDRASILL : Lv%d", lv_);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 140, 650, Application::SCREEN_SIZE_Y - 120, 0x0, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0x00ff00, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 115, 650, Application::SCREEN_SIZE_Y - 105, 0x0, true);
+	DrawFormatString(55,Application::SCREEN_SIZE_Y-160,0x0,"YGGDRASILL : Lv%d",lv_);
+	DrawBox(50,Application::SCREEN_SIZE_Y-140,650,Application::SCREEN_SIZE_Y-120,0x0,true);
+	if (isD_ == true)
+	{
+		DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0xff0000, true);
+		isD_ = false;
+	}
+	else DrawBox(50,Application::SCREEN_SIZE_Y-140,hp_*12+50,Application::SCREEN_SIZE_Y-120,0x00ff00,true);
+	DrawBox(50,Application::SCREEN_SIZE_Y-115,650,Application::SCREEN_SIZE_Y-105,0x0,true);
 	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
@@ -307,6 +316,10 @@ void Tree::LvUp(void)
 		water_ -= 1;
 		ChangeGrow();
 	}
+
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
+
 }
 void Tree::ChangeGrow(void)
 {
@@ -350,6 +363,7 @@ float Tree::GetCollisionRadius(void)
 void Tree::eHit(void)//エネミーとのあたり判定
 {
 	hp_ -= 1;
+	isD_ = true;
 }
 void Tree::pHit(void)//プレイヤーとのあたり判定
 {
