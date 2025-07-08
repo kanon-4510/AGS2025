@@ -13,6 +13,7 @@ public:
 	//敵の種類
 	enum class TYPE
 	{
+		NONE,
 		WATER,	//水
 		POWER,	//パワーアップ
 		SPEED,	//スピードアップ
@@ -22,7 +23,7 @@ public:
 	};
 
 	// コンストラクタ
-	Item(Player& player, const Transform& transform);
+	Item(Player& player, const Transform& transform, TYPE itemType);
 
 	// デストラクタ
 	~Item(void);
@@ -30,10 +31,6 @@ public:
 	void Init(void);
 	void Update(void);
 	void Draw(void);
-
-	// 衝突判定に用いられるコライダ制御
-	void AddCollider(std::weak_ptr<Collider> collider);
-	void ClearCollider(void);
 
 	VECTOR GetPos(void);		// 座標の取得
 	void SetPos(VECTOR pos);	// 座標の設定
@@ -51,9 +48,7 @@ public:
 	void DrawDebug(void);	//デバッグ用
 private:
 	Player& player_;
-
-	// 衝突判定に用いられるコライダ
-	std::vector <std::weak_ptr<Collider>> colliders_;
+	TYPE itemType_;	//ドロップするアイテムの種類
 
 	int modelId_;//モデルの格納
 
@@ -74,4 +69,6 @@ private:
 
 	// 衝突判定
 	void Collision(void);
+	
+	void InitModel(void);
 };

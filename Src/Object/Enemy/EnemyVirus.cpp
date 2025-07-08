@@ -3,7 +3,6 @@
 #include "../Common/AnimationController.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Utility/AsoUtility.h"
-//#include "../Common/Capsule.h"
 
 EnemyVirus::EnemyVirus():EnemyBase()
 {
@@ -54,4 +53,17 @@ void EnemyVirus::SetParam(void)
 
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
+}
+
+Item::TYPE EnemyVirus::GetDropItemType() const
+{
+	int randVal = rand() % 2;
+	if (randVal == 0)
+	{
+		return Item::TYPE::WATER;
+	}
+	else
+	{
+		return Item::TYPE::SPEED;
+	}
 }

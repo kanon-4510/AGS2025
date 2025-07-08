@@ -12,4 +12,7 @@ public:
 
 	// パラメータ設定(純粋仮想関数)
 	void SetParam(void) override;
+
+	//ドロップアイテム
+	virtual Item::TYPE GetDropItemType() const override;
 };

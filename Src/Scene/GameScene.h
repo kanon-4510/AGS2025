@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include "SceneBase.h"
+#include "../Object/Item.h"
 
 class Stage;
 class EnemyBase;
@@ -29,7 +30,7 @@ public:
 	void DrawMiniMap(void);
 
 	void AddItem(std::shared_ptr<Item> item);
-	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale);
+	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale,Item::TYPE itemType);
 
 private:
 	void EnemyCreate(void);

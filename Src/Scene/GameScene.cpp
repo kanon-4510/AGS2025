@@ -217,7 +217,7 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 	items_.push_back(item);
 }
 
-std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale)
+std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale, Item::TYPE itemType)
 {
 	// 現在のアクティブ（生きている）アイテム数を数える
 	int aliveCount = 0;
@@ -244,7 +244,7 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale)
 
 	// 再利用できなければ新しく作成
 	OutputDebugStringA("新規アイテムを作成\n");
-	auto newItem = std::make_shared<Item>(*player_, Transform{});
+	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType);
 	newItem->Init(); // 初期化（モデル読み込み等）
 	newItem->Respawn(spawnPos);
 	newItem->SetScale(scale);
