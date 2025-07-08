@@ -75,7 +75,7 @@ void Item::Update(void)
 	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
 	{
 		//”ÍˆÍ‚É“ü‚Á‚½
-		player_.wHit(transform_.scl.x);
+		ItemUse();
 		isAlive_ = false;
 		return;
 	}
@@ -181,6 +181,28 @@ void Item::InitModel(void)
 	case Item::TYPE::MUTEKI:
 		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MUTEKI));
 		break;
+	default:
+		break;
+	}
+}
+
+void Item::ItemUse(void)
+{
+	switch (itemType_)
+	{
+	case Item::TYPE::WATER:
+		player_.wHit(transform_.scl.x);
+		break;
+	case Item::TYPE::POWER:
+		/*player_.*/
+		break;
+	case Item::TYPE::SPEED:
+		break;
+	case Item::TYPE::HEAL:
+		break;
+	case Item::TYPE::MUTEKI:
+		break;
+	
 	default:
 		break;
 	}
