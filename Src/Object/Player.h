@@ -12,6 +12,7 @@
 class AnimationController;
 class Collider;
 class Capsule;
+class Tree;
 
 class Player : public ActorBase
 {
@@ -110,6 +111,8 @@ public:
 	bool IsMax(void);
 	void SetIsMax(void);
 
+	void SetTree(Tree* tree);
+
 	void eHit(void);//“G
 	void wHit(float scale);//…
 	void tHit(void);//–Ø
@@ -118,6 +121,8 @@ public:
 	void Damage(int damage);
 
 private:
+
+	Tree* tree_;
 
 	// ƒWƒƒƒ“ƒv—Ê
 	VECTOR jumpPow_;
@@ -233,6 +238,7 @@ private:
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
 	void CollisionAttack(void);
+	void CollisionAttack2(void);
 	
 	// ˆÚ“®—Ê‚ÌŒvZ
 	void CalcGravityPow(void);

@@ -15,6 +15,7 @@
 #include "Common/Collider.h"
 #include "Common/SpeechBalloon.h"
 #include "Planet.h"
+#include "Tree.h"
 #include "Player.h"
 
 //担当髙野
@@ -23,6 +24,7 @@ Player::Player(void)
 {
 	animationController_ = nullptr;
 	enemy_ = nullptr;
+	tree_ = nullptr;
 
 	state_ = STATE::NONE;
 
@@ -221,8 +223,8 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Player.mv1", 60.0f);
-	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 5);
 	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
@@ -374,7 +376,8 @@ void Player::DrawDebug(void)
 	// 衝突
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
-	if (isAttack_) {
+	bool isHit = CheckHitKey(KEY_INPUT_E);
+	if (isHit) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
 		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
@@ -383,6 +386,16 @@ void Player::DrawDebug(void)
 		// カプセルの描画確認用	
 		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
+	bool isHit_N = CheckHitKey(KEY_INPUT_Q);
+	if (isHit_N) {
+		VECTOR attackCollisionPos = transform_.pos;
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 150.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}
+
+
 	//capsule_->Draw();
 
 	VECTOR s;
@@ -635,6 +648,45 @@ void Player::CollisionAttack(void)
 	}
 }
 
+void Player::CollisionAttack2(void)
+{
+	if (isAttack_ || enemy_)
+	{
+		//エネミーとの衝突判定
+
+		// 攻撃の球の半径（例: 50.0f）
+		float attackRadius = 150.0f;
+		// 攻撃の開始位置と終了位置
+		VECTOR attackPos = transform_.pos;
+		attackPos.y += 100.0f;  // 攻撃の高さ調整
+
+		for (const auto& enemy : *enemy_)
+		{
+			if (!enemy || !enemy->IsAlive()) continue;
+
+			//敵の当たり判定とサイズ
+			VECTOR enemyPos = enemy->GetCollisionPos();
+			float enemyRadius = enemy->GetCollisionRadius();
+
+			//判定の距離の比較
+			VECTOR diff = VSub(enemyPos, attackPos);
+			float dis = AsoUtility::SqrMagnitudeF(diff);
+
+			// 半径の合計
+			float radiusSum = attackRadius + enemyRadius;
+
+			if (dis < radiusSum * radiusSum)
+			{
+
+				enemy->Damage(10);
+				// 複数ヒットさせたいなら
+				continue;
+				// 1体のみヒットさせたいなら break;
+			}
+		}
+	}
+}
+
 void Player::CalcGravityPow(void)
 {
 	// 重力方向
@@ -725,7 +777,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_ && isHit)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
+			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
 			isAttack_ = true;
 
 			// 衝突(攻撃)
@@ -733,11 +785,15 @@ void Player::ProcessAttack(void)
 		}
 		else if (!isAttack_ && isHit_N)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
-			isAttack_ = true;
+			// Treeのレベルが25以上ならATTACK1を許可
+			if (tree_ && tree_->GetLv() >= 25)
+			{
+				animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
+				isAttack_ = true;
 
-			// 衝突(攻撃)
-			CollisionAttack();
+				// 衝突(攻撃)
+				CollisionAttack2();
+			}
 		}
 
 		// 音楽
@@ -758,7 +814,7 @@ bool Player::IsEndLandingA(void)
 	bool ret = true;
 
 	// アニメーションがアタックではない
-	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK1)
+	if (animationController_->GetPlayType() != (int)ANIM_TYPE::ATTACK2)
 	{
 		return ret;
 	}
@@ -843,6 +899,11 @@ bool Player::IsMax(void)
 void Player::SetIsMax(void)
 {
 	isMax_ = false;
+}
+
+void Player::SetTree(Tree* tree)
+{
+	tree_ = tree;
 }
 
 void Player::eHit(void)

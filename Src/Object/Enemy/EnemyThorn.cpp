@@ -56,3 +56,16 @@ void EnemyThorn::SetParam(void)
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
 }
+
+Item::TYPE EnemyThorn::GetDropItemType() const
+{
+	int randVal = rand() % 2;
+	if (randVal == 0)
+	{
+		return Item::TYPE::WATER;
+	}
+	else
+	{
+		return Item::TYPE::MUTEKI;
+	}
+}
