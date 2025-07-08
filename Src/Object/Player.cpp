@@ -43,7 +43,7 @@ Player::Player(void)
 	isAttack_ = false;
 
 	//ステ関連
-	hp_ = 30;
+	hp_ = HP;
 	water_ = 0;
 
 	// 無敵状態
@@ -151,7 +151,7 @@ void Player::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 20 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 40 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
 	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
@@ -810,7 +810,6 @@ void Player::EffectFootSmoke(void)
 	//if (!AsoUtility::EqualsVZero(moveDiff_))
 	if (stepFootSmoke_ < 0.0f && len >= 1.0f && !isJump_)
 	{
-
 		stepFootSmoke_ = TERM_FOOT_SMOKE;
 
 		// エフェクト再生
@@ -820,8 +819,7 @@ void Player::EffectFootSmoke(void)
 		SetScalePlayingEffekseer3DEffect(effectSmokePleyId_, 5.0f, 5.0f, 5.0f);
 
 		//エフェクトの位置
-		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,
-			transform_.pos.x, transform_.pos.y, transform_.pos.z);
+		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	}
 }
 
@@ -865,12 +863,9 @@ void Player::tHit()
 	{
 		isMax_ = true;
 		water_ = 0;
-		hp_ = 45;
 	}
 	else
 	{
 		water_--;
-		hp_ += 3;
 	}
-	if (hp_ > HP)hp_ = HP;
 }

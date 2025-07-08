@@ -38,7 +38,7 @@ public:
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
 	//ステ関連
-	static constexpr int HP = 30;
+	static constexpr int HP = 15;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
@@ -177,7 +177,7 @@ private:
 	//攻撃の判定
 	bool isAttack_;
 	bool hitAttack_;
-	
+
 	//ステ関連
 	int hp_;
 	int water_;
@@ -245,8 +245,6 @@ private:
 	//攻撃モーション
 	void ProcessAttack(void);
 	bool IsEndLandingA(void);
-
-	
 
 	//復活処理
 	void StartRevival();

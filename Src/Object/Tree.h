@@ -69,12 +69,11 @@ private:
 	VECTOR rot_;	//廻天
 	VECTOR dir_;	//移動せんよ
 
-
-
 	int lv_;
 	int hp_;
 	int water_;
 	bool isAlive_;
+	bool isD_;
 	GROW grow_;
 
 	/*//VECTOR spherePos_;	//スフィアの移動後座標
