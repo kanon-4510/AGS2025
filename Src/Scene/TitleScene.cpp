@@ -150,7 +150,7 @@ void TitleScene::Update(void)
 			isConfirmingExit_ = true;
 			confirmIndex_ = 1;
 			confirmAnimFrame_ = 0;  // ← アニメーション開始
-			SoundManager::GetInstance().Play(SoundManager::SRC::WARNING_SE, Sound::TIMES::ONCE);
+			SoundManager::GetInstance().Play(SoundManager::SRC::WARNING_SE, Sound::TIMES::FORCE_ONCE);
 		}
 
 	

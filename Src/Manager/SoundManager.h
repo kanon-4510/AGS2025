@@ -15,7 +15,9 @@ public:
 		GAMEOVER_BGM,	//ゲームオーバーBGM
 		GAMECLEAR_BGM,	//ゲームクリアBGM
 		LEVEL_UP_SE,	//木のレベルアップSE
-		ATK_SE,			//アタックのSE
+		ATK_SE1,		//アタックのSE1
+		ATK_SE2,		//アタックのSE2
+		ATK_SE3,		//アタックのSE3
 		SET_SE,			//決定のSE
 		WARNING_SE,		//警告音SE
 	};

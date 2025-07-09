@@ -45,6 +45,8 @@ public:
 	void SetScale(float scale);			//itemのスケールを設定
 	void Respawn(const VECTOR& newPos);	//itemを再利用
 
+	TYPE GetItemType(void) const;
+
 	void DrawDebug(void);	//デバッグ用
 private:
 	Player& player_;
@@ -71,4 +73,6 @@ private:
 	void Collision(void);
 	
 	void InitModel(void);
+
+	void ItemUse(void);	//アイテムの効果事の処理
 };

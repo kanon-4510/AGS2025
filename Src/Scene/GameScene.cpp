@@ -85,7 +85,10 @@ void GameScene::Init(void)
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
 
 	// カウンタ
+	uiFadeStart_ = false;
+	uiFadeFrame_ = 0;
 	uiDisplayFrame_ = 0;
+
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
@@ -164,14 +167,32 @@ void GameScene::Draw(void)
 
 	DrawMiniMap();
 
-	if (uiDisplayFrame_ < 600) {
-		int alpha = 255;
-		if (uiDisplayFrame_ > 540) { // 残り60フレームでフェード
-			alpha = static_cast<int>(255 * (600 - uiDisplayFrame_) / 60.0f);
+	// 入力チェック or 時間経過でフェード開始
+	if (!uiFadeStart_) {
+		if ((CheckHitKey(KEY_INPUT_W)
+			|| CheckHitKey(KEY_INPUT_A)
+			|| CheckHitKey(KEY_INPUT_S)
+			|| CheckHitKey(KEY_INPUT_D))
+			|| uiDisplayFrame_ >= 240)  // 時間経過による自動フェード
+		{
+			uiFadeStart_ = true;
+			uiFadeFrame_ = 0;
 		}
+	}
+
+	if (!uiFadeStart_) {
+		// フェード前（通常表示）
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		DrawGraph(400, 40, imgGameUi1_, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	else if (uiFadeFrame_ < 60) {
+		// フェード中（60フレームで徐々に消す）
+		int alpha = static_cast<int>(255 * (60 - uiFadeFrame_) / 60.0f);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawGraph(400, 40, imgGameUi1_, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		uiFadeFrame_++;
 	}
 	
 	// ヘルプ
@@ -267,12 +288,15 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 	}*/
 
 	// 再利用可能なアイテムを探す
-	for (auto& item : items_) {
-		if (!item->GetIsAlive()) {
-			OutputDebugStringA("再利用アイテムを使用\n");
-			item->Respawn(spawnPos);
-			item->SetScale(scale);
-			return item;
+	if (itemType == Item::TYPE::WATER)
+	{
+		for (auto& item : items_) {
+			if (!item->GetIsAlive() && item->GetItemType() == Item::TYPE::WATER) {
+				OutputDebugStringA("再利用アイテムを使用\n");
+				item->Respawn(spawnPos);
+				item->SetScale(scale);
+				return item;
+			}
 		}
 	}
 

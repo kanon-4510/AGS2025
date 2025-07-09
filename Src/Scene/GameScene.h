@@ -46,6 +46,9 @@ private:
 	int imgGameUi1_;
 	int uiDisplayFrame_;	//カウンタ
 
+	bool uiFadeStart_ = false;
+	int uiFadeFrame_ = 0;
+
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 

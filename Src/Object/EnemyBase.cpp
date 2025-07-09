@@ -23,6 +23,9 @@ EnemyBase::EnemyBase()
 	item_ = nullptr;
 	state_ = STATE::NONE;
 
+	originalColor_ = { 1.0f, 1.0f, 1.0f };  // デフォルトは白
+	blinkColor_ = { 1.0f, 0.0f, 0.0f };      // 点滅中は赤
+
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
@@ -125,6 +128,30 @@ void EnemyBase::UpdateDamage(void)
 	{
 		ChangeState(STATE::PLAY);
 	}
+
+	//if (isDamageBlinking_) {
+	//	damageBlinkTimer_--; // タイマーを減らす
+	//	if (damageBlinkTimer_ <= 0) {
+	//		isDamageBlinking_ = false; // 点滅終了
+	//		// 点滅終了時に色を元に戻す
+	//		// originalColor_ は敵の元の色を保持するメンバ変数と想定
+	//		MV1SetDifColorScale(transform_.modelId, originalColor_);
+	//	}
+	//	else
+	//	{
+	//		// 点滅中はUpdate内で色を切り替える
+	//		if ((damageBlinkTimer_ / blinkInterval_) % 2 == 0) {
+	//			// 点滅色（例：赤や白）に設定
+	//			// blinkColor_ は点滅時に表示する色を保持するメンバ変数と想定
+	//			MV1SetDifColorScale(transform_.modelId, blinkColor_);
+	//		}
+	//		else
+	//		{
+	//			// 元の色に戻す
+	//			MV1SetDifColorScale(transform_.modelId, originalColor_);
+	//		}
+	//	}
+	//}
 }
 
 void EnemyBase::UpdateDeath(void)
