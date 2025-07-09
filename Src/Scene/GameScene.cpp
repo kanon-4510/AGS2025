@@ -278,12 +278,15 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 	}*/
 
 	// 再利用可能なアイテムを探す
-	for (auto& item : items_) {
-		if (!item->GetIsAlive()) {
-			OutputDebugStringA("再利用アイテムを使用\n");
-			item->Respawn(spawnPos);
-			item->SetScale(scale);
-			return item;
+	if (itemType == Item::TYPE::WATER)
+	{
+		for (auto& item : items_) {
+			if (!item->GetIsAlive() && item->GetItemType() == Item::TYPE::WATER) {
+				OutputDebugStringA("再利用アイテムを使用\n");
+				item->Respawn(spawnPos);
+				item->SetScale(scale);
+				return item;
+			}
 		}
 	}
 

@@ -74,7 +74,7 @@ public:
 	bool IsAlive(void);			// 生存判定
 	void SetAlive(bool alive);	// 生存判定
 
-	void Damage(int damage);	// ダメージを与える
+	void Damage(int damage);	// ダメージを受ける
 
 	// 死亡時のドロップアイテムを決める関数（デフォルトはNONE）
 	virtual Item::TYPE GetDropItemType() const;
@@ -119,6 +119,13 @@ protected:
 	bool isAttack_P = false;	//攻撃判定
 	bool isAttack_T = false;	//攻撃判定
 
+	//ダメージに関する変数と定数
+	COLOR_F originalColor_;  // デフォルトは白
+	COLOR_F blinkColor_;     // 点滅中は赤
+	bool isDamageBlinking_ = false;
+	int damageBlinkTimer_ = 0;	//点滅する時間
+	int blinkInterval_ = 6;		// 6フレームごとに色切替
+
 	STATE state_;	//状態管理
 
 	float speedAnim_; // 再生速度（共通）
@@ -150,6 +157,7 @@ protected:
 	
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
+	//攻撃関係
 	void AttackCollisionPos(void);	//攻撃用関数
 	void EnemyToPlayer(void);		//敵がプレイヤー攻撃
 	void EnemyToTree(void);			//敵が木を攻撃
