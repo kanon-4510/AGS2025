@@ -59,8 +59,7 @@ void EnemyThorn::SetParam(void)
 
 Item::TYPE EnemyThorn::GetDropItemType() const
 {
-	int randVal = rand() % 2;
-	if (randVal == 0)
+	if (GetRand(1))
 	{
 		return Item::TYPE::WATER;
 	}
