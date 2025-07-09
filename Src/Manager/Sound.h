@@ -5,64 +5,45 @@
 class Sound
 {
 public:
+    enum class TYPE
+    {
+        NONE,
+        SOUND_2D,
+        SOUND_3D,
+    };
 
-	// サウンドタイプ
-	enum class TYPE
-	{
-		NONE,
-		SOUND_2D,	//2D音響
-		SOUND_3D,	//3D音響
-	};
+    enum class TIMES
+    {
+        ONCE,
+        LOOP,
+        FORCE_ONCE,  // ← 新しく追加
+    };
 
-	enum class TIMES
-	{
-		ONCE,	//1回
-		LOOP,	//繰り返し
-	};
+    static const int MAX_HANDLE_NUM = 5;
 
-	// コンストラクタ
-	Sound(void);
-	// コンストラクタ
-	Sound(TYPE type, const std::string& path);
+    Sound(void);
+    Sound(TYPE type, const std::string& path);
+    ~Sound(void);
 
-	// デストラクタ
-	~Sound(void);
+    void Update(VECTOR pos);
+    void Load(void);
+    void Release(void);
 
-	//3D 座標更新処理
-	void Update(VECTOR pos);
+    bool Play(TIMES times); // 2D音再生
+    bool Play(VECTOR pos, float radius, TIMES times); // 3D音再生（未対応だが必要なら拡張可能）
 
-	// 読み込み
-	void Load(void);
+    void Stop(void);
+    bool CheckMove(void);
+    bool CheckLoad(void);
 
-	// 解放
-	void Release(void);
+    void ChangeVolume(float per);
+    void ChangeMaxVolume(float per);
 
-	TYPE soundType_;
-
-	// リソースの読み込み先
-	std::string path_;
-
-	// 音のハンドルID
-	int handleId_;
-
-	//音の最大音量
-	int maxVolume_;
-
-	//3D用
-	VECTOR pos_;	//座標
-	float radius_;	//有効範囲
-
-	bool Play(TIMES times);						//2D用音源再生
-	bool Play(VECTOR pos, float radius, TIMES times);	//3D用音源再生
-
-	void Stop(void);	//再生中の音源を停止する
-
-	bool CheckMove(void);	//再生中かを確認
-
-	bool CheckLoad(void);	//ロードしているかを確認
-
-	void ChengeVolume(float per);	//音の大きさを変える
-
-	void ChengeMaxVolume(float per);
-
+private:
+    TYPE soundType_;
+    std::string path_;
+    int handleIds_[MAX_HANDLE_NUM];
+    int maxVolume_;
+    VECTOR pos_;
+    float radius_;
 };

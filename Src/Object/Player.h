@@ -32,7 +32,7 @@ public:
 	static constexpr float TIME_JUMP_IN = 0.5f;
 
 	//影の大きさ
-	static constexpr float PLAYER_SHADOW_SIZE = 30.0f;
+	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
 
 	// 煙エフェクト発生間隔

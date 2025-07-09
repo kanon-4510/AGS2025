@@ -1,167 +1,172 @@
 #include "Sound.h"
+#include <algorithm>
 
 Sound::Sound(void)
 {
-	soundType_ = TYPE::NONE;
-	path_ = "";
-
-	handleId_ = -1;
-	pos_ = { 0.0f,0.0f,0.0f };
-	radius_ = 0.0f;
-	maxVolume_ = 255;
+    soundType_ = TYPE::NONE;
+    path_ = "";
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        handleIds_[i] = -1;
+    }
+    pos_ = { 0.0f, 0.0f, 0.0f };
+    radius_ = 0.0f;
+    maxVolume_ = 255;
 }
 
 Sound::Sound(TYPE type, const std::string& path)
 {
-	soundType_ = type;
-	path_ = path;
-
-	handleId_ = -1;
-	pos_ = { 0.0f,0.0f,0.0f };
-	radius_ = 0.0f;
-	maxVolume_ = 255;
+    soundType_ = type;
+    path_ = path;
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        handleIds_[i] = -1;
+    }
+    pos_ = { 0.0f, 0.0f, 0.0f };
+    radius_ = 0.0f;
+    maxVolume_ = 255;
 }
 
 Sound::~Sound(void)
 {
-
+    Release();
 }
 
 void Sound::Update(VECTOR pos)
 {
-	if (soundType_ != TYPE::SOUND_3D || CheckSoundMem(handleId_) != 1)
-	{
-		//3D以外　もしくは再生していない場合
-		return;
-	}
-	int i = Set3DPositionSoundMem(pos, handleId_);
-	if (i == -1)
-	{
-		return;
-	}
-	pos_ = pos;
+    if (soundType_ != TYPE::SOUND_3D)
+        return;
+
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        if (CheckSoundMem(handleIds_[i]) == 1)
+        {
+            Set3DPositionSoundMem(pos, handleIds_[i]);
+        }
+    }
+
+    pos_ = pos;
 }
 
 void Sound::Load(void)
 {
-	switch (soundType_)
-	{
-	case Sound::TYPE::NONE:
-		break;
-	case Sound::TYPE::SOUND_2D:
-		SetCreate3DSoundFlag(false);
-		handleId_ = LoadSoundMem(path_.c_str());
-		break;
-	case Sound::TYPE::SOUND_3D:
-		SetCreate3DSoundFlag(true);
-		handleId_ = LoadSoundMem(path_.c_str());
-		break;
-	default:
-		break;
-	}
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        SetCreate3DSoundFlag(soundType_ == TYPE::SOUND_3D);
+        handleIds_[i] = LoadSoundMem(path_.c_str());
+    }
 }
 
 void Sound::Release(void)
 {
-	if (handleId_ == -1)
-	{
-		return;
-	}
-	if (CheckSoundMem(handleId_) == 1)
-	{
-		StopSoundMem(handleId_);
-	}
-	DeleteSoundMem(handleId_);
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        if (handleIds_[i] != -1)
+        {
+            StopSoundMem(handleIds_[i]);
+            DeleteSoundMem(handleIds_[i]);
+            handleIds_[i] = -1;
+        }
+    }
 }
 
 bool Sound::Play(TIMES times)
 {
-	if (soundType_ != TYPE::SOUND_2D || handleId_ == -1)
-	{
-		return false;	//失敗
-	}
-	if (CheckMove())
-	{
-		return false;
-	}
-	int i = PlaySoundMem(handleId_, times == TIMES::ONCE ? DX_PLAYTYPE_BACK : DX_PLAYTYPE_LOOP, true);
-	ChengeVolume(1.0f);
-	return i == 0 ? true : false;
+    if (soundType_ != TYPE::SOUND_2D)
+        return false;
+
+    if (times == TIMES::ONCE)
+    {
+        // どれか一つでも再生中なら無視
+        for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+        {
+            if (CheckSoundMem(handleIds_[i]) == 1)
+                return false;
+        }
+        int result = PlaySoundMem(handleIds_[0], DX_PLAYTYPE_BACK, TRUE);
+        ChangeVolume(1.0f);
+        return result == 0;
+    }
+
+    if (times == TIMES::FORCE_ONCE || times == TIMES::LOOP)
+    {
+        for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+        {
+            if (CheckSoundMem(handleIds_[i]) != 1)
+            {
+                int result = PlaySoundMem(handleIds_[i], times == TIMES::LOOP ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK, TRUE);
+                ChangeVolume(1.0f);
+                return result == 0;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool Sound::Play(VECTOR pos, float radius, TIMES times)
 {
-	if (soundType_ != TYPE::SOUND_3D || handleId_ == -1)
-	{
-		return false;	//失敗
-	}
-	if (CheckMove())
-	{
-		return false;
-	}
-	int i = Set3DPositionSoundMem(pos, handleId_);
-	if (i == -1)
-	{
-		return false;
-	}
-	i = Set3DRadiusSoundMem(radius, handleId_);
-	if (i == -1)
-	{
-		return false;
-	}
-	i = PlaySoundMem(handleId_, times == TIMES::ONCE ? DX_PLAYTYPE_BACK : DX_PLAYTYPE_LOOP, true);
-	if (i == -1)
-	{
-		return false;
-	}
-	pos_ = pos;
-	radius_ = radius;
-	return true;
+    if (soundType_ != TYPE::SOUND_3D)
+        return false;
+
+    // ※今回は ONCE / FORCE_ONCE の違いは未実装（必要あれば対応可）
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        if (CheckSoundMem(handleIds_[i]) != 1)
+        {
+            Set3DPositionSoundMem(pos, handleIds_[i]);
+            Set3DRadiusSoundMem(radius, handleIds_[i]);
+            int result = PlaySoundMem(handleIds_[i], times == TIMES::LOOP ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK, TRUE);
+            ChangeVolume(1.0f);
+            this->pos_ = pos;
+            this->radius_ = radius;
+            return result == 0;
+        }
+    }
+
+    return false;
 }
 
 void Sound::Stop(void)
 {
-	if (CheckSoundMem(handleId_) != 1)
-	{
-		return;
-	}
-	int i = StopSoundMem(handleId_);
-	if (i == -1)
-	{
-		return;
-	}
-	pos_ = { 0.0f,0.0f,0.0f };
-	radius_ = 0.0f;
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        if (CheckSoundMem(handleIds_[i]) == 1)
+        {
+            StopSoundMem(handleIds_[i]);
+        }
+    }
+    pos_ = { 0.0f, 0.0f, 0.0f };
+    radius_ = 0.0f;
 }
 
 bool Sound::CheckMove(void)
 {
-	if (CheckSoundMem(handleId_) != 1)
-	{
-		return false;
-	}
-	return true;
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        if (CheckSoundMem(handleIds_[i]) == 1)
+            return true;
+    }
+    return false;
 }
 
 bool Sound::CheckLoad(void)
 {
-	return handleId_ != -1;
+    return handleIds_[0] != -1;
 }
 
-void Sound::ChengeVolume(float per)
+void Sound::ChangeVolume(float per)
 {
-	if (per > 1.0f)
-	{
-		per = 1.0f;
-	}
-	if (per < 0.0f)
-	{
-		per = 0.0f;
-	}
-	ChangeVolumeSoundMem(per * maxVolume_, handleId_);
+    per = std::clamp(per, 0.0f, 1.0f);
+    int vol = static_cast<int>(per * maxVolume_);
+    for (int i = 0; i < MAX_HANDLE_NUM; ++i)
+    {
+        ChangeVolumeSoundMem(vol, handleIds_[i]);
+    }
 }
 
-void Sound::ChengeMaxVolume(float per)
+void Sound::ChangeMaxVolume(float per)
 {
-	maxVolume_ = 255 * per;
+    per = std::clamp(per, 0.0f, 1.0f);
+    maxVolume_ = static_cast<int>(255 * per);
 }

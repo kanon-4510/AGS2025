@@ -833,7 +833,7 @@ void Player::ProcessAttack(void)
 		}
 		else if (!isAttack2_ && !isAttack_ && !exAttack_ && isHit_N)
 		{
-			// Treeのレベルが25以上でクールタイム10秒がたっているならATTACK1を許可
+			// Treeのレベルが25以上ならATTACK2を許可
 			if (tree_ && tree_->GetLv() >= 25 && !isAttack2_)
 			{
 				animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
@@ -845,7 +845,7 @@ void Player::ProcessAttack(void)
 		}
 		else if (!exAttack_ && !isAttack_ && !isAttack2_ && isHit_E)
 		{
-			// Treeのレベルが25以上でクールタイム10秒がたっているならATTACK1を許可
+			// Treeのレベルが50以上でクールタイム10秒がたっているならEXATTACKを許可
 			if (tree_ && tree_->GetLv() >= 50 && !exAttack_ && IsExAttackReady())
 			{
 				animationController_->Play((int)ANIM_TYPE::EXATTACK, false);

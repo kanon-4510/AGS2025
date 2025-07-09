@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include"../Application.h"
 #include"../Manager/SceneManager.h"
+#include "../Manager/InputManager.h"
 #include"../Manager/SoundManager.h"
 #include"DemoScene.h"
 
@@ -37,14 +38,19 @@ void DemoScene::Init(void)
 }
 void DemoScene::Update(void)
 {
+	InputManager& ins = InputManager::GetInstance();
+
 	old_ = now_;
 	now_ = CheckHitKey(KEY_INPUT_RETURN);
+
+	if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+		SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::FORCE_ONCE);
+	}
+
 	if (old_ == 0 && now_ == 1)
 	{
 		PlayMusicMem(demoSound_, DX_PLAYTYPE_BACK);
 		txt_++;
-
-		SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 	}
 	if (txt_ == static_cast<int>(TXT::MAX) - 1)
 	{

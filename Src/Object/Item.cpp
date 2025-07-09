@@ -155,6 +155,11 @@ void Item::Respawn(const VECTOR& newPos)
 	// 必要なら他の状態もリセット
 }
 
+Item::TYPE Item::GetItemType(void) const
+{
+	return itemType_;
+}
+
 void Item::Collision(void)
 {
 	collisionLocalPos_ = pos_;
