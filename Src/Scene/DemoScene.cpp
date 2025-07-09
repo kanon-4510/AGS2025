@@ -103,6 +103,24 @@ void DemoScene::Draw(void)
 	if (cnt_ % 90 <= 45)DrawRotaGraph(1490, 985, 1.2, 0, tri_, true);
 	else(DrawRotaGraph(1490, 975, 1.2, 0, tri_, true));
 
+	// 三角形の中心座標（god_の描画位置と合わせる）
+	int centerX = Application::SCREEN_SIZE_X / 2;
+	int centerY = Application::SCREEN_SIZE_Y / 2 - 200;
+
+	// 半径（辺の長さではなく、中心から頂点までの距離）
+	float radius = 315.0f;
+
+	// 頂点座標を計算（正三角形）
+	int x1 = centerX + static_cast<int>(radius * cosf(DX_PI * 0.0f / 180.0f));
+	int y1 = centerY + static_cast<int>(radius * sinf(DX_PI * 0.0f / 180.0f));
+	int x2 = centerX + static_cast<int>(radius * cosf(DX_PI * 120.0f / 180.0f));
+	int y2 = centerY + static_cast<int>(radius * sinf(DX_PI * 120.0f / 180.0f));
+	int x3 = centerX + static_cast<int>(radius * cosf(DX_PI * 240.0f / 180.0f));
+	int y3 = centerY + static_cast<int>(radius * sinf(DX_PI * 240.0f / 180.0f));
+
+	// 三角形描画
+	DrawTriangle(x1, y1, x2, y2, x3, y3, GetColor(0, 255, 0), FALSE); // 枠のみ
+
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2-200,1,0,god_[gNo_],true);
 
 	if (txt_>3&&txt_<6)

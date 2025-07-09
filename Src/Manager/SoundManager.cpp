@@ -56,14 +56,24 @@ void SoundManager::Init(void)
 	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::LEVEL_UP_SE, res);
 
-	// アタック
-	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE.mp3");
+	// アタック1
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE1.mp3");
 	res.ChangeMaxVolume(1.0);
-	soundMap_.emplace(SRC::ATK_SE, res);
+	soundMap_.emplace(SRC::ATK_SE1, res);
+
+	// アタック2
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE2.mp3");
+	res.ChangeMaxVolume(1.0);
+	soundMap_.emplace(SRC::ATK_SE2, res);
+
+	// アタック3
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE3.mp3");
+	res.ChangeMaxVolume(1.0);
+	soundMap_.emplace(SRC::ATK_SE3, res);
 
 	// 決定
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "SetSE.mp3");
-	res.ChangeMaxVolume(0.8);
+	res.ChangeMaxVolume(0.6);
 	soundMap_.emplace(SRC::SET_SE, res);
 
 	// 警告

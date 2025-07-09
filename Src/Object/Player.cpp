@@ -830,6 +830,10 @@ void Player::ProcessAttack(void)
 
 			// è’ìÀ(çUåÇ)
 			CollisionAttack();
+
+			// âπäy
+			SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE1, Sound::TIMES::FORCE_ONCE);
+
 		}
 		else if (!isAttack2_ && !isAttack_ && !exAttack_ && isHit_N)
 		{
@@ -841,6 +845,9 @@ void Player::ProcessAttack(void)
 
 				// è’ìÀ(çUåÇ)
 				CollisionAttack2();
+
+				// âπäy
+				SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE2, Sound::TIMES::FORCE_ONCE);
 			}
 		}
 		else if (!exAttack_ && !isAttack_ && !isAttack2_ && isHit_E)
@@ -854,6 +861,9 @@ void Player::ProcessAttack(void)
 
 				// è’ìÀ(çUåÇ)
 				CollisionAttackEx();
+
+				// âπäy
+				SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE3, Sound::TIMES::FORCE_ONCE);
 			}
 		}
 	}
