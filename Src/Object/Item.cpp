@@ -80,8 +80,8 @@ void Item::Update(void)
 
 	// 距離の2乗
 	VECTOR diff = VSub(playerPos, itemPos);					// 差ベクトル（距離ベクトル）
-	float distance = AsoUtility::SqrMagnitudeF(diff);			// 差ベクトルの長さの2乗（距離の2乗）
-	float radiusSum = playerRadius + itemRadius;
+	float distance = AsoUtility::SqrMagnitudeF(diff);		// 差ベクトルの長さの2乗（距離の2乗）
+	float radiusSum = playerRadius + itemRadius;			// playerとitemの当たり判定用の半径を合計
 
 	// 球体同士の当たり判定
 	if (distance < radiusSum * radiusSum)
