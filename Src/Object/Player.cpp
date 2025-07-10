@@ -42,6 +42,10 @@ Player::Player(void)
 	imgShadow_ = -1;
 	stepJump_ = 0.0f; //初期化しなかったら遷移時にジャンプを押してる間ジャンプし続ける
 
+	//スピードアップ用のフラグ
+	speedUpFlag_ = false;
+	speedUpCnt_ = 1200;
+
 	//攻撃の初期化
 	normalAttack_ = 2;
 	slashAttack_ = 1;
@@ -60,6 +64,8 @@ Player::Player(void)
 
 	// 無敵状態
 	invincible_ = false;
+	mutekiCnt_ = 600;
+
 	// 移動が可能かどうか
 	canMove_ = true;
 	// 所持上限かどうか
@@ -272,6 +278,9 @@ void Player::UpdatePlay(void)
 {
 	if (canMove_)
 	{
+		//スピードアップの制限時間
+		SpeedUpTimer();
+		
 		//移動処理
 		ProcessMove();
 
@@ -306,6 +315,7 @@ void Player::UpdatePlay(void)
 		// 歩きエフェクト
 		EffectFootSmoke();
 
+		MutekiTimer();
 	}
 }
 
@@ -415,7 +425,15 @@ void Player::DrawDebug(void)
 	}
 	if (powerUpFlag_)
 	{
-		DrawFormatString(50, 80, GetColor(255, 0, 0), "パワーアップ: 残り%d秒", powerUpCnt_);
+		DrawFormatString(50, 120, GetColor(255, 0, 0), "パワーアップ: 残り%d秒", powerUpCnt_);
+	}
+	if (speedUpFlag_)
+	{
+		DrawFormatString(50, 150, GetColor(255, 0, 0), "スピードアップ: 残り%d秒", speedUpCnt_);
+	}
+	if (invincible_)
+	{
+		DrawFormatString(50, 180, GetColor(255, 0, 0), "無敵: 残り%d秒", mutekiCnt_);
 	}
 	
 
@@ -473,7 +491,12 @@ void Player::ProcessMove(void)
 			{
 				speed_ = SPEED_RUN;
 			}
-
+			
+			//アイテム獲得時のスピード
+			if (speedUpFlag_)
+			{
+				speed_ = speed_ * STATUS_UP;
+			}
 
 			moveDir_ = dir;
 			//移動量
@@ -926,7 +949,7 @@ bool Player::IsExAttackReady() const
 
 void Player::Damage(int damage)
 {
-	if (pstate_ == PlayerState::DOWN) return;  // ダウン中は無敵
+	if (pstate_ == PlayerState::DOWN || invincible_) return;  // ダウン中は無敵
 	hp_ -= damage;
 
 	if (hp_ <= 0) {
@@ -966,9 +989,24 @@ void Player::PowerUp(void)
 	}
 }
 
+void Player::SpeedUpTimer(void)
+{
+	//攻撃アップ
+	if (speedUpFlag_)
+	{
+		speedUpCnt_--;
+
+		if (speedUpCnt_ <= 0)
+		{
+			speedUpFlag_ = false;
+			speedUpCnt_ = 1200;
+		}
+	}
+}
+
 void Player::SpeedUp(void)
 {
-	//15kara20
+	speedUpFlag_ = true;
 }
 
 void Player::Heal(void)
@@ -976,9 +1014,24 @@ void Player::Heal(void)
 	hp_ = HP;
 }
 
+void Player::MutekiTimer(void)
+{
+	//攻撃アップ
+	if (invincible_)
+	{
+		mutekiCnt_--;
+
+		if (mutekiCnt_ <= 0)
+		{
+			invincible_ = false;
+			mutekiCnt_ = 600;
+		}
+	}
+}
+
 void Player::Muteki(void)
 {
-	//10kara15
+	invincible_ = true;
 }
 
 void Player::StartRevival()

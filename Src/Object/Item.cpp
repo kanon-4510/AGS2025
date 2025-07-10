@@ -202,11 +202,13 @@ void Item::ItemUse(void)
 		player_.PowerUp();
 		break;
 	case Item::TYPE::SPEED:
+		player_.SpeedUp();
 		break;
 	case Item::TYPE::HEAL:
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
+		player_.Muteki();
 		break;
 	
 	default:

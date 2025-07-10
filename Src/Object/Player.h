@@ -24,7 +24,7 @@ public:
 	static constexpr float SPEED_RUN = 10.0f;
 	
 	//ステータス変更用の値
-	static constexpr int STATUS_UP = 2;
+	static constexpr float STATUS_UP = 2.0f;
 
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
@@ -170,7 +170,9 @@ private:
 
 	// 移動スピード
 	float speed_;
-	
+	bool speedUpFlag_;	//スピードが上がったている間treu
+	int speedUpCnt_;	//スピードアップの時間(20秒)
+
 	// 移動方向
 	VECTOR moveDir_;
 	
@@ -215,6 +217,8 @@ private:
 
 	// 無敵状態
 	bool invincible_;
+	int mutekiCnt_;
+
 	// 移動が可能かどうか
 	bool canMove_;
 
@@ -278,6 +282,12 @@ private:
 
 	//パワーアップの制限時間
 	void PowerUpTimer(void);
+
+	//スピードアップの制限時間
+	void SpeedUpTimer(void);
+
+	//無敵時間
+	void MutekiTimer(void);
 
 	//攻撃モーション
 	void ProcessAttack(void);
