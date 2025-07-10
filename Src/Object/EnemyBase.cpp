@@ -169,17 +169,20 @@ void EnemyBase::UpdateDeath(void)
 		// マップ中心との距離を計算
 		float distance = VSize(VSub(dropPos, VGet(0, 0, 0)));
 
-		// 距離でサイズを変える
-		float scale = 0.1f;
-		if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
-			scale = 0.2f;
-		}
-		else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
-			scale = 0.15f;
-		}
-
 		// ドロップアイテムを取得
 		Item::TYPE dropType = GetDropItemType();
+
+		// 距離でサイズを変える
+		float scale = 0.1f;
+		if (dropType == Item::TYPE::WATER)
+		{
+			if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
+				scale = 0.2f;
+			}
+			else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
+				scale = 0.15f;
+			}
+		}
 
 		// アイテムを1つ出す（サイズ調整）
 		scene_->CreateItem(dropPos, scale, dropType);
