@@ -1009,6 +1009,7 @@ void Player::Heal(void)
 void Player::Muteki(void)
 {
 	invincible_ = true;
+
 }
 
 void Player::StartRevival()
