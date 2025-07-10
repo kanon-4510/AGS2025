@@ -20,6 +20,7 @@
 #include "../Object/Enemy/EnemyOnion.h"
 #include "../Object/Enemy/EnemyThorn.h"
 #include "../Object/Enemy/EnemyVirus.h"
+#include "../Object/Enemy/EnemyBoss.h"
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "../Object/Item.h"
@@ -84,13 +85,18 @@ void GameScene::Init(void)
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
 
 	// カウンタ
+	uiFadeStart_ = false;
+	uiFadeFrame_ = 0;
 	uiDisplayFrame_ = 0;
+
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
+
+	isB_ = 0;
 }
 
 void GameScene::Update(void)
@@ -102,6 +108,13 @@ void GameScene::Update(void)
 	if (ins.IsTrgDown(KEY_INPUT_TAB))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
+	if (tree_->GetLv()==75 && isB_==0)
+	{
+		isB_=1;
+		EnemyCreate();
+		isB_=2;
+
 	}
 	if (tree_->GetLv() >= 100)
 	{
@@ -154,14 +167,32 @@ void GameScene::Draw(void)
 
 	DrawMiniMap();
 
-	if (uiDisplayFrame_ < 600) {
-		int alpha = 255;
-		if (uiDisplayFrame_ > 540) { // 残り60フレームでフェード
-			alpha = static_cast<int>(255 * (600 - uiDisplayFrame_) / 60.0f);
+	// 入力チェック or 時間経過でフェード開始
+	if (!uiFadeStart_) {
+		if ((CheckHitKey(KEY_INPUT_W)
+			|| CheckHitKey(KEY_INPUT_A)
+			|| CheckHitKey(KEY_INPUT_S)
+			|| CheckHitKey(KEY_INPUT_D))
+			|| uiDisplayFrame_ >= 240)  // 時間経過による自動フェード
+		{
+			uiFadeStart_ = true;
+			uiFadeFrame_ = 0;
 		}
+	}
+
+	if (!uiFadeStart_) {
+		// フェード前（通常表示）
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		DrawGraph(400, 40, imgGameUi1_, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	else if (uiFadeFrame_ < 60) {
+		// フェード中（60フレームで徐々に消す）
+		int alpha = static_cast<int>(255 * (60 - uiFadeFrame_) / 60.0f);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawGraph(400, 40, imgGameUi1_, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		uiFadeFrame_++;
 	}
 	
 	// ヘルプ
@@ -281,7 +312,6 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 
 void GameScene::EnemyCreate(void)
 {
-
 	int randDir = GetRand(3);
 	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
 	switch (randDir)//位置
@@ -309,34 +339,43 @@ void GameScene::EnemyCreate(void)
 	std::shared_ptr<EnemyBase> enemy;
 
 	//敵のtype
-	EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 1));
-	switch (type_)
+	if(isB_==1)
 	{
-	case EnemyBase::TYPE::SABO:
-		enemy = std::make_shared<EnemyCactus>();
-		break;
-	case EnemyBase::TYPE::DOG:
-		enemy = std::make_shared<EnemyDog>();
-		break;
-	case EnemyBase::TYPE::MIMIC:
-		enemy = std::make_shared<EnemyMimic>();
-		break;
-	case EnemyBase::TYPE::MUSH:
-		enemy = std::make_shared<EnemyMushroom>();
-		break;
-	case EnemyBase::TYPE::ONION:
-		enemy = std::make_shared<EnemyOnion>();
-		break;
-	case EnemyBase::TYPE::TOGE:
-		enemy = std::make_shared<EnemyThorn>();
-		break;
-	case EnemyBase::TYPE::VIRUS:
-		enemy = std::make_shared<EnemyVirus>();
-		break;
-	default:
-		enemy = std::make_shared<EnemyCactus>();
-		break;
+		EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(EnemyBase::TYPE::BOSS);
+		enemy = std::make_shared<EnemyBoss>();
 	}
+	else
+	{
+		EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 2));
+		switch (type_)
+		{
+		case EnemyBase::TYPE::SABO:
+			enemy = std::make_shared<EnemyCactus>();
+			break;
+		case EnemyBase::TYPE::DOG:
+			enemy = std::make_shared<EnemyDog>();
+			break;
+		case EnemyBase::TYPE::MIMIC:
+			enemy = std::make_shared<EnemyMimic>();
+			break;
+		case EnemyBase::TYPE::MUSH:
+			enemy = std::make_shared<EnemyMushroom>();
+			break;
+		case EnemyBase::TYPE::ONION:
+			enemy = std::make_shared<EnemyOnion>();
+			break;
+		case EnemyBase::TYPE::TOGE:
+			enemy = std::make_shared<EnemyThorn>();
+			break;
+		case EnemyBase::TYPE::VIRUS:
+			enemy = std::make_shared<EnemyVirus>();
+			break;
+		default:
+			enemy = std::make_shared<EnemyCactus>();
+			break;
+		}
+	}
+
 	// 生成された敵の初期化
 	enemy->SetGameScene(this);
 	enemy->SetPos(randPos);
