@@ -199,11 +199,12 @@ void Item::ItemUse(void)
 		player_.wHit(transform_.scl.x);
 		break;
 	case Item::TYPE::POWER:
-		/*player_.*/
+		player_.PowerUp();
 		break;
 	case Item::TYPE::SPEED:
 		break;
 	case Item::TYPE::HEAL:
+		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
 		break;

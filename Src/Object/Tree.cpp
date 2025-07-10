@@ -249,7 +249,7 @@ void Tree::DrawDebugTree2Player(void)
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = 650.0f;
+			viewRange_ = 450.0f;
 			
 		}
 		else if(grow_ == GROW::OLD)

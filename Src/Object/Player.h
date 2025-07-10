@@ -22,6 +22,9 @@ public:
 	// スピード
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
+	
+	//ステータス変更用の値
+	static constexpr int STATUS_UP = 2;
 
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
@@ -121,6 +124,18 @@ public:
 	//ダメージ
 	void Damage(int damage);
 
+	//パワーアップ
+	void PowerUp(void);
+	
+	//スピードアップ
+	void SpeedUp(void);
+
+	//回復
+	void Heal(void);
+
+	//無敵
+	void Muteki(void);
+
 private:
 
 	Tree* tree_;
@@ -180,12 +195,19 @@ private:
 	// ジャンプの入力受付時間
 	float stepJump_;
 	
+	//攻撃力
+	int normalAttack_;
+	int slashAttack_;
+	int exrAttack_;
+
 	//攻撃の判定
+	bool powerUpFlag_;	//パワーが上がったている間treu
 	bool isAttack_;		//縦斬り
 	bool isAttack2_;	//横斬り
 	bool exAttack_;		//回転斬り
 	int exTimer_;		// クールタイム 10秒（ミリ秒）
 	int lastExTime_;	// 最初から使えるようにする
+	int powerUpCnt_;	//2パワーアップの時間(20秒)
 	
 	//ステ関連
 	int hp_;
@@ -253,6 +275,9 @@ private:
 	void ProcessJump(void);
 	// 着地モーション終了
 	bool IsEndLanding(void);
+
+	//パワーアップの制限時間
+	void PowerUpTimer(void);
 
 	//攻撃モーション
 	void ProcessAttack(void);
