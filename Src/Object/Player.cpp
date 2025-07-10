@@ -64,7 +64,6 @@ Player::Player(void)
 
 	// 無敵状態
 	invincible_ = false;
-	mutekiCnt_ = 600;
 
 	// 移動が可能かどうか
 	canMove_ = true;
@@ -315,7 +314,6 @@ void Player::UpdatePlay(void)
 		// 歩きエフェクト
 		EffectFootSmoke();
 
-		MutekiTimer();
 	}
 }
 
@@ -431,11 +429,6 @@ void Player::DrawDebug(void)
 	{
 		DrawFormatString(50, 150, GetColor(255, 0, 0), "スピードアップ: 残り%d秒", speedUpCnt_);
 	}
-	if (invincible_)
-	{
-		DrawFormatString(50, 180, GetColor(255, 0, 0), "無敵: 残り%d秒", mutekiCnt_);
-	}
-	
 
 	//capsule_->Draw();
 
@@ -1013,22 +1006,6 @@ void Player::Heal(void)
 {
 	hp_ = HP;
 }
-
-void Player::MutekiTimer(void)
-{
-	//攻撃アップ
-	if (invincible_)
-	{
-		mutekiCnt_--;
-
-		if (mutekiCnt_ <= 0)
-		{
-			invincible_ = false;
-			mutekiCnt_ = 600;
-		}
-	}
-}
-
 void Player::Muteki(void)
 {
 	invincible_ = true;

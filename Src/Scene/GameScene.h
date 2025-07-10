@@ -53,4 +53,6 @@ private:
 	int enCounter;//“G‚ÌoŒ»•p“x
 
 	int isB_;//‚Ú‚·
+
+	bool endFlameLoad_;
 };

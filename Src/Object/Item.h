@@ -4,6 +4,7 @@
 #include <vector>
 
 class Player;
+class Tree;
 class Collider;
 
 class Item : public ActorBase
@@ -23,7 +24,7 @@ public:
 	};
 
 	// コンストラクタ
-	Item(Player& player, const Transform& transform, TYPE itemType);
+	Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree);
 
 	// デストラクタ
 	~Item(void);
@@ -50,6 +51,7 @@ public:
 	void DrawDebug(void);	//デバッグ用
 private:
 	Player& player_;
+	Tree& tree_;
 	TYPE itemType_;	//ドロップするアイテムの種類
 
 	int modelId_;//モデルの格納
