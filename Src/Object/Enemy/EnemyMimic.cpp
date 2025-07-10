@@ -58,8 +58,8 @@ void EnemyMimic::SetParam(void)
 
 Item::TYPE EnemyMimic::GetDropItemType() const
 {
-	int randVal = rand() % 2;
-	if (randVal == 0)
+	
+	if (GetRand(1))
 	{
 		return Item::TYPE::WATER;
 	}

@@ -31,7 +31,6 @@ public:
 
 	void AddItem(std::shared_ptr<Item> item);
 	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale,Item::TYPE itemType);
-
 private:
 	void EnemyCreate(void);
 
@@ -47,6 +46,11 @@ private:
 	int imgGameUi1_;
 	int uiDisplayFrame_;	//カウンタ
 
+	bool uiFadeStart_ = false;
+	int uiFadeFrame_ = 0;
+
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
+
+	int isB_;//ぼす
 };

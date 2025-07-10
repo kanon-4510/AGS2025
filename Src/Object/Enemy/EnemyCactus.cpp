@@ -2,8 +2,7 @@
 #include "../../Application.h"
 #include "../Common/AnimationController.h"
 #include "../../Manager/ResourceManager.h"
-#include "../../Utility/AsoUtility.h"/*
-#include "../Common/Capsule.h"*/
+#include "../../Utility/AsoUtility.h"
 
 EnemyCactus::EnemyCactus():EnemyBase()
 {
