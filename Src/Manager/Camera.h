@@ -67,6 +67,9 @@ public:
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
 
+	bool isPaused_ = false; // ポーズ状態フラグ
+	void SetPaused(bool paused) { isPaused_ = paused; }
+
 private:
 
 	// カメラが追従対象とするTransform

@@ -37,30 +37,31 @@ void Camera::Update(void)
 
 void Camera::SetBeforeDraw(void)
 {
-
-	// クリップ距離を設定する(SetDrawScreenでリセットされる)
+	// カメラの遠近設定（これがないと描画がおかしくなる）
 	SetCameraNearFar(CAMERA_NEAR, CAMERA_FAR);
 
-	switch (mode_)
-	{
-	case Camera::MODE::FIXED_POINT:
-		SetBeforeDrawFixedPoint();
-		break;
-	case Camera::MODE::FOLLOW:
-		SetBeforeDrawFollow();
-		break;
+	// ポーズ中は追従や回転の更新をスキップ
+	if (!isPaused_) {
+		switch (mode_)
+		{
+		case Camera::MODE::FIXED_POINT:
+			SetBeforeDrawFixedPoint();
+			break;
+		case Camera::MODE::FOLLOW:
+			SetBeforeDrawFollow(); // pos_, targetPos_, cameraUp_ を更新
+			break;
+		}
 	}
 
-	// カメラの設定(位置と注視点による制御)
+	// 現在のカメラ位置・向きで描画設定
 	SetCameraPositionAndTargetAndUpVec(
-		pos_, 
-		targetPos_, 
+		pos_,
+		targetPos_,
 		cameraUp_
 	);
 
-	// DXライブラリのカメラとEffekseerのカメラを同期する。
+	// Effekseer のカメラ同期
 	Effekseer_Sync3DSetting();
-
 }
 
 void Camera::Draw(void)
