@@ -1,5 +1,8 @@
 #pragma once
+#include <memory>
 #include <vector>
+
+class EnemyBase;
 
 struct MapVector2
 {
@@ -13,7 +16,8 @@ public:
 
     void Init(void);
 
-    void Draw(const MapVector2& playerPos, float playerAngleRad, const std::vector<MapVector2>& enemies, 
+    void Draw(const MapVector2& playerPos, float playerAngleRad, 
+        const std::vector<std::shared_ptr<EnemyBase>>& enemies,
         const std::vector<MapVector2>& items);
 
 private:
@@ -41,7 +45,7 @@ private:
     //プレイヤーの位置をミニマップ上に変換して描画
     void DrawPlayer(const MapVector2& playerPos, float playerAngleRad);
     //敵をリストで受け取り、ミニマップ上に変換して描画
-    void DrawEnemies(const std::vector<MapVector2>& enemies);
+    void DrawEnemies(const std::vector<std::shared_ptr<EnemyBase>>& enemies);
     //アイテムをリストで受け取り、ミニマップ上に変換して描画
     void DrawItems(const std::vector<MapVector2>& items);
 
