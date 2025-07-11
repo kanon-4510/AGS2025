@@ -112,8 +112,6 @@ void GameScene::Init(void)
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
-
-	isB_ = 0;
 }
 
 void GameScene::Update(void)
