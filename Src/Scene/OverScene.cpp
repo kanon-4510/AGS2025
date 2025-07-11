@@ -161,10 +161,10 @@ void OverScene::Update(void)
 void OverScene::Draw(void)
 {
 	// 背景真っ黒
-	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+	DrawBox(0,0,Application::SCREEN_SIZE_X,Application::SCREEN_SIZE_Y,0x0,true);
 
 	// ゲームオーバー画像
-	DrawGraph(50, -100, imgGameOver_, true);
+	DrawGraph(Application::SCREEN_SIZE_X/2-555,50,imgGameOver_,true);
 
 	// プレイヤーモデル描画
 	MV1DrawModel(charactor_.modelId);
@@ -245,10 +245,12 @@ void OverScene::Draw(void)
 	const int msgY = 250;
 
 	// 画像描画
-	DrawGraph(msgX, msgY, imgDieTree_, TRUE);
+	SetFontSize(90);
+	DrawString(Application::SCREEN_SIZE_X/2-675,330,"ユグドラシルは死んでしまった…",0xffffff,true);
+	SetFontSize(16);
 
 	// 黒帯描画（maskLeftX_ は初期値 msgX + imgW から 徐々に msgX へ移動する想定）
-	DrawBox(maskLeftX_ - 420, msgY, msgX + imgW, msgY + imgH, GetColor(0, 0, 0), TRUE);
+	DrawBox(maskLeftX_ - 420, msgY, msgX + imgW, msgY + imgH,0x0,true);
 }
 
 void OverScene::Release(void)
@@ -258,7 +260,5 @@ void OverScene::Release(void)
 		MV1DeleteModel(charactor_.modelId);
 		charactor_.modelId = -1;
 	}
-
-	SetFontSize(16); // ゲーム内の標準サイズに合わせて変更
 	SoundManager::GetInstance().Stop(SoundManager::SRC::GAMEOVER_BGM);
 }
