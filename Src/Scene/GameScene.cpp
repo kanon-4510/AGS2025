@@ -84,44 +84,101 @@ void GameScene::Init(void)
 	// 画像
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
 
+	pauseImgs_[0] = resMng_.Load(ResourceManager::SRC::GOGAME).handleId_;
+	pauseImgs_[1] = resMng_.Load(ResourceManager::SRC::OPERATION).handleId_;
+	pauseImgs_[2] = resMng_.Load(ResourceManager::SRC::ITEMTEACH).handleId_;
+	pauseImgs_[3] = resMng_.Load(ResourceManager::SRC::GOTITLE).handleId_;
+
+	pauseExplainImgs_[0] = resMng_.Load(ResourceManager::SRC::PAUSEOPE).handleId_; // 操作説明
+	pauseExplainImgs_[1] = resMng_.Load(ResourceManager::SRC::PAUSEITEM).handleId_;   // アイテム概要
+
 	// カウンタ
 	uiFadeStart_ = false;
 	uiFadeFrame_ = 0;
 	uiDisplayFrame_ = 0;
 
+	// ポーズ
+	isPaused_ = false;
+	pauseSelectIndex_ = 0;
+
+	// カメラのポーズ解除
+	auto cam = SceneManager::GetInstance().GetCamera().lock();
+	if (cam) {
+		cam->SetPaused(false); // ← ここが重要！
+	}
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
-
-	isB_ = 0;
 }
 
 void GameScene::Update(void)
 {
+	InputManager& ins = InputManager::GetInstance();
+
+	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
+	if (ins.IsTrgDown(KEY_INPUT_TAB)) {
+		if (pauseState_ == PauseState::Menu) {
+			isPaused_ = !isPaused_;
+			pauseSelectIndex_ = 0;
+
+			// カメラのポーズ切り替え
+			mainCamera->SetPaused(isPaused_);
+		}
+		return; // TABを押したら他の処理はしない
+	}
+
+	// -------------------------
+	// ポーズ中：ゲームロジック停止、メニューだけ操作可
+	// -------------------------
+	if (isPaused_) {
+		if (pauseState_ == PauseState::Menu) {
+			if (ins.IsTrgDown(KEY_INPUT_DOWN)) {
+				pauseSelectIndex_ = (pauseSelectIndex_ + 1) % 4;
+			}
+			if (ins.IsTrgDown(KEY_INPUT_UP)) {
+				pauseSelectIndex_ = (pauseSelectIndex_ + 3) % 4;
+			}
+			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+				switch (pauseSelectIndex_) {
+				case 0: // ゲームに戻る
+					isPaused_ = false;
+					pauseState_ = PauseState::Menu;  // ← 必須
+					mainCamera->SetPaused(false);    // カメラ復帰も忘れずに
+					break;
+				case 1:
+					pauseState_ = PauseState::ShowControls;
+					break;
+				case 2:
+					pauseState_ = PauseState::ShowItems;
+					break;
+				case 3:
+					SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+					break;
+				}
+			}
+		}
+		else {
+			// 操作説明 or アイテム概要画面中 → Enterで戻る
+			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+				pauseState_ = PauseState::Menu;
+			}
+		}
+		return;
+	}
+
+	// -------------------------
+	// 通常時のゲーム進行（ポーズされてないときだけ）
+	// -------------------------
+
 	uiDisplayFrame_++;
 
-	// シーン遷移
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
-	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
-	}
-	if (tree_->GetLv()==75 && isB_==0)
-	{
-		isB_=1;
-		EnemyCreate();
-		isB_=2;
-
-	}
-	if (tree_->GetLv() >= 100)
-	{
+	if (tree_->GetLv() >= 100) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
-	if (tree_->GetHp() <= 0)
-	{
+	if (tree_->GetHp() <= 0) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
 
@@ -129,22 +186,18 @@ void GameScene::Update(void)
 	stage_->Update();
 	tree_->Update();
 	player_->Update();
-	for (auto& item : items_)
-	{
+	for (auto& item : items_) {
 		item->Update();
 	}
-	for (auto enemy : enemys_)
-	{
+	for (auto enemy : enemys_) {
 		enemy->Update();
 	}
 
-	//敵のエンカウント
+	// 敵のエンカウント処理
 	enCounter++;
-	if (enCounter > ENCOUNT)
-	{
+	if (enCounter > ENCOUNT) {
 		enCounter = 0;
-		if (ENEMY_MAX >= enemys_.size())
-		{
+		if (ENEMY_MAX >= enemys_.size()) {
 			EnemyCreate();
 		}
 	}
@@ -194,12 +247,40 @@ void GameScene::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		uiFadeFrame_++;
 	}
-	
-	// ヘルプ
-	DrawFormatString(30, 500, 0x000000, "移動　　：WASD");
-	DrawFormatString(30, 520, 0x000000, "カメラ　：矢印キー");
-	DrawFormatString(30, 540, 0x000000, "ダッシュ：左Shift");
-	DrawFormatString(30, 560, 0x000000, "攻撃　　：Eキー");
+
+	if (isPaused_) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+		DrawBox(0, 0, 1920, 1080, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		if (pauseState_ == PauseState::Menu) {
+			// 通常のポーズメニュー
+			const int startX = 700;
+			const int startY = 300;
+			const int spacing = 90;
+
+			for (int i = 0; i < 4; ++i) {
+				int y = startY + i * spacing;
+				DrawGraph(startX, y, pauseImgs_[i], true);
+			}
+		}
+		else if (pauseState_ == PauseState::ShowControls) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+			DrawBox(0, 0, 1920, 1080, GetColor(255, 255, 255), TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			DrawGraph(0, 0, pauseExplainImgs_[0], true);
+			DrawFormatString(30, 950, GetColor(255, 255, 255), "Enterキーで戻る");
+		}
+		else if (pauseState_ == PauseState::ShowItems) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+			DrawBox(0, 0, 1920, 1080, GetColor(255, 255, 255), TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			DrawGraph(0, 0, pauseExplainImgs_[1], true);
+			DrawFormatString(30, 950, GetColor(255, 255, 255), "Enterキーで戻る");
+		}
+
+		return;
+	}
 }
 
 void GameScene::Release(void)
@@ -299,7 +380,8 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 
 	// 再利用できなければ新しく作成
 	OutputDebugStringA("新規アイテムを作成\n");
-	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType);
+	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType,*
+		tree_);
 	newItem->Init(); // 初期化（モデル読み込み等）
 	newItem->Respawn(spawnPos);
 	newItem->SetScale(scale);

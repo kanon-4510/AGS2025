@@ -6,10 +6,11 @@
 #include "./Common/Capsule.h"
 #include "ActorBase.h"
 #include "Player.h"
+#include "Tree.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform, TYPE itemType):
-	player_(player), pos_(transform.pos), itemType_(itemType)
+Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree):
+	player_(player), pos_(transform.pos), itemType_(itemType), tree_(tree)
 {
 	transform_.dir = {};
 	transform_.modelId = 0;
@@ -23,8 +24,8 @@ void Item::Init(void)
 {
 
 	InitModel();
-	// モデルの基本設定
 
+	// モデルの基本設定
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	//transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
@@ -225,7 +226,7 @@ void Item::ItemUse(void)
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
-		player_.Muteki();
+		tree_.Muteki();
 		break;
 	
 	default:

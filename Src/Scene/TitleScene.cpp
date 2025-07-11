@@ -20,6 +20,7 @@ TitleScene::TitleScene(void)
 
 	animationControllerPlayer_ = nullptr;
 	animationControllerEnemy_ = nullptr;
+	endLoadFlame_ = true;
 }
 
 TitleScene::~TitleScene(void)
@@ -32,7 +33,6 @@ void TitleScene::Init(void)
 
 	// 重力制御の初期化
 	GravityManager::GetInstance().Init();
-
 	// 画像読み込み
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;			//タイトル名前画像
 	imgBackTitle_ = resMng_.Load(ResourceManager::SRC::BACK_TITLE).handleId_;	//タイトル背景
@@ -48,21 +48,29 @@ void TitleScene::Init(void)
 	imgP2_[0] = LoadGraph("Data/Image/Title/2player1.png");
 	imgP2_[1] = LoadGraph("Data/Image/Title/2player2.png");
 
-	// 音楽
-	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
 
 	selectedIndex_ = 0;
 
+	SetUseASyncLoadFlag(true);
+	// 音楽
+	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
+	charactor_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
+	enemy_.SetModel(resMng_.Load(ResourceManager::SRC::DOG).handleId_);
+	SetUseASyncLoadFlag(false);
 	float size;
 
+	// 定点カメラ
+	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
+}
+
+void TitleScene::NewFunction()
+{
 	// 初期位置は左端付近にプレイヤー、その左側に敵
-	charactor_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
 	charactor_.pos = { -900.0f, -400.0f, 100.0f };
 	charactor_.scl = { 1.4f, 1.4f, 1.4f };
 	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
 	charactor_.Update();
 
-	enemy_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::DOG));
 	enemy_.pos = { -1100.0f, -400.0f, 100.0f };
 	enemy_.scl = { 1.3f, 1.3f, 1.3f };
 	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f);
@@ -82,9 +90,6 @@ void TitleScene::Init(void)
 	animationControllerEnemy_ = std::make_unique<AnimationController>(enemy_.modelId);
 	animationControllerEnemy_->Add(0, path1 + "Yellow.mv1", 20.0f, 2);
 	animationControllerEnemy_->Play(0);
-
-	// 定点カメラ
-	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void TitleScene::Update(void)
@@ -156,6 +161,15 @@ void TitleScene::Update(void)
 	
 	}
 
+	if (GetASyncLoadNum() != 0)
+	{
+		return;
+	}
+	if (endLoadFlame_)
+	{
+		endLoadFlame_ = false;
+		NewFunction();
+	}
 	// === キャラクターの移動・向き制御 ===
 	const float playerSpeed = 5.0f;
 	const float enemySpeed = 5.0f;
@@ -256,7 +270,10 @@ void TitleScene::Draw(void)
 	DrawString(Application::SCREEN_SIZE_X/2-180, 530, "神様のお告げ", 0xffffff);
 	DrawString(Application::SCREEN_SIZE_X/2-180, 640, "ゲームを終了", 0xffffff);
 	SetFontSize(16);
-
+	if (GetASyncLoadNum() != 0)
+	{
+		return;
+	}
 	// モデル描画
 	MV1DrawModel(charactor_.modelId);
 	MV1DrawModel(enemy_.modelId);

@@ -52,5 +52,17 @@ private:
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 
-	int isB_;//ぼす
+	// ポーズ
+	bool isPaused_;           // ポーズ中かどうか
+	int pauseSelectIndex_;    // ポーズメニューの選択項目（上下選択）
+	int pauseImgs_[4];        // メニュー画像
+	int pauseExplainImgs_[2];
+
+	enum class PauseState {
+		Menu,        // 通常のポーズメニュー
+		ShowControls,// 操作説明画面
+		ShowItems    // アイテム概要画面
+	};
+
+	PauseState pauseState_ = PauseState::Menu;
 };

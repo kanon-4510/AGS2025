@@ -217,7 +217,6 @@ private:
 
 	// 無敵状態
 	bool invincible_;
-	int mutekiCnt_;
 
 	// 移動が可能かどうか
 	bool canMove_;
@@ -285,9 +284,6 @@ private:
 
 	//スピードアップの制限時間
 	void SpeedUpTimer(void);
-
-	//無敵時間
-	void MutekiTimer(void);
 
 	//攻撃モーション
 	void ProcessAttack(void);
