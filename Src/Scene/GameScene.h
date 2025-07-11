@@ -31,7 +31,6 @@ public:
 
 	void AddItem(std::shared_ptr<Item> item);
 	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale,Item::TYPE itemType);
-
 private:
 	void EnemyCreate(void);
 

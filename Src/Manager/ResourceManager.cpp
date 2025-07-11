@@ -208,7 +208,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::VIRUS, std::move(res));
 
 	//É{ÉX
-	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/boss/boss.mv1");
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Boss/Boss.mv1");
 	resourcesMap_.emplace(SRC::BOSS, std::move(res));
 }
 

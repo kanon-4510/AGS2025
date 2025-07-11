@@ -6,10 +6,11 @@
 #include "./Common/Capsule.h"
 #include "ActorBase.h"
 #include "Player.h"
+#include "Tree.h"
 #include "Item.h"
 
-Item::Item(Player& player, const Transform& transform, TYPE itemType):
-	player_(player), pos_(transform.pos), itemType_(itemType)
+Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree):
+	player_(player), pos_(transform.pos), itemType_(itemType), tree_(tree)
 {
 	transform_.dir = {};
 	transform_.modelId = 0;
@@ -23,8 +24,8 @@ void Item::Init(void)
 {
 
 	InitModel();
-	// モデルの基本設定
 
+	// モデルの基本設定
 	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
 	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
 	//transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
@@ -70,10 +71,27 @@ void Item::Update(void)
 		transform_.pos.y = groundY + modelBottomOffset;
 	}*/
 
-	VECTOR diff = VSub(player_.GetCapsule().GetPosDown(), transform_.pos);
-	float dis = AsoUtility::SqrMagnitudeF(diff);
-	if (dis < collisionRadius_ * collisionRadius_ && player_.GetWater() < 10)
+	// プレイヤーの位置と当たり判定半径を取得
+	VECTOR playerPos = player_.GetCollisionPos();			// プレイヤーの位置
+	float playerRadius = player_.GetCollisionRadius();		// プレイヤーの当たり半径
+
+	 // アイテムの位置と半径
+	VECTOR itemPos = transform_.pos;
+	float itemRadius = collisionRadius_;					// アイテムの当たり半径
+
+	// 距離の2乗
+	VECTOR diff = VSub(playerPos, itemPos);					// 差ベクトル（距離ベクトル）
+	float distance = AsoUtility::SqrMagnitudeF(diff);		// 差ベクトルの長さの2乗（距離の2乗）
+	float radiusSum = playerRadius + itemRadius;			// playerとitemの当たり判定用の半径を合計
+
+	// 球体同士の当たり判定
+	if (distance < radiusSum * radiusSum)
 	{
+		// Water アイテムの場合だけ、water量をチェック
+		if (itemType_ == Item::TYPE::WATER && player_.GetWater() >= player_.WATER_MAX) {
+			return; // 取得しない
+		}
+
 		//範囲に入った
 		ItemUse();
 		isAlive_ = false;
@@ -199,13 +217,16 @@ void Item::ItemUse(void)
 		player_.wHit(transform_.scl.x);
 		break;
 	case Item::TYPE::POWER:
-		/*player_.*/
+		player_.PowerUp();
 		break;
 	case Item::TYPE::SPEED:
+		player_.SpeedUp();
 		break;
 	case Item::TYPE::HEAL:
+		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
+		tree_.Muteki();
 		break;
 	
 	default:

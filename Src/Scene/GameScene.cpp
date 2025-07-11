@@ -20,6 +20,7 @@
 #include "../Object/Enemy/EnemyOnion.h"
 #include "../Object/Enemy/EnemyThorn.h"
 #include "../Object/Enemy/EnemyVirus.h"
+#include "../Object/Enemy/EnemyBoss.h"
 #include "../Object/Tree.h"
 #include "../Object/Planet.h"
 #include "../Object/Item.h"
@@ -111,6 +112,8 @@ void GameScene::Init(void)
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
+
+	isB_ = 0;
 }
 
 void GameScene::Update(void)
@@ -382,7 +385,8 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 
 	// 再利用できなければ新しく作成
 	OutputDebugStringA("新規アイテムを作成\n");
-	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType);
+	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType,*
+		tree_);
 	newItem->Init(); // 初期化（モデル読み込み等）
 	newItem->Respawn(spawnPos);
 	newItem->SetScale(scale);
@@ -392,7 +396,6 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 
 void GameScene::EnemyCreate(void)
 {
-
 	int randDir = GetRand(3);
 	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
 	switch (randDir)//位置
@@ -420,34 +423,43 @@ void GameScene::EnemyCreate(void)
 	std::shared_ptr<EnemyBase> enemy;
 
 	//敵のtype
-	EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 1));
-	switch (type_)
+	if(isB_==1)
 	{
-	case EnemyBase::TYPE::SABO:
-		enemy = std::make_shared<EnemyCactus>();
-		break;
-	case EnemyBase::TYPE::DOG:
-		enemy = std::make_shared<EnemyDog>();
-		break;
-	case EnemyBase::TYPE::MIMIC:
-		enemy = std::make_shared<EnemyMimic>();
-		break;
-	case EnemyBase::TYPE::MUSH:
-		enemy = std::make_shared<EnemyMushroom>();
-		break;
-	case EnemyBase::TYPE::ONION:
-		enemy = std::make_shared<EnemyOnion>();
-		break;
-	case EnemyBase::TYPE::TOGE:
-		enemy = std::make_shared<EnemyThorn>();
-		break;
-	case EnemyBase::TYPE::VIRUS:
-		enemy = std::make_shared<EnemyVirus>();
-		break;
-	default:
-		enemy = std::make_shared<EnemyCactus>();
-		break;
+		EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(EnemyBase::TYPE::BOSS);
+		enemy = std::make_shared<EnemyBoss>();
 	}
+	else
+	{
+		EnemyBase::TYPE type_ = static_cast<EnemyBase::TYPE>(GetRand(static_cast<int>(EnemyBase::TYPE::MAX) - 2));
+		switch (type_)
+		{
+		case EnemyBase::TYPE::SABO:
+			enemy = std::make_shared<EnemyCactus>();
+			break;
+		case EnemyBase::TYPE::DOG:
+			enemy = std::make_shared<EnemyDog>();
+			break;
+		case EnemyBase::TYPE::MIMIC:
+			enemy = std::make_shared<EnemyMimic>();
+			break;
+		case EnemyBase::TYPE::MUSH:
+			enemy = std::make_shared<EnemyMushroom>();
+			break;
+		case EnemyBase::TYPE::ONION:
+			enemy = std::make_shared<EnemyOnion>();
+			break;
+		case EnemyBase::TYPE::TOGE:
+			enemy = std::make_shared<EnemyThorn>();
+			break;
+		case EnemyBase::TYPE::VIRUS:
+			enemy = std::make_shared<EnemyVirus>();
+			break;
+		default:
+			enemy = std::make_shared<EnemyCactus>();
+			break;
+		}
+	}
+
 	// 生成された敵の初期化
 	enemy->SetGameScene(this);
 	enemy->SetPos(randPos);
