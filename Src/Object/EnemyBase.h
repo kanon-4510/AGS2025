@@ -76,6 +76,9 @@ public:
 
 	void Damage(int damage);	// ダメージを受ける
 
+	TYPE GetEnemyType(void) const;
+	TYPE enemyType_;
+
 	// 死亡時のドロップアイテムを決める関数（デフォルトはNONE）
 	virtual Item::TYPE GetDropItemType() const;
 	

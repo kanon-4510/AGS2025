@@ -255,10 +255,10 @@ void EnemyBase::Draw(void)
 	MV1DrawModel(transform_.modelId);
 
 	//デッバグ
-	DrawDebug();
+	//DrawDebug();
 
 	// 視野範囲の描画
-	DrawDebugSearchRange();
+	//DrawDebugSearchRange();
 }
 
 void EnemyBase::Release(void)
@@ -298,6 +298,11 @@ void EnemyBase::Damage(int damage)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
+}
+
+EnemyBase::TYPE EnemyBase::GetEnemyType(void) const
+{
+	return enemyType_;
 }
 
 #pragma region コリジョン
