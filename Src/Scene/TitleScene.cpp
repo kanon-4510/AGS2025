@@ -274,9 +274,15 @@ void TitleScene::Draw(void)
 	{
 		return;
 	}
-	// ƒ‚ƒfƒ‹•`‰æ
-	MV1DrawModel(charactor_.modelId);
-	MV1DrawModel(enemy_.modelId);
+
+	//ƒ‚ƒfƒ‹‚Ì•`‰æ
+	if (!endLoadFlame_)
+	{
+		MV1SetPosition(charactor_.modelId, charactor_.pos);
+		MV1SetPosition(enemy_.modelId, enemy_.pos);
+		MV1DrawModel(charactor_.modelId);
+		MV1DrawModel(enemy_.modelId);
+	}
 
 	if (isConfirmingExit_) {
 		float t = static_cast<float>(confirmAnimFrame_) / CONFIRM_ANIM_DURATION;
