@@ -20,6 +20,10 @@ Tree::Tree(void)
 	modelIdA_ = 0;
 	modelIdO_ = 0;
 
+	// 無敵状態
+	invincible_ = false;
+	mutekiCnt_ = 600;
+
 	// カプセルコライダ
 	/*capsule_ = std::make_unique<Capsule>(transform_);
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
@@ -150,6 +154,8 @@ void Tree::Update(void)
 
 	collisionPos_ = VAdd(pos_, collisionLocalPos_);
 
+	//無敵時間
+	MutekiTimer();
 
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
@@ -196,7 +202,7 @@ void Tree::Draw(void)
 
 	DrawDebugTree2Player();
 
-	//DrawDebug();
+	DrawDebug();
 }
 
 void Tree::DrawDebug(void)
@@ -216,6 +222,11 @@ void Tree::DrawDebug(void)
 	DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 	 c= collisionPos_;
 	DrawSphere3D(c, collisionRadius_, 8, red, red, false);
+
+	if (invincible_)
+	{
+		DrawFormatString(50, 180, GetColor(255, 0, 0), "無敵: 残り%d秒", mutekiCnt_);
+	}
 }
 
 void Tree::DrawDebugTree2Player(void)
@@ -249,7 +260,7 @@ void Tree::DrawDebugTree2Player(void)
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = 650.0f;
+			viewRange_ = 450.0f;
 			
 		}
 		else if(grow_ == GROW::OLD)
@@ -360,10 +371,33 @@ float Tree::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
+void Tree::MutekiTimer(void)
+{
+	//攻撃アップ
+	if (invincible_)
+	{
+		mutekiCnt_--;
+
+		if (mutekiCnt_ <= 0)
+		{
+			invincible_ = false;
+			mutekiCnt_ = 600;
+		}
+	}
+}
+
+void Tree::Muteki(void)
+{
+	invincible_ = true;
+}
+
 void Tree::eHit(void)//エネミーとのあたり判定
 {
-	hp_ -= 1;
-	isD_ = true;
+	if (!invincible_)
+	{
+		hp_ -= 1;
+		isD_ = true;
+	}
 }
 void Tree::pHit(void)//プレイヤーとのあたり判定
 {

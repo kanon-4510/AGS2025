@@ -48,7 +48,8 @@ public:
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
 	VECTOR collisionPos_;
-
+	
+	void Muteki(void);
 	void eHit(void);
 	void pHit(void);
 private:
@@ -76,6 +77,12 @@ private:
 	bool isD_;
 	GROW grow_;
 
+	// 無敵状態
+	bool invincible_;
+	int mutekiCnt_;
+
+	//無敵時間
+	void MutekiTimer(void);
 	/*//VECTOR spherePos_;	//スフィアの移動後座標
 
 	//float collisionRadius_;		// 衝突判定用の球体半径

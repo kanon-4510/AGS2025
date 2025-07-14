@@ -42,12 +42,21 @@ Player::Player(void)
 	imgShadow_ = -1;
 	stepJump_ = 0.0f; //初期化しなかったら遷移時にジャンプを押してる間ジャンプし続ける
 
+	//スピードアップ用のフラグ
+	speedUpFlag_ = false;
+	speedUpCnt_ = 1200;
+
 	//攻撃の初期化
+	normalAttack_ = 2;
+	slashAttack_ = 1;
+	exrAttack_ = 2;
+	powerUpFlag_ = false;
 	isAttack_ = false;
 	isAttack2_ = false;
 	exAttack_ = false;
 	exTimer_ = 10000;
 	lastExTime_ = -exTimer_;
+	powerUpCnt_ = 1200;
 
 	//ステ関連
 	hp_ = HP;
@@ -55,6 +64,7 @@ Player::Player(void)
 
 	// 無敵状態
 	invincible_ = false;
+
 	// 移動が可能かどうか
 	canMove_ = true;
 	// 所持上限かどうか
@@ -267,6 +277,9 @@ void Player::UpdatePlay(void)
 {
 	if (canMove_)
 	{
+		//スピードアップの制限時間
+		SpeedUpTimer();
+		
 		//移動処理
 		ProcessMove();
 
@@ -275,6 +288,9 @@ void Player::UpdatePlay(void)
 
 		// ジャンプ処理
 		ProcessJump();
+		
+		//パワーアップの制限時間
+		PowerUpTimer();
 
 		// 攻撃処理
 		ProcessAttack();
@@ -405,7 +421,14 @@ void Player::DrawDebug(void)
 		int remaining = (exTimer_ - (GetNowCount() - lastExTime_)) / 1000;
 		DrawFormatString(50, 40, GetColor(255, 0, 0), "回転斬り使用不可: 残り%d秒", remaining);
 	}
-
+	if (powerUpFlag_)
+	{
+		DrawFormatString(50, 120, GetColor(255, 0, 0), "パワーアップ: 残り%d秒", powerUpCnt_);
+	}
+	if (speedUpFlag_)
+	{
+		DrawFormatString(50, 150, GetColor(255, 0, 0), "スピードアップ: 残り%d秒", speedUpCnt_);
+	}
 
 	//capsule_->Draw();
 
@@ -461,7 +484,12 @@ void Player::ProcessMove(void)
 			{
 				speed_ = SPEED_RUN;
 			}
-
+			
+			//アイテム獲得時のスピード
+			if (speedUpFlag_)
+			{
+				speed_ = speed_ * STATUS_UP;
+			}
 
 			moveDir_ = dir;
 			//移動量
@@ -650,7 +678,7 @@ void Player::CollisionAttack(void)
 
 			if (dis < radiusSum * radiusSum)
 			{
-				enemy->Damage(2);
+				enemy->Damage(normalAttack_);
 				// 1体のみヒット
 				break;
 			}
@@ -689,7 +717,7 @@ void Player::CollisionAttack2(void)
 
 			if (dis < radiusSum * radiusSum)
 			{
-				enemy->Damage(1);
+				enemy->Damage(slashAttack_);
 				// 複数ヒット
 				continue;
 			}
@@ -726,7 +754,7 @@ void Player::CollisionAttackEx(void)
 
 			if (dis < radiusSum * radiusSum)
 			{
-				enemy->Damage(2);
+				enemy->Damage(exrAttack_);
 				// 複数ヒットさせたいなら
 				continue;
 			}
@@ -914,13 +942,74 @@ bool Player::IsExAttackReady() const
 
 void Player::Damage(int damage)
 {
-	if (pstate_ == PlayerState::DOWN) return;  // ダウン中は無敵
+	if (pstate_ == PlayerState::DOWN || invincible_) return;  // ダウン中は無敵
 	hp_ -= damage;
 
 	if (hp_ <= 0) {
 		hp_ = 0;
 		StartRevival();  // 死亡ではなく復活待機
 	}
+}
+
+void Player::PowerUpTimer(void)
+{
+	//攻撃アップ
+	if (powerUpFlag_)
+	{
+		powerUpCnt_--;
+
+		if (powerUpCnt_ <= 0)
+		{
+			powerUpFlag_ = false;
+
+			normalAttack_ = 2;
+			slashAttack_ = 1;
+			exrAttack_ = 2;
+			powerUpCnt_ = 1200;
+		}
+	}
+}
+
+void Player::PowerUp(void)
+{
+	powerUpFlag_ = true;
+	
+	if (powerUpCnt_ >= 0 && powerUpFlag_)
+	{
+		normalAttack_ = normalAttack_ * STATUS_UP;
+		slashAttack_ = slashAttack_ * STATUS_UP;
+		exrAttack_ = exrAttack_ * STATUS_UP;
+	}
+}
+
+void Player::SpeedUpTimer(void)
+{
+	//攻撃アップ
+	if (speedUpFlag_)
+	{
+		speedUpCnt_--;
+
+		if (speedUpCnt_ <= 0)
+		{
+			speedUpFlag_ = false;
+			speedUpCnt_ = 1200;
+		}
+	}
+}
+
+void Player::SpeedUp(void)
+{
+	speedUpFlag_ = true;
+}
+
+void Player::Heal(void)
+{
+	hp_ = HP;
+}
+void Player::Muteki(void)
+{
+	invincible_ = true;
+
 }
 
 void Player::StartRevival()
@@ -1008,7 +1097,7 @@ void Player::wHit(float scale)
 	}
 	// それ未満は1
 	water_+= add;
-	if (water_ > WATER_MAX)water_ = WATER_MAX;
+	//if (water_ > WATER_MAX)water_ = WATER_MAX;
 }
 void Player::tHit()
 {

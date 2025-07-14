@@ -17,6 +17,7 @@ public:
 	~TitleScene(void);
 
 	void Init(void) override;
+	void NewFunction();
 	void Update(void) override;
 	void Draw(void) override;
 	void Release(void) override;
@@ -65,4 +66,6 @@ private:
 	// アニメーション
 	std::unique_ptr<AnimationController> animationControllerPlayer_;
 	std::unique_ptr<AnimationController> animationControllerEnemy_;
+
+	bool endLoadFlame_;
 };
