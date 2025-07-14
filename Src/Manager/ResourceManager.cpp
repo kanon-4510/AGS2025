@@ -57,6 +57,26 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
 	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
 
+	// ゲームに戻る
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackGame.png");
+	resourcesMap_.emplace(SRC::GOGAME, std::move(res));
+
+	// アイテム概要
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Item.png");
+	resourcesMap_.emplace(SRC::ITEMTEACH, std::move(res));
+
+	// 操作説明
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Operation.png");
+	resourcesMap_.emplace(SRC::OPERATION, std::move(res));
+
+	// ポーズの操作
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PauseOpe.png");
+	resourcesMap_.emplace(SRC::PAUSEOPE, std::move(res));
+
+	// ポーズのアイテム
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PauseItem.png");
+	resourcesMap_.emplace(SRC::PAUSEITEM, std::move(res));
+
 	// ゲームクリア
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Clear.png");
 	resourcesMap_.emplace(SRC::GAMECLEAR, std::move(res));

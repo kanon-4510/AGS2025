@@ -1,6 +1,7 @@
 #include "MiniMap.h"
 #include "DxLib.h"
 #include "../Manager/ResourceManager.h"
+#include "../Object/EnemyBase.h"
 #include <algorithm> // std::clamp
 #include <cmath>     // std::atan2, std::cos, std::sin
 
@@ -18,7 +19,7 @@ void MiniMap::Init(void)
 }
 
 void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad, 
-    const std::vector<MapVector2>& enemies, 
+    const std::vector<std::shared_ptr<EnemyBase>>& enemies,
     const std::vector<MapVector2>& items)
 {
     DrawBackground();
@@ -93,21 +94,29 @@ void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)
         GetColor(0, 0, 255), TRUE);
 }
 
-void MiniMap::DrawEnemies(const std::vector<MapVector2>& enemies)
+void MiniMap::DrawEnemies(const std::vector<std::shared_ptr<EnemyBase>>& enemies)
 {
-    for (const auto& e : enemies)
+    for (const auto& enemy : enemies)
     {
+        auto pos = enemy->GetCollisionPos();  // 仮に座標取得関数があるとする
+
         // +worldHalfSize で中心原点を左上基準にずらす
         // * scale で画面上のスケールに変換
         // + offsetX / Y で画面上に配置
-        int ex = static_cast<int>((e.x + worldHalfSize) * scale) + mapPosX;
-        int ez = static_cast<int>((-e.z + worldHalfSize) * scale) + mapPosY;
+        int ex = static_cast<int>((pos.x + worldHalfSize) * scale) + mapPosX;
+        int ez = static_cast<int>((-pos.z + worldHalfSize) * scale) + mapPosY;
 
-        // === ミニマップ内に収まるように制限===
-        //if (!IsInsideCircle(ex, ez)) return;
+        // 通常の円の半径
+        int radius = 3;  
+
+        // BOSSのときは円を大きく
+        if (enemy->GetEnemyType() == EnemyBase::TYPE::BOSS)
+        {
+            radius = 9;
+        }
 
         // 敵(赤)
-        DrawCircle(ex, ez, 3, GetColor(255, 0, 0), TRUE);
+        DrawCircle(ex, ez, radius, GetColor(255, 0, 0), TRUE);
     }
 }
 
