@@ -47,15 +47,11 @@ bool OverScene::WorldToScreen(const VECTOR& worldPos, VECTOR& screenPos)
 OverScene::OverScene(void)
 {
 	imgGameOver_ = -1;
-	imgReplay_ = -1;
-	imgReturn_ = -1;
-	imgCursor_ = -1;
 	imgLightCircle_ = -1;
 
 	animationController_ = nullptr;
 
 	selectedIndex_ = 0;
-	blinkFrameCount_ = 0;
 	isMenuActive_ = false;
 
 	maskLeftX_ = 0;
@@ -75,10 +71,9 @@ void OverScene::Init(void)
 
 	// 画像読み込み
 	imgGameOver_ = resMng_.Load(ResourceManager::SRC::GAMEOVER).handleId_;
-	imgReplay_ = resMng_.Load(ResourceManager::SRC::REPLAY).handleId_;
-	imgReturn_ = resMng_.Load(ResourceManager::SRC::GOTITLE).handleId_;
 	imgDieTree_ = resMng_.Load(ResourceManager::SRC::DIETREE).handleId_;
-	imgCursor_ = resMng_.Load(ResourceManager::SRC::CURSOR).handleId_;			//カーソル画像
+	imgCursor_[0] = LoadGraph("Data/Image/Over/1player1.png");
+	imgCursor_[1] = LoadGraph("Data/Image/Over/1player2.png");
 	imgLightCircle_ = resMng_.Load(ResourceManager::SRC::LIGHT).handleId_;  // 作成した光画像を読み込む
 
 	// 画像の横幅（例）
@@ -89,7 +84,6 @@ void OverScene::Init(void)
 	float size;
 
 	selectedIndex_ = 0;
-	blinkFrameCount_ = 0;
 
 	cheackCounter_ = 0;
 
@@ -113,13 +107,15 @@ void OverScene::Init(void)
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
+
+	cnt = 0;
 }
 
 void OverScene::Update(void)
 {
+	cnt++;
 	InputManager& ins = InputManager::GetInstance();
 
-	blinkFrameCount_++;
 	cheackCounter_++;
 
 	//if (ins.IsTrgDown(KEY_INPUT_TAB))SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
@@ -200,49 +196,21 @@ void OverScene::Draw(void)
 
 	if (isMenuActive_)
 	{
-		// メニュー描画（右下に配置）
-		const int buttonW = 400;
-		const int buttonH = 100;
-		const int baseX = Application::SCREEN_SIZE_X - buttonW - 100;
-		const int baseY = Application::SCREEN_SIZE_Y - 300;
-		const int buttonOffset = 120;
-
-		int yPositions[2] = { baseY, baseY + buttonOffset };
-		int images[2] = { imgReplay_, imgReturn_ };
-
-		const int fadeCycle = 60;
-		int phase = blinkFrameCount_ % fadeCycle;
-		int alpha = (phase < fadeCycle / 2)
-			? (255 * phase) / (fadeCycle / 2)
-			: 255 - (255 * (phase - fadeCycle / 2)) / (fadeCycle / 2);
-
-		for (int i = 0; i < 2; ++i)
+		if (selectedIndex_ % 2 == 1)
 		{
-			if (selectedIndex_ == i)
-			{
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha); // ← このalphaを上で定義したやつに
-			}
-			DrawExtendGraph(baseX, yPositions[i], baseX + buttonW, yPositions[i] + buttonH, images[i], TRUE);
-			if (selectedIndex_ == i)
-			{
-				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-			}
+			SetFontSize(55);
+			DrawString(1500, 800, "もう一度プレイ", 0xffffff);
+			DrawString(1500, 890, "タイトルに戻る", 0xffff00);
+			if (cnt % 90 <= 45)DrawString(1500, 890, "タイトルに戻る", 0xffffff);
 		}
-		// 選択中カーソル描画
-		if (imgCursor_ >= 0)
+		else
 		{
-			int cursorX = baseX - 50;
-			int cursorY = yPositions[selectedIndex_] + buttonH / 2 + 5;
-			DrawRotaGraph(cursorX, cursorY, 0.5, 0.0, imgCursor_, TRUE);
+			SetFontSize(55);
+			DrawString(1500, 800, "もう一度プレイ", 0xffffff);
+			if (cnt % 90 <= 45)DrawString(1500, 800, "もう一度プレイ", 0xffff00);
+			DrawString(1500, 890, "タイトルに戻る", 0xffffff);
 		}
 	}
-
-	// 画像サイズ取得
-	int imgW = 0, imgH = 0;
-	GetGraphSize(imgDieTree_, &imgW, &imgH);
-
-	const int msgX = Application::SCREEN_SIZE_X / 2 - imgW / 2;
-	const int msgY = 250;
 
 	// 画像描画
 	SetFontSize(90);
@@ -250,7 +218,7 @@ void OverScene::Draw(void)
 	SetFontSize(16);
 
 	// 黒帯描画（maskLeftX_ は初期値 msgX + imgW から 徐々に msgX へ移動する想定）
-	DrawBox(maskLeftX_ - 420, msgY, msgX + imgW, msgY + imgH,0x0,true);
+	DrawBox(200+(cnt*4),300,1700,500,0x0,true);
 }
 
 void OverScene::Release(void)

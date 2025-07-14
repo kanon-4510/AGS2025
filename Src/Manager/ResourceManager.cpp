@@ -54,7 +54,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
 
 	// タイトルに戻る
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/GoTitle.png");
 	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
 
 	// ゲームクリア
@@ -74,32 +74,16 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::BACK_GAMECLEAR, std::move(res));
 
 	// ゲームオーバー
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/Over.png");
 	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
 
 	// ユグドラシルは死んでしまった…
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "DieTree.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/DieTree.png");
 	resourcesMap_.emplace(SRC::DIETREE, std::move(res));
 
 	// もう一度遊ぶ
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "RePlay.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/RePlay.png");
 	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
-
-	// ゲームを終了する
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndGame.png");
-	resourcesMap_.emplace(SRC::ENDGAME, std::move(res));
-
-	// ゲームを終了確認
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "EndCheck.png");
-	resourcesMap_.emplace(SRC::CONFIRM_END, std::move(res));
-
-	// はい
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Yes.png");
-	resourcesMap_.emplace(SRC::YES, std::move(res));
-
-	// いいえ
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "No.png");
-	resourcesMap_.emplace(SRC::NO, std::move(res));
 
 	// はい選択中
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectYes.png");
