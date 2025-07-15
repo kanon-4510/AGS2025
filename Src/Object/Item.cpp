@@ -112,7 +112,7 @@ void Item::Draw(void)
 
 		// ƒ‚ƒfƒ‹‚Ì•`‰æ
 		MV1DrawModel(transform_.modelId);
-		DrawDebug();
+		//DrawDebug();
 	}
 }
 

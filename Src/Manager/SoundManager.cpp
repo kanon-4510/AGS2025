@@ -38,7 +38,7 @@ void SoundManager::Init(void)
 
 	// ゲーム
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GameBGM.mp3");
-	res.ChangeMaxVolume(0.65);
+	res.ChangeMaxVolume(0.55);
 	soundMap_.emplace(SRC::GAME_BGM, res);
 
 	// ゲームオーバー
@@ -56,6 +56,11 @@ void SoundManager::Init(void)
 	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::LEVEL_UP_SE, res);
 
+	// 水ゲット
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "GetWeterSE.mp3");
+	res.ChangeMaxVolume(3.0);
+	soundMap_.emplace(SRC::GETWATER_SE, res);
+
 	// アタック1
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE1.mp3");
 	res.ChangeMaxVolume(1.0);
@@ -71,9 +76,24 @@ void SoundManager::Init(void)
 	res.ChangeMaxVolume(1.0);
 	soundMap_.emplace(SRC::ATK_SE3, res);
 
+	// 敵死亡
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "EDownSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::E_DOWN_SE, res);
+
+	// プレイヤー死亡
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "PDownSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::P_DOWN_SE, res);
+
+	// プレイヤー死亡
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "PDamageSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::P_DAMAGE_SE, res);
+
 	// 決定
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "SetSE.mp3");
-	res.ChangeMaxVolume(0.6);
+	res.ChangeMaxVolume(0.5);
 	soundMap_.emplace(SRC::SET_SE, res);
 
 	// 警告

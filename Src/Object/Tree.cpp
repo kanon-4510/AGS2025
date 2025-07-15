@@ -200,9 +200,9 @@ void Tree::Draw(void)
 	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 #pragma endregion
 
-	DrawDebugTree2Player();
+	//DrawDebugTree2Player();
 
-	DrawDebug();
+	//DrawDebug();
 }
 
 void Tree::DrawDebug(void)
