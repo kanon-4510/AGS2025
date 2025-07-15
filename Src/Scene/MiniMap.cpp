@@ -18,13 +18,17 @@ void MiniMap::Init(void)
     imgMapTree_ = LoadGraph("Data/Image/MapTree.png");
 }
 
-void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad, 
+void MiniMap::Draw(const MapVector2& playerPos, float playerAngleRad,
+    float cameraAngleRad,
     const std::vector<std::shared_ptr<EnemyBase>>& enemies,
     const std::vector<MapVector2>& items)
 {
     DrawBackground();
     DrawEnemies(enemies);
     DrawItems(items);
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);  //透過ON
+    DrawCameraViewCone(playerPos, cameraAngleRad);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);    //透過OFF
     DrawPlayer(playerPos, playerAngleRad);
 }
 
@@ -52,6 +56,38 @@ void MiniMap::DrawBackground()
     // 画像
     DrawRotaGraph(centerX, centerY, 0.15f, 0.0f, imgMapTree_, true);
 
+}
+
+void MiniMap::DrawCameraViewCone(const MapVector2& playerPos, float cameraAngleRad)
+{
+    // ミニマップ座標に変換
+    int px = static_cast<int>((playerPos.x + worldHalfSize) * scale) + mapPosX;
+    int pz = static_cast<int>((-playerPos.z + worldHalfSize) * scale) + mapPosY;
+
+    if (!IsInsideCircle(px, pz)) return;
+
+    // カメラの方向（視界の中心方向）
+    float angle = cameraAngleRad - DX_PI / 2.0f;
+
+    // 視界の長さ（半径に相当）
+    float viewLength = 30.0f;
+
+    // 視界の開き角（左右にどれだけ開くか）
+    float fovHalfAngle = 0.5f; // 約57度くらい（0.5ラジアン）
+
+    // 左・右方向の端を計算（底辺の左右端）
+    float leftX = px + std::cos(angle + fovHalfAngle) * viewLength;
+    float leftY = pz + std::sin(angle + fovHalfAngle) * viewLength;
+
+    float rightX = px + std::cos(angle - fovHalfAngle) * viewLength;
+    float rightY = pz + std::sin(angle - fovHalfAngle) * viewLength;
+
+    // 三角形を描画（カメラの視界：黄色など）
+    DrawTriangleAA(
+        px, pz,
+        static_cast<int>(leftX), static_cast<int>(leftY),
+        static_cast<int>(rightX), static_cast<int>(rightY),
+        GetColor(255, 255, 255), TRUE); // 黄色で塗りつぶし
 }
 
 void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)

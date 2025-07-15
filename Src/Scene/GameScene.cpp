@@ -102,9 +102,13 @@ void GameScene::Init(void)
 	pauseSelectIndex_ = 0;
 
 	// カメラのポーズ解除
-	auto cam = SceneManager::GetInstance().GetCamera().lock();
-	if (cam) {
-		cam->SetPaused(false); // ← ここが重要！
+	camera_ = SceneManager::GetInstance().GetCamera().lock();
+	if (camera_) {
+		camera_->SetPaused(false); // ← ここが重要！
+
+		//ミニマップ用カメラ
+		camera_->SetFollow(&player_->GetTransform());
+		camera_->ChangeMode(Camera::MODE::FOLLOW);
 	}
 
 	// 音楽
@@ -299,6 +303,11 @@ void GameScene::DrawMiniMap(void)
 	// Y軸回転角を使用(ラジアン or 度数)
 	float playerAngle = player_->GetTransform().rot.y;
 
+	float cameraAngleRad = 0.0f;
+	if (camera_) {
+		cameraAngleRad = camera_->GetAngles().y;  // ここ！
+	}
+
 	// 敵の座標リストを作成
 	std::vector<std::shared_ptr<EnemyBase>> aliveEnemies;
 	for (const auto& enemy : enemys_)
@@ -323,26 +332,7 @@ void GameScene::DrawMiniMap(void)
 	}
 
 	// ミニマップ描画呼び出し
-	map_->Draw(playerPos, playerAngle, aliveEnemies, itemPositions);
-
-	/*if (!map_) return;
-
-	map_->SetPlayerPosition(player_->GetTransform().pos);
-
-	map_->BeginRender();
-
-	// ミニマップに表示したいオブジェクトだけ描画
-	stage_->Draw();             // 地形
-	tree_->Draw();              // 木
-	player_->Draw();            // プレイヤー
-	for (auto enemy : enemys_) {
-		enemy->Draw();
-	}
-
-	map_->EndRender();
-
-	// ミニマップを画面右上に表示
-	map_->Draw(1024, 0);*/
+	map_->Draw(playerPos, playerAngle, cameraAngleRad, aliveEnemies, itemPositions);
 }
 
 void GameScene::AddItem(std::shared_ptr<Item> item)
@@ -359,11 +349,6 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 			aliveCount++;
 		}
 	}
-
-	// 上限に達していたら生成しない
-	/*if (aliveCount >= MAX_ITEMS) {
-		return nullptr;
-	}*/
 
 	// 再利用可能なアイテムを探す
 	if (itemType == Item::TYPE::WATER)
