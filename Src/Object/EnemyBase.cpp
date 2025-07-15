@@ -418,7 +418,7 @@ void EnemyBase::CheckHitAttackHit(void)
 
 	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
 	{
-		player_->Damage(1);
+		player_->Damage(attackPow_);
 	}
 }
 
