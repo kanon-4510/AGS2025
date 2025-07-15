@@ -75,7 +75,9 @@ public:
 		ONION,
 		TOGE,
 		VIRUS,
-		BOSS
+		BOSS,
+		//エフェクト
+		TREE_RANGE
 	};
 
 	// 明示的にインステンスを生成する

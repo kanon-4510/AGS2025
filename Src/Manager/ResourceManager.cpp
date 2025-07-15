@@ -210,6 +210,13 @@ void ResourceManager::Init(void)
 	//ボス
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Boss/Boss.mv1");
 	resourcesMap_.emplace(SRC::BOSS, std::move(res));
+
+	//エフェクト
+	//-------------------------
+
+	//ボス
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "TreeRange.efkefc");
+	resourcesMap_.emplace(SRC::TREE_RANGE, std::move(res));
 }
 
 void ResourceManager::Release(void)

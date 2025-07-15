@@ -1,8 +1,10 @@
 #include<DxLib.h>
+#include<EffekseerForDXLib.h>
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include"../Application.h"
 #include"Player.h"
@@ -23,6 +25,9 @@ Tree::Tree(void)
 	// 無敵状態
 	invincible_ = false;
 	mutekiCnt_ = 600;
+
+	effectTreeResId_ = -1;
+	effectTreePlayId_ = -1;
 
 	// カプセルコライダ
 	/*capsule_ = std::make_unique<Capsule>(transform_);
@@ -58,6 +63,10 @@ bool Tree::Init(void)
 
 	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
+
+	//足煙エフェクト
+	effectTreeResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::TREE_RANGE).handleId_;
 
 	return true;
 }
@@ -155,6 +164,9 @@ void Tree::Update(void)
 	collisionPos_ = VAdd(pos_, collisionLocalPos_);
 
 	DrawDebugTree2Player();
+
+	//エフェクト
+	EffectTreeRange();
 
 	//無敵時間
 	MutekiTimer();
@@ -419,4 +431,38 @@ void Tree::pHit(void)//プレイヤーとのあたり判定
 		LvUp();
 		ChangeGrow();
 	}
+}
+
+
+void Tree::EffectTreeRange(void)
+{
+
+	if (effectTreePlayId_ >= 0)
+	{
+		StopEffekseer3DEffect(effectTreePlayId_);
+	}
+
+	float scale = 10.0f;  // デフォルト値
+
+	switch (grow_)
+	{
+	case GROW::BABY:
+		scale = 50.0f;
+		break;
+	case GROW::KID:
+		scale = 20.0f;
+		break;
+	case GROW::ADULT:
+		scale = 35.0f;
+		break;
+	case GROW::OLD:
+		scale = 50.0f;
+		break;
+	default:
+		break;
+	}
+
+	effectTreePlayId_ = PlayEffekseer3DEffect(effectTreeResId_);
+	SetScalePlayingEffekseer3DEffect(effectTreePlayId_, scale, scale, scale);
+	SetPosPlayingEffekseer3DEffect(effectTreePlayId_, pos_.x, pos_.y, pos_.z);
 }
