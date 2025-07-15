@@ -65,4 +65,6 @@ private:
 	};
 
 	PauseState pauseState_ = PauseState::Menu;
+
+	int isB_;
 };

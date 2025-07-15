@@ -103,15 +103,15 @@ void GameScene::Init(void)
 
 	// カメラのポーズ解除
 	auto cam = SceneManager::GetInstance().GetCamera().lock();
-	if (cam) {
-		cam->SetPaused(false); // ← ここが重要！
-	}
+	if (cam)cam->SetPaused(false); // ← ここが重要！
 
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
+
+	isB_ = 0;
 }
 
 void GameScene::Update(void)
@@ -175,6 +175,13 @@ void GameScene::Update(void)
 
 	uiDisplayFrame_++;
 
+	if (tree_->GetLv() == 75 && isB_ == 0)
+	{
+		isB_ = 1;
+		EnemyCreate();
+		isB_ = 2;
+
+	}
 	if (tree_->GetLv() >= 100) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
