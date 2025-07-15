@@ -4,6 +4,7 @@
 #include "../Application.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
@@ -255,10 +256,10 @@ void EnemyBase::Draw(void)
 	MV1DrawModel(transform_.modelId);
 
 	//デッバグ
-	DrawDebug();
+	//DrawDebug();
 
 	// 視野範囲の描画
-	DrawDebugSearchRange();
+	//DrawDebugSearchRange();
 }
 
 void EnemyBase::Release(void)
@@ -293,6 +294,8 @@ void EnemyBase::Damage(int damage)
 	if (hp_ <= 0 && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
+		// 音楽
+		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
 	else if (hp_ >= 1 && isAlive_)
 	{

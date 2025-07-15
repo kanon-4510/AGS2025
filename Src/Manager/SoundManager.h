@@ -15,9 +15,13 @@ public:
 		GAMEOVER_BGM,	//ゲームオーバーBGM
 		GAMECLEAR_BGM,	//ゲームクリアBGM
 		LEVEL_UP_SE,	//木のレベルアップSE
+		GETWATER_SE,	//水を得たときのSE
 		ATK_SE1,		//アタックのSE1
 		ATK_SE2,		//アタックのSE2
 		ATK_SE3,		//アタックのSE3
+		E_DOWN_SE,		//敵死亡
+		P_DOWN_SE,		//プレイヤー死亡
+		P_DAMAGE_SE,	//プレイヤーダメージ
 		SET_SE,			//決定のSE
 		WARNING_SE,		//警告音SE
 	};

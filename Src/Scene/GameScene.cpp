@@ -179,6 +179,14 @@ void GameScene::Update(void)
 
 	uiDisplayFrame_++;
 
+	if (tree_->GetLv() == 75 && isB_ == 0)
+	{
+		isB_ = 1;
+		EnemyCreate();
+		isB_ = 2;
+
+	}
+
 	if (tree_->GetLv() >= 100) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}

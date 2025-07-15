@@ -54,6 +54,8 @@ private:
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 
+	int isB_;
+
 	// ポーズ
 	bool isPaused_;           // ポーズ中かどうか
 	int pauseSelectIndex_;    // ポーズメニューの選択項目（上下選択）
