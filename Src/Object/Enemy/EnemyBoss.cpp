@@ -44,6 +44,8 @@ void EnemyBoss::SetParam(void)
 
 	attackCollisionRadius_ = 60.0f;		// UŒ‚”»’è—p‚ÆUŒ‚”ÍˆÍ‚Ì‹…‘Ì”¼Œa
 
+	enemyType_ = TYPE::BOSS;
+
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
 }

@@ -154,6 +154,8 @@ void Tree::Update(void)
 
 	collisionPos_ = VAdd(pos_, collisionLocalPos_);
 
+	DrawDebugTree2Player();
+
 	//無敵時間
 	MutekiTimer();
 
@@ -218,10 +220,10 @@ void Tree::DrawDebug(void)
 	VECTOR v;
 	VECTOR c;
 
-	v = pos_;
-	DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
-	 c= collisionPos_;
-	DrawSphere3D(c, collisionRadius_, 8, red, red, false);
+	//v = pos_;
+	//DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
+	 //c= collisionPos_;
+	//DrawSphere3D(c, collisionRadius_, 8, red, red, false);
 
 	if (invincible_)
 	{

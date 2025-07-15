@@ -308,15 +308,12 @@ void GameScene::DrawMiniMap(void)
 	float playerAngle = player_->GetTransform().rot.y;
 
 	// 敵の座標リストを作成
-	std::vector<MapVector2> enemyPositions;
+	std::vector<std::shared_ptr<EnemyBase>> aliveEnemies;
 	for (const auto& enemy : enemys_)
 	{
 		if (enemy->IsAlive())
 		{
-			MapVector2 e;
-			e.x = enemy->GetTransform().pos.x;
-			e.z = enemy->GetTransform().pos.z;
-			enemyPositions.push_back(e);
+			aliveEnemies.push_back(enemy);
 		}
 	}
 
@@ -334,7 +331,7 @@ void GameScene::DrawMiniMap(void)
 	}
 
 	// ミニマップ描画呼び出し
-	map_->Draw(playerPos, playerAngle, enemyPositions, itemPositions);
+	map_->Draw(playerPos, playerAngle, aliveEnemies, itemPositions);
 
 	/*if (!map_) return;
 

@@ -303,6 +303,11 @@ void EnemyBase::Damage(int damage)
 	}
 }
 
+EnemyBase::TYPE EnemyBase::GetEnemyType(void) const
+{
+	return enemyType_;
+}
+
 #pragma region ƒRƒŠƒWƒ‡ƒ“
 void EnemyBase::Collision(void)
 {

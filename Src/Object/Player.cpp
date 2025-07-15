@@ -1106,7 +1106,7 @@ void Player::wHit(float scale)
 	}
 	// ‚»‚ê–¢–ž‚Í1
 	water_+= add;
-	//if (water_ > WATER_MAX)water_ = WATER_MAX;
+	if (water_ > WATER_MAX)water_ = WATER_MAX;
 }
 void Player::tHit()
 {
