@@ -54,7 +54,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
 
 	// タイトルに戻る
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/GoTitle.png");
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
 	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
 
 	// ゲームに戻る
