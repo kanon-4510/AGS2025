@@ -214,7 +214,7 @@ void Tree::Draw(void)
 	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
 #pragma endregion
 
-	//DrawDebugTree2Player();
+	DrawDebugTree2Player();
 
 	//DrawDebug();
 }
@@ -450,13 +450,13 @@ void Tree::EffectTreeRange(void)
 		scale = 50.0f;
 		break;
 	case GROW::KID:
-		scale = 20.0f;
+		scale = 105.0f;
 		break;
 	case GROW::ADULT:
-		scale = 35.0f;
+		scale = 235.0f;
 		break;
 	case GROW::OLD:
-		scale = 50.0f;
+		scale = 480.0f;
 		break;
 	default:
 		break;
