@@ -4,6 +4,7 @@
 #include "../Application.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Scene/GameScene.h"
 #include "../Utility/AsoUtility.h"
 #include "Common/AnimationController.h"
@@ -295,6 +296,8 @@ void EnemyBase::Damage(int damage)
 	if (hp_ <= 0 && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
+		// ‰¹Šy
+		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
 	else if (hp_ >= 1 && isAlive_)
 	{

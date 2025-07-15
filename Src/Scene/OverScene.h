@@ -26,18 +26,16 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 private:
+	int cnt;
 
 	// 画像
 	int imgGameOver_;
-	int imgReplay_;
-	int imgReturn_;	//タイトルに戻る
-	int imgCursor_;
+	int imgCursor_[2];
 	int imgDieTree_;
 	int imgLightCircle_;	// 光
 
 	// メニュー
 	int selectedIndex_;       // 選択中のメニューインデックス（0:リプレイ, 1:タイトルへ）
-	int blinkFrameCount_;     // 点滅エフェクト用
 	bool isMenuActive_;
 
 	// 死んでしまった…

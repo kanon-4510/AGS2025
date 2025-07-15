@@ -11,6 +11,7 @@ class Tree;
 class Player;
 class Item;
 class MiniMap;
+class Camera;
 
 class GameScene : public SceneBase
 {
@@ -41,6 +42,7 @@ private:
 	std::shared_ptr<Player> player_;	// プレイヤー
 	std::vector<std::shared_ptr<Item>> items_;		//アイテム
 	std::unique_ptr<MiniMap> map_;		//ミニマップ
+	std::shared_ptr<Camera> camera_;	//カメラ
 
 	int enemyModelId_;
 	int imgGameUi1_;
@@ -51,6 +53,8 @@ private:
 
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
+
+	int isB_;
 
 	// ポーズ
 	bool isPaused_;           // ポーズ中かどうか

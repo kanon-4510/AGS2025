@@ -216,7 +216,7 @@ void Tree::Draw(void)
 
 	//DrawDebugTree2Player();
 
-	DrawDebug();
+	//DrawDebug();
 }
 
 void Tree::DrawDebug(void)
