@@ -319,60 +319,92 @@ void Player::UpdatePlay(void)
 
 void Player::DrawShadow(void)
 {
+	int i, j;
+	MV1_COLL_RESULT_POLY_DIM HitResDim;
+	MV1_COLL_RESULT_POLY* HitRes;
+	VERTEX3D Vertex[3];
+	VECTOR SlideVec;
+	int ModelHandle;
+
+	// ライティングを無効にする
 	SetUseLighting(FALSE);
+
+	// Ｚバッファを有効にする
 	SetUseZBuffer3D(TRUE);
+
+	// テクスチャアドレスモードを CLAMP にする( テクスチャの端より先は端のドットが延々続く )
 	SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
 
-	constexpr int MAX_VERTS = 300;
-	verts_.clear(); // メンバ変数の std::vector<VERTEX3D> verts_;
-	verts_.reserve(MAX_VERTS);
-
-	const VECTOR start = transform_.pos;
-	const VECTOR end = VAdd(transform_.pos, VGet(0.0f, -PLAYER_SHADOW_HEIGHT, 0.0f));
-
-	VERTEX3D baseVertex = {};
-	baseVertex.dif = GetColorU8(255, 255, 255, 255);
-	baseVertex.spc = GetColorU8(0, 0, 0, 0);
-	baseVertex.su = baseVertex.sv = 0.0f;
-
-	for (const auto& c : colliders_)
+	// 影を落とすモデルの数だけ繰り返し
+	for (const auto c : colliders_)
 	{
-		auto collider = c.lock();
-		if (!collider) continue;
+		// 地面との衝突
+		auto hit = MV1CollCheck_Line(
+			c.lock()->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
 
-		auto modelId = collider->modelId_;
+		// プレイヤーの直下に存在する地面のポリゴンを取得
+		HitResDim = MV1CollCheck_Capsule(
+			c.lock()->modelId_,
+			-1,
+			transform_.pos,
+			VAdd(transform_.pos, VGet(0.0f, -PLAYER_SHADOW_HEIGHT, 0.0f)), PLAYER_SHADOW_SIZE);
 
-		MV1_COLL_RESULT_POLY_DIM hitRes = MV1CollCheck_Capsule(modelId, -1, start, end, PLAYER_SHADOW_SIZE);
+		// 頂点データで変化が無い部分をセット
+		Vertex[0].dif = GetColorU8(255, 255, 255, 255);
+		Vertex[0].spc = GetColorU8(0, 0, 0, 0);
+		Vertex[0].su = 0.0f;
+		Vertex[0].sv = 0.0f;
+		Vertex[1] = Vertex[0];
+		Vertex[2] = Vertex[0];
 
-		for (int i = 0; i < hitRes.HitNum && verts_.size() + 3 <= MAX_VERTS; ++i)
+		// 球の直下に存在するポリゴンの数だけ繰り返し
+		HitRes = HitResDim.Dim;
+		for (i = 0; i < HitResDim.HitNum; i++, HitRes++)
 		{
-			const MV1_COLL_RESULT_POLY& poly = hitRes.Dim[i];
-			const VECTOR slide = VScale(poly.Normal, 0.5f);
+			// ポリゴンの座標は地面ポリゴンの座標
+			Vertex[0].pos = HitRes->Position[0];
+			Vertex[1].pos = HitRes->Position[1];
+			Vertex[2].pos = HitRes->Position[2];
 
-			for (int j = 0; j < 3; ++j)
-			{
-				VERTEX3D v = baseVertex;
-				VECTOR p = VAdd(poly.Position[j], slide);
-				v.pos = p;
+			// ちょっと持ち上げて重ならないようにする
+			SlideVec = VScale(HitRes->Normal, 0.5f);
+			Vertex[0].pos = VAdd(Vertex[0].pos, SlideVec);
+			Vertex[1].pos = VAdd(Vertex[1].pos, SlideVec);
+			Vertex[2].pos = VAdd(Vertex[2].pos, SlideVec);
 
-				float yDiff = fabsf(p.y - transform_.pos.y);
-				v.dif.a = (p.y > transform_.pos.y - PLAYER_SHADOW_HEIGHT) ?
-					static_cast<BYTE>(128 * (1.0f - yDiff / PLAYER_SHADOW_HEIGHT)) : 0;
+			// ポリゴンの不透明度を設定する
+			Vertex[0].dif.a = 0;
+			Vertex[1].dif.a = 0;
+			Vertex[2].dif.a = 0;
+			if (HitRes->Position[0].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
+				Vertex[0].dif.a = 128 * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
-				v.u = (p.x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-				v.v = (p.z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			if (HitRes->Position[1].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
+				Vertex[1].dif.a = 128 * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
-				verts_.push_back(v);
-			}
+			if (HitRes->Position[2].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
+				Vertex[2].dif.a = 128 * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+
+			// ＵＶ値は地面ポリゴンとプレイヤーの相対座標から割り出す
+			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+
+			// 影ポリゴンを描画
+			DrawPolygon3D(Vertex, 1, imgShadow_, TRUE);
 		}
 
-		MV1CollResultPolyDimTerminate(hitRes);
+		// 検出した地面ポリゴン情報の後始末
+		MV1CollResultPolyDimTerminate(HitResDim);
 	}
 
-	if (!verts_.empty())
-		DrawPolygon3D(verts_.data(), static_cast<int>(verts_.size()) / 3, imgShadow_, TRUE);
-
+	// ライティングを有効にする
 	SetUseLighting(TRUE);
+
+	// Ｚバッファを無効にする
 	SetUseZBuffer3D(FALSE);
 }
 
@@ -400,7 +432,7 @@ void Player::DrawDebug(void)
 	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
 	
-	if (isAttack_ || isAttack2_) {
+	if (isAttack_) {
 
 		VECTOR forward = transform_.quaRot.GetForward();
 		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
@@ -408,11 +440,19 @@ void Player::DrawDebug(void)
 		float attackCollisionRadius = 100.0f;
 		// カプセルの描画確認用	
 		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}if (isAttack2_) {
+
+		VECTOR forward = transform_.quaRot.GetForward();
+		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 80.0f));
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 140.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
 	if (exAttack_) {
 		VECTOR attackCollisionPos = transform_.pos;
 		attackCollisionPos.y += 100.0f;
-		float attackCollisionRadius = 150.0f;
+		float attackCollisionRadius = 180.0f;
 		// カプセルの描画確認用	
 		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}
@@ -573,76 +613,103 @@ void Player::Collision(void)
 
 void Player::CollisionGravity(void)
 {
+	// ジャンプ量を加算
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
-	const VECTOR dirGravity = grvMng_.GetDirGravity();
-	const VECTOR dirUp = grvMng_.GetDirUpGravity();
-	const float gravityPow = grvMng_.GetPower();
-	constexpr float checkLength = 10.0f;
+	// 重力方向
+	VECTOR dirGravity = grvMng_.GetDirGravity();
 
-	VECTOR rayStart = VAdd(movedPos_, VScale(dirUp, gravityPow + checkLength * 2.0f));
-	VECTOR rayEnd = VAdd(movedPos_, VScale(dirGravity, checkLength));
+	// 重力方向の反対
+	VECTOR dirUpGravity = grvMng_.GetDirUpGravity();
 
-	for (const auto& c : colliders_)
+	// 重力の強さ
+	float gravityPow = grvMng_.GetPower();
+
+	float checkPow = 10.0f;
+
+	gravHitPosUp_ = VAdd(movedPos_, VScale(dirUpGravity, gravityPow));
+
+	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
+
+	gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
+
+	for (const auto c : colliders_)
 	{
-		auto collider = c.lock();
-		if (!collider) continue;
+		// 地面との衝突
+		auto hit = MV1CollCheck_Line(
+			c.lock()->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
 
-		auto hit = MV1CollCheck_Line(collider->modelId_, -1, rayStart, rayEnd);
-
+		//if (hit.HitFlag > 0)
 		if (hit.HitFlag > 0 && VDot(dirGravity, jumpPow_) > 0.9f)
 		{
-			movedPos_ = VAdd(hit.HitPosition, VScale(dirUp, 2.0f));
+			// 衝突地点から、少し上に移動
+
+			// 地面と衝突している
+			// 押し戻し処理とジャンプ力の打ち消しを実装しましょう
+
+			//movedPos_に押し戻し座標を設定
+			//押し戻し座標については、dxlib のhit構造体の中にヒントアリ
+			//衝突地点情報が格納されている
+
+			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
+
+			//jumpPow_の値をゼロにする
+			//ジャンプのリセット
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
 			stepJump_ = 0.0f;
-
 			if (isJump_)
 			{
-				animationController_->Play((int)ANIM_TYPE::JUMP, false, 29.0f, 45.0f, false, true);
+				// 着地モーション
+				animationController_->Play(
+					(int)ANIM_TYPE::JUMP, false, 29.0f, 45.0f, false, true);
 			}
-
 			isJump_ = false;
+
 		}
 	}
 }
 
 void Player::CollisionCapsule(void)
 {
-	Transform trans = transform_;
+	// カプセルを移動させる
+	Transform trans = Transform(transform_);
 	trans.pos = movedPos_;
 	trans.Update();
-	Capsule cap(*capsule_, trans);
-
-	for (const auto& c : colliders_)
+	Capsule cap = Capsule(*capsule_, trans);
+	// カプセルとの衝突判定
+	for (const auto c : colliders_)
 	{
-		auto collider = c.lock();
-		if (!collider) continue;
-
-		MV1_COLL_RESULT_POLY_DIM hits = MV1CollCheck_Capsule(
-			collider->modelId_, -1,
+		auto hits = MV1CollCheck_Capsule(
+			c.lock()->modelId_, -1,
 			cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
-
-		for (int i = 0; i < hits.HitNum; ++i)
+		// 衝突した複数のポリゴンと衝突回避するまで、
+		// プレイヤーの位置を移動させる
+		for (int i = 0; i < hits.HitNum; i++)
 		{
-			const auto& hit = hits.Dim[i];
-
-			for (int tryCnt = 0; tryCnt < 6; ++tryCnt) // 回数制限を厳しく
+			auto hit = hits.Dim[i];
+			// 地面と異なり、衝突回避位置が不明なため、何度か移動させる
+			// この時、移動させる方向は、移動前座標に向いた方向であったり、
+			// 衝突したポリゴンの法線方向だったりする
+			for (int tryCnt = 0; tryCnt < 10; tryCnt++)
 			{
-				if (!HitCheck_Capsule_Triangle(
+				// 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
+				// 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
+				int pHit = HitCheck_Capsule_Triangle(
 					cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
-					hit.Position[0], hit.Position[1], hit.Position[2]))
-					break;
-
-				// 小さな押し戻し
-				const float pushBack = 1.0f;
-				movedPos_ = VAdd(movedPos_, VScale(hit.Normal, pushBack));
-
-				trans.pos = movedPos_;
-				trans.Update();
-				std::unique_ptr<Capsule> cap = std::make_unique<Capsule>(*capsule_, trans); // 更新後再構築
+					hit.Position[0], hit.Position[1], hit.Position[2]);
+				if (pHit)
+				{
+					// 法線の方向にちょっとだけ移動させる
+					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+					// カプセルも一緒に移動させる
+					trans.pos = movedPos_;
+					trans.Update();
+					continue;
+				}
+				break;
 			}
 		}
-
+		// 検出した地面ポリゴン情報の後始末
 		MV1CollResultPolyDimTerminate(hits);
 	}
 }
@@ -693,11 +760,11 @@ void Player::CollisionAttack2(void)
 		//エネミーとの衝突判定
 
 		// 攻撃の球の半径（例: 50.0f）
-		float attackRadius = 100.0f;
+		float attackRadius = 140.0f;
 		// 攻撃の方向（プレイヤーの前方）
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 80.0f));
 		attackPos.y += 100.0f;  // 攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
@@ -732,7 +799,7 @@ void Player::CollisionAttackEx(void)
 		//エネミーとの衝突判定
 
 		// 攻撃の球の半径（例: 50.0f）
-		float attackRadius = 150.0f;
+		float attackRadius = 180.0f;
 		// 攻撃の開始位置と終了位置
 		VECTOR attackPos = transform_.pos;
 		attackPos.y += 100.0f;  // 攻撃の高さ調整

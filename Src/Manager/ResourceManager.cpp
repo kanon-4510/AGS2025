@@ -45,6 +45,10 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameUI1.png");
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
 
+	// タイトルに戻る
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GoTitle.png");
+	resourcesMap_.emplace(SRC::GOTITLE, std::move(res));
+
 	// ゲームに戻る
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackGame.png");
 	resourcesMap_.emplace(SRC::GOGAME, std::move(res));
@@ -178,6 +182,13 @@ void ResourceManager::Init(void)
 	//ボス
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Boss/Boss.mv1");
 	resourcesMap_.emplace(SRC::BOSS, std::move(res));
+
+	//エフェクト
+	//-------------------------
+
+	//ボス
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "TreeRange.efkefc");
+	resourcesMap_.emplace(SRC::TREE_RANGE, std::move(res));
 }
 
 void ResourceManager::Release(void)

@@ -61,6 +61,9 @@ public:
 	// カメラの前方方向
 	VECTOR GetForward(void) const;
 
+	//ミニマップ用のアングル
+	float GetHorizontalAngleRad(void) const;
+
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
 

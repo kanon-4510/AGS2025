@@ -78,7 +78,7 @@ void SoundManager::Init(void)
 
 	// “G€–S
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "EDownSE.mp3");
-	res.ChangeMaxVolume(0.8);
+	res.ChangeMaxVolume(0.55);
 	soundMap_.emplace(SRC::E_DOWN_SE, res);
 
 	// ƒvƒŒƒCƒ„[€–S

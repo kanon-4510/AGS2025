@@ -27,6 +27,8 @@ EnemyBase::EnemyBase()
 	originalColor_ = { 1.0f, 1.0f, 1.0f };  // デフォルトは白
 	blinkColor_ = { 1.0f, 0.0f, 0.0f };      // 点滅中は赤
 
+	attackPow_ = 1;	//攻撃力
+
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
@@ -416,7 +418,7 @@ void EnemyBase::CheckHitAttackHit(void)
 
 	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
 	{
-		player_->Damage(1);
+		player_->Damage(attackPow_);
 	}
 }
 
