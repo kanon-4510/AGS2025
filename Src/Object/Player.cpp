@@ -121,9 +121,6 @@ void Player::Init(void)
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, capsule_->GetCenter().y, 0.0f};	// 衝突判定用の球体中心の調整座標
 
-	//enemy_ = new EnemyBase(); // OK
-	//enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
-
 	// 初期状態
 	ChangeState(STATE::PLAY);
 }

@@ -297,7 +297,7 @@ void EnemyBase::Damage(int damage)
 		// ‰¹Šy
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
-	else if (hp_ >= 1 && isAlive_)
+	else if (hp_ >= 1 && isAlive_ && enemyType_ != TYPE::BOSS)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
