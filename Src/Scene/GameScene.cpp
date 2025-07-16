@@ -180,8 +180,8 @@ void GameScene::Update(void)
 		isB_ = 1;
 		EnemyCreate();
 		isB_ = 2;
-
 	}
+
 	if (tree_->GetLv() >= 100) {
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}

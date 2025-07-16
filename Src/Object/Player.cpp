@@ -165,7 +165,7 @@ void Player::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);	// モデルの描画
 	DrawShadow();						// 丸影描画
-	DrawDebug();						// デバッグ用描画
+	//DrawDebug();						// デバッグ用描画
 
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
@@ -945,8 +945,14 @@ void Player::Damage(int damage)
 	if (pstate_ == PlayerState::DOWN || invincible_) return;  // ダウン中は無敵
 	hp_ -= damage;
 
+	// SE
+	SoundManager::GetInstance().Play(SoundManager::SRC::P_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
+
 	if (hp_ <= 0) {
 		hp_ = 0;
+
+		// SE
+		SoundManager::GetInstance().Play(SoundManager::SRC::P_DOWN_SE, Sound::TIMES::ONCE);
 		StartRevival();  // 死亡ではなく復活待機
 	}
 }
@@ -1009,7 +1015,6 @@ void Player::Heal(void)
 void Player::Muteki(void)
 {
 	invincible_ = true;
-
 }
 
 void Player::StartRevival()
@@ -1085,6 +1090,10 @@ void Player::eHit(void)
 }
 void Player::wHit(float scale)
 {
+
+	// SE
+	SoundManager::GetInstance().Play(SoundManager::SRC::GETWATER_SE, Sound::TIMES::FORCE_ONCE);
+
 	// 増加量
 	int add = 1;
 

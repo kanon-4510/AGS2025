@@ -51,6 +51,7 @@ void TitleScene::Init(void)
 
 	selectedIndex_ = 0;
 
+
 	SetUseASyncLoadFlag(true);
 	// 音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::TITLE_BGM, Sound::TIMES::LOOP);
@@ -61,6 +62,8 @@ void TitleScene::Init(void)
 
 	// 定点カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
+
+	//NewFunction();
 }
 
 void TitleScene::NewFunction()
@@ -170,6 +173,7 @@ void TitleScene::Update(void)
 		endLoadFlame_ = false;
 		NewFunction();
 	}
+
 	// === キャラクターの移動・向き制御 ===
 	const float playerSpeed = 5.0f;
 	const float enemySpeed = 5.0f;
@@ -206,11 +210,13 @@ void TitleScene::Update(void)
 	enemy_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
 	charactor_.quaRot = Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(yRotDeg), 0.0f);
 
-	enemy_.Update();
-	charactor_.Update();
+	if (!endLoadFlame_) {
+		enemy_.Update();
+		charactor_.Update();
 
-	animationControllerPlayer_->Update();
-	animationControllerEnemy_->Update();
+		animationControllerPlayer_->Update();
+		animationControllerEnemy_->Update();
+	}
 }
 
 void TitleScene::Draw(void)
@@ -275,11 +281,8 @@ void TitleScene::Draw(void)
 		return;
 	}
 
-	//モデルの描画
-	if (!endLoadFlame_)
-	{
-		MV1SetPosition(charactor_.modelId, charactor_.pos);
-		MV1SetPosition(enemy_.modelId, enemy_.pos);
+	// モデル描画
+	if (!endLoadFlame_) {
 		MV1DrawModel(charactor_.modelId);
 		MV1DrawModel(enemy_.modelId);
 	}
