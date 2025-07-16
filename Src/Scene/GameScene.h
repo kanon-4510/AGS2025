@@ -32,6 +32,8 @@ public:
 	void AddItem(std::shared_ptr<Item> item);
 	std::shared_ptr<Item>CreateItem(const VECTOR& spawnPos, float scale,Item::TYPE itemType);
 private:
+	int cnt;
+
 	void EnemyCreate(void);
 
 	std::unique_ptr<Stage> stage_;		// ステージ
@@ -57,16 +59,15 @@ private:
 	// ポーズ
 	bool isPaused_;           // ポーズ中かどうか
 	int pauseSelectIndex_;    // ポーズメニューの選択項目（上下選択）
-	int pauseImgs_[4];        // メニュー画像
 	int pauseExplainImgs_[2];
 
-	enum class PauseState {
+	enum class PauseState 
+	{
 		Menu,        // 通常のポーズメニュー
 		ShowControls,// 操作説明画面
 		ShowItems    // アイテム概要画面
 	};
 
 	PauseState pauseState_ = PauseState::Menu;
-
-	int isB_;
+	int  pauseImg_;
 };
