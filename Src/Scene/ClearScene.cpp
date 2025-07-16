@@ -151,13 +151,13 @@ void ClearScene::Draw(void)
 	// 背景を描く
 	DrawGraph(0, 0, imgBackGameClaer_, true);
 
-	// GAME CLEAR をフェード表示
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, clearAlpha_);
-	DrawGraph(0, -70, imgClear_, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);  // 通常に戻す
+	DrawRotaGraph(Application::SCREEN_SIZE_X/2,200,1.3,0,imgClear_,true);
 
 	// メッセージ（下のテキスト）を表示
 	DrawGraph(msgX_, msgY_, imgClearWolrd_, TRUE);
+	SetFontSize(128);
+	DrawString(msgX_,msgY_,"こうして世界はうまれた",true);
+	SetFontSize(16);
 
 	// メッセージの上に背景で覆う（横方向）
 	int horizontalMaskW = msgX_ + imgW_ - maskLeftX_;
