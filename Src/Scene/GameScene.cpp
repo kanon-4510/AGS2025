@@ -36,6 +36,7 @@ GameScene::GameScene(void)
 	skyDome_ = nullptr;
 	stage_ = nullptr;
 	imgGameUi1_ = -1;
+	imgOpeGear_ = -1;
 	//item_ = nullptr;
 }
 
@@ -84,6 +85,7 @@ void GameScene::Init(void)
 
 	// 画像
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
+	imgOpeGear_ = resMng_.Load(ResourceManager::SRC::OPE_GEAR).handleId_;
 
 	pauseImg_ = LoadGraph("Data/Image/pause.png");
 
@@ -227,6 +229,7 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
+
 }
 
 void GameScene::Draw(void)
@@ -245,6 +248,8 @@ void GameScene::Draw(void)
 	player_->Draw();
 
 	DrawMiniMap();
+	
+	DrawGraph(0, 0, imgOpeGear_, true);
 
 	// 入力チェック or 時間経過でフェード開始
 	if (!uiFadeStart_) 

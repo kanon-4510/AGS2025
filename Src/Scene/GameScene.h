@@ -53,6 +53,9 @@ private:
 	bool uiFadeStart_ = false;
 	int uiFadeFrame_ = 0;
 
+	// İ’èŠJ‚­
+	int imgOpeGear_;
+
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//“G‚ÌoŒ»•p“x
 

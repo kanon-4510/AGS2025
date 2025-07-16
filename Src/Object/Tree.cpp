@@ -1,4 +1,4 @@
-#include<DxLib.h>
+ï»¿#include<DxLib.h>
 #include<EffekseerForDXLib.h>
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
@@ -22,14 +22,16 @@ Tree::Tree(void)
 	modelIdA_ = 0;
 	modelIdO_ = 0;
 
-	// –³“Gó‘Ô
+	imgMutekiIcon_ = -1;
+
+	// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½
 	invincible_ = false;
 	mutekiCnt_ = 600;
 
 	effectTreeResId_ = -1;
 	effectTreePlayId_ = -1;
 
-	// ƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+	// ï¿½Jï¿½vï¿½Zï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½Cï¿½_
 	/*capsule_ = std::make_unique<Capsule>(transform_);
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
@@ -47,11 +49,12 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
+	// ï¿½ï¿½ï¿½Gï¿½Aï¿½Cï¿½Rï¿½ï¿½
+	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-
-	scl_ = { 3.0f, 2.5f, 3.0f };							// ‘å‚«‚³‚Ìİ’è
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// Šp“x‚Ìİ’è
-	pos_ = { 0.0f, -3.5f, 0.0f };							// ˆÊ’u‚Ìİ’è
+	scl_ = { 3.0f, 2.5f, 3.0f };							// ï¿½å‚«ï¿½ï¿½ï¿½Ìİ’ï¿½
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// ï¿½pï¿½xï¿½Ìİ’ï¿½
+	pos_ = { 0.0f, -3.5f, 0.0f };							// ï¿½Ê’uï¿½Ìİ’ï¿½
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -61,10 +64,10 @@ bool Tree::Init(void)
 	water_ = 0;
 	//gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;								// Õ“Ë”»’è—p‚Ì‹…‘Ì”¼Œa
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// Õ“Ë”»’è—p‚Ì‹…‘Ì’†S‚Ì’²®À•W
+	collisionRadius_ = 100.0f;								// ï¿½Õ“Ë”ï¿½ï¿½ï¿½pï¿½Ì‹ï¿½ï¿½Ì”ï¿½ï¿½a
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// ï¿½Õ“Ë”ï¿½ï¿½ï¿½pï¿½Ì‹ï¿½ï¿½Ì’ï¿½ï¿½Sï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½W
 
-	//‘«‰ŒƒGƒtƒFƒNƒg
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Gï¿½tï¿½Fï¿½Nï¿½g
 	effectTreeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::TREE_RANGE).handleId_;
 
@@ -74,7 +77,7 @@ void Tree::Update(void)
 {
 	if (!player_) return;
 
-	// ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚ğXZ•½–Ê‚¾‚¯‚Å‘ª‚é
+	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ‚Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½XZï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½Å‘ï¿½ï¿½ï¿½
 	VECTOR playerPos = player_->GetPos();
 	VECTOR treePos = pos_;
 
@@ -82,7 +85,7 @@ void Tree::Update(void)
 	float dz = playerPos.z - treePos.z;
 	float distance = sqrtf(dx * dx + dz * dz);
 
-	// 2. ¬’·’iŠK‚É‰‚¶‚½Å¬‹——£‚ğİ’è
+	// 2. ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½Kï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 	float minDistance = 0.0f;
 	switch (grow_) {
 	case GROW::BABY:
@@ -102,7 +105,7 @@ void Tree::Update(void)
 		break;
 	}
 
-	// 3. ƒvƒŒƒCƒ„[‚ª‰~‚Ì“à‘¤‚É‚¢‚½‚ç‰Ÿ‚µ–ß‚·
+	// 3. ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½~ï¿½Ì“ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ç‰Ÿï¿½ï¿½ï¿½ß‚ï¿½
 	if (distance < minDistance) {
 		float len = sqrtf(dx * dx + dz * dz);
 		if (len > 0.001f) {
@@ -115,49 +118,49 @@ void Tree::Update(void)
 				treePos.z + dz * minDistance
 			};
 
-			player_->SetPos(newPos); // ©Player‚ÉSetPos‚ª•K—v
+			player_->SetPos(newPos); // ï¿½ï¿½Playerï¿½ï¿½SetPosï¿½ï¿½ï¿½Kï¿½v
 		}
 	}
 
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
 		player_->tHit();
-		pHit();          // ƒvƒŒƒCƒ„[‚ª‹ß‚­‚Ä…‚ğ‚Á‚Ä‚¢‚½‚ç–Ø‚É…‚ğ’™‚ß‚éi‚Ü‚½‚Í•Ê‚Ìˆ—‚É‰‚¶‚Äj
+		pHit();          // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ß‚ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Ø‚Éï¿½ï¿½ğ’™‚ß‚ï¿½iï¿½Ü‚ï¿½ï¿½Í•Ê‚Ìï¿½ï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½Äj
 	}
 
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		scl_ = { 3.0f, 2.5f, 3.0f };						// ‘å‚«‚³‚Ìİ’è
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚Ìİ’è
-		pos_ = { 0.0f, -3.5f, 0.0f };						// ˆÊ’u‚Ìİ’è
-		MV1SetScale(modelIdB_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ğİ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
-		MV1SetRotationXYZ(modelIdB_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
-		MV1SetPosition(modelIdB_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
+		scl_ = { 3.0f, 2.5f, 3.0f };						// ï¿½å‚«ï¿½ï¿½ï¿½Ìİ’ï¿½
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// ï¿½pï¿½xï¿½Ìİ’ï¿½
+		pos_ = { 0.0f, -3.5f, 0.0f };						// ï¿½Ê’uï¿½Ìİ’ï¿½
+		MV1SetScale(modelIdB_, scl_);						//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½İ’ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì”{ï¿½ï¿½)
+		MV1SetRotationXYZ(modelIdB_, rot_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì‰ï¿½]ï¿½ÊBï¿½Pï¿½Ê‚Íƒï¿½ï¿½Wï¿½Aï¿½ï¿½ï¿½B)
+		MV1SetPosition(modelIdB_, pos_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌˆÊ’u(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAï¿½Rï¿½cï¿½ï¿½ï¿½W)
 		break;
 	case Tree::GROW::KID:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚Ìİ’è
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// ï¿½pï¿½xï¿½Ìİ’ï¿½
 		scl_ = { 15.0f, 10.0f, 15.0};
 		pos_ = { 0.0f, -2.0f, 0.0f };
-		MV1SetScale(modelIdK_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ğİ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
-		MV1SetRotationXYZ(modelIdK_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
-		MV1SetPosition(modelIdK_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
+		MV1SetScale(modelIdK_, scl_);						//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½İ’ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì”{ï¿½ï¿½)
+		MV1SetRotationXYZ(modelIdK_, rot_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì‰ï¿½]ï¿½ÊBï¿½Pï¿½Ê‚Íƒï¿½ï¿½Wï¿½Aï¿½ï¿½ï¿½B)
+		MV1SetPosition(modelIdK_, pos_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌˆÊ’u(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAï¿½Rï¿½cï¿½ï¿½ï¿½W)
 		break;
 	case Tree::GROW::ADULT:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚Ìİ’è
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// ï¿½pï¿½xï¿½Ìİ’ï¿½
 		scl_ = { 30.0f, 25.0f, 30.0f };
 		pos_ = { 0.0f, -2.5f, 0.0f };
-		MV1SetScale(modelIdA_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ğİ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
-		MV1SetRotationXYZ(modelIdA_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
-		MV1SetPosition(modelIdA_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
+		MV1SetScale(modelIdA_, scl_);						//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½İ’ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì”{ï¿½ï¿½)
+		MV1SetRotationXYZ(modelIdA_, rot_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì‰ï¿½]ï¿½ÊBï¿½Pï¿½Ê‚Íƒï¿½ï¿½Wï¿½Aï¿½ï¿½ï¿½B)
+		MV1SetPosition(modelIdA_, pos_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌˆÊ’u(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAï¿½Rï¿½cï¿½ï¿½ï¿½W)
 		break;
 	case Tree::GROW::OLD:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// Šp“x‚Ìİ’è
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// ï¿½pï¿½xï¿½Ìİ’ï¿½
 		scl_ = { 50.0f, 45.0f, 50.0f };
 		pos_ = { 0.0f, -23.5f, 0.0f };
-		MV1SetScale(modelIdO_, scl_);						//‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ğİ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
-		MV1SetRotationXYZ(modelIdO_, rot_);					//‚R‚cƒ‚ƒfƒ‹‚ÌŒü‚«(ˆø”‚ÍAx, y, z‚Ì‰ñ“]—ÊB’PˆÊ‚Íƒ‰ƒWƒAƒ“B)
-		MV1SetPosition(modelIdO_, pos_);					//‚R‚cƒ‚ƒfƒ‹‚ÌˆÊ’u(ˆø”‚ÍA‚R‚cÀ•W)
+		MV1SetScale(modelIdO_, scl_);						//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½İ’ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì”{ï¿½ï¿½)
+		MV1SetRotationXYZ(modelIdO_, rot_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAx, y, zï¿½Ì‰ï¿½]ï¿½ÊBï¿½Pï¿½Ê‚Íƒï¿½ï¿½Wï¿½Aï¿½ï¿½ï¿½B)
+		MV1SetPosition(modelIdO_, pos_);					//ï¿½Rï¿½cï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌˆÊ’u(ï¿½ï¿½ï¿½ï¿½ï¿½ÍAï¿½Rï¿½cï¿½ï¿½ï¿½W)
 		break;
 	}
 
@@ -165,20 +168,25 @@ void Tree::Update(void)
 
 	DrawDebugTree2Player();
 
-	//ƒGƒtƒFƒNƒg
+	//ï¿½Gï¿½tï¿½Fï¿½Nï¿½g
 	EffectTreeRange();
 
-	//–³“GŠÔ
+	//ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½
 	MutekiTimer();
 
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_O)) pHit();
 	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
+
+	if (ins.IsNew(KEY_INPUT_M))
+	{
+		invincible_ = true;
+	}
 }
 
 void Tree::Draw(void)
 {
-	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -198,20 +206,54 @@ void Tree::Draw(void)
 		break;
 	}
 
-#pragma region ƒXƒe[ƒ^ƒX•\¦
-	DrawFormatString(55,Application::SCREEN_SIZE_Y-160,0x0,"YGGDRASILL : Lv%d",lv_);
-	DrawBox(50,Application::SCREEN_SIZE_Y-140,650,Application::SCREEN_SIZE_Y-120,0x0,true);
+#pragma region ï¿½Xï¿½eï¿½[ï¿½^ï¿½Xï¿½\ï¿½ï¿½
+	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
+	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if (isD_ == true)
 	{
-		DrawBox(50, Application::SCREEN_SIZE_Y - 140, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 120, 0xff0000, true);
+		DrawBox(50, Application::SCREEN_SIZE_Y - 200, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 180, 0xff0000, true);
 		isD_ = false;
 	}
-	else DrawBox(50,Application::SCREEN_SIZE_Y-140,hp_*12+50,Application::SCREEN_SIZE_Y-120,0x00ff00,true);
-	DrawBox(50,Application::SCREEN_SIZE_Y-115,650,Application::SCREEN_SIZE_Y-105,0x0,true);
-	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*200+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*300+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
-	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-115,water_*600+50,Application::SCREEN_SIZE_Y-105,0x0000ff,true);
+	else DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0x00ff00,true);
+
+	DrawBox(50,Application::SCREEN_SIZE_Y-175,650,Application::SCREEN_SIZE_Y-165,0x0,true);
+	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*200+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*600+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+
+	if (invincible_)
+	{
+		const int cx = 300;
+		const int cy = Application::SCREEN_SIZE_Y - 115;
+		const float radius = 32.0f;
+		const int segments = 60;
+
+		// ï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½`ï¿½ï¿½iï¿½ï¿½Éoï¿½ï¿½ï¿½j
+		DrawRotaGraph(cx, cy, 1.3, 0.0, imgMutekiIcon_, true);
+
+		// ï¿½cï¿½èŠ„ï¿½ï¿½
+		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
+		int filledSegments = static_cast<int>(segments * ratio);
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+		// ï¿½ï¿½ï¿½vï¿½ï¿½è‚©ï¿½Âuï¿½cï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½É•`ï¿½æ‚·ï¿½ï¿½ ï¿½ï¿½ ï¿½oï¿½ßï¿½ï¿½Ô‚Ô‚ñ‚¾‚ï¿½ï¿½hï¿½ï¿½
+		for (int i = filledSegments; i < segments; ++i)
+		{
+			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
+			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+
+			float x1 = cx + radius * cosf(angle1);
+			float y1 = cy + radius * sinf(angle1);
+			float x2 = cx + radius * cosf(angle2);
+			float y2 = cy + radius * sinf(angle2);
+
+			DrawTriangle(cx, cy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+		}
+
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 #pragma endregion
 
 	DrawDebugTree2Player();
@@ -233,23 +275,23 @@ void Tree::DrawDebug(void)
 	VECTOR c;
 
 	//v = pos_;
-	//DrawFormatString(20, 30, white, "–Ø‚ÌÀ•WF(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
+	//DrawFormatString(20, 30, white, "ï¿½Ø‚Ìï¿½ï¿½Wï¿½F(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 	 //c= collisionPos_;
 	//DrawSphere3D(c, collisionRadius_, 8, red, red, false);
 
 	if (invincible_)
 	{
-		DrawFormatString(50, 180, GetColor(255, 0, 0), "–³“G: c‚è%d•b", mutekiCnt_);
+		DrawFormatString(50, 180, GetColor(255, 0, 0), "ï¿½ï¿½ï¿½G: ï¿½cï¿½ï¿½%dï¿½b", mutekiCnt_);
 	}
 }
 
 void Tree::DrawDebugTree2Player(void)
 {
-	// ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£”»’è‚µ‚Ä‰~‚ğ•`‚­ˆ—‚ğ’Ç‰Á
+	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ‚Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è‚µï¿½Ä‰~ï¿½ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
 	if (player_ != nullptr)
 	{
-		VECTOR centerPos = pos_;  // –Ø‚Ì’†SÀ•W
-		centerPos.y = 0.0f;		  // ‰~‚ğ‰º‚°‚é
+		VECTOR centerPos = pos_;  // ï¿½Ø‚Ì’ï¿½ï¿½Sï¿½ï¿½ï¿½W
+		centerPos.y = 0.0f;		  // ï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		VECTOR playerPos = player_->GetTransform().pos;
 
 		float dx = playerPos.x - centerPos.x;
@@ -257,7 +299,7 @@ void Tree::DrawDebugTree2Player(void)
 		float distance = sqrtf(dx * dx + dz * dz);
 		bool inRange = (distance <= viewRange_);
 
-		unsigned int color = inRange ? 0xff0000 : 0xffdead;  // Ô or ”–‰©F
+		unsigned int color = inRange ? 0xff0000 : 0xffdead;  // ï¿½ï¿½ or ï¿½ï¿½ï¿½ï¿½ï¿½F
 
 		float angleStep = DX_PI_F * 2.0f / circleSegments_;
 
@@ -342,7 +384,7 @@ void Tree::LvUp(void)
 		ChangeGrow();
 	}
 
-	// ‰¹Šy
+	// ï¿½ï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
 
 }
@@ -387,7 +429,7 @@ float Tree::GetCollisionRadius(void)
 
 void Tree::MutekiTimer(void)
 {
-	//UŒ‚ƒAƒbƒv
+	//ï¿½Uï¿½ï¿½ï¿½Aï¿½bï¿½v
 	if (invincible_)
 	{
 		mutekiCnt_--;
@@ -403,17 +445,21 @@ void Tree::MutekiTimer(void)
 void Tree::Muteki(void)
 {
 	invincible_ = true;
+	// ï¿½Ø‚ï¿½ï¿½ï¿½ï¿½G
+	SoundManager::GetInstance().Play(SoundManager::SRC::MUTEKI_SE, Sound::TIMES::ONCE);
 }
 
-void Tree::eHit(void)//ƒGƒlƒ~[‚Æ‚Ì‚ ‚½‚è”»’è
+void Tree::eHit(void)//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Æ‚Ì‚ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
 {
 	if (!invincible_)
 	{
 		hp_ -= 1;
 		isD_ = true;
+		// ï¿½_ï¿½ï¿½ï¿½[ï¿½W
+		SoundManager::GetInstance().Play(SoundManager::SRC::T_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	}
 }
-void Tree::pHit(void)//ƒvƒŒƒCƒ„[‚Æ‚Ì‚ ‚½‚è”»’è
+void Tree::pHit(void)//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ‚Ì‚ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
 {
 	if (player_->IsMax() == true)
 	{
@@ -442,7 +488,7 @@ void Tree::EffectTreeRange(void)
 		StopEffekseer3DEffect(effectTreePlayId_);
 	}
 
-	float scale = 10.0f;  // ƒfƒtƒHƒ‹ƒg’l
+	float scale = 10.0f;  // ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½l
 
 	switch (grow_)
 	{
