@@ -13,6 +13,8 @@ class Tree
 {
 public:
 	static constexpr int GROW_UP = 4;
+	// –³“G
+	static constexpr int INVINCIBLE_TIME = 600;
 	enum class GROW
 	{
 		BABY,
@@ -69,6 +71,9 @@ private:
 	VECTOR pos_;	//ˆÊ’u‚ª—ˆ‚é
 	VECTOR rot_;	//‰ô“V
 	VECTOR dir_;	//ˆÚ“®‚¹‚ñ‚æ
+
+	// –³“GƒAƒCƒRƒ“
+	int imgMutekiIcon_;	// –³“G
 
 	int lv_;
 	int hp_;

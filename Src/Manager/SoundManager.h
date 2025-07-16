@@ -19,9 +19,15 @@ public:
 		ATK_SE1,		//アタックのSE1
 		ATK_SE2,		//アタックのSE2
 		ATK_SE3,		//アタックのSE3
-		E_DOWN_SE,		//敵死亡
-		P_DOWN_SE,		//プレイヤー死亡
-		P_DAMAGE_SE,	//プレイヤーダメージ
+		SPEEDUP_SE,		//スピードアップSE
+		POWERUP_SE,		//パワーアップSE
+		MUTEKI_SE,		//木が無敵
+		HEAL_SE,		//回復SE
+		E_DOWN_SE,		//敵死亡SE
+		P_DOWN_SE,		//プレイヤー死亡SE
+		P_DAMAGE_SE,	//プレイヤーダメージSE
+		T_DAMAGE_SE,	//木がダメージSE
+		E_DAMAGE_SE,	//敵がダメージSE
 		SET_SE,			//決定のSE
 		WARNING_SE,		//警告音SE
 	};

@@ -77,6 +77,22 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PauseItem.png");
 	resourcesMap_.emplace(SRC::PAUSEITEM, std::move(res));
 
+	// 設定表示
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "OpeGear.png");
+	resourcesMap_.emplace(SRC::OPE_GEAR, std::move(res));
+
+	// パワーアップ状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/PowerIcon.png");
+	resourcesMap_.emplace(SRC::POWER_UP_ICON, std::move(res));
+
+	// スピードアップ状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/SpeedIcon.png");
+	resourcesMap_.emplace(SRC::SPEED_UP_ICON, std::move(res));
+
+	// 回転切り使用可能状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/RotaAttackIcon.png");
+	resourcesMap_.emplace(SRC::ROTA_ATTACK_ICON, std::move(res));
+
 	// ゲームクリア
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Clear.png");
 	resourcesMap_.emplace(SRC::GAMECLEAR, std::move(res));
