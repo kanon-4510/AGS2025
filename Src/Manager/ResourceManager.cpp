@@ -41,14 +41,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackTitle.png");
 	resourcesMap_.emplace(SRC::BACK_TITLE, std::move(res));
 
-	// Push
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Push.png");
-	resourcesMap_.emplace(SRC::PUSH, std::move(res));
-
-	// 十字キーの上下
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");
-	resourcesMap_.emplace(SRC::UPDOWN, std::move(res));
-
 	// ゲーム画面のUI
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameUI1.png");
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
@@ -77,6 +69,22 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "PauseItem.png");
 	resourcesMap_.emplace(SRC::PAUSEITEM, std::move(res));
 
+	// 設定表示
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "OpeGear.png");
+	resourcesMap_.emplace(SRC::OPE_GEAR, std::move(res));
+
+	// パワーアップ状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/PowerIcon.png");
+	resourcesMap_.emplace(SRC::POWER_UP_ICON, std::move(res));
+
+	// スピードアップ状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/SpeedIcon.png");
+	resourcesMap_.emplace(SRC::SPEED_UP_ICON, std::move(res));
+
+	// 回転切り使用可能状態アイコン
+	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Icon/RotaAttackIcon.png");
+	resourcesMap_.emplace(SRC::ROTA_ATTACK_ICON, std::move(res));
+
 	// ゲームクリア
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Clear.png");
 	resourcesMap_.emplace(SRC::GAMECLEAR, std::move(res));
@@ -100,10 +108,6 @@ void ResourceManager::Init(void)
 	// ユグドラシルは死んでしまった…
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/DieTree.png");
 	resourcesMap_.emplace(SRC::DIETREE, std::move(res));
-
-	// もう一度遊ぶ
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/RePlay.png");
-	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
 
 	// はい選択中
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectYes.png");

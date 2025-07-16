@@ -65,6 +65,11 @@ Player::Player(void)
 	// 無敵状態
 	invincible_ = false;
 
+	// アイコン
+	imgPowerIcon_ = -1;
+	imgSpeedIcon_ = -1;
+	imgRotateAttackIcon_ = -1;
+
 	// 移動が可能かどうか
 	canMove_ = true;
 	// 所持上限かどうか
@@ -99,6 +104,11 @@ void Player::Init(void)
 	// 丸影画像
 	imgShadow_ = resMng_.Load(
 		ResourceManager::SRC::PLAYER_SHADOW).handleId_;
+
+	// アイコン画像
+	imgPowerIcon_ = resMng_.Load(ResourceManager::SRC::POWER_UP_ICON).handleId_;
+	imgSpeedIcon_ = resMng_.Load(ResourceManager::SRC::SPEED_UP_ICON).handleId_;
+	imgRotateAttackIcon_ = resMng_.Load(ResourceManager::SRC::ROTA_ATTACK_ICON).handleId_;
 
 	//足煙エフェクト
 	effectSmokeResId_ = ResourceManager::GetInstance().Load(
@@ -141,7 +151,16 @@ void Player::Update(void)
 	UpdateDown(1.0f);
 
 	auto& ins = InputManager::GetInstance();
-	//if (ins.IsNew(KEY_INPUT_U)) wHit();
+	if (ins.IsNew(KEY_INPUT_B))
+	{
+		powerUpFlag_ = true;
+	}
+
+	if (ins.IsNew(KEY_INPUT_N))
+	{
+		speedUpFlag_ = true;
+	}
+
 }
 
 void Player::UpdateDown(float deltaTime)
@@ -170,10 +189,106 @@ void Player::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 40 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
 	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
+
+	if (powerUpFlag_)
+	{
+		const int cx = 150;
+		const int iconCy = Application::SCREEN_SIZE_Y - 115;
+		const int timerCy = iconCy + 2;  // タイマーだけ2px下げる
+		const float radius = 32.0f;
+		const int segments = 60;
+
+		// アイコン描画
+		DrawRotaGraph(cx, iconCy, 1.3, 0, imgPowerIcon_, true);
+
+		// タイマー描画（黒い円グラフ）
+		float ratio = static_cast<float>(powerUpCnt_) / POWER_UP_TIME;
+		int filledSegments = static_cast<int>(segments * ratio);
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		for (int i = filledSegments; i < segments; ++i)
+		{
+			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
+			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+
+			float x1 = cx + radius * cosf(angle1);
+			float y1 = timerCy + radius * sinf(angle1);  // timerCy使用
+			float x2 = cx + radius * cosf(angle2);
+			float y2 = timerCy + radius * sinf(angle2);  // timerCy使用
+
+			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	if (speedUpFlag_)
+	{
+		const int cx = 225;
+		const int iconCy = Application::SCREEN_SIZE_Y - 115;
+		const int timerCy = iconCy + 2;  // タイマーだけ2px下げる
+		const float radius = 32.0f;
+		const int segments = 60;
+
+		// アイコン描画
+		DrawRotaGraph(cx, iconCy, 1.3, 0, imgSpeedIcon_, true);
+
+		// タイマー描画（黒い円グラフ）
+		float ratio = static_cast<float>(speedUpCnt_) / SPEED_UP_TIME;
+		int filledSegments = static_cast<int>(segments * ratio);
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		for (int i = filledSegments; i < segments; ++i)
+		{
+			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
+			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+
+			float x1 = cx + radius * cosf(angle1);
+			float y1 = timerCy + radius * sinf(angle1);  // timerCy使用
+			float x2 = cx + radius * cosf(angle2);
+			float y2 = timerCy + radius * sinf(angle2);  // timerCy使用
+
+			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	if (tree_ && tree_->GetLv() >= 50) {
+		const int cx = 450;
+		const int iconCy = Application::SCREEN_SIZE_Y - 115;
+		const int timerCy = iconCy + 2;
+		const float radius = 32.0f;
+		const int segments = 60;
+
+		DrawRotaGraph(cx, iconCy, 1.3, 0, imgRotateAttackIcon_, true);
+
+		if (!IsExAttackReady())
+		{
+			float ratio = static_cast<float>(GetNowCount() - lastExTime_) / exTimer_;
+			int filledSegments = static_cast<int>(segments * ratio);
+
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+
+			for (int i = 0; i < segments - filledSegments; ++i)
+			{
+				float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
+				float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+
+				float x1 = cx + radius * cosf(angle1);
+				float y1 = timerCy + radius * sinf(angle1);
+				float x2 = cx + radius * cosf(angle2);
+				float y2 = timerCy + radius * sinf(angle2);
+
+				DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			}
+
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+	}
+
 #pragma endregion
 }
 
@@ -925,8 +1040,8 @@ void Player::ProcessAttack(void)
 
 			// 衝突(攻撃)
 			CollisionAttack();
-
-			// 音楽
+			
+			// 攻撃音①
 			SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE1, Sound::TIMES::FORCE_ONCE);
 
 		}
@@ -941,7 +1056,7 @@ void Player::ProcessAttack(void)
 				// 衝突(攻撃)
 				CollisionAttack2();
 
-				// 音楽
+				// 攻撃音②
 				SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE2, Sound::TIMES::FORCE_ONCE);
 			}
 		}
@@ -957,7 +1072,7 @@ void Player::ProcessAttack(void)
 				// 衝突(攻撃)
 				CollisionAttackEx();
 
-				// 音楽
+				// 攻撃音③
 				SoundManager::GetInstance().Play(SoundManager::SRC::ATK_SE3, Sound::TIMES::FORCE_ONCE);
 			}
 		}
@@ -1038,7 +1153,7 @@ void Player::PowerUpTimer(void)
 			normalAttack_ = 2;
 			slashAttack_ = 1;
 			exrAttack_ = 2;
-			powerUpCnt_ = 1200;
+			powerUpCnt_ = POWER_UP_TIME;
 		}
 	}
 }
@@ -1046,6 +1161,9 @@ void Player::PowerUpTimer(void)
 void Player::PowerUp(void)
 {
 	powerUpFlag_ = true;
+
+	// パワーアップ
+	SoundManager::GetInstance().Play(SoundManager::SRC::POWERUP_SE, Sound::TIMES::ONCE);
 	
 	if (powerUpCnt_ >= 0 && powerUpFlag_)
 	{
@@ -1065,7 +1183,7 @@ void Player::SpeedUpTimer(void)
 		if (speedUpCnt_ <= 0)
 		{
 			speedUpFlag_ = false;
-			speedUpCnt_ = 1200;
+			speedUpCnt_ = SPEED_UP_TIME;
 		}
 	}
 }
@@ -1073,13 +1191,20 @@ void Player::SpeedUpTimer(void)
 void Player::SpeedUp(void)
 {
 	speedUpFlag_ = true;
+
+	// スピードアップ
+	SoundManager::GetInstance().Play(SoundManager::SRC::SPEEDUP_SE, Sound::TIMES::ONCE);
 }
 
 void Player::Heal(void)
 {
 	hp_ = HP;
+
+	// 回復
+	SoundManager::GetInstance().Play(SoundManager::SRC::HEAL_SE, Sound::TIMES::ONCE);
 	EffectHeal();
 }
+
 void Player::Muteki(void)
 {
 	invincible_ = true;

@@ -63,18 +63,38 @@ void SoundManager::Init(void)
 
 	// アタック1
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE1.mp3");
-	res.ChangeMaxVolume(1.0);
+	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::ATK_SE1, res);
 
 	// アタック2
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE2.mp3");
-	res.ChangeMaxVolume(1.0);
+	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::ATK_SE2, res);
 
 	// アタック3
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "AtkSE3.mp3");
-	res.ChangeMaxVolume(1.0);
+	res.ChangeMaxVolume(0.6);
 	soundMap_.emplace(SRC::ATK_SE3, res);
+
+	// スピードアップ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "SpeedUpSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::SPEEDUP_SE, res);
+
+	// パワーアップ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "PowerUpSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::POWERUP_SE, res);
+
+	// 木が無敵
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "MutekiSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::MUTEKI_SE, res);
+
+	// 回復
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "HealSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::HEAL_SE, res);
 
 	// 敵死亡
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "EDownSE.mp3");
@@ -86,10 +106,20 @@ void SoundManager::Init(void)
 	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::P_DOWN_SE, res);
 
-	// プレイヤー死亡
+	// プレイヤーダメージ
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "PDamageSE.mp3");
 	res.ChangeMaxVolume(0.8);
 	soundMap_.emplace(SRC::P_DAMAGE_SE, res);
+
+	// 木ダメージ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "TDamageSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::T_DAMAGE_SE, res);
+
+	// 敵ダメージ
+	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "EDamageSE.mp3");
+	res.ChangeMaxVolume(0.8);
+	soundMap_.emplace(SRC::E_DAMAGE_SE, res);
 
 	// 決定
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "SetSE.mp3");

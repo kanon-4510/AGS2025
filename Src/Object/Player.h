@@ -42,9 +42,12 @@ public:
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
 	//ステ関連
-	static constexpr int HP = 15;
+	static constexpr int HP = 10;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
+
+	static constexpr int POWER_UP_TIME = 1200;
+	static constexpr int SPEED_UP_TIME = 1200;
 
 	// 状態
 	enum class STATE
@@ -211,6 +214,11 @@ private:
 	//ステ関連
 	int hp_;
 	int water_;
+
+	// ステアイコン
+	int imgPowerIcon_;			// パワー
+	int imgSpeedIcon_;			// スピード
+	int imgRotateAttackIcon_;	// 回転切り
 
 	// 無敵状態
 	bool invincible_;
