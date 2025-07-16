@@ -206,7 +206,7 @@ void Tree::Draw(void)
 		break;
 	}
 
-#pragma region �X�e�[�^�X�\��
+#pragma region ステータス
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if (isD_ == true)
@@ -464,7 +464,7 @@ void Tree::pHit(void)//�v���C���[�Ƃ̂����蔻��
 	if (player_->IsMax() == true)
 	{
 		player_->SetIsMax();
-		for (int l = 0; l <= 14; l++)
+		for (int l = 0; l <= 19; l++)
 		{
 			water_++;
 			LvUp();

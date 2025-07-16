@@ -52,7 +52,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// ‰ŠúƒV[ƒ“‚Ìİ’è
-	DoChangeScene(SCENE_ID::CLEAR);
+	DoChangeScene(SCENE_ID::TITLE);
 
 }
 
@@ -240,7 +240,6 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		SetFontSize(55);
 		break;
 	case SCENE_ID::GAME:
-		ChangeFont("PixelMplus10");
 		scene_ = std::make_unique<GameScene>();
 		break;
 	case SCENE_ID::OVER:
