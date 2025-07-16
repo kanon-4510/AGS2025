@@ -42,7 +42,7 @@ public:
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
 
 	//ステ関連
-	static constexpr int HP = 15;
+	static constexpr int HP = 10;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
@@ -234,10 +234,11 @@ private:
 	int effectSmokePleyId_;
 	float stepFootSmoke_;
 
-	//モデルパーツのハンドル
-	int fremLeHandl_;//左
-	int fremReHandl_;//右
-	
+	// 回復エフェクト
+	int effectHealResId_;
+	int effectHealPleyId_;
+	float stepHeal_;
+
 	// フレームごとの移動値
 	VECTOR moveDiff_;
 
@@ -304,6 +305,8 @@ private:
 
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
+
+	void EffectHeal(void);
 
 	bool isMax_;//水の所持上限
 };

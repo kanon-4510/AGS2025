@@ -202,9 +202,13 @@ void ResourceManager::Init(void)
 	//エフェクト
 	//-------------------------
 
-	//ボス
+	//木の視野
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "TreeRange.efkefc");
 	resourcesMap_.emplace(SRC::TREE_RANGE, std::move(res));
+	
+	//回復
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "HealEffect.efkefc");
+	resourcesMap_.emplace(SRC::EFF_HEAL, std::move(res));
 }
 
 void ResourceManager::Release(void)

@@ -154,9 +154,8 @@ void ClearScene::Draw(void)
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,200,1.3,0,imgClear_,true);
 
 	// メッセージ（下のテキスト）を表示
-	DrawGraph(msgX_, msgY_, imgClearWolrd_, TRUE);
 	SetFontSize(128);
-	DrawString(msgX_,msgY_,"こうして世界はうまれた",true);
+	DrawString(Application::SCREEN_SIZE_X/2-128*5.5,830, "こうして世界はうまれた", true);
 	SetFontSize(16);
 
 	// メッセージの上に背景で覆う（横方向）

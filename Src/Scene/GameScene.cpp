@@ -65,10 +65,6 @@ void GameScene::Init(void)
 
 	player_->SetEnemy(&enemys_);
 
-	//アイテム
-	/*item_ = std::make_shared<Item>(*player_, Transform{});
-	item_->Init();*/
-
 	// ステージ
 	stage_ = std::make_unique<Stage>(*player_);
 	stage_->Init();

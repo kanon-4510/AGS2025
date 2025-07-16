@@ -19,7 +19,7 @@ public:
         FORCE_ONCE,  // Å© êVÇµÇ≠í«â¡
     };
 
-    static const int MAX_HANDLE_NUM = 5;
+    static const int MAX_HANDLE_NUM = 2;    
 
     Sound(void);
     Sound(TYPE type, const std::string& path);

@@ -66,28 +66,28 @@ void MiniMap::DrawCameraViewCone(const MapVector2& playerPos, float cameraAngleR
 
     if (!IsInsideCircle(px, pz)) return;
 
-    // カメラの方向（視界の中心方向）
+    // カメラの方向(視界の中心方向)
     float angle = cameraAngleRad - DX_PI / 2.0f;
 
-    // 視界の長さ（半径に相当）
+    // 視界の長さ(半径に相当)
     float viewLength = 30.0f;
 
-    // 視界の開き角（左右にどれだけ開くか）
-    float fovHalfAngle = 0.5f; // 約57度くらい（0.5ラジアン）
+    // 視界の開き角(左右にどれだけ開くか)
+    float fovHalfAngle = 0.5f; // 約57度くらい(0.5ラジアン)
 
-    // 左・右方向の端を計算（底辺の左右端）
+    // 左・右方向の端を計算(底辺の左右端)
     float leftX = px + std::cos(angle + fovHalfAngle) * viewLength;
     float leftY = pz + std::sin(angle + fovHalfAngle) * viewLength;
 
     float rightX = px + std::cos(angle - fovHalfAngle) * viewLength;
     float rightY = pz + std::sin(angle - fovHalfAngle) * viewLength;
 
-    // 三角形を描画（カメラの視界：黄色など）
+    // 三角形を描画（カメラの視界：半透明）
     DrawTriangleAA(
         px, pz,
         static_cast<int>(leftX), static_cast<int>(leftY),
         static_cast<int>(rightX), static_cast<int>(rightY),
-        GetColor(255, 255, 255), TRUE); // 黄色で塗りつぶし
+        GetColor(255, 255, 255), TRUE); // 半透明の白
 }
 
 void MiniMap::DrawPlayer(const MapVector2& playerPos, float playerAngleRad)

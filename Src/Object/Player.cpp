@@ -92,8 +92,8 @@ Player::~Player(void)
 void Player::Init(void)
 {
 	// モデルの基本設定
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::PLAYER));
+	transform_.SetModel(resMng_.Load(
+		ResourceManager::SRC::PLAYER).handleId_);
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.pos = { 300.0f, 0.0f, 0.0f };
 	transform_.quaRot = Quaternion();
@@ -113,10 +113,10 @@ void Player::Init(void)
 	//足煙エフェクト
 	effectSmokeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::FOOT_SMOKE).handleId_;
-
-	//モデルのフレーム番号
-	fremLeHandl_ = MV1SearchFrame(transform_.modelId, "mixamorig:LeftHand");
-	fremReHandl_ = MV1SearchFrame(transform_.modelId, "mixamorig:RightHand");
+	
+	//回復エフェクト
+	effectHealResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::EFF_HEAL).handleId_;
 
 	// アニメーションの設定
 	InitAnimation();
@@ -130,9 +130,6 @@ void Player::Init(void)
 
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, capsule_->GetCenter().y, 0.0f};	// 衝突判定用の球体中心の調整座標
-
-	//enemy_ = new EnemyBase(); // OK
-	//enemy_->SetCollisionPos({ 0.0f, 0.0f, 0.0f });
 
 	// 初期状態
 	ChangeState(STATE::PLAY);
@@ -184,12 +181,12 @@ void Player::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);	// モデルの描画
 	DrawShadow();						// 丸影描画
-	//DrawDebug();						// デバッグ用描画
+	DrawDebug();						// デバッグ用描画
 
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 40 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
 	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
@@ -539,38 +536,38 @@ void Player::DrawDebug(void)
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	v = transform_.pos;
-	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
-	//-------------------------------------------------------
+	//v = transform_.pos;
+	//DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
+	////-------------------------------------------------------
 
-	// 衝突
-	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
+	//// 衝突
+	//DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
 	
-	if (isAttack_) {
+	//if (isAttack_) {
 
-		VECTOR forward = transform_.quaRot.GetForward();
-		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackCollisionPos.y += 100.0f;
-		float attackCollisionRadius = 100.0f;
-		// カプセルの描画確認用	
-		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	}if (isAttack2_) {
+	//	VECTOR forward = transform_.quaRot.GetForward();
+	//	VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+	//	attackCollisionPos.y += 100.0f;
+	//	float attackCollisionRadius = 100.0f;
+	//	// カプセルの描画確認用	
+	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	//}if (isAttack2_) {
 
-		VECTOR forward = transform_.quaRot.GetForward();
-		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 80.0f));
-		attackCollisionPos.y += 100.0f;
-		float attackCollisionRadius = 140.0f;
-		// カプセルの描画確認用	
-		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	}
-	if (exAttack_) {
-		VECTOR attackCollisionPos = transform_.pos;
-		attackCollisionPos.y += 100.0f;
-		float attackCollisionRadius = 180.0f;
-		// カプセルの描画確認用	
-		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	}
+	//	VECTOR forward = transform_.quaRot.GetForward();
+	//	VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 80.0f));
+	//	attackCollisionPos.y += 100.0f;
+	//	float attackCollisionRadius = 140.0f;
+	//	// カプセルの描画確認用	
+	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	//}
+	//if (exAttack_) {
+	//	VECTOR attackCollisionPos = transform_.pos;
+	//	attackCollisionPos.y += 100.0f;
+	//	float attackCollisionRadius = 180.0f;
+	//	// カプセルの描画確認用	
+	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	//}
 	if (!IsExAttackReady())
 	{
 		int remaining = (exTimer_ - (GetNowCount() - lastExTime_)) / 1000;
@@ -589,7 +586,7 @@ void Player::DrawDebug(void)
 
 	VECTOR s;
 	s = collisionPos_;
-	DrawSphere3D(s, collisionRadius_, 8, red, red, false);
+	/*DrawSphere3D(s, collisionRadius_, 8, red, red, false);*/
 }
 
 void Player::ProcessMove(void)
@@ -1202,6 +1199,7 @@ void Player::Heal(void)
 
 	// 回復
 	SoundManager::GetInstance().Play(SoundManager::SRC::HEAL_SE, Sound::TIMES::ONCE);
+	EffectHeal();
 }
 
 void Player::Muteki(void)
@@ -1255,6 +1253,18 @@ void Player::EffectFootSmoke(void)
 		//エフェクトの位置
 		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	}
+}
+
+void Player::EffectHeal(void)
+{
+	// エフェクト再生
+	effectHealPleyId_ = PlayEffekseer3DEffect(effectHealResId_);
+
+	//エフェクトの大きさ
+	SetScalePlayingEffekseer3DEffect(effectHealPleyId_, 5.0f, 5.0f, 5.0f);
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 int Player::GetWater(void) const
