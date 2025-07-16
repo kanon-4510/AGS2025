@@ -24,18 +24,12 @@ Tree::Tree(void)
 
 	imgMutekiIcon_ = -1;
 
-	// ���G���
+	// 無敵状態
 	invincible_ = false;
 	mutekiCnt_ = 600;
 
 	effectTreeResId_ = -1;
 	effectTreePlayId_ = -1;
-
-	// �J�v�Z���R���C�_
-	/*capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
-	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
-	capsule_->SetRadius(30.0f);*/
 }
 
 Tree::~Tree(void)
@@ -49,12 +43,12 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	// ���G�A�C�R��
+	// 無敵アイコン画像
 	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-	scl_ = { 3.0f, 2.5f, 3.0f };							// �傫���̐ݒ�
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// �p�x�̐ݒ�
-	pos_ = { 0.0f, -3.5f, 0.0f };							// �ʒu�̐ݒ�
+	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさ
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 回転
+	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -64,10 +58,10 @@ bool Tree::Init(void)
 	water_ = 0;
 	//gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;								// �Փ˔���p�̋��̔��a
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// �Փ˔���p�̋��̒��S�̒������W
+	collisionRadius_ = 100.0f;								
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				
 
-	//�����G�t�F�N�g
+	//エフェクト
 	effectTreeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::TREE_RANGE).handleId_;
 
@@ -206,7 +200,7 @@ void Tree::Draw(void)
 		break;
 	}
 
-#pragma region �X�e�[�^�X�\��
+#pragma region ステータス
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if (isD_ == true)
@@ -256,7 +250,7 @@ void Tree::Draw(void)
 	}
 #pragma endregion
 
-	DrawDebugTree2Player();
+	//DrawDebugTree2Player();
 
 	//DrawDebug();
 }

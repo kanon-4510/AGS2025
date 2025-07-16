@@ -108,7 +108,7 @@ void SoundManager::Init(void)
 
 	// プレイヤーダメージ
 	res = Sound(Sound::TYPE::SOUND_2D, Application::PATH_SOUND + "PDamageSE.mp3");
-	res.ChangeMaxVolume(0.8);
+	res.ChangeMaxVolume(1.0);
 	soundMap_.emplace(SRC::P_DAMAGE_SE, res);
 
 	// 木ダメージ
