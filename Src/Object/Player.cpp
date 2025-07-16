@@ -87,8 +87,8 @@ Player::~Player(void)
 void Player::Init(void)
 {
 	// ÉÇÉfÉãÇÃäÓñ{ê›íË
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::PLAYER));
+	transform_.SetModel(resMng_.Load(
+		ResourceManager::SRC::PLAYER).handleId_);
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.pos = { 300.0f, 0.0f, 0.0f };
 	transform_.quaRot = Quaternion();
@@ -1078,6 +1078,7 @@ void Player::SpeedUp(void)
 void Player::Heal(void)
 {
 	hp_ = HP;
+	EffectHeal();
 }
 void Player::Muteki(void)
 {
