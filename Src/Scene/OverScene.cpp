@@ -201,13 +201,11 @@ void OverScene::Draw(void)
 			SetFontSize(55);
 			DrawString(1500, 800, "もう一度プレイ", 0xffffff);
 			DrawString(1500, 890, "タイトルに戻る", 0xffff00);
-			if (cnt % 90 <= 45)DrawString(1500, 890, "タイトルに戻る", 0xffffff);
 		}
 		else
 		{
 			SetFontSize(55);
-			DrawString(1500, 800, "もう一度プレイ", 0xffffff);
-			if (cnt % 90 <= 45)DrawString(1500, 800, "もう一度プレイ", 0xffff00);
+			DrawString(1500, 800, "もう一度プレイ", 0xffff00);
 			DrawString(1500, 890, "タイトルに戻る", 0xffffff);
 		}
 	}

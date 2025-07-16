@@ -27,6 +27,8 @@ EnemyBase::EnemyBase()
 	originalColor_ = { 1.0f, 1.0f, 1.0f };  // デフォルトは白
 	blinkColor_ = { 1.0f, 0.0f, 0.0f };      // 点滅中は赤
 
+	attackPow_ = 1;	//攻撃力
+
 	// 状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
@@ -290,11 +292,12 @@ void EnemyBase::SetAlive(bool alive)
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
+	// ダメージ音
+	SoundManager::GetInstance().Play(SoundManager::SRC::E_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	isAttack_ = false;
 	if (hp_ <= 0 && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
-		// 音楽
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
 	else if (hp_ >= 1 && isAlive_ && enemyType_ != TYPE::BOSS)
@@ -416,7 +419,7 @@ void EnemyBase::CheckHitAttackHit(void)
 
 	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
 	{
-		player_->Damage(1);
+		player_->Damage(attackPow_);
 	}
 }
 

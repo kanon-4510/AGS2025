@@ -6,13 +6,14 @@
 class GameScene;
 class SceneManager;
 class Player;
-//class Capsule;
-//class Collider;
 
 class Tree
 {
 public:
 	static constexpr int GROW_UP = 4;
+
+	// 無敵
+	static constexpr int INVINCIBLE_TIME = 600;
 	enum class GROW
 	{
 		BABY,
@@ -70,6 +71,9 @@ private:
 	VECTOR rot_;	//廻天
 	VECTOR dir_;	//移動せんよ
 
+	// 無敵アイコン
+	int imgMutekiIcon_;	// 無敵
+
 	int lv_;
 	int hp_;
 	int water_;
@@ -81,14 +85,14 @@ private:
 	bool invincible_;
 	int mutekiCnt_;
 
+	//エフェクト
+	int effectTreeResId_;
+	int effectTreePlayId_;
+
 	//無敵時間
 	void MutekiTimer(void);
-	/*//VECTOR spherePos_;	//スフィアの移動後座標
 
-	//float collisionRadius_;		// 衝突判定用の球体半径
-	//VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
-
-	//std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
-
-	//std::unique_ptr<Capsule> capsule_;//カプセル*/
+	//木の視野範囲
+	void EffectTreeRange(void);
+	
 };

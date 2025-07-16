@@ -116,6 +116,7 @@ protected:
 	VECTOR attackCollisionPos_; //‡‚Ì‹…‘Ì‚ÌˆÚ“®ŒãÀ•W
 
 	int hp_;	// ‘Ì—Í
+	int attackPow_; //UŒ‚—Í
 
 	bool isAlive_;	// ¶‘¶”»’è
 	bool isAttack_ = false;		//UŒ‚”»’è

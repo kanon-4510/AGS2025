@@ -48,6 +48,9 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_P);
 	InputManager::GetInstance().Add(KEY_INPUT_L);
 
+	InputManager::GetInstance().Add(KEY_INPUT_B);
+	InputManager::GetInstance().Add(KEY_INPUT_M);
+
 	InputManager::GetInstance().Add(KEY_INPUT_RETURN);
 
 	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);

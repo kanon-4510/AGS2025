@@ -40,6 +40,10 @@ public:
 		NO,
 		SELECT_YES,
 		SELECT_NO,
+		OPE_GEAR,
+		POWER_UP_ICON,
+		SPEED_UP_ICON,
+		ROTA_ATTACK_ICON,
 		//3Dモデル
 		SPEECH_BALLOON,
 		PLAYER,
@@ -75,7 +79,10 @@ public:
 		ONION,
 		TOGE,
 		VIRUS,
-		BOSS
+		BOSS,
+		//エフェクト
+		TREE_RANGE,
+		EFF_HEAL
 	};
 
 	// 明示的にインステンスを生成する
