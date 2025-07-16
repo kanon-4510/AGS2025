@@ -189,7 +189,7 @@ void Player::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 40 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
 	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
