@@ -6,8 +6,6 @@
 class GameScene;
 class SceneManager;
 class Player;
-//class Capsule;
-//class Collider;
 
 class Tree
 {
@@ -86,14 +84,14 @@ private:
 	bool invincible_;
 	int mutekiCnt_;
 
+	//エフェクト
+	int effectTreeResId_;
+	int effectTreePlayId_;
+
 	//無敵時間
 	void MutekiTimer(void);
-	/*//VECTOR spherePos_;	//スフィアの移動後座標
 
-	//float collisionRadius_;		// 衝突判定用の球体半径
-	//VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
-
-	//std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
-
-	//std::unique_ptr<Capsule> capsule_;//カプセル*/
+	//木の視野範囲
+	void EffectTreeRange(void);
+	
 };

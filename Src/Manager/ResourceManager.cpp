@@ -41,14 +41,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "BackTitle.png");
 	resourcesMap_.emplace(SRC::BACK_TITLE, std::move(res));
 
-	// Push
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Push.png");
-	resourcesMap_.emplace(SRC::PUSH, std::move(res));
-
-	// 十字キーの上下
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "UpDown.png");
-	resourcesMap_.emplace(SRC::UPDOWN, std::move(res));
-
 	// ゲーム画面のUI
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "GameUI1.png");
 	resourcesMap_.emplace(SRC::GAMEUI_1, std::move(res));
@@ -116,10 +108,6 @@ void ResourceManager::Init(void)
 	// ユグドラシルは死んでしまった…
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/DieTree.png");
 	resourcesMap_.emplace(SRC::DIETREE, std::move(res));
-
-	// もう一度遊ぶ
-	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "Over/RePlay.png");
-	resourcesMap_.emplace(SRC::REPLAY, std::move(res));
 
 	// はい選択中
 	res = std::make_unique<RES>(RES_T::IMG, PATH_IMG + "SelectYes.png");
@@ -210,6 +198,13 @@ void ResourceManager::Init(void)
 	//ボス
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Enemy/Boss/Boss.mv1");
 	resourcesMap_.emplace(SRC::BOSS, std::move(res));
+
+	//エフェクト
+	//-------------------------
+
+	//ボス
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "TreeRange.efkefc");
+	resourcesMap_.emplace(SRC::TREE_RANGE, std::move(res));
 }
 
 void ResourceManager::Release(void)

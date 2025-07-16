@@ -10,15 +10,15 @@ EnemyCactus::EnemyCactus():EnemyBase()
 
 void EnemyCactus::InitAnimation(void)
 {
-	std::string path = Application::PATH_MODEL + "Enemy/";
+	std::string path = Application::PATH_MODEL + "Enemy/Cactus/Cactus.mv1";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
-	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Cactus/Cactus.mv1", 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Cactus/Cactus.mv1", 20.0f, 2);
-	animationController_->Add((int)ANIM_TYPE::ATTACK, path + "Cactus/Cactus.mv1", 15.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE, path + "Cactus/Cactus.mv1", 20.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path + "Cactus/Cactus.mv1", 20.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::IDLE,  path, 20.0f, 1);
+	animationController_->Add((int)ANIM_TYPE::RUN,	 path, 20.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::ATTACK,path, 15.0f, 3);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE,path, 20.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path, 20.0f, 5);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
@@ -31,7 +31,6 @@ void EnemyCactus::SetParam(void)
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
 	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f), AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる
-//	transform_.pos = { 00.0f, 50.0f, 2000.0f };					// 位置の設定
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	speed_ = 6.0f;		// 移動スピード

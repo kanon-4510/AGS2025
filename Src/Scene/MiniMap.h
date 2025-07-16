@@ -12,11 +12,12 @@ struct MapVector2
 class MiniMap
 {
 public:
-    MiniMap(float worldSize, int screenSize, int mapPosX = 1600, int mapPosY = 50);
+    MiniMap(float worldSize, int screenSize, int mapPosX = 1600, int mapPosY = 20);
 
     void Init(void);
 
-    void Draw(const MapVector2& playerPos, float playerAngleRad, 
+    void Draw(const MapVector2& playerPos, float playerAngleRad,
+        float cameraAngleRad,
         const std::vector<std::shared_ptr<EnemyBase>>& enemies,
         const std::vector<MapVector2>& items);
 
@@ -42,6 +43,8 @@ private:
 
     //Map背景描画
     void DrawBackground();
+    //カメラの向きをミニマップ上に変換して描画
+    void DrawCameraViewCone(const MapVector2& playerPos, float cameraAngleRad);
     //プレイヤーの位置をミニマップ上に変換して描画
     void DrawPlayer(const MapVector2& playerPos, float playerAngleRad);
     //敵をリストで受け取り、ミニマップ上に変換して描画

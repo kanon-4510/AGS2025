@@ -103,6 +103,11 @@ VECTOR Camera::GetForward(void) const
 	return VNorm(VSub(targetPos_, pos_));
 }
 
+float Camera::GetHorizontalAngleRad(void) const
+{
+	return angles_.y;
+}
+
 void Camera::ChangeMode(MODE mode)
 {
 

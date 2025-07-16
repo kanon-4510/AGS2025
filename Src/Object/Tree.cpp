@@ -1,4 +1,5 @@
 ﻿#include<DxLib.h>
+#include<EffekseerForDXLib.h>
 #include"../Common/Vector2.h"
 #include"../Scene/GameScene.h"
 #include"../Utility/AsoUtility.h"
@@ -6,7 +7,6 @@
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include"../Application.h"
-#include "ActorBase.h"
 #include"Player.h"
 #include"Tree.h"
 
@@ -24,11 +24,14 @@ Tree::Tree(void)
 
 	imgMutekiIcon_ = -1;
 
-	// 無敵状態
+	// ���G���
 	invincible_ = false;
 	mutekiCnt_ = 600;
 
-	// カプセルコライダ
+	effectTreeResId_ = -1;
+	effectTreePlayId_ = -1;
+
+	// �J�v�Z���R���C�_
 	/*capsule_ = std::make_unique<Capsule>(transform_);
 	capsule_->SetLocalPosTop({ 00.0f, 130.0f, 1.0f });
 	capsule_->SetLocalPosDown({ 00.0f, 0.0f, 1.0f });
@@ -46,12 +49,12 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	// 無敵アイコン
+	// ���G�A�C�R��
 	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 角度の設定
-	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置の設定
+	scl_ = { 3.0f, 2.5f, 3.0f };							// �傫���̐ݒ�
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// �p�x�̐ݒ�
+	pos_ = { 0.0f, -3.5f, 0.0f };							// �ʒu�̐ݒ�
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -61,8 +64,12 @@ bool Tree::Init(void)
 	water_ = 0;
 	//gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 100.0f;								// �Փ˔���p�̋��̔��a
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// �Փ˔���p�̋��̒��S�̒������W
+
+	//�����G�t�F�N�g
+	effectTreeResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::TREE_RANGE).handleId_;
 
 	return true;
 }
@@ -70,7 +77,7 @@ void Tree::Update(void)
 {
 	if (!player_) return;
 
-	// プレイヤーとの距離をXZ平面だけで測る
+	// �v���C���[�Ƃ̋�����XZ���ʂ����ő���
 	VECTOR playerPos = player_->GetPos();
 	VECTOR treePos = pos_;
 
@@ -78,7 +85,7 @@ void Tree::Update(void)
 	float dz = playerPos.z - treePos.z;
 	float distance = sqrtf(dx * dx + dz * dz);
 
-	// 2. 成長段階に応じた最小距離を設定
+	// 2. �����i�K�ɉ������ŏ�������ݒ�
 	float minDistance = 0.0f;
 	switch (grow_) {
 	case GROW::BABY:
@@ -98,7 +105,7 @@ void Tree::Update(void)
 		break;
 	}
 
-	// 3. プレイヤーが円の内側にいたら押し戻す
+	// 3. �v���C���[���~�̓���ɂ����牟���߂�
 	if (distance < minDistance) {
 		float len = sqrtf(dx * dx + dz * dz);
 		if (len > 0.001f) {
@@ -111,49 +118,49 @@ void Tree::Update(void)
 				treePos.z + dz * minDistance
 			};
 
-			player_->SetPos(newPos); // ←PlayerにSetPosが必要
+			player_->SetPos(newPos); // ��Player��SetPos���K�v
 		}
 	}
 
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
 		player_->tHit();
-		pHit();          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
+		pHit();          // �v���C���[���߂��Đ�������Ă�����؂ɐ��𒙂߂�i�܂��͕ʂ̏����ɉ����āj
 	}
 
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		scl_ = { 3.0f, 2.5f, 3.0f };						// 大きさの設定
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-		pos_ = { 0.0f, -3.5f, 0.0f };						// 位置の設定
-		MV1SetScale(modelIdB_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-		MV1SetRotationXYZ(modelIdB_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-		MV1SetPosition(modelIdB_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
+		scl_ = { 3.0f, 2.5f, 3.0f };						// �傫���̐ݒ�
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// �p�x�̐ݒ�
+		pos_ = { 0.0f, -3.5f, 0.0f };						// �ʒu�̐ݒ�
+		MV1SetScale(modelIdB_, scl_);						//�R�c���f���̑傫����ݒ�(�����́Ax, y, z�̔{��)
+		MV1SetRotationXYZ(modelIdB_, rot_);					//�R�c���f���̌���(�����́Ax, y, z�̉�]�ʁB�P�ʂ̓��W�A���B)
+		MV1SetPosition(modelIdB_, pos_);					//�R�c���f���̈ʒu(�����́A�R�c���W)
 		break;
 	case Tree::GROW::KID:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// �p�x�̐ݒ�
 		scl_ = { 15.0f, 10.0f, 15.0};
 		pos_ = { 0.0f, -2.0f, 0.0f };
-		MV1SetScale(modelIdK_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-		MV1SetRotationXYZ(modelIdK_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-		MV1SetPosition(modelIdK_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
+		MV1SetScale(modelIdK_, scl_);						//�R�c���f���̑傫����ݒ�(�����́Ax, y, z�̔{��)
+		MV1SetRotationXYZ(modelIdK_, rot_);					//�R�c���f���̌���(�����́Ax, y, z�̉�]�ʁB�P�ʂ̓��W�A���B)
+		MV1SetPosition(modelIdK_, pos_);					//�R�c���f���̈ʒu(�����́A�R�c���W)
 		break;
 	case Tree::GROW::ADULT:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// �p�x�̐ݒ�
 		scl_ = { 30.0f, 25.0f, 30.0f };
 		pos_ = { 0.0f, -2.5f, 0.0f };
-		MV1SetScale(modelIdA_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-		MV1SetRotationXYZ(modelIdA_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-		MV1SetPosition(modelIdA_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
+		MV1SetScale(modelIdA_, scl_);						//�R�c���f���̑傫����ݒ�(�����́Ax, y, z�̔{��)
+		MV1SetRotationXYZ(modelIdA_, rot_);					//�R�c���f���̌���(�����́Ax, y, z�̉�]�ʁB�P�ʂ̓��W�A���B)
+		MV1SetPosition(modelIdA_, pos_);					//�R�c���f���̈ʒu(�����́A�R�c���W)
 		break;
 	case Tree::GROW::OLD:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// �p�x�̐ݒ�
 		scl_ = { 50.0f, 45.0f, 50.0f };
 		pos_ = { 0.0f, -23.5f, 0.0f };
-		MV1SetScale(modelIdO_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
-		MV1SetRotationXYZ(modelIdO_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
-		MV1SetPosition(modelIdO_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
+		MV1SetScale(modelIdO_, scl_);						//�R�c���f���̑傫����ݒ�(�����́Ax, y, z�̔{��)
+		MV1SetRotationXYZ(modelIdO_, rot_);					//�R�c���f���̌���(�����́Ax, y, z�̉�]�ʁB�P�ʂ̓��W�A���B)
+		MV1SetPosition(modelIdO_, pos_);					//�R�c���f���̈ʒu(�����́A�R�c���W)
 		break;
 	}
 
@@ -161,7 +168,10 @@ void Tree::Update(void)
 
 	DrawDebugTree2Player();
 
-	//無敵時間
+	//�G�t�F�N�g
+	EffectTreeRange();
+
+	//���G����
 	MutekiTimer();
 
 	auto& ins = InputManager::GetInstance();
@@ -176,7 +186,7 @@ void Tree::Update(void)
 
 void Tree::Draw(void)
 {
-	// モデルの描画
+	// ���f���̕`��
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -196,7 +206,7 @@ void Tree::Draw(void)
 		break;
 	}
 
-#pragma region ステータス表示
+#pragma region �X�e�[�^�X�\��
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if (isD_ == true)
@@ -219,16 +229,16 @@ void Tree::Draw(void)
 		const float radius = 32.0f;
 		const int segments = 60;
 
-		// アイコン描画（先に出す）
+		// �A�C�R���`��i��ɏo���j
 		DrawRotaGraph(cx, cy, 1.3, 0.0, imgMutekiIcon_, true);
 
-		// 残り割合
+		// �c�芄��
 		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
 		int filledSegments = static_cast<int>(segments * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180); // 半透明
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180); // ������
 
-		// 時計回りかつ「残っていない部分」に描画する → 経過時間ぶんだけ塗る
+		// ���v��肩�u�c���Ă��Ȃ������v�ɕ`�悷�� �� �o�ߎ��ԂԂ񂾂��h��
 		for (int i = filledSegments; i < segments; ++i)
 		{
 			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
@@ -246,7 +256,7 @@ void Tree::Draw(void)
 	}
 #pragma endregion
 
-	//DrawDebugTree2Player();
+	DrawDebugTree2Player();
 
 	//DrawDebug();
 }
@@ -265,23 +275,23 @@ void Tree::DrawDebug(void)
 	VECTOR c;
 
 	//v = pos_;
-	//DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
+	//DrawFormatString(20, 30, white, "�؂̍��W�F(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 	 //c= collisionPos_;
 	//DrawSphere3D(c, collisionRadius_, 8, red, red, false);
 
 	if (invincible_)
 	{
-		DrawFormatString(50, 180, GetColor(255, 0, 0), "無敵: 残り%d秒", mutekiCnt_);
+		DrawFormatString(50, 180, GetColor(255, 0, 0), "���G: �c��%d�b", mutekiCnt_);
 	}
 }
 
 void Tree::DrawDebugTree2Player(void)
 {
-	// プレイヤーとの距離判定して円を描く処理を追加
+	// �v���C���[�Ƃ̋������肵�ĉ~��`��������ǉ�
 	if (player_ != nullptr)
 	{
-		VECTOR centerPos = pos_;  // 木の中心座標
-		centerPos.y = 0.0f;		  // 円を下げる
+		VECTOR centerPos = pos_;  // �؂̒��S���W
+		centerPos.y = 0.0f;		  // �~�������
 		VECTOR playerPos = player_->GetTransform().pos;
 
 		float dx = playerPos.x - centerPos.x;
@@ -289,7 +299,7 @@ void Tree::DrawDebugTree2Player(void)
 		float distance = sqrtf(dx * dx + dz * dz);
 		bool inRange = (distance <= viewRange_);
 
-		unsigned int color = inRange ? 0xff0000 : 0xffdead;  // 赤 or 薄黄色
+		unsigned int color = inRange ? 0xff0000 : 0xffdead;  // �� or �����F
 
 		float angleStep = DX_PI_F * 2.0f / circleSegments_;
 
@@ -374,7 +384,7 @@ void Tree::LvUp(void)
 		ChangeGrow();
 	}
 
-	// 水を与えた音
+	// ����^������
 	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
 
 }
@@ -419,7 +429,7 @@ float Tree::GetCollisionRadius(void)
 
 void Tree::MutekiTimer(void)
 {
-	//攻撃アップ
+	//�U���A�b�v
 	if (invincible_)
 	{
 		mutekiCnt_--;
@@ -435,21 +445,21 @@ void Tree::MutekiTimer(void)
 void Tree::Muteki(void)
 {
 	invincible_ = true;
-	// 木が無敵
+	// �؂����G
 	SoundManager::GetInstance().Play(SoundManager::SRC::MUTEKI_SE, Sound::TIMES::ONCE);
 }
 
-void Tree::eHit(void)//エネミーとのあたり判定
+void Tree::eHit(void)//�G�l�~�[�Ƃ̂����蔻��
 {
 	if (!invincible_)
 	{
 		hp_ -= 1;
 		isD_ = true;
-		// ダメージ
+		// �_���[�W
 		SoundManager::GetInstance().Play(SoundManager::SRC::T_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	}
 }
-void Tree::pHit(void)//プレイヤーとのあたり判定
+void Tree::pHit(void)//�v���C���[�Ƃ̂����蔻��
 {
 	if (player_->IsMax() == true)
 	{
@@ -467,4 +477,38 @@ void Tree::pHit(void)//プレイヤーとのあたり判定
 		LvUp();
 		ChangeGrow();
 	}
+}
+
+
+void Tree::EffectTreeRange(void)
+{
+
+	if (effectTreePlayId_ >= 0)
+	{
+		StopEffekseer3DEffect(effectTreePlayId_);
+	}
+
+	float scale = 10.0f;  // �f�t�H���g�l
+
+	switch (grow_)
+	{
+	case GROW::BABY:
+		scale = 50.0f;
+		break;
+	case GROW::KID:
+		scale = 105.0f;
+		break;
+	case GROW::ADULT:
+		scale = 235.0f;
+		break;
+	case GROW::OLD:
+		scale = 480.0f;
+		break;
+	default:
+		break;
+	}
+
+	effectTreePlayId_ = PlayEffekseer3DEffect(effectTreeResId_);
+	SetScalePlayingEffekseer3DEffect(effectTreePlayId_, scale, scale, scale);
+	SetPosPlayingEffekseer3DEffect(effectTreePlayId_, pos_.x, pos_.y, pos_.z);
 }
