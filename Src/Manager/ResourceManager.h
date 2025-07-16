@@ -77,7 +77,8 @@ public:
 		VIRUS,
 		BOSS,
 		//エフェクト
-		TREE_RANGE
+		TREE_RANGE,
+		EFF_HEAL
 	};
 
 	// 明示的にインステンスを生成する

@@ -11,6 +11,7 @@ class Tree
 {
 public:
 	static constexpr int GROW_UP = 4;
+
 	enum class GROW
 	{
 		BABY,

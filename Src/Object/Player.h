@@ -226,10 +226,11 @@ private:
 	int effectSmokePleyId_;
 	float stepFootSmoke_;
 
-	//モデルパーツのハンドル
-	int fremLeHandl_;//左
-	int fremReHandl_;//右
-	
+	// 回復エフェクト
+	int effectHealResId_;
+	int effectHealPleyId_;
+	float stepHeal_;
+
 	// フレームごとの移動値
 	VECTOR moveDiff_;
 
@@ -296,6 +297,8 @@ private:
 
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
+
+	void EffectHeal(void);
 
 	bool isMax_;//水の所持上限
 };
