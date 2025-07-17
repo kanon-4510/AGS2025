@@ -245,7 +245,7 @@ void GameScene::Draw(void)
 
 	DrawMiniMap();
 	
-	DrawGraph(0, 0, imgOpeGear_, true);
+	DrawRotaGraph(100, 100, 0.8, 0.0, imgOpeGear_, true);
 
 	// 入力チェック or 時間経過でフェード開始
 	if (!uiFadeStart_) 

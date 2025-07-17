@@ -44,12 +44,12 @@ bool Tree::Init(void)
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	// ���G�A�C�R��
+	// 無敵アイコン画像
 	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさの設定
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 角度の設定
-	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置の設定
+	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさ
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 回転
+	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -59,10 +59,10 @@ bool Tree::Init(void)
 	water_ = 0;
 	//gameScene_ = parent;
 
-	collisionRadius_ = 100.0f;								// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = 100.0f;								
+	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				
 
-	//足煙エフェクト
+	//エフェクト
 	effectTreeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::TREE_RANGE).handleId_;
 

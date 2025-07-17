@@ -206,6 +206,14 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "TreeRange.efkefc");
 	resourcesMap_.emplace(SRC::TREE_RANGE, std::move(res));
 	
+	//パワーアップ
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "PowerUp.efkefc");
+	resourcesMap_.emplace(SRC::EFF_POWER, std::move(res));	
+
+	//スピードアップ
+	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "SpeedUp.efkefc");
+	resourcesMap_.emplace(SRC::EFF_SPEED, std::move(res));
+	
 	//回復
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "HealEffect.efkefc");
 	resourcesMap_.emplace(SRC::EFF_HEAL, std::move(res));

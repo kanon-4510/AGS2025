@@ -82,6 +82,8 @@ public:
 		BOSS,
 		//エフェクト
 		TREE_RANGE,
+		EFF_POWER,
+		EFF_SPEED,
 		EFF_HEAL
 	};
 

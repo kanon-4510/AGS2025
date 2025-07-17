@@ -112,6 +112,14 @@ void Player::Init(void)
 	effectSmokeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::FOOT_SMOKE).handleId_;
 	
+	//パワーアップエフェクト
+	effectPowerResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::EFF_POWER).handleId_;
+	
+	//スピードアップエフェクト
+	effectSpeedResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::EFF_SPEED).handleId_;
+	
 	//回復エフェクト
 	effectHealResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::EFF_HEAL).handleId_;
@@ -411,8 +419,14 @@ void Player::UpdatePlay(void)
 	transform_.quaRot = grvMng_.GetTransform().quaRot;
 	transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
 
-	// 歩きエフェクト
-	EffectFootSmoke();
+		// 歩きエフェクト
+		EffectFootSmoke();
+
+		//エフェクトの位置
+		SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+		SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+		SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	}
 }
 
 void Player::DrawShadow(void)
@@ -1143,9 +1157,11 @@ void Player::PowerUp(void)
 {
 	powerUpFlag_ = true;
 
+	EffectPower();
+
 	// パワーアップ
 	SoundManager::GetInstance().Play(SoundManager::SRC::POWERUP_SE, Sound::TIMES::ONCE);
-	
+
 	if (powerUpCnt_ >= 0 && powerUpFlag_)
 	{
 		normalAttack_ = normalAttack_ * STATUS_UP;
@@ -1172,6 +1188,8 @@ void Player::SpeedUpTimer(void)
 void Player::SpeedUp(void)
 {
 	speedUpFlag_ = true;
+
+	EffectSpeed();
 
 	// スピードアップ
 	SoundManager::GetInstance().Play(SoundManager::SRC::SPEEDUP_SE, Sound::TIMES::ONCE);
@@ -1239,16 +1257,44 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
+void Player::EffectPower(void)
+{
+	float scale = 20.0f;
+
+	// エフェクト再生
+	effectPowerPleyId_ = PlayEffekseer3DEffect(effectPowerResId_);
+
+	//エフェクトの大きさ
+	SetScalePlayingEffekseer3DEffect(effectPowerPleyId_, scale, scale, scale);
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+}
+
+void Player::EffectSpeed(void)
+{
+	float scale = 20.0f;
+
+	// エフェクト再生
+	effectSpeedPleyId_ = PlayEffekseer3DEffect(effectSpeedResId_);
+
+	//エフェクトの大きさ
+	SetScalePlayingEffekseer3DEffect(effectSpeedPleyId_, scale, scale, scale);
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+}
+
 void Player::EffectHeal(void)
 {
+	float scale = 20.0f;
+
 	// エフェクト再生
 	effectHealPleyId_ = PlayEffekseer3DEffect(effectHealResId_);
 
 	//エフェクトの大きさ
-	SetScalePlayingEffekseer3DEffect(effectHealPleyId_, 5.0f, 5.0f, 5.0f);
+	SetScalePlayingEffekseer3DEffect(effectHealPleyId_, scale, scale, scale);
 
-	//エフェクトの位置
-	SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 int Player::GetWater(void) const
