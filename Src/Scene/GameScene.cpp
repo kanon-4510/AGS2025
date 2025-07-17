@@ -243,6 +243,11 @@ void GameScene::Draw(void)
 	tree_->Draw();
 	player_->Draw();
 
+	for (auto enemy : enemys_)
+	{
+		enemy->DrawBossHpBar();
+	}
+
 	DrawMiniMap();
 	
 	DrawRotaGraph(100, 100, 0.8, 0.0, imgOpeGear_, true);
