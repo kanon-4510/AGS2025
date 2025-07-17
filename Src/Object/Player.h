@@ -233,6 +233,14 @@ private:
 	int effectSmokeResId_;
 	int effectSmokePleyId_;
 	float stepFootSmoke_;
+	
+	// パワーアップエフェクト
+	int effectPowerResId_;
+	int effectPowerPleyId_;
+	
+	// スピードアップエフェクト
+	int effectSpeedResId_;
+	int effectSpeedPleyId_;
 
 	// 回復エフェクト
 	int effectHealResId_;
@@ -306,6 +314,13 @@ private:
 	// 足煙エフェクト
 	void EffectFootSmoke(void);
 
+	//パワーアップエフェクト
+	void EffectPower(void);
+
+	//スピードアップエフェクト
+	void EffectSpeed(void);
+
+	//回復エフェクト
 	void EffectHeal(void);
 
 	bool isMax_;//水の所持上限
