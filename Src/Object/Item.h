@@ -20,6 +20,7 @@ public:
 		SPEED,	//スピードアップ
 		HEAL,	//ヒール
 		MUTEKI,	//無敵
+		ALL,	//全部
 		MAX
 	};
 

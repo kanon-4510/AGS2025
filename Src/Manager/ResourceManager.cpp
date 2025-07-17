@@ -164,6 +164,10 @@ void ResourceManager::Init(void)
 	//無敵
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/muteki.mv1");
 	resourcesMap_.emplace(SRC::MUTEKI, std::move(res));
+	
+	//全部
+	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/all.mv1");
+	resourcesMap_.emplace(SRC::ALL, std::move(res));
 
 	//エネミー
 	//----------------------------------

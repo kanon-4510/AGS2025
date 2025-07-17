@@ -193,6 +193,9 @@ void Item::InitModel(void)
 	case Item::TYPE::MUTEKI:
 		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MUTEKI));
 		break;
+	case Item::TYPE::ALL:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::ALL));
+		break;
 	default:
 		break;
 	}
@@ -215,6 +218,13 @@ void Item::ItemUse(void)
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
+		tree_.Muteki();
+		break;
+	case Item::TYPE::ALL:
+		player_.wHit(transform_.scl.x);
+		player_.PowerUp();
+		player_.SpeedUp();
+		player_.Heal();
 		tree_.Muteki();
 		break;
 	
