@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <array>
 #include<map>
 #include <functional>
 #include <vector>
@@ -9,8 +8,6 @@
 
 class AnimationController;
 class GameScene;
-//class Collider;
-//class Capsule;
 class Player;
 class Tree;
 
@@ -64,9 +61,10 @@ public:
 	virtual void Init(void);			// 初期処理(最初の１回のみ実行)
 	virtual void InitAnimation(void) {};//アニメーションロード用
 	virtual void SetParam(void){};		// パラメータ設定(純粋仮想関数)
-	virtual void Update(void);			 // 更新処理(毎フレーム実行)
-	virtual void Draw(void);			 // 描画処理(毎フレーム実行)
-	virtual void Release(void);			 // 解放処理(最後の１回のみ実行)
+	virtual void Update(void);			// 更新処理(毎フレーム実行)
+	virtual void Draw(void);			// 描画処理(毎フレーム実行)
+	virtual void DrawBossHpBar(void){};	//ボスのHPバー
+	virtual void Release(void);			// 解放処理(最後の１回のみ実行)
 
 	void SetPos(VECTOR pos);	// 座標の設定
 	STATE GetState(void);		// 状態獲得
@@ -75,6 +73,7 @@ public:
 	void SetAlive(bool alive);	// 生存判定
 
 	void Damage(int damage);	// ダメージを受ける
+
 
 	TYPE GetEnemyType(void) const;
 	TYPE enemyType_;
@@ -123,13 +122,6 @@ protected:
 	bool isAttack_P = false;	//攻撃判定
 	bool isAttack_T = false;	//攻撃判定
 
-	//ダメージに関する変数と定数
-	COLOR_F originalColor_;  // デフォルトは白
-	COLOR_F blinkColor_;     // 点滅中は赤
-	bool isDamageBlinking_ = false;
-	int damageBlinkTimer_ = 0;	//点滅する時間
-	int blinkInterval_ = 6;		// 6フレームごとに色切替
-
 	STATE state_;	//状態管理
 
 	float speedAnim_; // 再生速度（共通）
@@ -152,13 +144,14 @@ protected:
 	float t_Dis_;			//木までの距離
 	float t_RadiusSum_;		//木との衝突半径の合計
 
+	//更新系
 	void UpdateNone(void){};		// 更新ステップ
-	virtual void UpdateIdle(void);	// 更新ステップ
-	virtual void UpdatePlay(void);	// 更新処理(毎フレーム実行)
-	virtual void UpdateAttack(void);// 更新処理(毎フレーム実行)
-	virtual void UpdateDamage(void);// 更新処理(毎フレーム実行)
-	virtual void UpdateDeath(void);	// 死んだ歳の更新処理
-	
+	virtual void UpdateIdle(void);	// 待機状態の更新
+	virtual void UpdatePlay(void);	// 移動時の更新処理
+	virtual void UpdateAttack(void);// アタック時の更新処理
+	virtual void UpdateDamage(void);// ダメージ時の更新処理
+	virtual void UpdateDeath(void);	// 死んだ時の更新処理
+
 	void ChasePlayer(void);			//プレイヤーを追いかける
 
 	//攻撃関係

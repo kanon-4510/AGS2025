@@ -24,9 +24,6 @@ EnemyBase::EnemyBase()
 	item_ = nullptr;
 	state_ = STATE::NONE;
 
-	originalColor_ = { 1.0f, 1.0f, 1.0f };  // デフォルトは白
-	blinkColor_ = { 1.0f, 0.0f, 0.0f };      // 点滅中は赤
-
 	attackPow_ = 1;	//攻撃力
 
 	// 状態管理
@@ -75,6 +72,7 @@ void EnemyBase::Update(void)
 }
 
 #pragma region StateごとのUpdate
+
 void EnemyBase::UpdateIdle(void)
 {
 	animationController_->Play((int)ANIM_TYPE::IDLE, false, 0.0f, 10.0f);
@@ -82,7 +80,6 @@ void EnemyBase::UpdateIdle(void)
 	{
 		AttackCollisionPos();
 	}
-
 }
 
 void EnemyBase::UpdatePlay(void)
@@ -95,6 +92,7 @@ void EnemyBase::UpdatePlay(void)
 		Collision();
 
 		ChasePlayer();
+
 		//プレイヤーを見る
 		AttackCollisionPos();
 }
@@ -131,35 +129,10 @@ void EnemyBase::UpdateDamage(void)
 	{
 		ChangeState(STATE::PLAY);
 	}
-
-	//if (isDamageBlinking_) {
-	//	damageBlinkTimer_--; // タイマーを減らす
-	//	if (damageBlinkTimer_ <= 0) {
-	//		isDamageBlinking_ = false; // 点滅終了
-	//		// 点滅終了時に色を元に戻す
-	//		// originalColor_ は敵の元の色を保持するメンバ変数と想定
-	//		MV1SetDifColorScale(transform_.modelId, originalColor_);
-	//	}
-	//	else
-	//	{
-	//		// 点滅中はUpdate内で色を切り替える
-	//		if ((damageBlinkTimer_ / blinkInterval_) % 2 == 0) {
-	//			// 点滅色（例：赤や白）に設定
-	//			// blinkColor_ は点滅時に表示する色を保持するメンバ変数と想定
-	//			MV1SetDifColorScale(transform_.modelId, blinkColor_);
-	//		}
-	//		else
-	//		{
-	//			// 元の色に戻す
-	//			MV1SetDifColorScale(transform_.modelId, originalColor_);
-	//		}
-	//	}
-	//}
 }
 
 void EnemyBase::UpdateDeath(void)
 {
-
 	animationController_->Play((int)ANIM_TYPE::DEATH, false);
 
 	if (animationController_->IsEnd())
@@ -175,22 +148,34 @@ void EnemyBase::UpdateDeath(void)
 		// ドロップアイテムを取得
 		Item::TYPE dropType = GetDropItemType();
 
-		// 距離でサイズを変える
-		float scale = 0.1f;
-		if (dropType == Item::TYPE::WATER)
+		//エネミーがボスのとき
+		if (enemyType_ == TYPE::BOSS)
 		{
-			if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
-				scale = 0.2f;
-			}
-			else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
-				scale = 0.15f;
-			}
+			// ボスのアイテムはスケール固定
+			float scale = 0.2f;
+			
+			scene_->CreateItem(dropPos, scale, dropType);
 		}
-
-		// アイテムを1つ出す（サイズ調整）
-		scene_->CreateItem(dropPos, scale, dropType);
+		else
+		{
+			// 通常の敵は1つだけアイテムドロップ
+			// 距離でサイズを変える
+			float scale = 0.1f;
+			if (dropType == Item::TYPE::WATER)
+			{
+				if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
+					scale = 0.2f;
+				}
+				else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
+					scale = 0.15f;
+				}
+			}
+			// アイテムを1つ出す（サイズ調整）
+			scene_->CreateItem(dropPos, scale, dropType);
+		}
 	}
 }
+
 #pragma endregion
 
 
@@ -257,6 +242,7 @@ void EnemyBase::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 
+
 	//デッバグ
 	//DrawDebug();
 
@@ -289,6 +275,11 @@ void EnemyBase::SetAlive(bool alive)
 	isAlive_ = alive;
 }
 
+EnemyBase::TYPE EnemyBase::GetEnemyType(void) const
+{
+	return enemyType_;
+}
+
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
@@ -306,12 +297,8 @@ void EnemyBase::Damage(int damage)
 	}
 }
 
-EnemyBase::TYPE EnemyBase::GetEnemyType(void) const
-{
-	return enemyType_;
-}
-
 #pragma region コリジョン
+
 void EnemyBase::Collision(void)
 {
 	// 現在座標を起点に移動後座標を決める
@@ -348,11 +335,6 @@ void EnemyBase::AttackCollisionPos(void)
 	// 攻撃の開始位置と終了位置
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
 	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
-	
-	/*if (player_->pstate_ == Player::PlayerState::DOWN)
-	{
-		return;
-	}*/
 
 	//プレイヤーを見る
 	EnemyToPlayer();
