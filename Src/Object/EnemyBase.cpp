@@ -231,6 +231,7 @@ void EnemyBase::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 
+
 	//デッバグ
 	//DrawDebug();
 
