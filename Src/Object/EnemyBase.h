@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <array>
 #include<map>
 #include <functional>
 #include <vector>
@@ -9,8 +8,6 @@
 
 class AnimationController;
 class GameScene;
-//class Collider;
-//class Capsule;
 class Player;
 class Tree;
 
