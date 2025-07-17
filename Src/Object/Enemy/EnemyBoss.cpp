@@ -54,7 +54,7 @@ void EnemyBoss::SetParam(void)
 
 Item::TYPE EnemyBoss::GetDropItemType() const
 {
-	return Item::TYPE::MAX;
+	return Item::TYPE::ALL;
 }
 
 void EnemyBoss::DrawBossHpBar(void)
