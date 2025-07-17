@@ -13,8 +13,6 @@
 #include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
-#include "Common/SpeechBalloon.h"
-#include "Planet.h"
 #include "Tree.h"
 #include "Player.h"
 
@@ -74,9 +72,6 @@ Player::Player(void)
 	canMove_ = true;
 	// 所持上限かどうか
 	isMax_ = false;
-
-	//ワープの初期化
-	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
 
 	// 状態管理
 	stateChanges_.emplace(
@@ -419,14 +414,13 @@ void Player::UpdatePlay(void)
 	transform_.quaRot = grvMng_.GetTransform().quaRot;
 	transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
 
-		// 歩きエフェクト
-		EffectFootSmoke();
+	// 歩きエフェクト
+	EffectFootSmoke();
 
-		//エフェクトの位置
-		SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
-		SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
-		SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
-	}
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 void Player::DrawShadow(void)

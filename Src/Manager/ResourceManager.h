@@ -71,6 +71,7 @@ public:
 		SPEED,
 		HEAL,
 		MUTEKI,
+		ALL,
 		//エネミー
 		DOG,
 		SABO,

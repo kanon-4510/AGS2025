@@ -2,12 +2,11 @@
 #include <memory>
 #include <map>
 #include <functional>
-#include <vector>
+//#include <vector>
 #include <DxLib.h>
-#include <algorithm>
-#include "ActorBase.h"
+//#include <algorithm>
+//#include "ActorBase.h"
 #include "EnemyBase.h"
-#include "Stage.h"
 
 class AnimationController;
 class Collider;
@@ -93,7 +92,6 @@ public:
 	bool IsPlay(void) const;	//状態確認
 
 	// --- 当たり判定 / 衝突 ---
-	
 	// 衝突判定に用いられるコライダ制御
 	void AddCollider(std::weak_ptr<Collider> collider);
 	void ClearCollider(void);
@@ -162,6 +160,11 @@ private:
 	void CollisionAttack2(void);
 	void CollisionAttackEx(void);
 
+	// プレイヤーが持つ判定
+	VECTOR collisionPos_;		//プレイヤーの当たり判定移動後座標
+	float collisionRadius_;		// 衝突判定用の球体半径
+	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+
 	// --- モーション・操作 ---
 	void ProcessMove(void);		// 移動
 	void ProcessJump(void);		//ジャンプモーション
@@ -183,125 +186,95 @@ private:
 	//復活処理
 	void StartRevival();
 	void Revival();
+	float revivalTimer_;// 復活までの時間
 
-	// --- エフェクト ---
+	// --- エフェクト --
+	void EffectFootSmoke(void);	// 足煙エフェクト
+	void EffectPower(void);		// パワーアップエフェクト
+	void EffectSpeed(void);		// スピードアップエフェクト
+	void EffectHeal(void);		//回復エフェクト
 
-	Tree* tree_;
-
-	// ジャンプ量
-	VECTOR jumpPow_;
-	
-	// 丸影
-	int imgShadow_;
-
-	// 移動スピード
-	float speed_;
-	bool speedUpFlag_;	//スピードが上がったている間treu
-	int speedUpCnt_;	//スピードアップの時間(20秒)
-
-	// 移動方向
-	VECTOR moveDir_;
-	
-	// 移動量
-	VECTOR movePow_;
-	
-	// 移動後の座標
-	VECTOR movedPos_;
-
-	VECTOR collisionPos_;		//プレイヤーの当たり判定移動後座標
-	float collisionRadius_;		// 衝突判定用の球体半径
-	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標
+	// --- 移動関連 ---
+	VECTOR moveDir_;	// 移動方向
+	VECTOR movePow_;	// 移動量
+	VECTOR movedPos_;	// 移動後の座標
+	VECTOR moveDiff_;	// フレームごとの移動値
+	float speed_;		// 移動スピード
+	bool canMove_;		// 移動が可能かどうか
+	float stepJump_;	// ジャンプの入力受付時間
+	float stepRotTime_;	// 回転補間の進行を管理するタイマー(残り時間)
+	VECTOR jumpPow_;	// ジャンプ量
+	void CalcGravityPow(void);// 移動量の計算
 
 	// 回転
 	Quaternion playerRotY_;
 	Quaternion goalQuaRot_;
-	float stepRotTime_;
 
+	// --- ステータス値 ---
+	int hp_;			// プレイヤーの体力
+	int water_;			// 水の所持量
+
+	//攻撃力
+	int normalAttack_;	//2ダメージ
+	int slashAttack_;	//1ダメージ
+	int exrAttack_;		//2ダメージ
+
+	// アイテム効果
+	bool powerUpFlag_;	//パワーが上がったている間treu
+	bool speedUpFlag_;	//スピードが上がったている間treu
+	int powerUpCnt_;	//2パワーアップの時間(20秒)
+	int speedUpCnt_;	//スピードアップの時間(20秒)
+	bool invincible_;	// 無敵状態
+
+	// 水
+	bool isMax_;//水の所持上限
+
+	// --- 攻撃フラグ ---
 	// ジャンプ判定
 	bool isJump_;
-	
-	// ジャンプの入力受付時間
-	float stepJump_;
-	
-	//攻撃力
-	int normalAttack_;
-	int slashAttack_;
-	int exrAttack_;
 
 	//攻撃の判定
-	bool powerUpFlag_;	//パワーが上がったている間treu
 	bool isAttack_;		//縦斬り
 	bool isAttack2_;	//横斬り
 	bool exAttack_;		//回転斬り
 	int exTimer_;		// クールタイム 10秒（ミリ秒）
-	int lastExTime_;	// 最初から使えるようにする
-	int powerUpCnt_;	//2パワーアップの時間(20秒)
+	int lastExTime_;	// exが解放されたらすぐに使えるようにする
 	
-	//ステ関連
-	int hp_;
-	int water_;
-
-	// ステアイコン
+	// --- アイコンUI ---
 	int imgPowerIcon_;			// パワー
 	int imgSpeedIcon_;			// スピード
 	int imgRotateAttackIcon_;	// 回転切り
 
-	// 無敵状態
-	bool invincible_;
-
-	// 移動が可能かどうか
-	bool canMove_;
-
-	// 復活処理
-	float revivalTimer_;
+	// --- 演出 ---
+	int imgShadow_;// 丸影
 
 	// 足煙エフェクト
+	float stepFootSmoke_;
 	int effectSmokeResId_;
 	int effectSmokePleyId_;
-	float stepFootSmoke_;
-	
+
 	// パワーアップエフェクト
 	int effectPowerResId_;
 	int effectPowerPleyId_;
-	
+
 	// スピードアップエフェクト
 	int effectSpeedResId_;
 	int effectSpeedPleyId_;
 
 	// 回復エフェクト
+	float stepHeal_;
 	int effectHealResId_;
 	int effectHealPleyId_;
-	float stepHeal_;
 
-	// フレームごとの移動値
-	VECTOR moveDiff_;
+	// --- ポインタ ---
+	Tree* tree_;// 木のポインタ(水やり対象)
+	const std::vector<std::shared_ptr<EnemyBase>>* enemy_;// 敵の一覧への参照(攻撃や当たり判定に使用)
 
-	// ワープ準備開始時のプレイヤー情報
-	Quaternion reserveStartQua_;
-	VECTOR reserveStartPos_;
-
+	// --- デバッグ用 ---
 	// 更新ステップ
 	void DrawShadow(void);
 
 	// 描画系
 	void DrawDebug(void);
 
-	// 移動量の計算
-	void CalcGravityPow(void);
-
-	const std::vector<std::shared_ptr<EnemyBase>>* enemy_;
-
-	// 足煙エフェクト
-	void EffectFootSmoke(void);
-
-	//パワーアップエフェクト
-	void EffectPower(void);
-
-	//スピードアップエフェクト
-	void EffectSpeed(void);
-
-	//回復エフェクト
-	void EffectHeal(void);
-
-	bool isMax_;//水の所持上限
 };
