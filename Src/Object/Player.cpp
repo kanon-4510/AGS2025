@@ -13,8 +13,6 @@
 #include "Common/AnimationController.h"
 #include "Common/Capsule.h"
 #include "Common/Collider.h"
-#include "Common/SpeechBalloon.h"
-#include "Planet.h"
 #include "Tree.h"
 #include "Player.h"
 
@@ -75,12 +73,7 @@ Player::Player(void)
 	// 所持上限かどうか
 	isMax_ = false;
 
-	//ワープの初期化
-	reserveStartPos_ = AsoUtility::VECTOR_ZERO;
-
 	// 状態管理
-	stateChanges_.emplace(
-		STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(
 		STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
 }
@@ -113,6 +106,14 @@ void Player::Init(void)
 	//足煙エフェクト
 	effectSmokeResId_ = ResourceManager::GetInstance().Load(
 		ResourceManager::SRC::FOOT_SMOKE).handleId_;
+	
+	//パワーアップエフェクト
+	effectPowerResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::EFF_POWER).handleId_;
+	
+	//スピードアップエフェクト
+	effectSpeedResId_ = ResourceManager::GetInstance().Load(
+		ResourceManager::SRC::EFF_SPEED).handleId_;
 	
 	//回復エフェクト
 	effectHealResId_ = ResourceManager::GetInstance().Load(
@@ -371,62 +372,55 @@ void Player::ChangeState(STATE state)
 
 }
 
-void Player::ChangeStateNone(void)
-{
-	stateUpdate_ = std::bind(&Player::UpdateNone, this);
-}
-
 void Player::ChangeStatePlay(void)
 {
 	stateUpdate_ = std::bind(&Player::UpdatePlay, this);
 }
 
-void Player::UpdateNone(void)
-{
-}
-
 void Player::UpdatePlay(void)
 {
-	if (canMove_)
-	{
-		//スピードアップの制限時間
-		SpeedUpTimer();
-		
-		//移動処理
-		ProcessMove();
+	if (!canMove_)return;
+	//スピードアップの制限時間
+	SpeedUpTimer();
 
-		// 移動方向に応じた回転
-		Rotate();
+	//移動処理
+	ProcessMove();
 
-		// ジャンプ処理
-		ProcessJump();
-		
-		//パワーアップの制限時間
-		PowerUpTimer();
+	// 移動方向に応じた回転
+	Rotate();
 
-		// 攻撃処理
-		ProcessAttack();
+	// ジャンプ処理
+	ProcessJump();
 
-		// 重力による移動量
-		CalcGravityPow();
+	//パワーアップの制限時間
+	PowerUpTimer();
 
-		// 衝突判定
-		Collision();
+	// 攻撃処理
+	ProcessAttack();
 
-		//現在座標を起点に移動後座標を決める
-		movedPos_ = VAdd(transform_.pos, movePow_);
+	// 重力による移動量
+	CalcGravityPow();
 
-		//移動
-		transform_.pos = movedPos_;
+	// 衝突判定
+	Collision();
 
-		// 重力方向に沿って回転させる
-		transform_.quaRot = grvMng_.GetTransform().quaRot;
-		transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
+	//現在座標を起点に移動後座標を決める
+	movedPos_ = VAdd(transform_.pos, movePow_);
 
-		// 歩きエフェクト
-		EffectFootSmoke();
+	//移動
+	transform_.pos = movedPos_;
 
-	}
+	// 重力方向に沿って回転させる
+	transform_.quaRot = grvMng_.GetTransform().quaRot;
+	transform_.quaRot = transform_.quaRot.Mult(playerRotY_);
+
+	// 歩きエフェクト
+	EffectFootSmoke();
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 void Player::DrawShadow(void)
@@ -544,30 +538,29 @@ void Player::DrawDebug(void)
 	//DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
 
 	
-	//if (isAttack_) {
+	/*if (isAttack_) {
 
-	//	VECTOR forward = transform_.quaRot.GetForward();
-	//	VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
-	//	attackCollisionPos.y += 100.0f;
-	//	float attackCollisionRadius = 100.0f;
-	//	// カプセルの描画確認用	
-	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	//}if (isAttack2_) {
+		VECTOR forward = transform_.quaRot.GetForward();
+		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		float attackCollisionRadius = 100.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}if (isAttack2_) {
 
-	//	VECTOR forward = transform_.quaRot.GetForward();
-	//	VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 80.0f));
-	//	attackCollisionPos.y += 100.0f;
-	//	float attackCollisionRadius = 140.0f;
-	//	// カプセルの描画確認用	
-	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	//}
-	//if (exAttack_) {
-	//	VECTOR attackCollisionPos = transform_.pos;
-	//	attackCollisionPos.y += 100.0f;
-	//	float attackCollisionRadius = 180.0f;
-	//	// カプセルの描画確認用	
-	//	DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
-	//}
+		VECTOR forward = transform_.quaRot.GetForward();
+		VECTOR attackCollisionPos = VAdd(transform_.pos, VScale(forward, 80.0f));
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 140.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}
+	if (exAttack_) {
+		VECTOR attackCollisionPos = transform_.pos;
+		attackCollisionPos.y += 100.0f;
+		float attackCollisionRadius = 180.0f;
+		// カプセルの描画確認用	
+		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
+	}*/
 	if (!IsExAttackReady())
 	{
 		int remaining = (exTimer_ - (GetNowCount() - lastExTime_)) / 1000;
@@ -838,7 +831,6 @@ void Player::CollisionAttack(void)
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
 		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
-		attackPos.y += 100.0f;  // 攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -1159,9 +1151,11 @@ void Player::PowerUp(void)
 {
 	powerUpFlag_ = true;
 
+	EffectPower();
+
 	// パワーアップ
 	SoundManager::GetInstance().Play(SoundManager::SRC::POWERUP_SE, Sound::TIMES::ONCE);
-	
+
 	if (powerUpCnt_ >= 0 && powerUpFlag_)
 	{
 		normalAttack_ = normalAttack_ * STATUS_UP;
@@ -1188,6 +1182,8 @@ void Player::SpeedUpTimer(void)
 void Player::SpeedUp(void)
 {
 	speedUpFlag_ = true;
+
+	EffectSpeed();
 
 	// スピードアップ
 	SoundManager::GetInstance().Play(SoundManager::SRC::SPEEDUP_SE, Sound::TIMES::ONCE);
@@ -1255,16 +1251,44 @@ void Player::EffectFootSmoke(void)
 	}
 }
 
+void Player::EffectPower(void)
+{
+	float scale = 20.0f;
+
+	// エフェクト再生
+	effectPowerPleyId_ = PlayEffekseer3DEffect(effectPowerResId_);
+
+	//エフェクトの大きさ
+	SetScalePlayingEffekseer3DEffect(effectPowerPleyId_, scale, scale, scale);
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectPowerPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+}
+
+void Player::EffectSpeed(void)
+{
+	float scale = 20.0f;
+
+	// エフェクト再生
+	effectSpeedPleyId_ = PlayEffekseer3DEffect(effectSpeedResId_);
+
+	//エフェクトの大きさ
+	SetScalePlayingEffekseer3DEffect(effectSpeedPleyId_, scale, scale, scale);
+
+	//エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(effectSpeedPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
+}
+
 void Player::EffectHeal(void)
 {
+	float scale = 20.0f;
+
 	// エフェクト再生
 	effectHealPleyId_ = PlayEffekseer3DEffect(effectHealResId_);
 
 	//エフェクトの大きさ
-	SetScalePlayingEffekseer3DEffect(effectHealPleyId_, 5.0f, 5.0f, 5.0f);
+	SetScalePlayingEffekseer3DEffect(effectHealPleyId_, scale, scale, scale);
 
-	//エフェクトの位置
-	SetPosPlayingEffekseer3DEffect(effectHealPleyId_, transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 int Player::GetWater(void) const
@@ -1286,10 +1310,6 @@ void Player::SetTree(Tree* tree)
 	tree_ = tree;
 }
 
-void Player::eHit(void)
-{
-
-}
 void Player::wHit(float scale)
 {
 
