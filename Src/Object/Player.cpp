@@ -181,7 +181,7 @@ void Player::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);	// モデルの描画
 	DrawShadow();						// 丸影描画
-	DrawDebug();						// デバッグ用描画
+	//DrawDebug();						// デバッグ用描画
 
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
