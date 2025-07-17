@@ -46,6 +46,7 @@ public:
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
+	//ステータスアップ
 	static constexpr int POWER_UP_TIME = 1200;
 	static constexpr int SPEED_UP_TIME = 1200;
 
@@ -54,8 +55,6 @@ public:
 	{
 		NONE,
 		PLAY,
-		DEAD,
-		VICTORY,
 		END
 	};
 
@@ -88,83 +87,110 @@ public:
 
 	void Init(void) override;
 	void Update(void) override;
-	//ダウン中の処理
-	void UpdateDown(float deltaTime);
 	void Draw(void) override;
 
+	// --- ゲームステート処理 ---
+	bool IsPlay(void) const;	//状態確認
+
+	// --- 当たり判定 / 衝突 ---
+	
 	// 衝突判定に用いられるコライダ制御
 	void AddCollider(std::weak_ptr<Collider> collider);
 	void ClearCollider(void);
-
-	//敵の情報を取得
-	void SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys);
-
-	VECTOR GetPos() const;
-	void SetPos(const VECTOR& pos);
-
-	// 衝突用カプセルの取得
-	const Capsule& GetCapsule(void) const;
+	const Capsule& GetCapsule(void) const;// 衝突用カプセルの取得
 
 	VECTOR GetCollisionPos(void)const;	// 衝突用の中心座標の取得
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
 
-	//状態確認
-	bool IsPlay(void) const;
+	// --- 外部インターフェース ---
+	void SetEnemy(const std::vector<std::shared_ptr<EnemyBase>>* enemys);//敵の情報を取得
+	VECTOR GetPos() const;
+	void SetPos(const VECTOR& pos);
+	void SetTree(Tree* tree);
 
-	//判定
+	// --- インタラクション（ヒット系） ---
+	void wHit(float scale);	//水を取得
+	void tHit(void);		//木にヒット
+
+	// --- ステータス操作 ---
 	int GetWater(void) const;
+
 	//水獲得量特別増加
 	bool IsMax(void);
 	void SetIsMax(void);
-
-	void SetTree(Tree* tree);
-
-	void eHit(void);//敵
-	void wHit(float scale);//水
-	void tHit(void);//木
-					
-	//ダメージ
-	void Damage(int damage);
-
-	//パワーアップ
-	void PowerUp(void);
 	
-	//スピードアップ
-	void SpeedUp(void);
-
-	//回復
-	void Heal(void);
-
-	//無敵
-	void Muteki(void);
+	void Damage(int damage);//ダメージ
+	void PowerUp(void);		//パワーアップ
+	void SpeedUp(void);		//スピードアップ
+	void Heal(void);		//回復
+	void Muteki(void);		//無敵
 
 private:
+
+	// --- アニメーション ---
+	std::unique_ptr<AnimationController> animationController_;
+	void InitAnimation(void);
+
+	// --- 状態管理 ---
+	STATE state_;
+	std::map<STATE, std::function<void(void)>> stateChanges_;// 状態管理(状態遷移時初期処理)
+	std::function<void(void)> stateUpdate_;// 状態管理(更新ステップ)
+
+	// 状態遷移
+	void ChangeState(STATE state);
+	void ChangeStatePlay(void);
+
+	void UpdatePlay(void);//stateがplayの状態のupdate
+	void UpdateDown(float deltaTime);//ダウン中の処理
+
+	// --- 衝突 ---
+	std::unique_ptr<Capsule> capsule_;
+	std::vector <std::weak_ptr<Collider>> colliders_;// 衝突判定に用いられるコライダ
+
+	// 衝突チェック 衝突用線分
+	VECTOR gravHitPosDown_;
+	VECTOR gravHitPosUp_;
+
+	// 衝突判定
+	void Collision(void);
+	void CollisionGravity(void);
+	void CollisionCapsule(void);
+
+	// 攻撃判定
+	void CollisionAttack(void);
+	void CollisionAttack2(void);
+	void CollisionAttackEx(void);
+
+	// --- モーション・操作 ---
+	void ProcessMove(void);		// 移動
+	void ProcessJump(void);		//ジャンプモーション
+	void ProcessAttack(void);	//攻撃モーション
+
+	// 回転
+	void SetGoalRotate(double rotRad);
+	void Rotate(void);
+
+	// モーション終了
+	bool IsEndLanding(void);		// ジャンプ終了
+	bool IsEndLandingA(void);		// アタック終了
+	bool IsExAttackReady() const;	// 回転斬りリセット
+
+	// --- ステータス変化管理 ---
+	void PowerUpTimer(void);//パワーアップの制限時間
+	void SpeedUpTimer(void);//スピードアップの制限時間
+
+	//復活処理
+	void StartRevival();
+	void Revival();
+
+	// --- エフェクト ---
 
 	Tree* tree_;
 
 	// ジャンプ量
 	VECTOR jumpPow_;
 	
-	// 衝突判定に用いられるコライダ
-	std::vector <std::weak_ptr<Collider>> colliders_;
-	
-	// 衝突チェック 衝突用線分
-	VECTOR gravHitPosDown_;
-	VECTOR gravHitPosUp_;
-
-	// アニメーション
-	std::unique_ptr<AnimationController> animationController_;
-
-	// 状態管理
-	STATE state_;
-	
-	// 状態管理(状態遷移時初期処理)
-	std::map<STATE, std::function<void(void)>> stateChanges_;
-	
-	// 状態管理(更新ステップ)
-	std::function<void(void)> stateUpdate_;
-
 	// 丸影
 	int imgShadow_;
 
@@ -246,61 +272,15 @@ private:
 	Quaternion reserveStartQua_;
 	VECTOR reserveStartPos_;
 
-	void InitAnimation(void);
-
-	// 状態遷移
-	void ChangeState(STATE state);
-	void ChangeStateNone(void);
-	void ChangeStatePlay(void);
-
 	// 更新ステップ
-	void UpdateNone(void);
-	void UpdatePlay(void);
 	void DrawShadow(void);
 
 	// 描画系
 	void DrawDebug(void);
 
-	// 操作 
-	void ProcessMove(void);
-
-	// 回転
-	void SetGoalRotate(double rotRad);
-	void Rotate(void);
-
-	// 衝突判定
-	void Collision(void);
-	void CollisionGravity(void);
-	void CollisionCapsule(void);
-
-	void CollisionAttack(void);
-	void CollisionAttack2(void);
-	void CollisionAttackEx(void);
-	
 	// 移動量の計算
 	void CalcGravityPow(void);
 
-	//ジャンプモーション
-	void ProcessJump(void);
-	// 着地モーション終了
-	bool IsEndLanding(void);
-
-	//パワーアップの制限時間
-	void PowerUpTimer(void);
-
-	//スピードアップの制限時間
-	void SpeedUpTimer(void);
-
-	//攻撃モーション
-	void ProcessAttack(void);
-	bool IsEndLandingA(void);
-	bool IsExAttackReady() const;
-
-	//復活処理
-	void StartRevival();
-	void Revival();
-
-	std::unique_ptr<Capsule> capsule_;
 	const std::vector<std::shared_ptr<EnemyBase>>* enemy_;
 
 	// 足煙エフェクト
