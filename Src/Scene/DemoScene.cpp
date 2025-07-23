@@ -118,9 +118,6 @@ void DemoScene::Draw(void)
 	int x3 = centerX + static_cast<int>(radius * cosf(DX_PI * 240.0f / 180.0f));
 	int y3 = centerY + static_cast<int>(radius * sinf(DX_PI * 240.0f / 180.0f));
 
-	// ŽOŠpŒ`•`‰æ
-	DrawTriangle(x1, y1, x2, y2, x3, y3, GetColor(0, 255, 0), FALSE); // ˜g‚Ì‚Ý
-
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2-200,1,0,god_[gNo_],true);
 
 	if (txt_>3&&txt_<6)
