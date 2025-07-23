@@ -193,11 +193,12 @@ void GameScene::Update(void)
 		EnemyCreate();
 		isB_ = 2;
 	}
-
-	if (tree_->GetLv() >= 100) {
+	if (tree_->GetLv() >= 100) 
+	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
-	if (tree_->GetHp() <= 0) {
+	if (tree_->GetHp() <= 0) 
+	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
 
@@ -225,7 +226,6 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
-
 }
 
 void GameScene::Draw(void)
@@ -268,21 +268,22 @@ void GameScene::Draw(void)
 	if (!uiFadeStart_) 
 	{
 		// フェード前（通常表示）
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-		DrawGraph(400, 40, imgGameUi1_, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 	else if (uiFadeFrame_ < 60) 
 	{
 		// フェード中（60フレームで徐々に消す）
 		int alpha = static_cast<int>(255 * (60 - uiFadeFrame_) / 60.0f);
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawGraph(400, 40, imgGameUi1_, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		uiFadeFrame_++;
 	}
 
-	if (isPaused_) {
+	if (isPaused_) 
+	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 		DrawBox(0, 0, 1920, 1080, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -325,6 +326,14 @@ void GameScene::Draw(void)
 		}
 		return;
 	}
+
+#pragma region UI
+	SetFontSize(32);
+							DrawString(10,450,"E:通常攻撃"      ,0xffffff);
+	if (tree_->GetLv()>=25)	DrawString(10,500,"Q:なぎ払い　解放",0xffffff);
+	if (tree_->GetLv()>=50)	DrawString(10,550,"R:回転斬り　解放",0xffffff);
+	SetFontSize(16);
+#pragma endregion
 }
 
 void GameScene::Release(void)
