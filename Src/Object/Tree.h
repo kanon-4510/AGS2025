@@ -10,6 +10,16 @@ class Player;
 class Tree
 {
 public:
+
+	//íËêî
+	
+	static constexpr int STATUS_BAR_WIDTH = 600;										//
+	static constexpr int STATUS_BAR_LEFT = 50;											//
+	static constexpr int STATUS_BAR_HEIGHT = 20;										//
+	static constexpr int STATUS_BAR_HP_Y = Application::SCREEN_SIZE_Y - 200;			//
+	static constexpr int STATUS_BAR_WATER_Y = Application::SCREEN_SIZE_Y - 175;			//
+	static constexpr int STATUS_BAR_TEXT_Y = Application::SCREEN_SIZE_Y - 220;			//
+
 	static constexpr int GROW_UP = 4;
 
 	// ñ≥ìG
