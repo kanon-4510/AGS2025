@@ -24,7 +24,7 @@ EnemyBase::EnemyBase()
 	item_ = nullptr;
 	state_ = STATE::NONE;
 
-	attackPow_ = 1;	//UŒ‚—Í
+	attackPow_ = VALUE_ONE;	//UŒ‚—Í
 
 	// ó‘ÔŠÇ—
 	stateChanges_.emplace(
@@ -291,7 +291,7 @@ void EnemyBase::Damage(int damage)
 		ChangeState(STATE::DEATH);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
-	else if (hp_ >= 1 && isAlive_ && enemyType_ != TYPE::BOSS)
+	else if (hp_ >= VALUE_ONE && isAlive_ && enemyType_ != TYPE::BOSS)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
@@ -486,12 +486,12 @@ void EnemyBase::DrawDebugSearchRange(void)
 	// ”ÍˆÍ“à‚©”»’è
 	bool inRange = (distance <= VIEW_RANGE);
 
-	float angleStep = DX_PI * VALUE_TWO / VALUE_SIXTY;
+	float angleStep = AsoUtility::FULL_ROTATION_RAD / VALUE_SIXTY;
 
 	for (int i = ZERO; i < VALUE_SIXTY; ++i)
 	{
 		float angle1 = angleStep * i;
-		float angle2 = angleStep * (i + 1);
+		float angle2 = angleStep * (i + VALUE_ONE);
 
 		VECTOR p1 = {
 			centerPos.x + VIEW_RANGE * sinf(angle1),
