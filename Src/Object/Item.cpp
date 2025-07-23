@@ -43,7 +43,7 @@ void Item::Init(void)
 	baseY_ = transform_.pos.y + safetyMargin;
 	//baseY_ = transform_.pos.y; // 初期位置を保存
 
-	collisionRadius_ = 80.0f;							// 衝突判定用の球体半径
+	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
 }
 
@@ -59,17 +59,6 @@ void Item::Update(void)
 
 	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
 	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
-
-	// 地面より下がらないように制限
-	/*const float groundY = 2.0f; // 地面のY座標
-	const float modelBottomOffset = 10.0f; // モデルの底面までの距離（必要に応じて調整）
-
-	// モデルの底が groundY 未満なら強制的に groundY に合わせる
-	float modelBottomY = transform_.pos.y - modelBottomOffset;
-	if (modelBottomY < groundY) 
-	{
-		transform_.pos.y = groundY + modelBottomOffset;
-	}*/
 
 	// プレイヤーの位置と当たり判定半径を取得
 	VECTOR playerPos = player_.GetCollisionPos();			// プレイヤーの位置
@@ -204,6 +193,9 @@ void Item::InitModel(void)
 	case Item::TYPE::MUTEKI:
 		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::MUTEKI));
 		break;
+	case Item::TYPE::ALL:
+		transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::ALL));
+		break;
 	default:
 		break;
 	}
@@ -226,6 +218,13 @@ void Item::ItemUse(void)
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
+		tree_.Muteki();
+		break;
+	case Item::TYPE::ALL:
+		player_.wHit(transform_.scl.x);
+		player_.PowerUp();
+		player_.SpeedUp();
+		player_.Heal();
 		tree_.Muteki();
 		break;
 	

@@ -15,11 +15,11 @@ void EnemyMimic::InitAnimation(void)
 	std::string path = Application::PATH_MODEL + "Enemy/mimic/mimic.mv1";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-	animationController_->Add((int)ANIM_TYPE::IDLE,	 path, 20.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::RUN,	 path, 20.0f, 2);
-	animationController_->Add((int)ANIM_TYPE::ATTACK,path, 16.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::DAMAGE,path, 20.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::DEATH, path, 20.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::IDLE,	 path, 20.0f, 0);
+	animationController_->Add((int)ANIM_TYPE::RUN,	 path, 20.0f, 1);
+	animationController_->Add((int)ANIM_TYPE::ATTACK,path, 16.0f, 2);
+	animationController_->Add((int)ANIM_TYPE::DAMAGE,path, 20.0f, 3);
+	animationController_->Add((int)ANIM_TYPE::DEATH, path, 20.0f, 4);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }

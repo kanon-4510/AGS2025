@@ -71,6 +71,7 @@ public:
 		SPEED,
 		HEAL,
 		MUTEKI,
+		ALL,
 		//エネミー
 		DOG,
 		SABO,
@@ -81,7 +82,10 @@ public:
 		VIRUS,
 		BOSS,
 		//エフェクト
-		TREE_RANGE
+		TREE_RANGE,
+		EFF_POWER,
+		EFF_SPEED,
+		EFF_HEAL
 	};
 
 	// 明示的にインステンスを生成する
