@@ -154,7 +154,7 @@ void EnemyBase::UpdateDeath(void)
 			// ボスのアイテムはスケール固定
 			float scale = 0.2f;
 			
-			scene_->CreateItem(dropPos, scale, Item::TYPE::MUTEKI);
+			scene_->CreateItem(dropPos, scale, dropType);
 		}
 		else
 		{
