@@ -11,6 +11,20 @@ class Item : public ActorBase
 {
 public:
 
+	static constexpr float ITEM_MODEL_SCALE = 0.1f;
+	static constexpr float ITEM_ROTATION_Y = 0.0f * DX_PI_F / 180.0f;
+
+	static constexpr float ITEM_GROUND_Y = 2.0f;
+	static constexpr float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
+
+	static constexpr float ITEM_COLLISION_RADIUS = 30.0f;
+	static constexpr VECTOR ITEM_COLLISION_LOCAL_POS = { 0.0f, 150.0f, 0.0f };
+
+	static constexpr int DEBUG_SPHERE_DIV = 8;
+
+	static constexpr int COLOR_WHITE = 0xffffff;
+	static constexpr int COLOR_BLUE = 0x0000ff;
+
 	//敵の種類
 	enum class TYPE
 	{
@@ -50,17 +64,16 @@ public:
 	TYPE GetItemType(void) const;
 
 	void DrawDebug(void);	//デバッグ用
+
 private:
+
 	Player& player_;
 	Tree& tree_;
 	TYPE itemType_;	//ドロップするアイテムの種類
 
 	int modelId_;//モデルの格納
 
-	VECTOR scl_;	// 大きさ
-	VECTOR rot_;	// 角度
 	VECTOR pos_;	// 表示座標
-	VECTOR dir_;	// 移動方向
 
 	bool isAlive_;
 

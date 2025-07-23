@@ -75,7 +75,7 @@ void EnemyBase::Update(void)
 
 void EnemyBase::UpdateIdle(void)
 {
-	animationController_->Play((int)ANIM_TYPE::IDLE, false, 0.0f, 10.0f);
+	animationController_->Play((int)ANIM_TYPE::IDLE, false);
 	if (animationController_->IsEnd() || state_ != STATE::IDLE)
 	{
 		AttackCollisionPos();
@@ -143,7 +143,7 @@ void EnemyBase::UpdateDeath(void)
 		VECTOR dropPos = this->GetTransform().pos;
 
 		// マップ中心との距離を計算
-		float distance = VSize(VSub(dropPos, VGet(0, 0, 0)));
+		float distance = VSize(VSub(dropPos, AsoUtility::VECTOR_ZERO));
 
 		// ドロップアイテムを取得
 		Item::TYPE dropType = GetDropItemType();
@@ -152,7 +152,7 @@ void EnemyBase::UpdateDeath(void)
 		if (enemyType_ == TYPE::BOSS)
 		{
 			// ボスのアイテムはスケール固定
-			float scale = 0.2f;
+			float scale = DROP_SCALE_LARGE;
 			
 			scene_->CreateItem(dropPos, scale, dropType);
 		}
@@ -160,14 +160,14 @@ void EnemyBase::UpdateDeath(void)
 		{
 			// 通常の敵は1つだけアイテムドロップ
 			// 距離でサイズを変える
-			float scale = 0.1f;
+			float scale = DROP_SCALE_SMALL;
 			if (dropType == Item::TYPE::WATER)
 			{
-				if (distance >= 6000.0f) {	// 中心から距離が6000以上離れたら
-					scale = 0.2f;
+				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から距離が6000以上離れたら
+					scale = DROP_SCALE_LARGE;
 				}
-				else if (distance >= 3000.0f) {	// 中心から距離が3000以上離れたら
-					scale = 0.15f;
+				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から距離が3000以上離れたら
+					scale = DROP_SCALE_MEDIUM;
 				}
 			}
 			// アイテムを1つ出す（サイズ調整）
@@ -188,7 +188,7 @@ void EnemyBase::ChasePlayer(void)
 	VECTOR playerPos = player_->GetTransform().pos;
 
 	VECTOR toPlayer = VSub(playerPos, transform_.pos);
-	toPlayer.y = 0;  // 高さ無視
+	toPlayer.y = ZERO;  // 高さ無視
 
 	float distance = VSize(toPlayer);
 
@@ -211,11 +211,11 @@ void EnemyBase::ChasePlayer(void)
 	else
 	{
 		// 原点に向かう
-		VECTOR toOrigin = VSub(VGet(0.0f, 0.0f, 0.0f), transform_.pos);
-		toOrigin.y = 0;  // 高さ無視
+		VECTOR toOrigin = VSub(AsoUtility::VECTOR_ZERO, transform_.pos);
+		toOrigin.y = ZERO;  // 高さ無視
 
 		float distToOrigin = VSize(toOrigin);
-		if (distToOrigin > 0.01f) // 近すぎる場合は動かない
+		if (distToOrigin > MIN_MOVE_DISTANCE) // 近すぎる場合は動かない
 		{
 			VECTOR dirToOrigin = VNorm(toOrigin);
 			VECTOR moveVec = VScale(dirToOrigin, speed_);
@@ -286,7 +286,7 @@ void EnemyBase::Damage(int damage)
 	// ダメージ音
 	SoundManager::GetInstance().Play(SoundManager::SRC::E_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	isAttack_ = false;
-	if (hp_ <= 0 && isAlive_)
+	if (hp_ <= ZERO && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
@@ -333,8 +333,8 @@ void EnemyBase::AttackCollisionPos(void)
 	// 攻撃の方向（エネミー）
 	VECTOR forward = transform_.quaRot.GetForward();
 	// 攻撃の開始位置と終了位置
-	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, 100.0f));
-	attackCollisionPos_.y += 100.0f;  // 攻撃の高さ調整
+	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD_OFFSET));
+	attackCollisionPos_.y += ATTACK_FORWARD_OFFSET;  // 攻撃の高さ調整
 
 	//プレイヤーを見る
 	EnemyToPlayer();
@@ -348,19 +348,14 @@ void EnemyBase::EnemyToPlayer(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	//判定の距離の比較
-	p_Diff_ = VSub(playerCenter_, attackCollisionPos_);
-	p_Dis_ = AsoUtility::SqrMagnitudeF(p_Diff_);
-
-	// 半径の合計
-	p_RadiusSum_ = attackCollisionRadius_ + playerRadius_;
-
-	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_ && player_->pstate_ != Player::PlayerState::DOWN)
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_)
+			&& player_->pstate_ != Player::PlayerState::DOWN)
 	{
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	else if (p_Dis_ >= p_RadiusSum_ * p_RadiusSum_ || player_->pstate_ == Player::PlayerState::DOWN)
+	else if (!AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_) 
+		|| player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		ChangeState(STATE::PLAY);
 	}
@@ -372,14 +367,7 @@ void EnemyBase::EnemyToTree(void)
 	treeCenter_ = tree_->GetCollisionPos();
 	treeRadius_ = tree_->GetCollisionRadius();
 
-	//判定の距離の比較
-	t_Diff_ = VSub(treeCenter_, attackCollisionPos_);
-	t_Dis_ = AsoUtility::SqrMagnitudeF(t_Diff_);
-
-	//半径の合計
-	t_RadiusSum_ = attackCollisionRadius_ + treeRadius_;
-
-	if (t_Dis_ < t_RadiusSum_ * t_RadiusSum_)
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, treeCenter_,treeRadius_))
 	{
 		isAttack_T = true;
 		ChangeState(STATE::ATTACK);
@@ -392,14 +380,7 @@ void EnemyBase::CheckHitAttackHit(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	//判定の距離の比較
-	p_Diff_ = VSub(playerCenter_, attackCollisionPos_);
-	p_Dis_ = AsoUtility::SqrMagnitudeF(p_Diff_);
-
-	// 半径の合計
-	p_RadiusSum_ = attackCollisionRadius_ + playerRadius_;
-
-	if (p_Dis_ < p_RadiusSum_ * p_RadiusSum_)
+	if(AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_,playerCenter_, playerRadius_))
 	{
 		player_->Damage(attackPow_);
 	}
@@ -469,40 +450,30 @@ void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
 
 void EnemyBase::DrawDebug(void)
 {
-	int white = 0xffffff;
-	int black = 0x000000;
-	int red = 0xff0000;
-	int green = 0x00ff00;
-	int blue = 0x0000ff;
-	int yellow = 0xffff00;
-	int purpl = 0x800080;
+	
 
 	VECTOR v;
-	VECTOR c;
 	VECTOR s;
 	VECTOR a;
 
 	// キャラ基本情報
 	//-------------------------------------------------------
 	//// キャラ座標
-	//v = transform_.pos;
-	//DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
+	v = transform_.pos;
+	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, black, black, false);
-	//DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
-	//DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
+	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
+	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
 	
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
-
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
 	VECTOR centerPos = transform_.pos;
-	float radius = VIEW_RANGE;
-	int segments = 60;
 
 	// プレイヤーの座標
 	VECTOR playerPos = player_->GetTransform().pos; // プレイヤーオブジェクトの参照を持っている想定
@@ -513,29 +484,24 @@ void EnemyBase::DrawDebugSearchRange(void)
 	float distance = sqrtf(dx * dx + dz * dz);
 
 	// 範囲内か判定
-	bool inRange = (distance <= radius);
+	bool inRange = (distance <= VIEW_RANGE);
 
-	// 色を決定（範囲内なら赤、範囲外は元の色）
-	unsigned int color = inRange ? 0xff0000 : 0xffdead;
+	float angleStep = DX_PI * VALUE_TWO / VALUE_SIXTY;
 
-	float angleStep = DX_PI * 2.0f / segments;
-
-	for (int i = 0; i < segments; ++i)
+	for (int i = ZERO; i < VALUE_SIXTY; ++i)
 	{
 		float angle1 = angleStep * i;
 		float angle2 = angleStep * (i + 1);
 
 		VECTOR p1 = {
-			centerPos.x + radius * sinf(angle1),
+			centerPos.x + VIEW_RANGE * sinf(angle1),
 			centerPos.y,
-			centerPos.z + radius * cosf(angle1)
+			centerPos.z + VIEW_RANGE * cosf(angle1)
 		};
 		VECTOR p2 = {
-			centerPos.x + radius * sinf(angle2),
+			centerPos.x + VIEW_RANGE * sinf(angle2),
 			centerPos.y,
-			centerPos.z + radius * cosf(angle2)
+			centerPos.z + VIEW_RANGE * cosf(angle2)
 		};
-		DrawTriangle3D(centerPos, p1, p2, color, false);
 	}
-	DrawSphere3D(centerPos, 20.0f, 10, 0x00ff00, 0x00ff00, true);
 }
