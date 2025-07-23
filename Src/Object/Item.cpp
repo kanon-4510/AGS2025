@@ -14,6 +14,11 @@ Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree
 {
 	transform_.dir = {};
 	transform_.modelId = 0;
+
+	collisionLocalPos_ = {};
+	collisionRadius_ = 0;
+
+	isAlive_ = false;
 }
 
 Item::~Item(void)
@@ -26,13 +31,11 @@ void Item::Init(void)
 	InitModel();
 
 	// モデルの基本設定
-	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	//transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
-	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
+	transform_.scl = { 0.1f, 0.1f, 0.1f };	// 大きさの設定
+	transform_.rot = { 0.0f, 0.0f, 0.0f };	// 角度の設定
+	transform_.dir = { 0.0f, 0.0f, 0.0f };	// 右方向に移動する
 
 	isAlive_ = false;
-
 
 	// 振幅ぶん下に行っても地面に埋まらないよう、baseY_を補正
 	const float groundY = 2.0f;

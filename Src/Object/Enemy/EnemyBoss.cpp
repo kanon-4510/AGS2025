@@ -6,6 +6,7 @@
 
 EnemyBoss::EnemyBoss() :EnemyBase()
 {
+	maxHp_ = 0;
 }
 
 void EnemyBoss::InitAnimation(void)

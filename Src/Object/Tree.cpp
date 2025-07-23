@@ -211,7 +211,7 @@ void Tree::Draw(void)
 	}
 	else DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0x00ff00,true);
 
-	DrawBox(50,Application::SCREEN_SIZE_Y-175,650,Application::SCREEN_SIZE_Y-165,0x0,true);
+								DrawBox(50,Application::SCREEN_SIZE_Y-175,650,Application::SCREEN_SIZE_Y-165,0x0,true);
 	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*200+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
 	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
 	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
@@ -224,16 +224,14 @@ void Tree::Draw(void)
 		const float radius = 32.0f;
 		const int segments = 60;
 
-		// �A�C�R���`��i��ɏo���j
+		// 無敵アイコン画像
 		DrawRotaGraph(cx, cy, 1.3, 0.0, imgMutekiIcon_, true);
 
-		// �c�芄��
 		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
 		int filledSegments = static_cast<int>(segments * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180); // ������
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 
-		// ���v��肩�u�c���Ă��Ȃ������v�ɕ`�悷�� �� �o�ߎ��ԂԂ񂾂��h��
 		for (int i = filledSegments; i < segments; ++i)
 		{
 			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
@@ -379,7 +377,7 @@ void Tree::LvUp(void)
 		ChangeGrow();
 	}
 
-	// 音楽
+	// 水を与えたときの音
 	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
 
 }
@@ -440,7 +438,8 @@ void Tree::MutekiTimer(void)
 void Tree::Muteki(void)
 {
 	invincible_ = true;
-	// �؂����G
+
+	// 木が無敵になった時の音
 	SoundManager::GetInstance().Play(SoundManager::SRC::MUTEKI_SE, Sound::TIMES::ONCE);
 }
 
@@ -450,7 +449,8 @@ void Tree::eHit(void)//エネミーとのあたり判定
 	{
 		hp_ -= 1;
 		isD_ = true;
-		// �_���[�W
+
+		// 木がダメージを食らった音
 		SoundManager::GetInstance().Play(SoundManager::SRC::T_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	}
 }
