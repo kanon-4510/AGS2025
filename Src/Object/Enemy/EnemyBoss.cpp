@@ -6,7 +6,6 @@
 
 EnemyBoss::EnemyBoss() :EnemyBase()
 {
-	maxHp_ = 0;
 }
 
 void EnemyBoss::InitAnimation(void)
@@ -30,15 +29,15 @@ void EnemyBoss::SetParam(void)
 	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::BOSS));
 
 	transform_.scl = { 1.0f, 1.0f, 1.0f };						// 大きさの設定
-	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f), AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる
+	transform_.quaRotLocal = Quaternion::Euler(AsoUtility::Deg2RadF(0.0f)
+		, AsoUtility::Deg2RadF(180.0f), 0.0f);//クォータニオンをいじると向きが変わる
 	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
 
 	speed_ = 2.0f;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
 
-	maxHp_ = 30;
-	hp_ = maxHp_;	// HPの設定
+	hp_ = BOSS_MAX_HP;	// HPの設定
 
 	attackPow_ = 3;
 
@@ -64,25 +63,24 @@ void EnemyBoss::DrawBossHpBar(void)
 	{
 		return;
 	}
-	const int barWidth = 600;
-	const int barHeight = 20;
-	int barX = (Application::SCREEN_SIZE_X - barWidth) / 2; // 中央X
-	int barY = 80; // 上から80px
 
-	float hpRate = static_cast<float>(hp_) / maxHp_;
-	int hpDrawWidth = static_cast<int>(barWidth * hpRate);
+	int barX = (Application::SCREEN_SIZE_X - BOSS_HP_BAR_WIDTH) / 2; // 中央X
+	int barY = BOSS_HP_BAR_Y; // 上から80px
+
+	float hpRate = static_cast<float>(hp_) / BOSS_MAX_HP;
+	int hpDrawWidth = static_cast<int>(BOSS_HP_BAR_WIDTH * hpRate);
 
 	// ラベル
 	SetFontSize(55);
-	DrawFormatString(barX - 120, barY - 20 , GetColor(255, 255, 255), "BOSS");
+	DrawFormatString(barX + BOSS_LABEL_OFFSET_X, barY + BOSS_LABEL_OFFSET_Y, GetColor(255, 255, 255), "BOSS");
 	SetFontSize(16);
 
 	// 背景バー（黒）
-	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(0, 0, 0), TRUE);
+	DrawBox(barX, barY, barX + BOSS_HP_BAR_WIDTH, barY + BOSS_HP_BAR_HEIGHT, GetColor(0, 0, 0), TRUE);
 
 	// HPバー（赤）
-	DrawBox(barX, barY, barX + hpDrawWidth, barY + barHeight, GetColor(255, 0, 0), TRUE);
+	DrawBox(barX, barY, barX + hpDrawWidth, barY + BOSS_HP_BAR_HEIGHT, GetColor(255, 0, 0), TRUE);
 
 	// 枠線（白）
-	DrawBox(barX, barY, barX + barWidth, barY + barHeight, GetColor(255, 255, 255), FALSE);
+	DrawBox(barX, barY, barX + BOSS_HP_BAR_WIDTH, barY + BOSS_HP_BAR_HEIGHT, GetColor(255, 255, 255), FALSE);
 }
