@@ -14,8 +14,41 @@ class Tree;
 class EnemyBase : public ActorBase
 {
 public:
+	//デバッグ &　汎用
+	static constexpr float ZERO = 0.0f;	//初期化の値用
+	static constexpr float VALUE_ONE = 1.0f;
+	static constexpr float VALUE_TWO = 2.0f;
+	static constexpr int  VALUE_SIXTY = 60;
+
+	//敵の範囲用
 	static constexpr float VIEW_RANGE = 500.0f;	// 視野の広さ
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
+
+	// 攻撃の位置オフセット
+	static constexpr float ATTACK_FORWARD_OFFSET = 80.0f;	//前方向
+	static constexpr float ATTACK_HEIGHT_OFFSET = 100.0f;	//高さ
+
+	// ドロップアイテムのサイズと距離しきい値
+	static constexpr float DROP_SCALE_SMALL = 0.1f;
+	static constexpr float DROP_SCALE_MEDIUM = 0.15f;
+	static constexpr float DROP_SCALE_LARGE = 0.2f;
+	static constexpr float DROP_DISTANCE_MEDIUM = 3000.0f;
+	static constexpr float DROP_DISTANCE_LARGE = 6000.0f;
+
+	// 原点復帰時の最小移動距離（移動制御）
+	static constexpr float MIN_MOVE_DISTANCE = 0.01f;
+
+	//原点の位置
+	static constexpr VECTOR ORIGIN = { 0.0f, 0.0f, 0.0f };
+	
+	//色
+	int white = 0xffffff; //白
+	int black = 0x000000; //黒
+	int red = 0xff0000;	  //赤
+	int green = 0x00ff00; //緑
+	int blue = 0x0000ff;  //青
+	int yellow = 0xffff00;//黄
+	int purpl = 0x800080; //紫
 
 	//敵の種類
 	enum class TYPE
@@ -76,7 +109,7 @@ public:
 
 
 	TYPE GetEnemyType(void) const;
-	TYPE enemyType_;
+	TYPE enemyType_;	//敵のタイプ
 
 	// 死亡時のドロップアイテムを決める関数（デフォルトはNONE）
 	virtual Item::TYPE GetDropItemType() const;

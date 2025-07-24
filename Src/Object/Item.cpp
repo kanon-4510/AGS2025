@@ -14,6 +14,11 @@ Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree
 {
 	transform_.dir = {};
 	transform_.modelId = 0;
+
+	collisionLocalPos_ = {};
+	collisionRadius_ = 0;
+
+	isAlive_ = false;
 }
 
 Item::~Item(void)
@@ -26,22 +31,16 @@ void Item::Init(void)
 	InitModel();
 
 	// モデルの基本設定
-	transform_.scl = { 0.1f, 0.1f, 0.1f };						// 大きさの設定
-	transform_.rot = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };	// 角度の設定
-	//transform_.pos = { 0.0f, 15.0f, 500.0f };					// 位置の設定
-	transform_.dir = { 0.0f, 0.0f, 0.0f };						// 右方向に移動する
+	transform_.scl = { 0.1f, 0.1f, 0.1f };	// 大きさの設定
+	transform_.rot = { 0.0f, 0.0f, 0.0f };	// 角度の設定
+	transform_.dir = { 0.0f, 0.0f, 0.0f };	// 右方向に移動する
 
 	isAlive_ = false;
 
-
-	// 振幅ぶん下に行っても地面に埋まらないよう、baseY_を補正
-	const float groundY = 2.0f;
-	const float modelBottomOffset = 3.0f; // モデル中心から底面までの距離（見た目調整）
 	float lowestY = transform_.pos.y - floatHeight_;
-	float targetMinY = groundY + modelBottomOffset;
-	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : 0.0f;
+	float targetMinY = ITEM_GROUND_Y + ITEM_MODEL_BOTTOM_OFFSET;
+	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : ZERO;
 	baseY_ = transform_.pos.y + safetyMargin;
-	//baseY_ = transform_.pos.y; // 初期位置を保存
 
 	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -54,8 +53,8 @@ void Item::Update(void)
 	}
 
 	// アニメーションタイマー更新
-	floatTimer_ += floatSpeed_ * DX_PI_F / 180.0f;
-	if (floatTimer_ > DX_PI_F * 2) floatTimer_ -= DX_PI_F * 2;
+	floatTimer_ += floatSpeed_ * AsoUtility::DEG2RAD;
+	if (floatTimer_ > AsoUtility::FULL_ROTATION_RAD) floatTimer_ -= AsoUtility::FULL_ROTATION_RAD;
 
 	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
 	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
@@ -143,16 +142,13 @@ void Item::SetScale(float scale)
 void Item::Respawn(const VECTOR& newPos)
 {
 	// 新しい位置で復活
-
-	const float groundY = 2.0f;              // 地面の高さ
-	const float modelBottomOffset = 3.0f;   // モデル中心から底面までの距離
 	// 地面に触れないよう、baseY_ を調整しておく
-	baseY_ = groundY + modelBottomOffset + floatHeight_;
+	baseY_ = ITEM_GROUND_Y + ITEM_MODEL_BOTTOM_OFFSET + floatHeight_;
 
 	transform_.pos = newPos;
 	transform_.pos.y = baseY_;
 	isAlive_ = true;
-	floatTimer_ = 0.0f;
+	floatTimer_ = ZERO;
 
 	// 必要なら他の状態もリセット
 }

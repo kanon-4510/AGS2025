@@ -10,6 +10,18 @@ class Collider;
 class Item : public ActorBase
 {
 public:
+	//初期化用 & デバッグ
+	static constexpr float ZERO = 0.0f;
+
+	static constexpr float ITEM_MODEL_SCALE = 0.1f;
+
+	const float ITEM_GROUND_Y = 2.0f;
+	const float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
+
+	static constexpr int DEBUG_SPHERE_DIV = 8;
+
+	static constexpr int COLOR_WHITE = 0xffffff;
+	static constexpr int COLOR_BLUE = 0x0000ff;
 
 	//敵の種類
 	enum class TYPE
@@ -50,17 +62,16 @@ public:
 	TYPE GetItemType(void) const;
 
 	void DrawDebug(void);	//デバッグ用
+
 private:
+
 	Player& player_;
 	Tree& tree_;
 	TYPE itemType_;	//ドロップするアイテムの種類
 
 	int modelId_;//モデルの格納
 
-	VECTOR scl_;	// 大きさ
-	VECTOR rot_;	// 角度
 	VECTOR pos_;	// 表示座標
-	VECTOR dir_;	// 移動方向
 
 	bool isAlive_;
 
