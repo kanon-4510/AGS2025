@@ -26,6 +26,7 @@ Player::Player(void)
 
 	state_ = STATE::NONE;
 
+	//足煙エフェクト
 	effectSmokeResId_ = -1;
 	effectSmokePleyId_ = -1;
 
@@ -164,7 +165,7 @@ void Player::Update(void)
 void Player::UpdateDown(float deltaTime)
 {
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_I)) Damage(1);
+	if (ins.IsNew(KEY_INPUT_I)) wHit(0.2f);
 
 	if (pstate_ == PlayerState::DOWN) {
 		isAttack_ = false;
@@ -827,9 +828,9 @@ void Player::CollisionAttack(void)
 	{
 		//エネミーとの衝突判定
 		
-		// 攻撃の球の半径（例: 50.0f）
+		// 攻撃の球の半径
 		float attackRadius = 100.0f;
-		// 攻撃の方向（プレイヤーの前方）
+		// 攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
 		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
@@ -842,14 +843,8 @@ void Player::CollisionAttack(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//判定の距離の比較
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// 半径の合計
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// 球体同士の当たり判定
+			if (AsoUtility::IsHitSpheres(attackPos,attackRadius,enemyPos,enemyRadius))
 			{
 				enemy->Damage(normalAttack_);
 				// 1体のみヒット
@@ -865,9 +860,9 @@ void Player::CollisionAttack2(void)
 	{
 		//エネミーとの衝突判定
 
-		// 攻撃の球の半径（例: 50.0f）
+		// 攻撃の球の半径
 		float attackRadius = 140.0f;
-		// 攻撃の方向（プレイヤーの前方）
+		// 攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		// 攻撃の開始位置と終了位置
 		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 80.0f));
@@ -881,14 +876,8 @@ void Player::CollisionAttack2(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//判定の距離の比較
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// 半径の合計
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// 球体同士の当たり判定
+			if (AsoUtility::IsHitSpheres(attackPos, attackRadius, enemyPos, enemyRadius))
 			{
 				enemy->Damage(slashAttack_);
 				// 複数ヒット
@@ -904,7 +893,7 @@ void Player::CollisionAttackEx(void)
 	{
 		//エネミーとの衝突判定
 
-		// 攻撃の球の半径（例: 50.0f）
+		// 攻撃の球の半径
 		float attackRadius = 180.0f;
 		// 攻撃の開始位置と終了位置
 		VECTOR attackPos = transform_.pos;
@@ -918,14 +907,8 @@ void Player::CollisionAttackEx(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//判定の距離の比較
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// 半径の合計
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// 球体同士の当たり判定
+			if (AsoUtility::IsHitSpheres(attackPos, attackRadius, enemyPos, enemyRadius))
 			{
 				enemy->Damage(exrAttack_);
 				// 複数ヒットさせたいなら

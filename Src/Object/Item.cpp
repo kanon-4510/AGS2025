@@ -67,13 +67,8 @@ void Item::Update(void)
 	VECTOR itemPos = transform_.pos;
 	float itemRadius = collisionRadius_;					// アイテムの当たり半径
 
-	// 距離の2乗
-	VECTOR diff = VSub(playerPos, itemPos);					// 差ベクトル（距離ベクトル）
-	float distance = AsoUtility::SqrMagnitudeF(diff);		// 差ベクトルの長さの2乗（距離の2乗）
-	float radiusSum = playerRadius + itemRadius;			// playerとitemの当たり判定用の半径を合計
-
 	// 球体同士の当たり判定
-	if (distance < radiusSum * radiusSum)
+	if (AsoUtility::IsHitSpheres(playerPos, playerRadius, itemPos, itemRadius))
 	{
 		// Water アイテムの場合だけ、water量をチェック
 		if (itemType_ == Item::TYPE::WATER && player_.GetWater() >= player_.WATER_MAX) {
