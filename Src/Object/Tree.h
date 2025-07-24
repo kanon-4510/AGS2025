@@ -36,7 +36,7 @@ public:
 	Tree(void);							//コンストラクタ
 	~Tree(void);						//デストラクタ
 
-	bool Init(void);		//初期化処理
+	bool Init(void);					//初期化処理
 	void Update(void);					//更新処理
 	void Draw(void);					//描画処理
 	void DrawDebug(void);				//デバッグ用
