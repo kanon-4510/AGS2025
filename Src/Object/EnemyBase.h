@@ -156,6 +156,7 @@ protected:
 	bool isAttack_T = false;	//攻撃判定
 
 	STATE state_;	//状態管理
+	ANIM_TYPE animtype_; // アニメーションのタイプ確認用
 
 	float speedAnim_; // 再生速度（共通）
 

@@ -186,12 +186,15 @@ void Player::Draw(void)
 
 #pragma region ステータス
 	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
+	// 枠線（白）
+	DrawBox(47, Application::SCREEN_SIZE_Y - 78, 653 , Application::SCREEN_SIZE_Y - 37, 0xaaaaaa, true);
+	
 	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
 	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
 	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
 	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
-
+	
 	if (powerUpFlag_)
 	{
 		const int cx = 150;
@@ -346,8 +349,7 @@ void Player::InitAnimation(void)
 	std::string path = Application::PATH_MODEL + "NPlayer/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
-
-
+	
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Player.mv1", 60.0f, 1);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
