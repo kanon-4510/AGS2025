@@ -165,6 +165,7 @@ void Player::Update(void)
 void Player::UpdateDown(float deltaTime)
 {
 	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_I)) wHit(0.2f);
 
 	if (pstate_ == PlayerState::DOWN) {
 		isAttack_ = false;
@@ -840,14 +841,8 @@ void Player::CollisionAttack(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//”»’è‚Ì‹——£‚Ì”äŠr
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// ”¼Œa‚Ì‡Œv
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// ‹…‘Ì“¯m‚Ì“–‚½‚è”»’è
+			if (AsoUtility::IsHitSpheres(attackPos,attackRadius,enemyPos,enemyRadius))
 			{
 				enemy->Damage(normalAttack_);
 				// 1‘Ì‚Ì‚İƒqƒbƒg
@@ -879,14 +874,8 @@ void Player::CollisionAttack2(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//”»’è‚Ì‹——£‚Ì”äŠr
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// ”¼Œa‚Ì‡Œv
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// ‹…‘Ì“¯m‚Ì“–‚½‚è”»’è
+			if (AsoUtility::IsHitSpheres(attackPos, attackRadius, enemyPos, enemyRadius))
 			{
 				enemy->Damage(slashAttack_);
 				// •¡”ƒqƒbƒg
@@ -916,14 +905,8 @@ void Player::CollisionAttackEx(void)
 			VECTOR enemyPos = enemy->GetCollisionPos();
 			float enemyRadius = enemy->GetCollisionRadius();
 
-			//”»’è‚Ì‹——£‚Ì”äŠr
-			VECTOR diff = VSub(enemyPos, attackPos);
-			float dis = AsoUtility::SqrMagnitudeF(diff);
-
-			// ”¼Œa‚Ì‡Œv
-			float radiusSum = attackRadius + enemyRadius;
-
-			if (dis < radiusSum * radiusSum)
+			// ‹…‘Ì“¯m‚Ì“–‚½‚è”»’è
+			if (AsoUtility::IsHitSpheres(attackPos, attackRadius, enemyPos, enemyRadius))
 			{
 				enemy->Damage(exrAttack_);
 				// •¡”ƒqƒbƒg‚³‚¹‚½‚¢‚È‚ç
