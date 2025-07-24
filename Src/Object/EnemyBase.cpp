@@ -450,8 +450,6 @@ void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
 
 void EnemyBase::DrawDebug(void)
 {
-	
-
 	VECTOR v;
 	VECTOR s;
 	VECTOR a;
