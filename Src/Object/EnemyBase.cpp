@@ -20,7 +20,6 @@ EnemyBase::EnemyBase()
 {
 	animationController_ = nullptr;
 
-	scene_ = nullptr;
 	item_ = nullptr;
 	state_ = STATE::NONE;
 
@@ -88,13 +87,14 @@ void EnemyBase::UpdatePlay(void)
 	{
 		return;
 	}
-		// 衝突判定
-		Collision();
 
-		ChasePlayer();
+	ChasePlayer();
 
-		//プレイヤーを見る
-		AttackCollisionPos();
+	// 衝突判定
+	Collision();
+
+	//攻撃範囲に入ったかを見る
+	AttackCollisionPos();
 }
 
 void EnemyBase::UpdateAttack(void)
@@ -163,10 +163,10 @@ void EnemyBase::UpdateDeath(void)
 			float scale = DROP_SCALE_SMALL;
 			if (dropType == Item::TYPE::WATER)
 			{
-				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から距離が6000以上離れたら
+				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から一定距離以上離れたら
 					scale = DROP_SCALE_LARGE;
 				}
-				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から距離が3000以上離れたら
+				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から一定距離以上離れたら
 					scale = DROP_SCALE_MEDIUM;
 				}
 			}
@@ -192,8 +192,12 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 
-	//アニメーションをRUNにする
-	animationController_->Play((int)ANIM_TYPE::RUN, true);
+	// 現在のアニメーションと違う場合のみRUNアニメーションを再生する
+	if (animtype_ != ANIM_TYPE::RUN)
+	{
+		animationController_->Play((int)ANIM_TYPE::RUN, true);
+	}
+	
 
 	//エネミーの視野内に入ったら追いかける
 	if (distance <= VIEW_RANGE 
@@ -450,8 +454,6 @@ void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
 
 void EnemyBase::DrawDebug(void)
 {
-	
-
 	VECTOR v;
 	VECTOR s;
 	VECTOR a;
