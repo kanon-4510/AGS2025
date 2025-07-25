@@ -22,34 +22,33 @@ Tree::Tree(void)
 	modelIdA_ = 0;
 	modelIdO_ = 0;
 
-	imgMutekiIcon_ = -1;
-
 	// 無敵状態
+	imgMutekiIcon_ = 0;
 	invincible_ = false;
 	mutekiCnt_ = 600;
 
-	effectTreeResId_ = -1;
-	effectTreePlayId_ = -1;
-
+	//エフェクト
+	effectTreeResId_ = 0;
+	effectTreePlayId_ = 0;
 }
-
 Tree::~Tree(void)
 {
 }
 
 bool Tree::Init(void)
 {
+	//モデルの読込
 	modelIdB_ = MV1LoadModel((Application::PATH_MODEL + "wood/Baby.mv1").c_str());
 	modelIdK_ = MV1LoadModel((Application::PATH_MODEL + "wood/Kid_ver2.mv1").c_str());
 	modelIdA_ = MV1LoadModel((Application::PATH_MODEL + "wood/Adult_ver2.mv1").c_str());
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
-	// 無敵アイコン画像
+	//無敵アイコン画像
 	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-	scl_ = { 3.0f, 2.5f, 3.0f };							// 大きさ
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			// 回転
-	pos_ = { 0.0f, -3.5f, 0.0f };							// 位置
+	scl_ = { 3.0f, 2.5f, 3.0f };							//大きさ
+	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			//回転
+	pos_ = { 0.0f, -3.5f, 0.0f };							//位置
 
 	lv_ = 1;
 	isAlive_ = true;
@@ -57,14 +56,13 @@ bool Tree::Init(void)
 	grow_ = Tree::GROW::BABY;
 	hp_ = 50;
 	water_ = 0;
-	//gameScene_ = parent;
 
+	//衝突判定
 	collisionRadius_ = 100.0f;								
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				
 
 	//エフェクト
-	effectTreeResId_ = ResourceManager::GetInstance().Load(
-		ResourceManager::SRC::TREE_RANGE).handleId_;
+	effectTreeResId_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TREE_RANGE).handleId_;
 
 	return true;
 }
@@ -72,7 +70,7 @@ void Tree::Update(void)
 {
 	if (!player_) return;
 
-	// プレイヤーとの距離をXZ平面だけで測る
+	//プレイヤーとの距離をXZ平面だけで測る
 	VECTOR playerPos = player_->GetPos();
 	VECTOR treePos = pos_;
 
@@ -80,9 +78,10 @@ void Tree::Update(void)
 	float dz = playerPos.z - treePos.z;
 	float distance = sqrtf(dx * dx + dz * dz);
 
-	// 2. 成長段階に応じた最小距離を設定
+	//成長段階に応じた最小距離を設定
 	float minDistance = 0.0f;
-	switch (grow_) {
+	switch (grow_) 
+	{
 	case GROW::BABY:
 		minDistance = 70.0f;
 		break;
@@ -100,27 +99,28 @@ void Tree::Update(void)
 		break;
 	}
 
-	// 3. プレイヤーが円の内側にいたら押し戻す
-	if (distance < minDistance) {
+	//プレイヤーが円の内側にいたら押し出す
+	if (distance < minDistance) 
+	{
 		float len = sqrtf(dx * dx + dz * dz);
-		if (len > 0.001f) {
+		if (len > 0.001f) 
+		{
 			dx /= len;
 			dz /= len;
 
 			VECTOR newPos = {
 				treePos.x + dx * minDistance,
 				playerPos.y,
-				treePos.z + dz * minDistance
-			};
+				treePos.z + dz * minDistance};
 
-			player_->SetPos(newPos); // ←PlayerにSetPosが必要
+			player_->SetPos(newPos);//←PlayerにSetPosが必要
 		}
 	}
 
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
 		player_->tHit();
-		pHit();          // プレイヤーが近くて水を持っていたら木に水を貯める（または別の処理に応じて）
+		pHit();//プレイヤーが近くて水を持ってたら水を貯める
 	}
 
 	switch (grow_)
@@ -160,25 +160,12 @@ void Tree::Update(void)
 	}
 
 	collisionPos_ = VAdd(pos_, collisionLocalPos_);
-
 	DrawDebugTree2Player();
-
-	//エフェクト
-	EffectTreeRange();
-
-	//無敵時間
-	MutekiTimer();
+	EffectTreeRange();	//エフェクト
+	MutekiTimer();		//無敵時間
 
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_O)) pHit();
-	if (ins.IsNew(KEY_INPUT_L)) hp_-=1;
-
-	if (ins.IsNew(KEY_INPUT_M))
-	{
-		invincible_ = true;
-	}
 }
-
 void Tree::Draw(void)
 {
 	// モデルの描画
@@ -204,15 +191,15 @@ void Tree::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
-	if (isD_ == true)
+	if(isD_ == true)
 	{
-		DrawBox(50, Application::SCREEN_SIZE_Y - 200, hp_ * 12 + 50, Application::SCREEN_SIZE_Y - 180, 0xff0000, true);
-		isD_ = false;
+		 DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0xff0000,true);
+		 isD_ = false;
 	}
 	else DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0x00ff00,true);
 
-								DrawBox(50,Application::SCREEN_SIZE_Y-175,650,Application::SCREEN_SIZE_Y-165,0x0,true);
-	if(grow_==GROW::OLD)		DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*200+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+								DrawBox(50,Application::SCREEN_SIZE_Y-175,          650,Application::SCREEN_SIZE_Y-165,0x0,     true);
+	     if(grow_==GROW::OLD)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*200+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
 	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
 	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
 	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*600+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
@@ -248,10 +235,6 @@ void Tree::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 #pragma endregion
-
-	//DrawDebugTree2Player();
-
-	//DrawDebug();
 }
 
 void Tree::DrawDebug(void)
@@ -266,11 +249,6 @@ void Tree::DrawDebug(void)
 
 	VECTOR v;
 	VECTOR c;
-
-	//v = pos_;
-	//DrawFormatString(20, 30, white, "木の座標：(%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
-	 //c= collisionPos_;
-	//DrawSphere3D(c, collisionRadius_, 8, red, red, false);
 
 	if (invincible_)
 	{
