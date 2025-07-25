@@ -15,6 +15,7 @@ public:
 	static constexpr int GROW_UP = 4;				//成長段階
 	static constexpr int INVINCIBLE_TIME = 600;		//無敵
 
+	//成長度合い
 	enum class GROW
 	{
 		BABY,
@@ -31,19 +32,17 @@ public:
 	void Update(void);					//更新処理
 	void Draw(void);					//描画処理
 	void DrawDebug(void);				//デバッグ用
-	void DrawDebugTree2Player(void);
+	void DrawDebugTree2Player(void);	//対プレイヤー
 
-	int GetHp(void);
-	int GetLv(void);
+	int GetHp(void);//体力
+	int GetLv(void);//レベル
 
-	void LvUp(void);
-	void ChangeGrow(void);
+	void LvUp(void);		//レベルを上げる
+	void ChangeGrow(void);	//成長させる
 
-	//プレイヤーのポインタをセットする関数
-	void SetPlayer(Player* player);
+	void SetPlayer(Player* player);					//プレイヤーのポインタをセットする関数
 
 	//const Capsule& GetCapsule(void) const;		//衝突用カプセルの取得
-
 	//void SetCollisionPos(const VECTOR collision);	//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;				//衝突用の中心座標の取得
 	float GetCollisionRadius(void);					//衝突用の球体半径の取得
@@ -51,11 +50,10 @@ public:
 	VECTOR collisionLocalPos_;						//衝突判定用の球体中心の調整座標
 	VECTOR collisionPos_;
 	
-	void Muteki(void);
-	void eHit(void);
-	void pHit(void);
+	void Muteki(void);	//無敵化
+	void eHit(void);	//エネミー達との判定
+	void pHit(void);	//プレイヤーとの判定
 private:
-
 	float viewRange_ = 100.0f;	//円の半径（任意の値）
 	int circleSegments_ = 120;  //円の分割数
 
