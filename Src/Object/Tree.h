@@ -10,8 +10,10 @@ class Player;
 class Tree
 {
 public:
-	static constexpr int GROW_UP = 4;			//¬’·’iŠK
-	static constexpr int INVINCIBLE_TIME = 600;	//–³“G
+
+	static constexpr float ZERO = 0.0f;				//‰Šú‰»‚Ì’l—p
+	static constexpr int GROW_UP = 4;				//¬’·’iŠK
+	static constexpr int INVINCIBLE_TIME = 600;		//–³“G
 
 	enum class GROW
 	{
