@@ -203,6 +203,9 @@ void Tree::Draw(void)
 
 #pragma region ステータス
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
+	// 枠線（白）
+	DrawBox(47, Application::SCREEN_SIZE_Y - 203, 653, Application::SCREEN_SIZE_Y - 162, 0xaaaaaa, true);
+
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if (isD_ == true)
 	{
