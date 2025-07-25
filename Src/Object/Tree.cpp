@@ -12,15 +12,15 @@
 
 Tree::Tree(void)
 {
-	lv_ = 0;
+	lv_ = ZERO;
 	isAlive_ = false;
-	hp_ = 0;
-	water_ = 0;
+	hp_ = ZERO;
+	water_ = ZERO;
 	dir_ = {};
-	modelIdB_ = 0;
-	modelIdK_ = 0;
-	modelIdA_ = 0;
-	modelIdO_ = 0;
+	modelIdB_ = ZERO;
+	modelIdK_ = ZERO;
+	modelIdA_ = ZERO;
+	modelIdO_ = ZERO;
 
 	// 無敵状態
 	imgMutekiIcon_ = 0;

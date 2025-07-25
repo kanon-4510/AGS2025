@@ -10,8 +10,10 @@ class Player;
 class Tree
 {
 public:
-	static constexpr int GROW_UP = 4;			//成長段階
-	static constexpr int INVINCIBLE_TIME = 600;	//無敵
+
+	static constexpr float ZERO = 0.0f;				//初期化の値用
+	static constexpr int GROW_UP = 4;				//成長段階
+	static constexpr int INVINCIBLE_TIME = 600;		//無敵
 
 	//成長度合い
 	enum class GROW
