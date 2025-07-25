@@ -10,15 +10,13 @@ class Collider;
 class Item : public ActorBase
 {
 public:
+	//初期化用 & デバッグ
+	static constexpr float ZERO = 0.0f;
 
 	static constexpr float ITEM_MODEL_SCALE = 0.1f;
-	static constexpr float ITEM_ROTATION_Y = 0.0f * DX_PI_F / 180.0f;
 
-	static constexpr float ITEM_GROUND_Y = 2.0f;
-	static constexpr float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
-
-	static constexpr float ITEM_COLLISION_RADIUS = 30.0f;
-	static constexpr VECTOR ITEM_COLLISION_LOCAL_POS = { 0.0f, 150.0f, 0.0f };
+	const float ITEM_GROUND_Y = 2.0f;
+	const float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
 
 	static constexpr int DEBUG_SPHERE_DIV = 8;
 

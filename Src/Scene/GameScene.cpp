@@ -187,7 +187,7 @@ void GameScene::Update(void)
 
 	uiDisplayFrame_++;
 
-	if (tree_->GetLv() == 75 && isB_ == 0)
+	if (tree_->GetLv() >= 75 && isB_ == 0)
 	{
 		isB_ = 1;
 		EnemyCreate();

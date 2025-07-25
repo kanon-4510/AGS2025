@@ -145,6 +145,8 @@ void ResourceManager::Init(void)
 	res = std::make_unique<RES>(RES_T::EFFEKSEER, PATH_EFF + "Smoke/Smoke.efkefc");
 	resourcesMap_.emplace(SRC::FOOT_SMOKE, std::move(res));
 
+	//ÉAÉCÉeÉÄ
+	// --------------------------------------------
 	//êÖ
 	res = std::make_unique<RES>(RES_T::MODEL, PATH_MDL + "Item/bottle.mv1");
 	resourcesMap_.emplace(SRC::WATER, std::move(res));

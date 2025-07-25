@@ -237,8 +237,8 @@ private:
 	bool isAttack_;		//縦斬り
 	bool isAttack2_;	//横斬り
 	bool exAttack_;		//回転斬り
-	int exTimer_;		// クールタイム 10秒（ミリ秒）
-	int lastExTime_;	// exが解放されたらすぐに使えるようにする
+	int exTimer_;		//クールタイム 10秒（ミリ秒）
+	int lastExTime_;	//exが解放されたらすぐに使えるようにする
 	
 	// --- アイコンUI ---
 	int imgPowerIcon_;			// パワー

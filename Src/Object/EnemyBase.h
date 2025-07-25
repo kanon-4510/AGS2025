@@ -16,8 +16,9 @@ class EnemyBase : public ActorBase
 public:
 	//デバッグ &　汎用
 	static constexpr float ZERO = 0.0f;	//初期化の値用
-	static constexpr float VALUE_TWO = 2.0f;	//初期化の値用
-	static constexpr int  VALUE_SIXTY = 60;  //60
+	static constexpr float VALUE_ONE = 1.0f;
+	static constexpr float VALUE_TWO = 2.0f;
+	static constexpr int  VALUE_SIXTY = 60;
 
 	//敵の範囲用
 	static constexpr float VIEW_RANGE = 500.0f;	// 視野の広さ
@@ -155,6 +156,7 @@ protected:
 	bool isAttack_T = false;	//攻撃判定
 
 	STATE state_;	//状態管理
+	ANIM_TYPE animtype_; // アニメーションのタイプ確認用
 
 	float speedAnim_; // 再生速度（共通）
 

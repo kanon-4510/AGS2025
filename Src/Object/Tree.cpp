@@ -151,7 +151,7 @@ void Tree::Update(void)
 		break;
 	case Tree::GROW::OLD:
 		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-		scl_ = { 50.0f, 45.0f, 50.0f };
+		scl_ = { 45.0f, 45.0f, 45.0f };
 		pos_ = { 0.0f, -23.5f, 0.0f };
 		MV1SetScale(modelIdO_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdO_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)

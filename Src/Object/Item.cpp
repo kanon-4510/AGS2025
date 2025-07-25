@@ -37,14 +37,10 @@ void Item::Init(void)
 
 	isAlive_ = false;
 
-	// 振幅ぶん下に行っても地面に埋まらないよう、baseY_を補正
-	const float groundY = 2.0f;
-	const float modelBottomOffset = 3.0f; // モデル中心から底面までの距離（見た目調整）
 	float lowestY = transform_.pos.y - floatHeight_;
-	float targetMinY = groundY + modelBottomOffset;
-	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : 0.0f;
+	float targetMinY = ITEM_GROUND_Y + ITEM_MODEL_BOTTOM_OFFSET;
+	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : ZERO;
 	baseY_ = transform_.pos.y + safetyMargin;
-	//baseY_ = transform_.pos.y; // 初期位置を保存
 
 	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
@@ -57,8 +53,8 @@ void Item::Update(void)
 	}
 
 	// アニメーションタイマー更新
-	floatTimer_ += floatSpeed_ * DX_PI_F / 180.0f;
-	if (floatTimer_ > DX_PI_F * 2) floatTimer_ -= DX_PI_F * 2;
+	floatTimer_ += floatSpeed_ * AsoUtility::DEG2RAD;
+	if (floatTimer_ > AsoUtility::FULL_ROTATION_RAD) floatTimer_ -= AsoUtility::FULL_ROTATION_RAD;
 
 	// Y座標を振幅ぶん上下させる（baseY_ からの相対位置）
 	transform_.pos.y = baseY_ + sinf(floatTimer_) * floatHeight_;
@@ -71,13 +67,8 @@ void Item::Update(void)
 	VECTOR itemPos = transform_.pos;
 	float itemRadius = collisionRadius_;					// アイテムの当たり半径
 
-	// 距離の2乗
-	VECTOR diff = VSub(playerPos, itemPos);					// 差ベクトル（距離ベクトル）
-	float distance = AsoUtility::SqrMagnitudeF(diff);		// 差ベクトルの長さの2乗（距離の2乗）
-	float radiusSum = playerRadius + itemRadius;			// playerとitemの当たり判定用の半径を合計
-
 	// 球体同士の当たり判定
-	if (distance < radiusSum * radiusSum)
+	if (AsoUtility::IsHitSpheres(playerPos, playerRadius, itemPos, itemRadius))
 	{
 		// Water アイテムの場合だけ、water量をチェック
 		if (itemType_ == Item::TYPE::WATER && player_.GetWater() >= player_.WATER_MAX) {
@@ -151,16 +142,13 @@ void Item::SetScale(float scale)
 void Item::Respawn(const VECTOR& newPos)
 {
 	// 新しい位置で復活
-
-	const float groundY = 2.0f;              // 地面の高さ
-	const float modelBottomOffset = 3.0f;   // モデル中心から底面までの距離
 	// 地面に触れないよう、baseY_ を調整しておく
-	baseY_ = groundY + modelBottomOffset + floatHeight_;
+	baseY_ = ITEM_GROUND_Y + ITEM_MODEL_BOTTOM_OFFSET + floatHeight_;
 
 	transform_.pos = newPos;
 	transform_.pos.y = baseY_;
 	isAlive_ = true;
-	floatTimer_ = 0.0f;
+	floatTimer_ = ZERO;
 
 	// 必要なら他の状態もリセット
 }

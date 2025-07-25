@@ -20,11 +20,10 @@ EnemyBase::EnemyBase()
 {
 	animationController_ = nullptr;
 
-	scene_ = nullptr;
 	item_ = nullptr;
 	state_ = STATE::NONE;
 
-	attackPow_ = 1;	//攻撃力
+	attackPow_ = VALUE_ONE;	//攻撃力
 
 	// 状態管理
 	stateChanges_.emplace(
@@ -88,13 +87,14 @@ void EnemyBase::UpdatePlay(void)
 	{
 		return;
 	}
-		// 衝突判定
-		Collision();
 
-		ChasePlayer();
+	ChasePlayer();
 
-		//プレイヤーを見る
-		AttackCollisionPos();
+	// 衝突判定
+	Collision();
+
+	//攻撃範囲に入ったかを見る
+	AttackCollisionPos();
 }
 
 void EnemyBase::UpdateAttack(void)
@@ -163,10 +163,10 @@ void EnemyBase::UpdateDeath(void)
 			float scale = DROP_SCALE_SMALL;
 			if (dropType == Item::TYPE::WATER)
 			{
-				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から距離が6000以上離れたら
+				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から一定距離以上離れたら
 					scale = DROP_SCALE_LARGE;
 				}
-				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から距離が3000以上離れたら
+				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から一定距離以上離れたら
 					scale = DROP_SCALE_MEDIUM;
 				}
 			}
@@ -192,8 +192,12 @@ void EnemyBase::ChasePlayer(void)
 
 	float distance = VSize(toPlayer);
 
-	//アニメーションをRUNにする
-	animationController_->Play((int)ANIM_TYPE::RUN, true);
+	// 現在のアニメーションと違う場合のみRUNアニメーションを再生する
+	if (animtype_ != ANIM_TYPE::RUN)
+	{
+		animationController_->Play((int)ANIM_TYPE::RUN, true);
+	}
+	
 
 	//エネミーの視野内に入ったら追いかける
 	if (distance <= VIEW_RANGE 
@@ -291,7 +295,7 @@ void EnemyBase::Damage(int damage)
 		ChangeState(STATE::DEATH);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
-	else if (hp_ >= 1 && isAlive_ && enemyType_ != TYPE::BOSS)
+	else if (hp_ >= VALUE_ONE && isAlive_ && enemyType_ != TYPE::BOSS)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
@@ -450,8 +454,6 @@ void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
 
 void EnemyBase::DrawDebug(void)
 {
-	
-
 	VECTOR v;
 	VECTOR s;
 	VECTOR a;
@@ -486,12 +488,12 @@ void EnemyBase::DrawDebugSearchRange(void)
 	// 範囲内か判定
 	bool inRange = (distance <= VIEW_RANGE);
 
-	float angleStep = DX_PI * VALUE_TWO / VALUE_SIXTY;
+	float angleStep = AsoUtility::FULL_ROTATION_RAD / VALUE_SIXTY;
 
 	for (int i = ZERO; i < VALUE_SIXTY; ++i)
 	{
 		float angle1 = angleStep * i;
-		float angle2 = angleStep * (i + 1);
+		float angle2 = angleStep * (i + VALUE_ONE);
 
 		VECTOR p1 = {
 			centerPos.x + VIEW_RANGE * sinf(angle1),
