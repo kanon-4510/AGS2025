@@ -25,7 +25,7 @@ public:
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
 	// 攻撃の位置オフセット
-	static constexpr float ATTACK_FORWARD_OFFSET = 80.0f;	//前方向
+	static constexpr float ATTACK_FORWARD_OFFSET = 60.0f;	//前方向
 	static constexpr float ATTACK_HEIGHT_OFFSET = 100.0f;	//高さ
 
 	// ドロップアイテムのサイズと距離しきい値
@@ -129,7 +129,6 @@ protected:
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Tree> tree_;
-	std::shared_ptr<Item>item_;
 	GameScene* scene_;
 
 	// アニメーション
@@ -157,8 +156,6 @@ protected:
 
 	STATE state_;	//状態管理
 	ANIM_TYPE animtype_; // アニメーションのタイプ確認用
-
-	float speedAnim_; // 再生速度（共通）
 
 	float collisionRadius_;		// 衝突判定用の球体半径
 	VECTOR collisionLocalPos_;	// 衝突判定用の球体中心の調整座標

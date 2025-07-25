@@ -20,7 +20,6 @@ EnemyBase::EnemyBase()
 {
 	animationController_ = nullptr;
 
-	item_ = nullptr;
 	state_ = STATE::NONE;
 
 	attackPow_ = VALUE_ONE;	//攻撃力
@@ -338,7 +337,7 @@ void EnemyBase::AttackCollisionPos(void)
 	VECTOR forward = transform_.quaRot.GetForward();
 	// 攻撃の開始位置と終了位置
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD_OFFSET));
-	attackCollisionPos_.y += ATTACK_FORWARD_OFFSET;  // 攻撃の高さ調整
+	attackCollisionPos_.y += ATTACK_HEIGHT_OFFSET;  // 攻撃の高さ調整
 
 	//プレイヤーを見る
 	EnemyToPlayer();
