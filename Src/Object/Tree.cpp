@@ -163,8 +163,6 @@ void Tree::Update(void)
 	DrawDebugTree2Player();
 	EffectTreeRange();	//エフェクト
 	MutekiTimer();		//無敵時間
-
-	auto& ins = InputManager::GetInstance();
 }
 void Tree::Draw(void)
 {
@@ -191,7 +189,7 @@ void Tree::Draw(void)
 #pragma region ステータス
 	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
 	// 枠線（白）
-	DrawBox(47, Application::SCREEN_SIZE_Y - 203, 653, Application::SCREEN_SIZE_Y - 162, 0xaaaaaa, true);
+	DrawBox(47,Application::SCREEN_SIZE_Y-203,653,Application::SCREEN_SIZE_Y-162,0xaaaaaa,true);
 
 	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
 	if(isD_ == true)
@@ -239,7 +237,6 @@ void Tree::Draw(void)
 	}
 #pragma endregion
 }
-
 void Tree::DrawDebug(void)
 {
 	int white = 0xffffff;
@@ -258,7 +255,6 @@ void Tree::DrawDebug(void)
 		DrawFormatString(50, 180, GetColor(255, 0, 0), "���G: �c��%d�b", mutekiCnt_);
 	}
 }
-
 void Tree::DrawDebugTree2Player(void)
 {
 	// プレイヤーとの距離判定して円を描く処理を追加
@@ -395,7 +391,6 @@ VECTOR Tree::GetCollisionPos(void) const
 {
 	return VAdd(collisionLocalPos_, pos_);
 }
-
 float Tree::GetCollisionRadius(void)
 {
 	return collisionRadius_;
@@ -415,7 +410,6 @@ void Tree::MutekiTimer(void)
 		}
 	}
 }
-
 void Tree::Muteki(void)
 {
 	invincible_ = true;
@@ -454,7 +448,6 @@ void Tree::pHit(void)//プレイヤーとのあたり判定
 		ChangeGrow();
 	}
 }
-
 
 void Tree::EffectTreeRange(void)
 {

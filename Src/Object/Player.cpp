@@ -149,7 +149,7 @@ void Player::Update(void)
 
 	UpdateDown(1.0f);
 
-	auto& ins = InputManager::GetInstance();
+	/*auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_B))
 	{
 		powerUpFlag_ = true;
@@ -158,15 +158,11 @@ void Player::Update(void)
 	if (ins.IsNew(KEY_INPUT_N))
 	{
 		speedUpFlag_ = true;
-	}
-
+	}*/
 }
 
 void Player::UpdateDown(float deltaTime)
 {
-	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_I)) wHit(0.2f);
-
 	if (pstate_ == PlayerState::DOWN) {
 		isAttack_ = false;
 		isAttack2_ = false;
