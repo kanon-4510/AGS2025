@@ -25,7 +25,7 @@ public:
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
 	// 攻撃の位置オフセット
-	static constexpr float ATTACK_FORWARD_OFFSET = 60.0f;	//前方向
+	static constexpr float ATTACK_FORWARD_OFFSET = 50.0f;	//前方向
 	static constexpr float ATTACK_HEIGHT_OFFSET = 100.0f;	//高さ
 
 	// ドロップアイテムのサイズと距離しきい値

@@ -364,6 +364,7 @@ void Tree::ChangeGrow(void)
 	{
 		grow_ = Tree::GROW::OLD;
 		hp_ = 50;
+		//PushEnemy();
 	}
 	else if (lv_ == 50)
 	{
@@ -417,7 +418,33 @@ void Tree::Muteki(void)
 	// 木が無敵になった時の音
 	SoundManager::GetInstance().Play(SoundManager::SRC::MUTEKI_SE, Sound::TIMES::ONCE);
 }
+void Tree::PushEnemy(void)
+{
+	collisionRadius_ += TREE_GROW_RADIUS_INCREMENT;
+	if (!gameScene_) return;
 
+	float pushOutRadius = collisionRadius_ + ENEMY_SAFE_MARGIN;
+
+	for (const auto& enemyPtr : gameScene_->GetEnemies())
+	{
+		if (!enemyPtr) continue;
+
+		VECTOR enemyPos = enemyPtr->GetTransform().pos;
+		float dx = enemyPos.x - pos_.x;
+		float dz = enemyPos.z - pos_.z;
+		float distance = sqrtf(dx * dx + dz * dz);
+
+		if (distance < pushOutRadius && distance > MIN_DISTANCE_THRESHOLD)
+		{
+			float scale = pushOutRadius / distance;
+			enemyPtr->SetPos({
+				pos_.x + dx * scale,
+				enemyPos.y,
+				pos_.z + dz * scale
+				});
+		}
+	}
+}
 void Tree::eHit(void)//エネミーとのあたり判定
 {
 	if (!invincible_)
