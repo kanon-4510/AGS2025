@@ -247,7 +247,7 @@ void EnemyBase::Draw(void)
 
 
 	//デッバグ
-	//DrawDebug();
+	DrawDebug();
 
 	// 視野範囲の描画
 	//DrawDebugSearchRange();
@@ -351,13 +351,13 @@ void EnemyBase::EnemyToPlayer(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_)
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, playerCenter_, playerRadius_)
 			&& player_->pstate_ != Player::PlayerState::DOWN)
 	{
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	else if (!AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_) 
+	else if (!AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, playerCenter_, playerRadius_)
 		|| player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		ChangeState(STATE::PLAY);
@@ -370,7 +370,7 @@ void EnemyBase::EnemyToTree(void)
 	treeCenter_ = tree_->GetCollisionPos();
 	treeRadius_ = tree_->GetCollisionRadius();
 
-	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, treeCenter_,treeRadius_))
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, treeCenter_,treeRadius_))
 	{
 		isAttack_T = true;
 		ChangeState(STATE::ATTACK);
@@ -383,7 +383,7 @@ void EnemyBase::CheckHitAttackHit(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	if(AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_,playerCenter_, playerRadius_))
+	if(AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_,playerCenter_, playerRadius_))
 	{
 		player_->Damage(attackPow_);
 	}
@@ -470,6 +470,7 @@ void EnemyBase::DrawDebug(void)
 	
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
+
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
