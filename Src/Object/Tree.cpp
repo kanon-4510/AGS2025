@@ -368,6 +368,7 @@ void Tree::ChangeGrow(void)
 	{
 		grow_ = Tree::GROW::OLD;
 		hp_ = 50;
+		//PushEnemy();
 	}
 	else if (lv_ == 50)
 	{
