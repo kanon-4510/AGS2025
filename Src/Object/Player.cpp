@@ -165,7 +165,7 @@ void Player::Update(void)
 void Player::UpdateDown(float deltaTime)
 {
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_I)) wHit(0.2f);
+	//if (ins.IsNew(KEY_INPUT_I)) wHit(0.2f);
 
 	if (pstate_ == PlayerState::DOWN) {
 		isAttack_ = false;

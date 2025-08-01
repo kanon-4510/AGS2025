@@ -13,6 +13,8 @@
 #include "Tree.h"
 #include "EnemyBase.h"
 
+//担当　田中良明
+
 EnemyBase::EnemyBase() 
 	: 
 	scene_(nullptr),
@@ -197,7 +199,6 @@ void EnemyBase::ChasePlayer(void)
 		animationController_->Play((int)ANIM_TYPE::RUN, true);
 	}
 	
-
 	//エネミーの視野内に入ったら追いかける
 	if (distance <= VIEW_RANGE 
 		&& state_ == STATE::PLAY 
@@ -351,13 +352,13 @@ void EnemyBase::EnemyToPlayer(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_)
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, playerCenter_, playerRadius_)
 			&& player_->pstate_ != Player::PlayerState::DOWN)
 	{
 		isAttack_P = true;
 		ChangeState(STATE::ATTACK);
 	}
-	else if (!AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, playerCenter_, playerRadius_) 
+	else if (!AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, playerCenter_, playerRadius_)
 		|| player_->pstate_ == Player::PlayerState::DOWN)
 	{
 		ChangeState(STATE::PLAY);
@@ -370,7 +371,7 @@ void EnemyBase::EnemyToTree(void)
 	treeCenter_ = tree_->GetCollisionPos();
 	treeRadius_ = tree_->GetCollisionRadius();
 
-	if (AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_, treeCenter_,treeRadius_))
+	if (AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_, treeCenter_,treeRadius_))
 	{
 		isAttack_T = true;
 		ChangeState(STATE::ATTACK);
@@ -383,7 +384,7 @@ void EnemyBase::CheckHitAttackHit(void)
 	playerCenter_ = player_->GetCollisionPos();
 	playerRadius_ = player_->GetCollisionRadius();
 
-	if(AsoUtility::IsHitSpheres(attackCollisionPos_, collisionRadius_,playerCenter_, playerRadius_))
+	if(AsoUtility::IsHitSpheres(attackCollisionPos_, attackCollisionRadius_,playerCenter_, playerRadius_))
 	{
 		player_->Damage(attackPow_);
 	}
@@ -470,6 +471,7 @@ void EnemyBase::DrawDebug(void)
 	
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
+
 }
 
 void EnemyBase::DrawDebugSearchRange(void)

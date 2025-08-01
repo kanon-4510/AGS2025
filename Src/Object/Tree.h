@@ -15,6 +15,11 @@ public:
 	static constexpr int GROW_UP = 4;				//成長段階
 	static constexpr int INVINCIBLE_TIME = 600;		//無敵
 
+	// ヘッダーかファイル冒頭で定数定義（必要に応じて static const や constexpr にしてもOK）
+	static constexpr float TREE_GROW_RADIUS_INCREMENT = 10.0f;
+	static constexpr float ENEMY_SAFE_MARGIN = 30.0f;
+	static constexpr float MIN_DISTANCE_THRESHOLD = 0.001f;
+
 	//成長度合い
 	enum class GROW
 	{
@@ -87,6 +92,7 @@ private:
 	int effectTreeResId_;
 	int effectTreePlayId_;
 
+	void PushEnemy(void);		//木にめり込んだら押し出す
 	void MutekiTimer(void);		//無敵時間
 	void EffectTreeRange(void);	//木の視野範囲
 };

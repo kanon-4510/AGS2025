@@ -450,6 +450,11 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 	return newItem;
 }
 
+const std::vector<std::shared_ptr<EnemyBase>>& GameScene::GetEnemies() const
+{
+	return enemys_;
+}
+
 void GameScene::EnemyCreate(void)
 {
 	int randDir = GetRand(3);

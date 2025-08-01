@@ -43,8 +43,7 @@ void EnemyMimic::SetParam(void)
 	collisionRadius_ = 100.0f;	// Õ“Ë”»’è—p‚Ì‹…‘Ì”¼Œa
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// Õ“Ë”»’è—p‚Ì‹…‘Ì’†S‚Ì’²®À•W
 
-	attackCollisionRadius_ = 60.0f;		// UŒ‚”»’è—p‚ÆUŒ‚”ÍˆÍ‚Ì‹…‘Ì”¼Œa
-	attackCollisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// UŒ‚”»’è—p‚ÆUŒ‚”ÍˆÍ‚Ì’²®À•W
+	attackCollisionRadius_ = ATTACK_RADIUS_SIZE;		// UŒ‚”»’è—p‚ÆUŒ‚”ÍˆÍ‚Ì‹…‘Ì”¼Œa
 
 	// ‰Šúó‘Ô
 	ChangeState(STATE::PLAY);
@@ -52,7 +51,7 @@ void EnemyMimic::SetParam(void)
 
 Item::TYPE EnemyMimic::GetDropItemType() const
 {
-	if (GetRand(1))
+	if (GetRand(RANDOM_VALUE))
 	{
 		return Item::TYPE::WATER;
 	}
