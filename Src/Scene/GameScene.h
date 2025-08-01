@@ -59,6 +59,10 @@ private:
 	std::vector<std::shared_ptr<EnemyBase>> enemys_;
 	int enCounter;//敵の出現頻度
 
+	bool unlockedQ = false;           // Lv25に達したか
+	bool showQFlash = false;          // 点滅中かどうか
+	int qUnlockTime = 0;              // 解放された時の時間（ミリ秒）
+
 	int isB_;
 
 	// ポーズ

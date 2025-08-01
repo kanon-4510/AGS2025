@@ -2,10 +2,7 @@
 #include <memory>
 #include <map>
 #include <functional>
-//#include <vector>
 #include <DxLib.h>
-//#include <algorithm>
-//#include "ActorBase.h"
 #include "EnemyBase.h"
 
 class AnimationController;

@@ -528,17 +528,17 @@ void Player::DrawDebug(void)
 	int yellow = 0xffff00;
 	int purpl = 0x800080;
 
-	VECTOR v;
+	/*VECTOR v;
 
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
-	//v = transform_.pos;
-	//DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
-	////-------------------------------------------------------
+	v = transform_.pos;
+	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
+	//-------------------------------------------------------
 
-	//// 衝突
-	//DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);
+	// 衝突
+	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x000000);*/
 
 	
 	/*if (isAttack_) {
@@ -564,25 +564,12 @@ void Player::DrawDebug(void)
 		// カプセルの描画確認用	
 		DrawSphere3D(attackCollisionPos, attackCollisionRadius, 8, GetColor(255, 0, 0), GetColor(255, 255, 255), FALSE);
 	}*/
-	if (!IsExAttackReady())
-	{
-		int remaining = (exTimer_ - (GetNowCount() - lastExTime_)) / 1000;
-		DrawFormatString(50, 40, GetColor(255, 0, 0), "回転斬り使用不可: 残り%d秒", remaining);
-	}
-	if (powerUpFlag_)
-	{
-		DrawFormatString(50, 120, GetColor(255, 0, 0), "パワーアップ: 残り%d秒", powerUpCnt_);
-	}
-	if (speedUpFlag_)
-	{
-		DrawFormatString(50, 150, GetColor(255, 0, 0), "スピードアップ: 残り%d秒", speedUpCnt_);
-	}
 
 	//capsule_->Draw();
 
-	VECTOR s;
+	/*VECTOR s;
 	s = collisionPos_;
-	/*DrawSphere3D(s, collisionRadius_, 8, red, red, false);*/
+	DrawSphere3D(s, collisionRadius_, 8, red, red, false);*/
 }
 
 void Player::ProcessMove(void)
