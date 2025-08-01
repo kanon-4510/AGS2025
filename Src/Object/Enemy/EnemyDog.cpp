@@ -3,7 +3,7 @@
 #include "../Common/AnimationController.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Utility/AsoUtility.h"
-//#include "../Common/Capsule.h"
+
 
 EnemyDog::EnemyDog() :EnemyBase()
 {

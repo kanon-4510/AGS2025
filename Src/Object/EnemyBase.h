@@ -6,6 +6,8 @@
 #include "ActorBase.h"
 #include "Item.h" 
 
+//’S“–@“c’†—Ç–¾
+
 class AnimationController;
 class GameScene;
 class Player;
