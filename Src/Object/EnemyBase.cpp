@@ -13,6 +13,8 @@
 #include "Tree.h"
 #include "EnemyBase.h"
 
+//担当　田中良明
+
 EnemyBase::EnemyBase() 
 	: 
 	scene_(nullptr),
@@ -213,7 +215,6 @@ void EnemyBase::ChasePlayer(void)
 		animationController_->Play((int)ANIM_TYPE::RUN, true);
 	}
 	
-
 	//エネミーの視野内に入ったら追いかける
 	if (distance <= VIEW_RANGE 
 		&& state_ == STATE::PLAY 

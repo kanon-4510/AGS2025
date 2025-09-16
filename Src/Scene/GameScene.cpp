@@ -226,6 +226,12 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
+
+	//if (!unlockedQ && tree_->GetLv() >= 25) {
+	//	unlockedQ = true;
+	//	showQFlash = true;
+	//	qUnlockTime = GetNowCount();  // Œ»İiƒ~ƒŠ•bj‚ğ‹L˜^
+	//}
 }
 
 void GameScene::Draw(void)
@@ -329,8 +335,29 @@ void GameScene::Draw(void)
 
 #pragma region UI
 	SetFontSize(32);
-							DrawString(10,450,"E:’ÊíUŒ‚"      ,0xffffff);
-	if (tree_->GetLv()>=25)	DrawString(10,500,"Q:‚È‚¬•¥‚¢@‰ğ•ú",0xffffff);
+	DrawString(10,450,"E:’ÊíUŒ‚"      ,0xffffff);
+	if (tree_->GetLv()>=25)
+	{
+		DrawString(10, 500, "Q:‚È‚¬•¥‚¢", 0xffffff);
+
+		if (showQFlash)
+		{
+			int now = GetNowCount();
+			int elapsed = now - qUnlockTime;
+
+			if (elapsed >= 3000)
+			{
+				showQFlash = false;
+			}
+			else
+			{
+				int flashColor = ((elapsed / 400) % 2 == 0) ? 0xff0000 : 0xffffff;
+
+				int x = 10 + GetDrawStringWidth("Q:‚È‚¬•¥‚¢", strlenDx("Q:‚È‚¬•¥‚¢"));
+				DrawString(x, 500, " ‰ğ•ú", flashColor);
+			}
+		}
+	}
 	if (tree_->GetLv()>=50)	DrawString(10,550,"R:‰ñ“]a‚è@‰ğ•ú",0xffffff);
 	SetFontSize(16);
 #pragma endregion

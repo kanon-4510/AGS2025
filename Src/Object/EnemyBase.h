@@ -6,6 +6,8 @@
 #include "ActorBase.h"
 #include "Item.h" 
 
+//担当　田中良明
+
 class AnimationController;
 class GameScene;
 class Player;
@@ -29,8 +31,10 @@ public:
 	static constexpr float VIEW_ANGLE = 15.0f;	// 視野角
 
 	// 攻撃の位置オフセット
-	static constexpr float ATTACK_FORWARD_OFFSET = 50.0f;	//前方向
-	static constexpr float ATTACK_HEIGHT_OFFSET = 100.0f;	//高さ
+	static constexpr float ATTACK_FORWARD_OFFSET = 55.0f;	// 前方向
+	static constexpr float ATTACK_HEIGHT_OFFSET = 100.0f;	// 高さ
+
+	static constexpr float ATTACK_RADIUS_SIZE = 35.0f;	// 攻撃範囲
 
 	// ドロップアイテムのサイズと距離しきい値
 	static constexpr float DROP_SCALE_SMALL = 0.1f;
@@ -38,6 +42,9 @@ public:
 	static constexpr float DROP_SCALE_LARGE = 0.2f;
 	static constexpr float DROP_DISTANCE_MEDIUM = 3000.0f;
 	static constexpr float DROP_DISTANCE_LARGE = 6000.0f;
+
+	//ランダムの数値
+	const int RANDOM_VALUE = 1;
 
 	// 原点復帰時の最小移動距離（移動制御）
 	static constexpr float MIN_MOVE_DISTANCE = 0.01f;

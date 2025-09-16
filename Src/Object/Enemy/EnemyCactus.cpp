@@ -43,7 +43,7 @@ void EnemyCactus::SetParam(void)
 	collisionRadius_ = 100.0f;	// 衝突判定用の球体半径
 	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };	// 衝突判定用の球体中心の調整座標
 
-	attackCollisionRadius_ = 60.0f;		// 攻撃判定用と攻撃範囲の球体半径
+	attackCollisionRadius_ = ATTACK_RADIUS_SIZE;		// 攻撃判定用と攻撃範囲の球体半径
 
 	// 初期状態
 	ChangeState(STATE::PLAY);

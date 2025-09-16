@@ -6,7 +6,7 @@
 #include <cmath>     // std::atan2, std::cos, std::sin
 
 MiniMap::MiniMap(float worldSize, int screenSize, int mapPosX, int mapPosY)
-    : mapPixelSize(screenSize), mapPosX(mapPosX), mapPosY(mapPosY)
+    : mapPixelSize(screenSize), mapPosX(mapPosX), mapPosY(mapPosY),imgMapTree_()
 {
     worldHalfSize = worldSize / HALF_DIVISOR_F;
     scale = static_cast<float>(mapPixelSize) / worldSize;
