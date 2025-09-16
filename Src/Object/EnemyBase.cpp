@@ -37,6 +37,13 @@ EnemyBase::EnemyBase()
 		STATE::DAMAGE, std::bind(&EnemyBase::ChangeStateDamage, this));
 	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
+
+	is1damage = false;
+	is2damage = false;
+	is4damage = false;
+	is8damage = false;
+	is16damage = false;
+	is32damage = false;
 }
 
 EnemyBase::~EnemyBase(void)
@@ -47,6 +54,15 @@ void EnemyBase::Init(void)
 {
  	SetParam();
 	InitAnimation();
+
+	dCount = 0;
+
+	d1img_ = LoadGraph("Data/Image/1.png");
+	d2img_ = LoadGraph("Data/Image/2.png");
+	d4img_ = LoadGraph("Data/Image/4.png");
+	d8img_ = LoadGraph("Data/Image/8.png");
+	d16img_ = LoadGraph("Data/Image/16.png");
+	d32img_ = LoadGraph("Data/Image/32.png");
 }
 
 void EnemyBase::Update(void)
@@ -245,6 +261,84 @@ void EnemyBase::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 
+	if (is1damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d1img_,true);
+		if (dCount >= D_CNT)
+		{
+			is1damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
+	if (is2damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d2img_, true);
+		if (dCount >= D_CNT)
+		{
+			is2damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
+	if (is4damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d4img_, true);
+		if (dCount >= D_CNT)
+		{
+			is4damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
+	if (is8damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d8img_, true);
+		if (dCount >= D_CNT)
+		{
+			is8damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
+	if (is16damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d16img_, true);
+		if (dCount >= D_CNT)
+		{
+			is16damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
+	if (is32damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d32img_, true);
+		if (dCount >= D_CNT)
+		{
+			is32damage = false;
+			dCount = 0;
+		}
+		else
+		{
+			dCount++;
+		}
+	}
 
 	//デッバグ
 	//DrawDebug();
@@ -298,6 +392,13 @@ void EnemyBase::Damage(int damage)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
+
+	if (damage == 1)is1damage=true;
+	if (damage == 2)is2damage=true;
+	if (damage == 4)is4damage=true;
+	if (damage == 8)is8damage=true;
+	if (damage == 16)is16damage=true;
+	if (damage == 32)is32damage=true;
 }
 
 #pragma region コリジョン

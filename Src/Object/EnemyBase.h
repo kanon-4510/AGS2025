@@ -14,6 +14,10 @@ class Tree;
 class EnemyBase : public ActorBase
 {
 public:
+	//ダメージ関連
+	static constexpr float D_CNT = 120;
+	static constexpr float D_POS = 100;
+
 	//デバッグ &　汎用
 	static constexpr float ZERO = 0.0f;	//初期化の値用
 	static constexpr float VALUE_ONE = 1.0f;
@@ -126,6 +130,21 @@ public:
 	void SetPlayer(std::shared_ptr<Player> player);
 	void SetTree(std::shared_ptr<Tree> tree);
 protected:
+	bool is1damage;
+	bool is2damage;
+	bool is4damage;
+	bool is8damage;
+	bool is16damage;
+	bool is32damage;
+
+	int d1img_;
+	int d2img_;
+	int d4img_;
+	int d8img_;
+	int d16img_;
+	int d32img_;
+
+	int dCount;
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Tree> tree_;
