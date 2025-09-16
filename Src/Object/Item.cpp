@@ -13,10 +13,10 @@ Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree
 	player_(player), pos_(transform.pos), itemType_(itemType), tree_(tree)
 {
 	transform_.dir = {};
-	transform_.modelId = 0;
+	transform_.modelId = ZERO;
 
 	collisionLocalPos_ = {};
-	collisionRadius_ = 0;
+	collisionRadius_ = ZERO;
 
 	isAlive_ = false;
 }
@@ -31,9 +31,9 @@ void Item::Init(void)
 	InitModel();
 
 	// モデルの基本設定
-	transform_.scl = { 0.1f, 0.1f, 0.1f };	// 大きさの設定
-	transform_.rot = { 0.0f, 0.0f, 0.0f };	// 角度の設定
-	transform_.dir = { 0.0f, 0.0f, 0.0f };	// 右方向に移動する
+	transform_.scl = { ITEM_MODEL_SCALE, ITEM_MODEL_SCALE, ITEM_MODEL_SCALE };	// 大きさの設定
+	transform_.rot = { ZERO, ZERO, ZERO };	// 角度の設定
+	transform_.dir = { ZERO, ZERO, ZERO };	// 右方向に移動する
 
 	isAlive_ = false;
 
@@ -42,8 +42,8 @@ void Item::Init(void)
 	float safetyMargin = (targetMinY > lowestY) ? (targetMinY - lowestY) : ZERO;
 	baseY_ = transform_.pos.y + safetyMargin;
 
-	collisionRadius_ = 30.0f;							// 衝突判定用の球体半径
-	collisionLocalPos_ = { 0.0f, 150.0f, 0.0f };		// 衝突判定用の球体中心の調整座標
+	collisionRadius_ = COLLISION_SIZE;							// 衝突判定用の球体半径
+	collisionLocalPos_ = { ZERO, COLLISION_LOCAL_POS, ZERO };	// 衝突判定用の球体中心の調整座標
 }
 
 void Item::Update(void)
@@ -226,23 +226,15 @@ void Item::ItemUse(void)
 
 void Item::DrawDebug(void)
 {
-	int white = 0xffffff;
-	int black = 0x000000;
-	int red = 0xff0000;
-	int green = 0x00ff00;
-	int blue = 0x0000ff;
-	int yellow = 0xffff00;
-	int purpl = 0x800080;
-
 	VECTOR v;
 
 	// キャラ基本情報
 	//-------------------------------------------------------
 	// キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 90, white, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
+	DrawFormatString(20, 90, COLOR_WHITE, "水の座標 ： (%0.2f   , %0.2f   , %0.2f   )",
 		v.x, v.y, v.z
 	);
 
-	DrawSphere3D(transform_.pos, collisionRadius_, 8, blue, blue, false);
+	DrawSphere3D(transform_.pos, collisionRadius_, DEBUG_SPHERE_DIV, COLOR_BLUE, COLOR_BLUE, false);
 }
