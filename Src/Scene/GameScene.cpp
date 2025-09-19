@@ -113,7 +113,7 @@ void GameScene::Init(void)
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
 
-	isB_ = 0;
+	isB_ = BOSS_WAIT;
 }
 
 void GameScene::Update(void)
@@ -129,17 +129,17 @@ void GameScene::Update(void)
 
 	uiDisplayFrame_++;
 
-	if (tree_->GetLv() >= 75 && isB_ == 0)
+	if (tree_->GetLv() >= LV_OLD && isB_ == BOSS_WAIT)
 	{
-		isB_ = 1;
+		isB_ = BOSS_ON;
 		EnemyCreate();
-		isB_ = 2;
+		isB_ = BOSS_OFF;
 	}
-	if (tree_->GetLv() >= 100) 
+	if (tree_->GetLv() >= LV_MAX) 
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
-	if (tree_->GetHp() <= 0) 
+	if (tree_->GetHp() <= HP_ZERO) 
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
@@ -393,25 +393,25 @@ const std::vector<std::shared_ptr<EnemyBase>>& GameScene::GetEnemies() const
 
 void GameScene::EnemyCreate(void)
 {
-	int randDir = GetRand(3);
+	int randDir = GetRand(BORN_DIR);
 	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
 	switch (randDir)//à íu
 	{
 	case 0://ëO
-		randPos.x = GetRand(20000) - 10000;
-		randPos.z = 10000;
+		randPos.x = GetRand(STAGE_WIDTH) - STAGE_LANGE;
+		randPos.z = STAGE_LANGE;
 		break;
 	case 1://å„
-		randPos.x = GetRand(20000) - 10000;
-		randPos.z = -10000;
+		randPos.x = GetRand(STAGE_WIDTH) - STAGE_LANGE;
+		randPos.z = -STAGE_LANGE;
 		break;
 	case 2://ç∂
-		randPos.x = -10000;
-		randPos.z = GetRand(20000) - 10000;
+		randPos.x = -STAGE_LANGE;
+		randPos.z = GetRand(STAGE_WIDTH) - STAGE_LANGE;
 		break;
 	case 3://âE
-		randPos.x = 10000;
-		randPos.z = GetRand(29000) - 10000;
+		randPos.x = STAGE_LANGE;
+		randPos.z = GetRand(STAGE_WIDTH) - STAGE_LANGE;
 		break;
 	default:
 		break;

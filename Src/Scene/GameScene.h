@@ -20,6 +20,18 @@ public:
 	static constexpr int ENCOUNT = 300;		//エンカウンタ
 	static constexpr int ENEMY_MAX = 200;	//最大出現数
 	static constexpr int ENE_ENC = 30;		//最大許容量
+	static constexpr int BORN_DIR = 3;		//敵の出現方向
+	static constexpr int STAGE_WIDTH=20000; //ステージの全体
+	static constexpr int STAGE_LANGE=10000;	//ステージの幅
+
+	static constexpr int LV_MAX = 100;		//木のレベル最大
+	static constexpr int LV_OLD = 75;		//木の成長段階（老木）
+	static constexpr int HP_ZERO = 0;		//木の体力0
+
+	static constexpr int BOSS_WAIT = 0;		//ボス出現待機
+	static constexpr int BOSS_ON = 1;		//ボス出現可能
+	static constexpr int BOSS_OFF = 2;		//ボス出現不可
+
 
 	// ポーズメニュー関連
 	static constexpr int PAUSE_MENU_ITEM_COUNT = 4;
