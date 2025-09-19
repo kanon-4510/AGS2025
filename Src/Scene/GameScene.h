@@ -50,6 +50,8 @@ private:
 
 	void EnemyCreate(void);
 
+	bool PauseMenu(void);
+
 	std::unique_ptr<Stage> stage_;		// ステージ
 	std::shared_ptr<Tree>tree_;			// ツリー
 	std::unique_ptr<SkyDome> skyDome_;	// スカイドーム
