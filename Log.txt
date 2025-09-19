@@ -1,167 +1,368 @@
 ﻿0:ChangeWindowMode実行 
 0:ウインドウモードフラグが立てられました
-0:ＤＸライブラリの初期化処理開始
-0:	システムの情報を出力します
-42:		ＤＸライブラリ Ver3.24b
-42:		論理プロセッサの数 : 8
-42:		ＯＳ  Windows10 ( Build 19045  )
-145:		現時点のＣＰＵ動作速度：大体3.59GHz
-145:		ＭＭＸ命令を使用します
-146:		ＳＳＥ命令が使用可能です
-146:		ＳＳＥ２命令が使用可能です
-147:		ＣＰＵベンダ：GenuineIntel
-151:		ＣＰＵ名：Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
-152:	ＣＯＭの初期化... 成功
-163:	非同期読み込み処理の初期化...成功
-164:	ファイルアクセス処理の初期化...成功
-168:	メモリ総量:16305.23MB  空きメモリ領域:9129.12MB 
-168:	タイマーの精度を検査します
-169:	精度結果 更新回数 マルチメディアタイマー：0  パフォーマンスカウンター：60
-169:	 パフォーマンスカウンターを使用します タイマー精度 : 10000.000000 KHz 
-170:	 
-171:	ソフトの二重起動検査... 二重起動はされていませんでした
-172:	ウインドウクラスを登録します... 登録に成功しました
-173:	ウインドウモード起動用のウインドウを作成します
-173:	ディスプレイ情報のセットアップ開始
-174:		モニターの数：1  ディスプレイデバイスの数：4
-175:		No.0  モニター名：\\.\DISPLAY1　1920x1080　32bit　60Hz  96x96dpi
-183:	ディスプレイ情報のセットアップ完了
-184:	ウインドウ矩形 ( -16, -50 )-( 1920, 1069 )
-187:	ウインドウの作成に成功しました
-187:	ウインドウを表示します
-227:	ＩＭＥを無効にしました
-227:	ウインドウスタイルをウインドウモード用に変更します... 完了
-253:	XInput DLL の読み込み中... 成功
-256:	DirectInput関係初期化処理
-256:		DirectInput8 の取得を試みます...成功
-273:			引き続き初期化処理... 初期化成功
-277:		ジョイパッドの初期化... 
-278:			XInput 対応コントローラーのチェックを開始します
-278:				XInput 対応コントローラー No.0 をチェック
-280:				XInput 対応コントローラー No.0 の接続は確認できませんでした
-280:				XInput 対応コントローラー No.1 をチェック
-281:				XInput 対応コントローラー No.1 の接続は確認できませんでした
-282:				XInput 対応コントローラー No.2 をチェック
-282:				XInput 対応コントローラー No.2 の接続は確認できませんでした
-283:				XInput 対応コントローラー No.3 をチェック
-284:				XInput 対応コントローラー No.3 の接続は確認できませんでした
-284:			XInput 対応コントローラーのチェック完了
-285:			DirectInput 対応ジョイパッドの列挙を開始します
-315:			DirectInput 対応ジョイパッドの列挙終了
-315:		ジョイパッドの初期化は正常に終了しました
-315:		マウスデバイスの初期化... 初期化成功
-316:		キーボードデバイスの初期化... 初期化成功
-319:	DirectInput 関連の初期化は正常に終了しました
-323:	WASAPI の初期化を行います
-329:		デバイス名 : PL2290 (NVIDIA High Definition Audio)
-338:		デフォルト遅延時間 : 10.000 ms
-338:		最小遅延時間       : 3.000 ms
-339:		遅延時間           : 10.000 ms
-344:		チャンネル数  　   : 2 ch
-344:		量子化ビット深度   : 32 bit
-345:		有効ビット深度　   : 32 bit
-345:		サンプリングレート : 48000 Hz
-346:		データ形式         : 浮動小数点型
-377:		動作モード         : 共有モード
-377:	WASAPI の初期化は正常に終了しました
-383:	d3d11.dll の読み込み.... 成功
-390:	dxgi.dll の読み込み.... 成功
-393:	API CreateDXGIFactory2 のアドレスを取得します.... 成功
-395:	IDXGIFactory2 を作成します.... 成功
-401:	API CreateDXGIFactory6 のアドレスを取得します.... 成功
-405:	IDXGIAdapter を列挙
-418:		Adapter No.0 Desc:NVIDIA GeForce RTX 2070  VRAM:8031MB
-419:			Output Device No.0 Name:\\.\DISPLAY1 ( 0, 0 )-( 1920, 1080 )
-419:		Adapter No.1 Desc:Microsoft Basic Render Driver  VRAM:0MB
-422:	API D3D11CreateDevice のアドレスを取得します.... 成功
-424:	IDXGIAdapter を取得します.... 成功
-425:	IDXGIAdapter1 を取得します.... 成功
-426:	IDXGIAdapter2 を取得します.... 成功
-427:	IDXGIAdapter3 を取得します.... 成功
-428:	IDXGIAdapter4 を取得します.... 成功
-430:	Direct3D 11 FeatureLevel 11_0 以上を対象とします
-430:	ID3D11Device オブジェクトを取得します.... 成功
-520:	IDXGIDevice1 を取得します.... 成功
-521:	IDXGIDevice1->SetMaximunFrameLatency( 1 ); を実行しました
-521:	[ウインドウモード 1920x1080 ( 0, 0 )-( 1920, 1080 )]
-522:	IDXGISwapChain2 を作成します.... 成功
-524:	IDXGIFactory2->CreateSwapChainForHwnd の戻り値：0x00000000
-524:	IDXGIOutput を取得します.... 成功
-526:	Graphics Device:NVIDIA GeForce RTX 2070
-526:	画面のフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
-526:	16bit Zバッファフォーマットは DXGI_FORMAT_D16_UNORM です
-527:	24bit Zバッファフォーマットは DXGI_FORMAT_D24_UNORM_S8_UINT です
-527:	32bit Zバッファフォーマットは DXGI_FORMAT_D32_FLOAT です
-527:	16bit カラーフォーマットは DXGI_FORMAT_B5G6R5_UNORM です
-528:	32bit カラーフォーマットは DXGI_FORMAT_B8G8R8X8_UNORM です
-528:	アルファ付き 16bit カラーフォーマットは DXGI_FORMAT_B4G4R4A4_UNORM です
-528:	アルファ付き 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
-529:	アルファテスト用 16bit カラーフォーマットは DXGI_FORMAT_B5G5R5A1_UNORM です
-529:	アルファテスト用 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
-530:	ＤＸＴ１テクスチャフォーマットは DXGI_FORMAT_BC1_UNORM です
-530:	ＤＸＴ２テクスチャフォーマットは使えません
-531:	ＤＸＴ３テクスチャフォーマットは DXGI_FORMAT_BC2_UNORM です
-531:	ＤＸＴ４テクスチャフォーマットは使えません
-531:	ＤＸＴ５テクスチャフォーマットは DXGI_FORMAT_BC3_UNORM です
-532:	BC7_UNORM テクスチャフォーマットは DXGI_FORMAT_BC7_UNORM です
-532:	BC7_UNORM_SRGB テクスチャフォーマットは DXGI_FORMAT_BC7_UNORM_SRGB です
-532:	ABGR 整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_UNORM です
-533:	ABGR 浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_FLOAT です
-533:	ABGR 浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32B32A32_FLOAT です
-533:	１チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8_UNORM です
-534:	１チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_UNORM です
-534:	１チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_FLOAT です
-534:	１チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32_FLOAT です
-537:	２チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8G8_UNORM です
-537:	２チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_UNORM です
-537:	２チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_FLOAT です
-538:	２チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32_FLOAT です
-538:	描画用 16bit カラーフォーマットは DXGI_FORMAT_B5G6R5_UNORM です
-538:	描画用 32bit カラーフォーマットは DXGI_FORMAT_B8G8R8X8_UNORM です
-539:	描画用アルファ付き 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
-540:	描画用 ABGR 整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_UNORM です
-540:	描画用 ABGR 浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_FLOAT です
-541:	描画用 ABGR 浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32B32A32_FLOAT です
-541:	描画用１チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8_UNORM です
-542:	描画用１チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_UNORM です
-542:	描画用１チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_FLOAT です
-542:	描画用１チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32_FLOAT です
-543:	描画用２チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8G8_UNORM です
-543:	描画用２チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_UNORM です
-544:	描画用２チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_FLOAT です
-544:	描画用２チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32_FLOAT です
-545:	使用する機能レベル:D3D_FEATURE_LEVEL_11_1
-545:	同時にレンダリングできるバッファの数:8
-546:	最大テクスチャサイズ　幅:16384 高さ:16384
-546:	標準描画用の頂点バッファの作成.... 成功
-547:	シェーダーコード関係の初期化.... 成功
-556:	各種シェーダー用定数バッファの作成.... 成功
-558:	各種 ID3D11InputLayout の作成.... 成功
-579:	画像の単純転送処理の初期化... 成功
-580:	深度バッファを作成します.... 成功
-582:	フォントの初期化を行います
-585:	フォントの初期化は正常に終了しました
-674:	文字コードバッファの初期化を行います... 完了しました
-692:ＤＸライブラリの初期化処理終了
-748:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectYes.png がありません
-749:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectNo.png がありません
-5096:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
-13340:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
-18452:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
-22977:フォントの初期化を行います
-22983:フォントの初期化は正常に終了しました
-23042:d3d11.dll の解放 1
-23043:dxgi.dll の解放 1
-23043:Direct3D11 のオブジェクト数を出力
-23044:Direct3D11 のオブジェクト合計数 : 0
-23049:DirectInput 関連の終了処理... 完了
-23051:サウンド関連の終了処理... 完了
-23070:ウィンドウ関連の終了処理... ウインドウを閉じようとしています
-23075:ウインドウが破棄されようとしています
-23075:ソフトを終了する準備が整いました
-23149:完了
-23149:ＣＯＭを終了... 完了
-23150:
-23150:Alloc memory dump
-23151:	Total size:0(0.000kb)  Alloc num:0
-23151:
+3:ＤＸライブラリの初期化処理開始
+4:	システムの情報を出力します
+4:		ＤＸライブラリ Ver3.24b
+6:		論理プロセッサの数 : 8
+6:		ＯＳ  Windows10 ( Build 19045  )
+106:		現時点のＣＰＵ動作速度：大体3.58GHz
+106:		ＭＭＸ命令を使用します
+106:		ＳＳＥ命令が使用可能です
+107:		ＳＳＥ２命令が使用可能です
+107:		ＣＰＵベンダ：GenuineIntel
+110:		ＣＰＵ名：Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
+110:	ＣＯＭの初期化... 成功
+122:	非同期読み込み処理の初期化...成功
+123:	ファイルアクセス処理の初期化...成功
+124:	メモリ総量:16305.23MB  空きメモリ領域:9044.96MB 
+125:	タイマーの精度を検査します
+125:	精度結果 更新回数 マルチメディアタイマー：0  パフォーマンスカウンター：60
+126:	 パフォーマンスカウンターを使用します タイマー精度 : 10000.000000 KHz 
+127:	 
+128:	ソフトの二重起動検査... 二重起動はされていませんでした
+129:	ウインドウクラスを登録します... 登録に成功しました
+129:	ウインドウモード起動用のウインドウを作成します
+130:	ディスプレイ情報のセットアップ開始
+131:		モニターの数：1  ディスプレイデバイスの数：4
+131:		No.0  モニター名：\\.\DISPLAY1　1920x1080　32bit　60Hz  96x96dpi
+140:	ディスプレイ情報のセットアップ完了
+140:	ウインドウ矩形 ( -16, -50 )-( 1920, 1069 )
+143:	ウインドウの作成に成功しました
+143:	ウインドウを表示します
+158:	ＩＭＥを無効にしました
+159:	ウインドウスタイルをウインドウモード用に変更します... 完了
+184:	XInput DLL の読み込み中... 成功
+187:	DirectInput関係初期化処理
+187:		DirectInput8 の取得を試みます...成功
+199:			引き続き初期化処理... 初期化成功
+204:		ジョイパッドの初期化... 
+205:			XInput 対応コントローラーのチェックを開始します
+205:				XInput 対応コントローラー No.0 をチェック
+206:				XInput 対応コントローラー No.0 の接続は確認できませんでした
+206:				XInput 対応コントローラー No.1 をチェック
+206:				XInput 対応コントローラー No.1 の接続は確認できませんでした
+207:				XInput 対応コントローラー No.2 をチェック
+207:				XInput 対応コントローラー No.2 の接続は確認できませんでした
+208:				XInput 対応コントローラー No.3 をチェック
+208:				XInput 対応コントローラー No.3 の接続は確認できませんでした
+209:			XInput 対応コントローラーのチェック完了
+209:			DirectInput 対応ジョイパッドの列挙を開始します
+234:			DirectInput 対応ジョイパッドの列挙終了
+234:		ジョイパッドの初期化は正常に終了しました
+234:		マウスデバイスの初期化... 初期化成功
+235:		キーボードデバイスの初期化... 初期化成功
+238:	DirectInput 関連の初期化は正常に終了しました
+241:	WASAPI の初期化を行います
+246:		デバイス名 : PL2290 (NVIDIA High Definition Audio)
+253:		デフォルト遅延時間 : 10.000 ms
+254:		最小遅延時間       : 3.000 ms
+254:		遅延時間           : 10.000 ms
+256:		チャンネル数  　   : 2 ch
+257:		量子化ビット深度   : 32 bit
+257:		有効ビット深度　   : 32 bit
+257:		サンプリングレート : 48000 Hz
+258:		データ形式         : 浮動小数点型
+276:		動作モード         : 共有モード
+276:	WASAPI の初期化は正常に終了しました
+280:	d3d11.dll の読み込み.... 成功
+282:	dxgi.dll の読み込み.... 成功
+283:	API CreateDXGIFactory2 のアドレスを取得します.... 成功
+283:	IDXGIFactory2 を作成します.... 成功
+285:	API CreateDXGIFactory6 のアドレスを取得します.... 成功
+286:	IDXGIAdapter を列挙
+287:		Adapter No.0 Desc:NVIDIA GeForce RTX 2070  VRAM:8031MB
+287:			Output Device No.0 Name:\\.\DISPLAY1 ( 0, 0 )-( 1920, 1080 )
+288:		Adapter No.1 Desc:Microsoft Basic Render Driver  VRAM:0MB
+288:	API D3D11CreateDevice のアドレスを取得します.... 成功
+289:	IDXGIAdapter を取得します.... 成功
+290:	IDXGIAdapter1 を取得します.... 成功
+291:	IDXGIAdapter2 を取得します.... 成功
+291:	IDXGIAdapter3 を取得します.... 成功
+292:	IDXGIAdapter4 を取得します.... 成功
+293:	Direct3D 11 FeatureLevel 11_0 以上を対象とします
+293:	ID3D11Device オブジェクトを取得します.... 成功
+376:	IDXGIDevice1 を取得します.... 成功
+377:	IDXGIDevice1->SetMaximunFrameLatency( 1 ); を実行しました
+377:	[ウインドウモード 1920x1080 ( 0, 0 )-( 1920, 1080 )]
+378:	IDXGISwapChain2 を作成します.... 成功
+399:	IDXGIFactory2->CreateSwapChainForHwnd の戻り値：0x00000000
+400:	IDXGIOutput を取得します.... 成功
+401:	Graphics Device:NVIDIA GeForce RTX 2070
+401:	画面のフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
+401:	16bit Zバッファフォーマットは DXGI_FORMAT_D16_UNORM です
+402:	24bit Zバッファフォーマットは DXGI_FORMAT_D24_UNORM_S8_UINT です
+402:	32bit Zバッファフォーマットは DXGI_FORMAT_D32_FLOAT です
+403:	16bit カラーフォーマットは DXGI_FORMAT_B5G6R5_UNORM です
+403:	32bit カラーフォーマットは DXGI_FORMAT_B8G8R8X8_UNORM です
+404:	アルファ付き 16bit カラーフォーマットは DXGI_FORMAT_B4G4R4A4_UNORM です
+404:	アルファ付き 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
+405:	アルファテスト用 16bit カラーフォーマットは DXGI_FORMAT_B5G5R5A1_UNORM です
+405:	アルファテスト用 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
+405:	ＤＸＴ１テクスチャフォーマットは DXGI_FORMAT_BC1_UNORM です
+406:	ＤＸＴ２テクスチャフォーマットは使えません
+406:	ＤＸＴ３テクスチャフォーマットは DXGI_FORMAT_BC2_UNORM です
+407:	ＤＸＴ４テクスチャフォーマットは使えません
+407:	ＤＸＴ５テクスチャフォーマットは DXGI_FORMAT_BC3_UNORM です
+407:	BC7_UNORM テクスチャフォーマットは DXGI_FORMAT_BC7_UNORM です
+408:	BC7_UNORM_SRGB テクスチャフォーマットは DXGI_FORMAT_BC7_UNORM_SRGB です
+408:	ABGR 整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_UNORM です
+409:	ABGR 浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_FLOAT です
+409:	ABGR 浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32B32A32_FLOAT です
+410:	１チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8_UNORM です
+410:	１チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_UNORM です
+410:	１チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_FLOAT です
+411:	１チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32_FLOAT です
+411:	２チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8G8_UNORM です
+411:	２チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_UNORM です
+412:	２チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_FLOAT です
+412:	２チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32_FLOAT です
+412:	描画用 16bit カラーフォーマットは DXGI_FORMAT_B5G6R5_UNORM です
+413:	描画用 32bit カラーフォーマットは DXGI_FORMAT_B8G8R8X8_UNORM です
+413:	描画用アルファ付き 32bit カラーフォーマットは DXGI_FORMAT_R8G8B8A8_UNORM です
+413:	描画用 ABGR 整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_UNORM です
+414:	描画用 ABGR 浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16B16A16_FLOAT です
+414:	描画用 ABGR 浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32B32A32_FLOAT です
+415:	描画用１チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8_UNORM です
+415:	描画用１チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_UNORM です
+415:	描画用１チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16_FLOAT です
+416:	描画用１チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32_FLOAT です
+416:	描画用２チャンネル整数 8 ビット型カラーフォーマットは DXGI_FORMAT_R8G8_UNORM です
+417:	描画用２チャンネル整数 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_UNORM です
+417:	描画用２チャンネル浮動小数点 16 ビット型カラーフォーマットは DXGI_FORMAT_R16G16_FLOAT です
+417:	描画用２チャンネル浮動小数点 32 ビット型カラーフォーマットは DXGI_FORMAT_R32G32_FLOAT です
+418:	使用する機能レベル:D3D_FEATURE_LEVEL_11_1
+418:	同時にレンダリングできるバッファの数:8
+418:	最大テクスチャサイズ　幅:16384 高さ:16384
+419:	標準描画用の頂点バッファの作成.... 成功
+419:	シェーダーコード関係の初期化.... 成功
+428:	各種シェーダー用定数バッファの作成.... 成功
+430:	各種 ID3D11InputLayout の作成.... 成功
+449:	画像の単純転送処理の初期化... 成功
+449:	深度バッファを作成します.... 成功
+451:	フォントの初期化を行います
+454:	フォントの初期化は正常に終了しました
+537:	文字コードバッファの初期化を行います... 完了しました
+555:ＤＸライブラリの初期化処理終了
+609:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectYes.png がありません
+610:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectNo.png がありません
+4769:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+12981:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+18341:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+23455:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+28533:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+33650:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+38772:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+43887:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+49024:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+54136:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+59208:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+64338:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+69455:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+74581:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+79721:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+84806:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+89906:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+95175:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+100349:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+105491:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+110535:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+115683:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+120768:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+125822:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+131017:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+136186:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+141270:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+146412:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+151471:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+156646:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+161784:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+166822:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+171981:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+177138:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+182206:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+187314:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+192538:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+197599:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+202803:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+207848:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+212919:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+217993:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+223056:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+228097:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+233187:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+238319:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+243416:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+248486:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+253558:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+258701:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+263752:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+268943:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+274051:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+279121:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+284193:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+289346:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+294414:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+299465:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+304530:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+309691:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+314894:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+319931:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+325000:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+330149:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+335214:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+340349:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+345394:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+350432:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+355478:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+360511:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+365586:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+370627:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+375665:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+380759:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+385840:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+390947:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+395997:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+401079:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+406239:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+411276:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+416358:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+421434:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+426512:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+431671:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+436752:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+441794:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+446886:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+451978:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+457028:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+462154:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+467223:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+472339:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+477442:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+482561:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+487622:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+492656:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+497707:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+502742:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+507806:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+512838:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+517923:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+522957:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+528016:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+533118:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+538254:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+543331:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+548386:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+553437:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+558490:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+563587:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+568658:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+573709:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+578805:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+583887:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+588971:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+594069:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+599104:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+604175:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+609403:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+614436:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+619488:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+624621:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+629740:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+634973:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+640068:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+645123:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+650172:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+655220:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+660289:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+665351:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+670523:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+675609:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+680721:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+685812:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+690954:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+696069:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+701132:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+706186:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+711331:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+716401:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+721535:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+726564:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+731735:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+736817:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+741886:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+746948:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+752118:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+757234:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+762296:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+767387:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+772466:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+777567:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+782876:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+788014:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+793364:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+798413:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+803518:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+808584:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+813637:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+818730:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+823778:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+828836:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+833934:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+839120:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+844291:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+849350:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+854401:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+859558:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+864604:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+869667:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+874744:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+879778:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+884833:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+889895:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+894980:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+900060:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+905099:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+910201:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+915296:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+920347:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+925412:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+930463:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+935590:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+940792:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+945954:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+951091:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+956130:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+961312:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+966373:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+971430:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+976508:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+981582:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+986778:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+991858:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+996915:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1002008:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1007061:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1012129:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1017257:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1022359:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1027406:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1102217:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\4.png がありません
+1197468:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectYes.png がありません
+1197469:画像ファイル C:\Users\2316003\Desktop\私のファイル\AGS\新しいフォルダー\Data\Image\SelectNo.png がありません
+1230283:フォントの初期化を行います
+1230289:フォントの初期化は正常に終了しました
+1230338:d3d11.dll の解放 1
+1230339:dxgi.dll の解放 1
+1230339:Direct3D11 のオブジェクト数を出力
+1230339:Direct3D11 のオブジェクト合計数 : 0
+1230346:DirectInput 関連の終了処理... 完了
+1230347:サウンド関連の終了処理... 完了
+1230358:ウィンドウ関連の終了処理... ウインドウを閉じようとしています
+1230362:ウインドウが破棄されようとしています
+1230362:ソフトを終了する準備が整いました
+1230434:完了
+1230438:ＣＯＭを終了... 完了
+1230438:
+1230439:Alloc memory dump
+1230439:	Total size:0(0.000kb)  Alloc num:0
+1230439:
