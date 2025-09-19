@@ -16,9 +16,15 @@ class Camera;
 class GameScene : public SceneBase
 {
 public:
+
 	static constexpr int ENCOUNT = 300;		//エンカウンタ
 	static constexpr int ENEMY_MAX = 200;	//最大出現数
 	static constexpr int ENE_ENC = 30;		//最大許容量
+
+	// ポーズメニュー関連
+	static constexpr int PAUSE_MENU_ITEM_COUNT = 4;
+	static constexpr int PAUSE_MENU_DOWN = 1;							// 下に移動
+	static constexpr int PAUSE_MENU_UP = PAUSE_MENU_ITEM_COUNT - 1;		// 上に移動（+3 の代わり）
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ

@@ -472,47 +472,43 @@ bool GameScene::PauseMenu(void)
 	InputManager& ins = InputManager::GetInstance();
 
 	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
+	if (ins.IsTrgDown(KEY_INPUT_TAB) && pauseState_ == PauseState::Menu)
 	{
-		if (pauseState_ == PauseState::Menu)
-		{
-			isPaused_ = !isPaused_;
-			pauseSelectIndex_ = 0;
-			mainCamera->SetPaused(isPaused_);
-		}
-		return true; // ポーズ処理があったので Update 停止
+		isPaused_ = !isPaused_;
+		pauseSelectIndex_ = 0;
+		mainCamera->SetPaused(isPaused_);
+		return true;
 	}
 
-	if (isPaused_)
+	if (!isPaused_) return false; // ポーズ中でなければ通常更新
+
+	if (pauseState_ == PauseState::Menu)
 	{
-		if (pauseState_ == PauseState::Menu)
+		if (ins.IsTrgDown(KEY_INPUT_DOWN))
+			pauseSelectIndex_ = (pauseSelectIndex_ + PAUSE_MENU_DOWN) % PAUSE_MENU_ITEM_COUNT;
+
+		if (ins.IsTrgDown(KEY_INPUT_UP))
+			pauseSelectIndex_ = (pauseSelectIndex_ + PAUSE_MENU_UP) % PAUSE_MENU_ITEM_COUNT;
+
+		if (ins.IsTrgDown(KEY_INPUT_RETURN))
 		{
-			if (ins.IsTrgDown(KEY_INPUT_DOWN)) pauseSelectIndex_ = (pauseSelectIndex_ + 1) % 4;
-			if (ins.IsTrgDown(KEY_INPUT_UP)) pauseSelectIndex_ = (pauseSelectIndex_ + 3) % 4;
-			if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			switch (pauseSelectIndex_)
 			{
-				switch (pauseSelectIndex_)
-				{
-				case 0:
-					isPaused_ = false;
-					pauseState_ = PauseState::Menu;
-					mainCamera->SetPaused(false);
-					break;
-				case 1: pauseState_ = PauseState::ShowControls; break;
-				case 2: pauseState_ = PauseState::ShowItems; break;
-				case 3: SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); break;
-				}
+			case 0:
+				isPaused_ = false;
+				mainCamera->SetPaused(false);
+				break;
+			case 1: pauseState_ = PauseState::ShowControls; break;
+			case 2: pauseState_ = PauseState::ShowItems; break;
+			case 3: SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); break;
 			}
 		}
-		else
-		{
-			if (ins.IsTrgDown(KEY_INPUT_RETURN))
-			{
-				pauseState_ = PauseState::Menu;
-			}
-		}
-		return true; // ポーズ中なので Update 停止
+	}
+	else
+	{
+		if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			pauseState_ = PauseState::Menu;
 	}
 
-	return false; // ポーズ処理なし → Update 続行
+	return true;
 }
