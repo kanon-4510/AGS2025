@@ -262,6 +262,7 @@ void EnemyBase::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 
+#pragma region ダメージ関連
 	if (is1damage)
 	{
 		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d1img_,true);
@@ -340,6 +341,7 @@ void EnemyBase::Draw(void)
 			dCount++;
 		}
 	}
+#pragma endregion
 
 	//デッバグ
 	//DrawDebug();

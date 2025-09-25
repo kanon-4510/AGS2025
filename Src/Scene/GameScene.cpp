@@ -113,7 +113,7 @@ void GameScene::Init(void)
 	mainCamera->SetFollow(&player_->GetTransform());
 	mainCamera->ChangeMode(Camera::MODE::FOLLOW);
 
-	isB_ = 0;
+	isB_ = BOSS_WAIT;
 }
 
 void GameScene::Update(void)
@@ -121,65 +121,7 @@ void GameScene::Update(void)
 	cnt++;
 	InputManager& ins = InputManager::GetInstance();
 
-	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
-	if (ins.IsTrgDown(KEY_INPUT_TAB)) 
-	{
-		if (pauseState_ == PauseState::Menu) 
-		{
-			isPaused_ = !isPaused_;
-			pauseSelectIndex_ = 0;
-
-			// カメラのポーズ切り替え
-			mainCamera->SetPaused(isPaused_);
-		}
-		return; // TABを押したら他の処理はしない
-	}
-
-	// -------------------------
-	// ポーズ中：ゲームロジック停止、メニューだけ操作可
-	// -------------------------
-	if (isPaused_) 
-	{
-		if (pauseState_ == PauseState::Menu) 
-		{
-			if (ins.IsTrgDown(KEY_INPUT_DOWN)) 
-			{
-				pauseSelectIndex_ = (pauseSelectIndex_ + 1) % 4;
-			}
-			if (ins.IsTrgDown(KEY_INPUT_UP)) 
-			{
-				pauseSelectIndex_ = (pauseSelectIndex_ + 3) % 4;
-			}
-			if (ins.IsTrgDown(KEY_INPUT_RETURN)) 
-			{
-				switch (pauseSelectIndex_)
-				{
-				case 0: // ゲームに戻る
-					isPaused_ = false;
-					pauseState_ = PauseState::Menu;  // ← 必須
-					mainCamera->SetPaused(false);    // カメラ復帰も忘れずに
-					break;
-				case 1:
-					pauseState_ = PauseState::ShowControls;
-					break;
-				case 2:
-					pauseState_ = PauseState::ShowItems;
-					break;
-				case 3:
-					SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
-					break;
-				}
-			}
-		}
-		else {
-			// 操作説明 or アイテム概要画面中 → Enterで戻る
-			if (ins.IsTrgDown(KEY_INPUT_RETURN)) 
-			{
-				pauseState_ = PauseState::Menu;
-			}
-		}
-		return;
-	}
+	if (PauseMenu()) return; // ポーズ中ならここで止める
 
 	// -------------------------
 	// 通常時のゲーム進行（ポーズされてないときだけ）
@@ -187,17 +129,17 @@ void GameScene::Update(void)
 
 	uiDisplayFrame_++;
 
-	if (tree_->GetLv() >= 75 && isB_ == 0)
+	if (tree_->GetLv() >= LV_OLD && isB_ == BOSS_WAIT)
 	{
-		isB_ = 1;
+		isB_ = BOSS_ON;
 		EnemyCreate();
-		isB_ = 2;
+		isB_ = BOSS_OFF;
 	}
-	if (tree_->GetLv() >= 100) 
+	if (tree_->GetLv() >= LV_MAX) 
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
-	if (tree_->GetHp() <= 0) 
+	if (tree_->GetHp() <= HP_ZERO) 
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
@@ -226,12 +168,6 @@ void GameScene::Update(void)
 			EnemyCreate();
 		}
 	}
-
-	//if (!unlockedQ && tree_->GetLv() >= 25) {
-	//	unlockedQ = true;
-	//	showQFlash = true;
-	//	qUnlockTime = GetNowCount();  // 現在時刻（ミリ秒）を記録
-	//}
 }
 
 void GameScene::Draw(void)
@@ -457,25 +393,25 @@ const std::vector<std::shared_ptr<EnemyBase>>& GameScene::GetEnemies() const
 
 void GameScene::EnemyCreate(void)
 {
-	int randDir = GetRand(3);
+	int randDir = GetRand(BORN_DIR);
 	VECTOR randPos = VGet(0.0f, 0.0f, 0.0f);
 	switch (randDir)//位置
 	{
 	case 0://前
-		randPos.x = GetRand(20000) - 10000;
-		randPos.z = 10000;
+		randPos.x = GetRand(STAGE_WIDTH) - STAGE_LANGE;
+		randPos.z = STAGE_LANGE;
 		break;
 	case 1://後
-		randPos.x = GetRand(20000) - 10000;
-		randPos.z = -10000;
+		randPos.x = GetRand(STAGE_WIDTH) - STAGE_LANGE;
+		randPos.z = -STAGE_LANGE;
 		break;
 	case 2://左
-		randPos.x = -10000;
-		randPos.z = GetRand(20000) - 10000;
+		randPos.x = -STAGE_LANGE;
+		randPos.z = GetRand(STAGE_WIDTH) - STAGE_LANGE;
 		break;
 	case 3://右
-		randPos.x = 10000;
-		randPos.z = GetRand(29000) - 10000;
+		randPos.x = STAGE_LANGE;
+		randPos.z = GetRand(STAGE_WIDTH) - STAGE_LANGE;
 		break;
 	default:
 		break;
@@ -529,4 +465,54 @@ void GameScene::EnemyCreate(void)
 	enemy->Init();
 
 	enemys_.emplace_back(std::move(enemy));
+}
+
+bool GameScene::PauseMenu(void)
+{
+	InputManager& ins = InputManager::GetInstance();
+
+	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
+	if (ins.IsTrgDown(KEY_INPUT_TAB))
+	{
+		if (pauseState_ == PauseState::Menu)
+		{
+			isPaused_ = !isPaused_;
+			pauseSelectIndex_ = 0;
+			mainCamera->SetPaused(isPaused_);
+		}
+		return true; // ポーズ処理があったので Update 停止
+	}
+
+	if (isPaused_)
+	{
+		if (pauseState_ == PauseState::Menu)
+		{
+			if (ins.IsTrgDown(KEY_INPUT_DOWN)) pauseSelectIndex_ = (pauseSelectIndex_ + 1) % 4;
+			if (ins.IsTrgDown(KEY_INPUT_UP)) pauseSelectIndex_ = (pauseSelectIndex_ + 3) % 4;
+			if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			{
+				switch (pauseSelectIndex_)
+				{
+				case 0:
+					isPaused_ = false;
+					pauseState_ = PauseState::Menu;
+					mainCamera->SetPaused(false);
+					break;
+				case 1: pauseState_ = PauseState::ShowControls; break;
+				case 2: pauseState_ = PauseState::ShowItems; break;
+				case 3: SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); break;
+				}
+			}
+		}
+		else
+		{
+			if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			{
+				pauseState_ = PauseState::Menu;
+			}
+		}
+		return true; // ポーズ中なので Update 停止
+	}
+
+	return false; // ポーズ処理なし → Update 続行
 }
