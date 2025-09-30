@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <DxLib.h>
+#include "../Application.h"
 #include "EnemyBase.h"
 
 class AnimationController;
@@ -15,13 +16,17 @@ class Player : public ActorBase
 
 public:
 
+	//プレイヤー
+	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
+	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
+	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };	//カプセルの頂点
+	static constexpr VECTOR CAPSULE_BOTTOM = { 0.0f,  30.0f, 0.0f };//カプセルの足元
+	static constexpr float  CAPSULE_RADIUS = 20.0f;					//カプセルの半径
+
 	//スピード
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
 	
-	//ステータス変更用の値
-	static constexpr float STATUS_UP = 2.0f;
-
 	//回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
@@ -37,9 +42,31 @@ public:
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
-	//ステータスアップ
+	//ステータスアップ時間
 	static constexpr int POWER_UP_TIME = 1200;
 	static constexpr int SPEED_UP_TIME = 1200;
+
+	//無敵時間
+	static constexpr int EX_TIME = 10000;
+
+	//ステータス変更用の値
+	static constexpr float STATUS_UP = 2.0f;
+
+	//攻撃力
+	static constexpr int NORMAL_ATTACK = 2;
+	static constexpr int SLASH_ATTACK = 1;
+	static constexpr int EX_ATTACK = 2;
+
+	//UI位置
+	static constexpr int PLAYER_LABEL_X = 55;
+	static constexpr int PLAYER_LABEL_Y = Application::SCREEN_SIZE_Y - 95;
+
+	//UI色
+	static constexpr int WHITE = 0xaaaaaa;
+	static constexpr int GREEN = 0x00ff00;
+	static constexpr int BLACK = 0x0;
+	static constexpr int RED = 0xff0000;
+	static constexpr int BLUE = 0x0000ff;
 
 	//状態
 	enum class STATE
@@ -62,8 +89,8 @@ public:
 		RUN,
 		FAST_RUN,
 		DOWN,
-		ATTACK1,
-		ATTACK2,
+		NORMALATTACK,
+		SLASHATTACK,
 		EXATTACK,
 	};
 

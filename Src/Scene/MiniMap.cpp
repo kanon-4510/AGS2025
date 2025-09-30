@@ -58,10 +58,10 @@ void MiniMap::DrawCameraViewCone(const MapVector2& playerPos, float cameraAngleR
 {
     //ミニマップ座標に変換
     MapVector2 mapPos = WorldToMapPos(playerPos);
-    int px = static_cast<int>(mapPos.x);
-    int pz = static_cast<int>(mapPos.z);
+    int cx = static_cast<int>(mapPos.x);
+    int cz = static_cast<int>(mapPos.z);
 
-    if (!IsInsideCircle(px, pz)) return;
+    if (!IsInsideCircle(cx, cz)) return;
 
     //カメラの方向(視界の中心方向)
     float angle = cameraAngleRad - DX_PI / HALF_DIVISOR_F;
@@ -73,15 +73,15 @@ void MiniMap::DrawCameraViewCone(const MapVector2& playerPos, float cameraAngleR
     float fovHalfAngle = CAMERA_FOV_HALF_ANGLE;
 
     //左右の端を計算
-    float leftX = px + std::cos(angle + fovHalfAngle) * viewLength;
-    float leftY = pz + std::sin(angle + fovHalfAngle) * viewLength;
+    float leftX = cx + std::cos(angle + fovHalfAngle) * viewLength;
+    float leftY = cz + std::sin(angle + fovHalfAngle) * viewLength;
 
-    float rightX = px + std::cos(angle - fovHalfAngle) * viewLength;
-    float rightY = pz + std::sin(angle - fovHalfAngle) * viewLength;
+    float rightX = cx + std::cos(angle - fovHalfAngle) * viewLength;
+    float rightY = cz + std::sin(angle - fovHalfAngle) * viewLength;
 
     //三角形を描画
     DrawTriangleAA(
-        px, pz,
+        cx, cz,
         static_cast<int>(leftX), static_cast<int>(leftY),
         static_cast<int>(rightX), static_cast<int>(rightY),
         WHITE, TRUE);   //半透明の白
