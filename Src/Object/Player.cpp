@@ -723,11 +723,11 @@ void Player::CollisionAttack(void)
 		//エネミーとの衝突判定
 		
 		//攻撃の球の半径
-		float attackRadius = 100.0f;
+		float attackRadius = ATTACK_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD));
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -755,12 +755,12 @@ void Player::CollisionAttack2(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 140.0f;
+		float attackRadius = ATTACK2_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 80.0f));
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK2_FORWARD));
+		attackPos.y += ATTACK2_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -788,10 +788,10 @@ void Player::CollisionAttackEx(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 180.0f;
+		float attackRadius = EX_RADIUS;
 		//攻撃の開始位置と終了位置
 		VECTOR attackPos = transform_.pos;
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		attackPos.y += EX_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{

@@ -56,10 +56,17 @@ public:
 	static constexpr int EX_TIME = 10000;		//無敵時間
 	static constexpr float STATUS_UP = 2.0f;	//ステータス変更用の値
 
-	//攻撃力
-	static constexpr int NORMAL_ATTACK = 2;
-	static constexpr int SLASH_ATTACK = 1;
-	static constexpr int EX_ATTACK = 2;
+	//攻撃
+	static constexpr int NORMAL_ATTACK = 2;				//通常攻撃
+	static constexpr int SLASH_ATTACK = 1;				//スラッシュ
+	static constexpr int EX_ATTACK = 2;					//回転斬り
+	static constexpr float ATTACK_RADIUS = 100.0f;		//通常攻撃判定の球半径
+	static constexpr float ATTACK_FORWARD = 100.0f;		//通常攻撃位置の前方オフセット
+	static constexpr float ATTACK2_RADIUS = 140.0f;		//スラッシュ判定半径
+	static constexpr float ATTACK2_FORWARD = 80.0f;		//スラッシュ位置前方オフセット
+	static constexpr float ATTACK2_HEIGHT = 100.0f;		//スラッシュ位置高さ
+	static constexpr float EX_RADIUS = 140.0f;			//回転斬り判定半径
+	static constexpr float EX_HEIGHT = 100.0f;			//回転斬り位置高さ
 
 	//UI位置
 	static constexpr int PLAYER_LABEL_X = 55;
