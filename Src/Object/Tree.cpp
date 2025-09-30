@@ -200,10 +200,10 @@ void Tree::Draw(void)
 	else DrawBox(BAR_START_X,BAR_START_HY,hp_*HIT_POINT+BAR_START_X,BAR_END_HY,green,true);
 
 								DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X					   ,BAR_END_WY,black,true);
-	     if(grow_==GROW::OLD)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_OLD  +BAR_START_X,BAR_END_WY,blue ,true);
-	else if(grow_==GROW::ADULT)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_ADULT+BAR_START_X,BAR_END_WY,blue ,true);
-	else if(grow_==GROW::KID)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_KID  +BAR_START_X,BAR_END_WY,blue ,true);
-	else if(grow_==GROW::BABY)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BABY +BAR_START_X,BAR_END_WY,blue ,true);
+	     if(grow_==GROW::OLD)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_OLD  +BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::ADULT)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_ADULT+BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::KID)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_KID  +BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::BABY)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_BABY +BAR_START_X,BAR_END_WY,blue ,true);
 
 	if (invincible_)
 	{
@@ -329,28 +329,28 @@ int Tree::GetLv(void)
 
 void Tree::LvUp(void)
 {
-	if (grow_ == GROW::OLD && water_ >= 3)
+	if (grow_==GROW::OLD && water_>= HOLD_WATER_OLD)
 	{
-		lv_ += 1;
-		water_ -= 3;
+		lv_+=1;
+		water_-=HOLD_WATER_OLD;
 		ChangeGrow();
 	}
-	if (grow_ == GROW::ADULT && water_ >= 2)
+	if (grow_ == GROW::ADULT && water_>= HOLD_WATER_ADULT)
 	{
-		lv_ += 1;
-		water_ -= 2;
+		lv_+=1;
+		water_ -= HOLD_WATER_ADULT;
 		ChangeGrow();
 	}
-	if (grow_ == GROW::KID && water_ >= 2)
+	if (grow_==GROW::KID && water_>=HOLD_WATER_KID)
 	{
 		lv_ += 1;
-		water_ -= 2;
+		water_ -= HOLD_WATER_KID;
 		ChangeGrow();
 	}
-	if (grow_ == GROW::BABY && water_ >= 1)
+	if (grow_==GROW::BABY && water_>=HOLD_WATER_BABY)
 	{
-		lv_ += 1;
-		water_ -= 1;
+		lv_+=1;
+		water_-=HOLD_WATER_BABY;
 		ChangeGrow();
 	}
 
