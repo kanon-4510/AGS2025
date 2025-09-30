@@ -13,9 +13,7 @@ class Tree;
 
 class Player : public ActorBase
 {
-
 public:
-
 	//プレイヤー
 	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
 	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
@@ -34,13 +32,18 @@ public:
 	//回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
-	//丸影
-	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;			//影サイズ
-	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;		//影サイズ
+	//木のレベル
+	static constexpr int LV_OLD = 75;		//木の成長段階
+	static constexpr int LV_ADULT = 50;		//木の成長段階
+	static constexpr int LV_KID = 25;		//木の成長段階
+
+	//影の大きさ
+	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
+	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
 	static constexpr float SHADOW_LIFT = 0.5f;					//ポリゴンを持ち上げる量
 	static constexpr int   SHADOW_MAX_ALPHA = 128;				//影の最大不透明度
 	static constexpr float SHADOW_UV_SCALE = 2.0f;				//UV計算用
-	static constexpr float SHADOW_UV_CENTER = 0.5f;				//UV中心補正
+	static constexpr float SHADOW_UV_CENTER = 0.5f;
 
 	//煙エフェクト発生間隔
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
@@ -56,21 +59,59 @@ public:
 	static constexpr int EX_TIME = 10000;		//無敵時間
 	static constexpr float STATUS_UP = 2.0f;	//ステータス変更用の値
 
-	//攻撃力
-	static constexpr int NORMAL_ATTACK = 2;
-	static constexpr int SLASH_ATTACK = 1;
-	static constexpr int EX_ATTACK = 2;
+	//攻撃
+	static constexpr int NORMAL_ATTACK = 2;				//通常攻撃
+	static constexpr int SLASH_ATTACK = 1;				//スラッシュ
+	static constexpr int EX_ATTACK = 2;					//回転斬り
+	static constexpr float ATTACK_RADIUS = 100.0f;		//通常攻撃判定の球半径
+	static constexpr float ATTACK_FORWARD = 100.0f;		//通常攻撃位置の前方オフセット
+	static constexpr float ATTACK2_RADIUS = 140.0f;		//スラッシュ判定半径
+	static constexpr float ATTACK2_FORWARD = 80.0f;		//スラッシュ位置前方オフセット
+	static constexpr float ATTACK2_HEIGHT = 100.0f;		//スラッシュ位置高さ
+	static constexpr float EX_RADIUS = 140.0f;			//回転斬り判定半径
+	static constexpr float EX_HEIGHT = 100.0f;			//回転斬り位置高さ
 
-	//UI位置
-	static constexpr int PLAYER_LABEL_X = 55;
-	static constexpr int PLAYER_LABEL_Y = Application::SCREEN_SIZE_Y - 95;
+	//ステータス関連
+	static constexpr int NAME_X = 55;										//名前の位置X
+	static constexpr int NAME_Y = Application::SCREEN_SIZE_Y - 95;			//名前の位置Y
+	static constexpr int FRAME_START_X = 47;								//枠の最初X
+	static constexpr int FRAME_START_Y = Application::SCREEN_SIZE_Y - 78;	//枠の最初Y
+	static constexpr int FRAME_END_X = 653;									//枠の最後X
+	static constexpr int FRAME_END_Y = Application::SCREEN_SIZE_Y - 37;		//枠の最後Y
+	static constexpr int BAR_START_X = 50;									//バーの最初X
+	static constexpr int BAR_START_HY = Application::SCREEN_SIZE_Y - 75;	//バーの最初体力Y
+	static constexpr int BAR_START_WY = Application::SCREEN_SIZE_Y - 50;	//バーの最初水Y
+	static constexpr int BAR_END_X = 650;									//バーの最後X
+	static constexpr int BAR_END_HY = Application::SCREEN_SIZE_Y - 55;		//バーの最後体力Y
+	static constexpr int BAR_END_WY = Application::SCREEN_SIZE_Y - 40;		//バーの最後水Y
+	static constexpr int BAR_POINT = 60;									//バーの数値
 
 	//色
-	static constexpr int WHITE = 0xaaaaaa;
-	static constexpr int GREEN = 0x00ff00;
-	static constexpr int BLACK = 0x0;
-	static constexpr int RED = 0xff0000;
-	static constexpr int BLUE = 0x0000ff;
+	int white = 0xffffff; //白
+	int black = 0x000000; //黒
+	int red = 0xff0000;	  //赤
+	int green = 0x00ff00; //緑
+	int blue = 0x0000ff;  //青
+	int yellow = 0xffff00;//黄
+	int purpl = 0x800080; //紫
+	int gray = 0xaaaaaa;  //灰
+
+	//ステータス関連
+	static constexpr float ICON_SIZE = 1.3;
+	static constexpr int ICON_CY_HEIGHT = 115;
+
+	static constexpr int GRAY_ALPHA = 180;
+
+	static constexpr int ICON_CY = 965;
+	static constexpr int TIMER_CY = 967;
+
+	static constexpr float RADIUS = 32.0f;
+	static constexpr int SEGMENTS = 60;
+
+	static constexpr int POWER_CX = 150;
+	static constexpr int SPEED_CX = 225;
+	static constexpr int ROT_ATK_CX = 450;
+
 
 	//状態
 	enum class STATE
@@ -293,5 +334,4 @@ private:
 
 	//デバッグ処理
 	void DrawDebug(void);
-
 };

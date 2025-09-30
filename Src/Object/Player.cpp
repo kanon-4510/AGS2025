@@ -169,105 +169,88 @@ void Player::Draw(void)
 	//DrawDebug();						//デバッグ用描画
 
 #pragma region ステータス
-	DrawFormatString(PLAYER_LABEL_X, PLAYER_LABEL_Y, BLACK, "PLAYER");
-	//枠線（白）
-	DrawBox(47, Application::SCREEN_SIZE_Y - 78, 653 , Application::SCREEN_SIZE_Y - 37, WHITE, true);
+	DrawFormatString(NAME_X,NAME_Y,black,"PLAYER");
+	//枠線
+	DrawBox(FRAME_START_X,FRAME_START_Y,FRAME_END_X,FRAME_END_Y,gray, true);
 	
-	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, BLACK, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, GREEN, true);
-	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, RED, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, BLACK, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, BLUE, true);
+	DrawBox(BAR_START_X,BAR_START_HY,BAR_END_X,BAR_END_HY,black,true);
+	if (hp_ != 0)DrawBox(BAR_START_X,BAR_START_HY,hp_*BAR_POINT+BAR_START_X,BAR_END_HY,green,true);
+	if (hp_ == 0)DrawBox(BAR_START_X,BAR_START_HY,revivalTimer_+BAR_START_X,BAR_END_HY,red,true);
+	DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X,BAR_END_WY,black,true);
+	DrawBox(BAR_START_X,BAR_START_WY,water_*BAR_POINT+BAR_START_X,BAR_END_WY,blue,true);
 	
 	if (powerUpFlag_)
 	{
-		const int cx = 150;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgPowerIcon_, true);
+		DrawRotaGraph(POWER_CX, ICON_CY, ICON_SIZE, 0, imgPowerIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(powerUpCnt_) / POWER_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = POWER_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = POWER_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(POWER_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	if (speedUpFlag_)
 	{
-		const int cx = 225;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgSpeedIcon_, true);
+		DrawRotaGraph(SPEED_CX, ICON_CY, ICON_SIZE, 0, imgSpeedIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(speedUpCnt_) / SPEED_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = SPEED_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = SPEED_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(SPEED_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (tree_ && tree_->GetLv() >= 50) {
-		const int cx = 450;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;
-		const float radius = 32.0f;
-		const int segments = 60;
+	if (tree_ && tree_->GetLv() >= LV_ADULT) {
 
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgRotateAttackIcon_, true);
+		DrawRotaGraph(ROT_ATK_CX, ICON_CY, ICON_SIZE, 0, imgRotateAttackIcon_, true);
 
 		if (!IsExAttackReady())
 		{
 			float ratio = static_cast<float>(GetNowCount() - lastExTime_) / exTimer_;
-			int filledSegments = static_cast<int>(segments * ratio);
+			int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 
-			for (int i = 0; i < segments - filledSegments; ++i)
+			for (int i = 0; i < SEGMENTS - filledSegments; ++i)
 			{
-				float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-				float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+				float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+				float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-				float x1 = cx + radius * cosf(angle1);
-				float y1 = timerCy + radius * sinf(angle1);
-				float x2 = cx + radius * cosf(angle2);
-				float y2 = timerCy + radius * sinf(angle2);
+				float x1 = ROT_ATK_CX + RADIUS * cosf(angle1);
+				float y1 = TIMER_CY + RADIUS * sinf(angle1);
+				float x2 = ROT_ATK_CX + RADIUS * cosf(angle2);
+				float y2 = TIMER_CY + RADIUS * sinf(angle2);
 
-				DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+				DrawTriangle(ROT_ATK_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 			}
 
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -497,11 +480,11 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	//キャラ座標
 	v = transform_.pos;
-	DrawFormatString(0, 0, BLACK, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
+	DrawFormatString(0, 0, black, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
 	//-------------------------------------------------------
 
 	//衝突
-	DrawLine3D(gravHitPosUp_, gravHitPosDown_, BLACK);
+	DrawLine3D(gravHitPosUp_, gravHitPosDown_, black);
 
 	capsule_->Draw();
 #endif
@@ -723,11 +706,11 @@ void Player::CollisionAttack(void)
 		//エネミーとの衝突判定
 		
 		//攻撃の球の半径
-		float attackRadius = 100.0f;
+		float attackRadius = ATTACK_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD));
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -755,12 +738,12 @@ void Player::CollisionAttack2(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 140.0f;
+		float attackRadius = ATTACK2_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 80.0f));
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK2_FORWARD));
+		attackPos.y += ATTACK2_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -788,10 +771,10 @@ void Player::CollisionAttackEx(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 180.0f;
+		float attackRadius = EX_RADIUS;
 		//攻撃の開始位置と終了位置
 		VECTOR attackPos = transform_.pos;
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		attackPos.y += EX_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
