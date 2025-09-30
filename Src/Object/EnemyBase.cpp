@@ -26,7 +26,7 @@ EnemyBase::EnemyBase()
 
 	attackPow_ = VALUE_ONE;	//攻撃力
 
-	// 状態管理
+	//状態管理
 	stateChanges_.emplace(
 		STATE::NONE, std::bind(&EnemyBase::ChangeStateNone, this));
 	stateChanges_.emplace(
@@ -40,8 +40,8 @@ EnemyBase::EnemyBase()
 	stateChanges_.emplace(
 		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
 
-	is1damage = false;
-	is2damage = false;
+	is1damage_ = false;
+	is2damage_ = false;
 	is4damage = false;
 	is8damage = false;
 	is16damage = false;
@@ -57,14 +57,15 @@ void EnemyBase::Init(void)
  	SetParam();
 	InitAnimation();
 
-	dCount = 0;
+	damageCnt_ = 0;
 
-	d1img_ = LoadGraph("Data/Image/1.png");
-	d2img_ = LoadGraph("Data/Image/2.png");
-	d4img_ = LoadGraph("Data/Image/4.png");
-	d8img_ = LoadGraph("Data/Image/8.png");
-	d16img_ = LoadGraph("Data/Image/16.png");
-	d32img_ = LoadGraph("Data/Image/32.png");
+	damage1img_ = LoadGraph("Data/Image/1.png");
+	damage2img_ = LoadGraph("Data/Image/2.png");
+	damage4img_ = LoadGraph("Data/Image/4.png");
+	damage8img_ = LoadGraph("Data/Image/8.png");
+	damage16img_ = LoadGraph("Data/Image/16.png");
+	damage32img_ = LoadGraph("Data/Image/32.png");
+	damage64img_ = LoadGraph("Data/Image/64.png");
 }
 
 void EnemyBase::Update(void)
@@ -80,7 +81,7 @@ void EnemyBase::Update(void)
 	animationController_->Update();
 
 
-	// 更新ステップ
+	//更新ステップ
 	if (stateUpdate_)
 	{
 		stateUpdate_();
@@ -107,7 +108,7 @@ void EnemyBase::UpdatePlay(void)
 
 	ChasePlayer();
 
-	// 衝突判定
+	//衝突判定
 	Collision();
 
 	//攻撃範囲に入ったかを見る
@@ -118,10 +119,10 @@ void EnemyBase::UpdateAttack(void)
 {
 	animationController_->Play((int)ANIM_TYPE::ATTACK, false);
 
-	// 攻撃タイミング
+	//攻撃タイミング
 	if (!isAttack_ && isAttack_P)
 	{
-		isAttack_ = true; // 多重ヒット防止用フラグ
+		isAttack_ = true; //多重ヒット防止用フラグ
 		isAttack_P = false;
 	}
 	else if (!isAttack_ && isAttack_T)
@@ -159,57 +160,58 @@ void EnemyBase::UpdateDeath(void)
 		//アイテムドロップ
 		VECTOR dropPos = this->GetTransform().pos;
 
-		// マップ中心との距離を計算
+		//マップ中心との距離を計算
 		float distance = VSize(VSub(dropPos, AsoUtility::VECTOR_ZERO));
 
-		// ドロップアイテムを取得
+		//ドロップアイテムを取得
 		Item::TYPE dropType = GetDropItemType();
 
 		//エネミーがボスのとき
 		if (enemyType_ == TYPE::BOSS)
 		{
-			// ボスのアイテムはスケール固定
+			//ボスのアイテムはスケール固定
 			float scale = DROP_SCALE_LARGE;
 			
 			scene_->CreateItem(dropPos, scale, dropType);
 		}
 		else
 		{
-			// 通常の敵は1つだけアイテムドロップ
-			// 距離でサイズを変える
+			//通常の敵は1つだけアイテムドロップ
+			//距離でサイズを変える
 			float scale = DROP_SCALE_SMALL;
 			if (dropType == Item::TYPE::WATER)
 			{
-				if (distance >= DROP_DISTANCE_LARGE) {	// 中心から一定距離以上離れたら
+				if (distance >= DROP_DISTANCE_LARGE) 
+				{	//中心から一定距離以上離れたら
 					scale = DROP_SCALE_LARGE;
 				}
-				else if (distance >= DROP_DISTANCE_MEDIUM) {	// 中心から一定距離以上離れたら
+				else if (distance >= DROP_DISTANCE_MEDIUM) 
+				{	//中心から一定距離以上離れたら
 					scale = DROP_SCALE_MEDIUM;
 				}
 			}
-			// アイテムを1つ出す（サイズ調整）
+			//アイテムを1つ出す（サイズ調整）
 			scene_->CreateItem(dropPos, scale, dropType);
 		}
 	}
 }
-
 #pragma endregion
-
 
 void EnemyBase::ChasePlayer(void)
 {
-	if (!player_) {
+	if (!player_) 
+	{
 		return;
 	}
 
 	VECTOR playerPos = player_->GetTransform().pos;
 
 	VECTOR toPlayer = VSub(playerPos, transform_.pos);
-	toPlayer.y = ZERO;  // 高さ無視
+	toPlayer.y = VALUE_ZERO;  //高さ無視
 
 	float distance = VSize(toPlayer);
 
-	// 現在のアニメーションと違う場合のみRUNアニメーションを再生する
+	//現在のアニメーションと違う場合のみRUNアニメーションを再生する
 	if (animtype_ != ANIM_TYPE::RUN)
 	{
 		animationController_->Play((int)ANIM_TYPE::RUN, true);
@@ -225,23 +227,23 @@ void EnemyBase::ChasePlayer(void)
 
 		transform_.pos = VAdd(transform_.pos, moveVec);
 
-		// 方向からクォータニオンに変換
+		//方向からクォータニオンに変換
 		transform_.quaRot = Quaternion::LookRotation(dirToPlayer);
 	}
 	else
 	{
-		// 原点に向かう
+		//原点に向かう
 		VECTOR toOrigin = VSub(AsoUtility::VECTOR_ZERO, transform_.pos);
-		toOrigin.y = ZERO;  // 高さ無視
+		toOrigin.y = VALUE_ZERO;  //高さ無視
 
 		float distToOrigin = VSize(toOrigin);
-		if (distToOrigin > MIN_MOVE_DISTANCE) // 近すぎる場合は動かない
+		if (distToOrigin > MIN_MOVE_DISTANCE) //近すぎる場合は動かない
 		{
 			VECTOR dirToOrigin = VNorm(toOrigin);
 			VECTOR moveVec = VScale(dirToOrigin, speed_);
 			transform_.pos = VAdd(transform_.pos, moveVec);
 
-			// 方向からクォータニオンに変換
+			//方向からクォータニオンに変換
 			transform_.quaRot = Quaternion::LookRotation(dirToOrigin);
 		}
 	}
@@ -256,95 +258,17 @@ void EnemyBase::Draw(void)
 
 	Collision();
 
-	// モデル反映
+	//モデル反映
 	MV1SetScale(transform_.modelId, transform_.scl);
 	MV1SetPosition(transform_.modelId, transform_.pos);
 
 	MV1DrawModel(transform_.modelId);
-
-	if (is1damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d1img_,true);
-		if (dCount >= D_CNT)
-		{
-			is1damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
-	if (is2damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d2img_, true);
-		if (dCount >= D_CNT)
-		{
-			is2damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
-	if (is4damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d4img_, true);
-		if (dCount >= D_CNT)
-		{
-			is4damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
-	if (is8damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d8img_, true);
-		if (dCount >= D_CNT)
-		{
-			is8damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
-	if (is16damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d16img_, true);
-		if (dCount >= D_CNT)
-		{
-			is16damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
-	if (is32damage)
-	{
-		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + D_POS, transform_.pos.z, 0.5f, 0, d32img_, true);
-		if (dCount >= D_CNT)
-		{
-			is32damage = false;
-			dCount = 0;
-		}
-		else
-		{
-			dCount++;
-		}
-	}
+	DrawDamage();
 
 	//デッバグ
-	//DrawDebug();
+	DrawDebug();
 
-	// 視野範囲の描画
+	//視野範囲の描画
 	//DrawDebugSearchRange();
 }
 
@@ -381,10 +305,10 @@ EnemyBase::TYPE EnemyBase::GetEnemyType(void) const
 void EnemyBase::Damage(int damage)
 {
 	hp_ -= damage;
-	// ダメージ音
+	//ダメージ音
 	SoundManager::GetInstance().Play(SoundManager::SRC::E_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	isAttack_ = false;
-	if (hp_ <= ZERO && isAlive_)
+	if (hp_ <= VALUE_ZERO && isAlive_)
 	{
 		ChangeState(STATE::DEATH);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
@@ -394,22 +318,126 @@ void EnemyBase::Damage(int damage)
 		ChangeState(STATE::DAMAGE);
 	}
 
-	if (damage == 1)is1damage=true;
-	if (damage == 2)is2damage=true;
-	if (damage == 4)is4damage=true;
-	if (damage == 8)is8damage=true;
-	if (damage == 16)is16damage=true;
-	if (damage == 32)is32damage=true;
+	if (damage == VALUE_DAMAGE_1)is1damage_ = true;
+	if (damage == VALUE_DAMAGE_2)is2damage_ = true;
+	if (damage == VALUE_DAMAGE_4)is4damage = true;
+	if (damage == VALUE_DAMAGE_8)is8damage = true;
+	if (damage == VALUE_DAMAGE_16)is16damage = true;
+	if (damage == VALUE_DAMAGE_32)is32damage = true;
+	if (damage == VALUE_DAMAGE_64)is64damage = true;
 }
+
+void EnemyBase::DrawDamage()
+{
+	if (is1damage_)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage1img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is1damage_ = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is2damage_)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage2img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is2damage_ = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is4damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage4img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is4damage = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is8damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage8img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is8damage = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is16damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage16img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is16damage = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is32damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage32img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is32damage = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+	if (is64damage)
+	{
+		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
+			, DAMAGE_IMG_SCL, 0, damage64img_, true);
+		if (damageCnt_ >= DAMAGE_CNT)
+		{
+			is64damage = false;
+			damageCnt_ = 0;
+		}
+		else
+		{
+			damageCnt_++;
+		}
+	}
+}
+
 
 #pragma region コリジョン
 
 void EnemyBase::Collision(void)
 {
-	// 現在座標を起点に移動後座標を決める
+	//現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
 
-	// 移動
+	//移動
 	moveDiff_ = VSub(movedPos_, transform_.pos);
 	transform_.pos = movedPos_;
 
@@ -435,9 +463,9 @@ float EnemyBase::GetCollisionRadius(void)
 void EnemyBase::AttackCollisionPos(void)
 {
 	//プレイヤーとの衝突判定
-	// 攻撃の方向（エネミー）
+	//攻撃の方向（エネミー）
 	VECTOR forward = transform_.quaRot.GetForward();
-	// 攻撃の開始位置と終了位置
+	//攻撃の開始位置と終了位置
 	attackCollisionPos_ = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD_OFFSET));
 	attackCollisionPos_.y += ATTACK_HEIGHT_OFFSET;  // 攻撃の高さ調整
 
@@ -505,10 +533,10 @@ void EnemyBase::SetGameScene(GameScene* scene)
 
 void EnemyBase::ChangeState(STATE state)
 {
-	// 状態変更
+	//状態変更
 	state_ = state;
 
-	// 各状態遷移の初期処理
+	//各状態遷移の初期処理
 	stateChanges_[state_]();
 }
 
@@ -555,44 +583,48 @@ void EnemyBase::SetTree(std::shared_ptr<Tree> tree)
 
 void EnemyBase::DrawDebug(void)
 {
+
+#ifdef _DEBUG
+
 	VECTOR v;
 	VECTOR s;
 	VECTOR a;
 
-	// キャラ基本情報
+	//キャラ基本情報
 	//-------------------------------------------------------
-	//// キャラ座標
+	//キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)",v.x, v.y, v.z);
+	DrawFormatString(20, 120, white, "キャラ座標 ： (%0.2f, %0.2f, %0.2f)", v.x, v.y, v.z);
 
 	s = collisionPos_;
 	DrawSphere3D(s, collisionRadius_, 8, black, black, false);
-	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)",s.x, s.y, s.z);
+	DrawFormatString(20, 180, white, "スフィア座標 ： (%0.2f, %0.2f, %0.2f)", s.x, s.y, s.z);
 	DrawFormatString(20, 210, white, "エネミーの移動速度 ： %0.2f", speed_);
-	
+
 	a = attackCollisionPos_;
 	DrawSphere3D(a, attackCollisionRadius_, 8, yellow, yellow, false);
 
+#endif //DEBUG
 }
 
 void EnemyBase::DrawDebugSearchRange(void)
 {
 	VECTOR centerPos = transform_.pos;
 
-	// プレイヤーの座標
+	//プレイヤーの座標
 	VECTOR playerPos = player_->GetTransform().pos; // プレイヤーオブジェクトの参照を持っている想定
 
-	// プレイヤーと敵の距離（XZ平面）
+	//プレイヤーと敵の距離（XZ平面）
 	float dx = playerPos.x - centerPos.x;
 	float dz = playerPos.z - centerPos.z;
 	float distance = sqrtf(dx * dx + dz * dz);
 
-	// 範囲内か判定
+	//範囲内か判定
 	bool inRange = (distance <= VIEW_RANGE);
 
 	float angleStep = AsoUtility::FULL_ROTATION_RAD / VALUE_SIXTY;
 
-	for (int i = ZERO; i < VALUE_SIXTY; ++i)
+	for (int i = VALUE_ZERO; i < VALUE_SIXTY; ++i)
 	{
 		float angle1 = angleStep * i;
 		float angle2 = angleStep * (i + VALUE_ONE);

@@ -5,6 +5,10 @@
 class EnemyThorn : public EnemyBase
 {
 public:
+
+	static constexpr  float SPEED = 2.0f;
+	static constexpr  int HP = 10;
+
 	EnemyThorn();
 
 	//アニメーションロード用
