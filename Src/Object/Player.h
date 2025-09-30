@@ -25,11 +25,6 @@ public:
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
-	// ジャンプ力
-	static constexpr float POW_JUMP = 35.0f;
-	// ジャンプ受付時間
-	static constexpr float TIME_JUMP_IN = 0.5f;
-
 	//影の大きさ
 	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
@@ -68,7 +63,6 @@ public:
 		IDLE,
 		RUN,
 		FAST_RUN,
-		JUMP,
 		DOWN,
 		ATTACK1,
 		ATTACK2,
@@ -164,7 +158,6 @@ private:
 
 	// --- モーション・操作 ---
 	void ProcessMove(void);		// 移動
-	void ProcessJump(void);		//ジャンプモーション
 	void ProcessAttack(void);	//攻撃モーション
 
 	// 回転
@@ -172,7 +165,6 @@ private:
 	void Rotate(void);
 
 	// モーション終了
-	bool IsEndLanding(void);		// ジャンプ終了
 	bool IsEndLandingA(void);		// アタック終了
 	bool IsExAttackReady() const;	// 回転斬りリセット
 
@@ -198,9 +190,7 @@ private:
 	VECTOR moveDiff_;	// フレームごとの移動値
 	float speed_;		// 移動スピード
 	bool canMove_;		// 移動が可能かどうか
-	float stepJump_;	// ジャンプの入力受付時間
 	float stepRotTime_;	// 回転補間の進行を管理するタイマー(残り時間)
-	VECTOR jumpPow_;	// ジャンプ量
 	void CalcGravityPow(void);// 移動量の計算
 
 	// 回転
@@ -227,9 +217,6 @@ private:
 	bool isMax_;//水の所持上限
 
 	// --- 攻撃フラグ ---
-	// ジャンプ判定
-	bool isJump_;
-
 	//攻撃の判定
 	bool isAttack_;		//縦斬り
 	bool isAttack2_;	//横斬り
