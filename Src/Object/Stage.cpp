@@ -13,7 +13,6 @@
 
 //’S“–‚µ‚Ü‚·@’†R‚Å‚·
 
-
 Stage::Stage(Player& player) 
 	: resMng_(ResourceManager::GetInstance()), player_(player)
 {
