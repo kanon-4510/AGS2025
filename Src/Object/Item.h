@@ -11,9 +11,14 @@ class Item : public ActorBase
 {
 public:
 	//初期化用 & デバッグ
-	static constexpr float ZERO = 0.0f;
+	static constexpr float VALUE_ZERO = 0.0f;
 
-	static constexpr float ITEM_MODEL_SCALE = 0.1f;
+	static constexpr float ITEM_MODEL_SCALE = 0.1f;	//モデルのサイズ
+
+	static constexpr float COLLISION_SIZE = 30.0f;		//コリジョンサイズ
+
+	//球体座標
+	static constexpr VECTOR COLLISION_POS = { 0.0f, 150.0f, 0.0f };
 
 	const float ITEM_GROUND_Y = 2.0f;
 	const float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;

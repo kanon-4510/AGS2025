@@ -36,19 +36,19 @@ Player::Player(void)
 
 	//スピードアップ用のフラグ
 	speedUpFlag_ = false;
-	speedUpCnt_ = 1200;
+	speedUpCnt_ = SPEED_UP_TIME;
 
 	//攻撃の初期化
-	normalAttack_ = 2;
-	slashAttack_ = 1;
-	exrAttack_ = 2;
+	normalAttack_ = NORMAL_ATTACK;
+	slashAttack_ = SLASH_ATTACK;
+	exrAttack_ = EX_ATTACK;
 	powerUpFlag_ = false;
 	isAttack_ = false;
 	isAttack2_ = false;
 	exAttack_ = false;
-	exTimer_ = 10000;
+	exTimer_ = EX_TIME;
 	lastExTime_ = -exTimer_;
-	powerUpCnt_ = 1200;
+	powerUpCnt_ = POWER_UP_TIME;
 
 	//ステ関連
 	hp_ = HP;
@@ -82,7 +82,7 @@ void Player::Init(void)
 	transform_.SetModel(resMng_.Load(
 		ResourceManager::SRC::PLAYER).handleId_);
 	transform_.scl = AsoUtility::VECTOR_ONE;
-	transform_.pos = { 300.0f, 0.0f, 0.0f };
+	transform_.pos = PLAYER_POS;
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
@@ -118,12 +118,12 @@ void Player::Init(void)
 
 	//カプセルコライダ
 	capsule_ = std::make_unique<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
-	capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
-	capsule_->SetRadius(20.0f);
+	capsule_->SetLocalPosTop(CAPSULE_TOP);
+	capsule_->SetLocalPosDown(CAPSULE_BOTTOM);
+	capsule_->SetRadius(CAPSULE_RADIUS);
 
 	//衝突判定用の球体半径
-	collisionRadius_ = 100.0f;
+	collisionRadius_ = COLLISION_RADIUS;
 
 	//衝突判定用の球体中心の調整座標
 	collisionLocalPos_ = { 0.0f, capsule_->GetCenter().y, 0.0f};
@@ -142,6 +142,7 @@ void Player::Update(void)
 	//アニメーション再生
 	animationController_->Update();
 
+	//ダウン処理
 	UpdateDown(1.0f);
 }
 
@@ -168,15 +169,15 @@ void Player::Draw(void)
 	//DrawDebug();						//デバッグ用描画
 
 #pragma region ステータス
-	DrawFormatString(55, Application::SCREEN_SIZE_Y - 95, 0x0, "PLAYER");
+	DrawFormatString(PLAYER_LABEL_X, PLAYER_LABEL_Y, BLACK, "PLAYER");
 	//枠線（白）
-	DrawBox(47, Application::SCREEN_SIZE_Y - 78, 653 , Application::SCREEN_SIZE_Y - 37, 0xaaaaaa, true);
+	DrawBox(47, Application::SCREEN_SIZE_Y - 78, 653 , Application::SCREEN_SIZE_Y - 37, WHITE, true);
 	
-	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, 0x0, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, 0x00ff00, true);
-	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, 0xff0000, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, 0x0, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, 0x0000ff, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, BLACK, true);
+	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, GREEN, true);
+	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, RED, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, BLACK, true);
+	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, BLUE, true);
 	
 	if (powerUpFlag_)
 	{
@@ -320,14 +321,8 @@ const std::vector<std::shared_ptr<EnemyBase>>& Player::GetEnemyCollision(void) c
 	return *enemy_;
 }
 
-bool Player::IsPlay(void) const
-{
-	return state_ == STATE::PLAY;
-}
-
 void Player::InitAnimation(void)
 {
-
 	std::string path = Application::PATH_MODEL + "NPlayer/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
@@ -335,13 +330,12 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Player.mv1", 60.0f, 1);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
 	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::ATTACK2, path + "Player.mv1", 17.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::ATTACK1, path + "Player.mv1", 17.0f, 5);
+	animationController_->Add((int)ANIM_TYPE::SLASHATTACK, path + "Player.mv1", 17.0f, 4);
+	animationController_->Add((int)ANIM_TYPE::NORMALATTACK, path + "Player.mv1", 17.0f, 5);
 	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
 	animationController_->Add((int)ANIM_TYPE::EXATTACK, path + "Player.mv1", 15.0f, 8);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
-
 }
 
 void Player::ChangeState(STATE state)
@@ -496,13 +490,6 @@ void Player::DrawShadow(void)
 void Player::DrawDebug(void)
 {
 #ifdef _DEBUG
-	int white = 0xffffff;
-	int black = 0x000000;
-	int red = 0xff0000;
-	int green = 0x00ff00;
-	int blue = 0x0000ff;
-	int yellow = 0xffff00;
-	int purpl = 0x800080;
 
 	VECTOR v;
 
@@ -510,11 +497,11 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	//キャラ座標
 	v = transform_.pos;
-	DrawFormatString(20, 60, white, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
+	DrawFormatString(0, 0, BLACK, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
 	//-------------------------------------------------------
 
 	//衝突
-	DrawLine3D(gravHitPosUp_, gravHitPosDown_, 0x0);
+	DrawLine3D(gravHitPosUp_, gravHitPosDown_, BLACK);
 
 	capsule_->Draw();
 #endif
@@ -531,6 +518,8 @@ void Player::ProcessMove(void)
 	Quaternion cameraRot = mainCamera->GetQuaRotOutX();
 
 	//方向
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
 	double rotRad = 0;
@@ -849,7 +838,7 @@ void Player::ProcessAttack(void)
 	{
 		if (!isAttack_ && !isAttack2_ && !exAttack_ && isHit)
 		{
-			animationController_->Play((int)ANIM_TYPE::ATTACK1, false);
+			animationController_->Play((int)ANIM_TYPE::NORMALATTACK, false);
 			isAttack_ = true;
 
 			//衝突(攻撃)
@@ -864,7 +853,7 @@ void Player::ProcessAttack(void)
 			//Treeのレベルが25以上ならATTACK2を許可
 			if (tree_ && tree_->GetLv() >= 25 && !isAttack2_)
 			{
-				animationController_->Play((int)ANIM_TYPE::ATTACK2, false);
+				animationController_->Play((int)ANIM_TYPE::SLASHATTACK, false);
 				isAttack2_ = true;
 
 				//衝突(攻撃)
@@ -916,7 +905,7 @@ bool Player::IsEndLandingA(void)
 	int animType = animationController_->GetPlayType();
 
 	//現在のアニメーションが ATTACK1,2 または EXATTACK のいずれかで、まだ終了していない場合
-	if ((animType != (int)ANIM_TYPE::ATTACK1 || animType == (int)ANIM_TYPE::ATTACK2 
+	if ((animType != (int)ANIM_TYPE::NORMALATTACK || animType == (int)ANIM_TYPE::SLASHATTACK
 		|| animType == (int)ANIM_TYPE::EXATTACK) 
 		&& !animationController_->IsEnd())
 	{
@@ -964,9 +953,9 @@ void Player::PowerUpTimer(void)
 		{
 			powerUpFlag_ = false;
 
-			normalAttack_ = 2;
-			slashAttack_ = 1;
-			exrAttack_ = 2;
+			normalAttack_ = NORMAL_ATTACK;
+			slashAttack_ = SLASH_ATTACK;
+			exrAttack_ = EX_ATTACK;
 			powerUpCnt_ = POWER_UP_TIME;
 		}
 	}
@@ -1050,7 +1039,6 @@ void Player::Revival()
 	canMove_ = true;   //移動再開
 
 	animationController_->Play((int)ANIM_TYPE::IDLE, true);
-	//他の再開処理（無敵終了、移動可能など）をここで
 }
 
 void Player::EffectFootSmoke(void)
