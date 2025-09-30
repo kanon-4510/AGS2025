@@ -5,6 +5,10 @@
 class EnemyOnion : public EnemyBase
 {
 public:
+
+	static constexpr  float SPEED = 3.0f;
+	static constexpr  int HP = 2;
+
 	EnemyOnion();
 
 	//アニメーションロード用

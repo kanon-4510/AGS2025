@@ -34,11 +34,11 @@ void EnemyMushroom::SetParam(void)
 		, AsoUtility::Deg2RadF(DEGREE), 0.0f);//クォータニオンをいじると向きが変わる
 	transform_.dir = { AsoUtility::VECTOR_ZERO };						// 右方向に移動する
 
-	speed_ = 5.0f;		// 移動スピード
+	speed_ = SPEED;		// 移動スピード
 
 	isAlive_ = true;	// 初期は生存状態
 
-	hp_ = 3;	// HPの設定
+	hp_ = HP;	// HPの設定
 
 	collisionRadius_ = COLLOSION_RADIUS;	// 衝突判定用の球体半径
 	collisionLocalPos_ = COLLISION_POS;	// 衝突判定用の球体中心の調整座標
