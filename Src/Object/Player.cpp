@@ -169,15 +169,15 @@ void Player::Draw(void)
 	//DrawDebug();						//デバッグ用描画
 
 #pragma region ステータス
-	DrawFormatString(PLAYER_LABEL_X, PLAYER_LABEL_Y, BLACK, "PLAYER");
-	//枠線（白）
-	DrawBox(47, Application::SCREEN_SIZE_Y - 78, 653 , Application::SCREEN_SIZE_Y - 37, WHITE, true);
+	DrawFormatString(NAME_X,NAME_Y,black,"PLAYER");
+	//枠線
+	DrawBox(FRAME_START_X,FRAME_START_Y,FRAME_END_X,FRAME_END_Y,gray, true);
 	
-	DrawBox(50, Application::SCREEN_SIZE_Y - 75, 650, Application::SCREEN_SIZE_Y - 55, BLACK, true);
-	if (hp_ != 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, hp_ * 60 + 50, Application::SCREEN_SIZE_Y - 55, GREEN, true);
-	if (hp_ == 0)DrawBox(50, Application::SCREEN_SIZE_Y - 75, revivalTimer_ + 50, Application::SCREEN_SIZE_Y - 55, RED, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, 650, Application::SCREEN_SIZE_Y - 40, BLACK, true);
-	DrawBox(50, Application::SCREEN_SIZE_Y - 50, water_ * 60 + 50, Application::SCREEN_SIZE_Y - 40, BLUE, true);
+	DrawBox(BAR_START_X,BAR_START_HY,BAR_END_X,BAR_END_HY,black,true);
+	if (hp_ != 0)DrawBox(BAR_START_X,BAR_START_HY,hp_*BAR_POINT+BAR_START_X,BAR_END_HY,green,true);
+	if (hp_ == 0)DrawBox(BAR_START_X,BAR_START_HY,revivalTimer_+BAR_START_X,BAR_END_HY,red,true);
+	DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X,BAR_END_WY,black,true);
+	DrawBox(BAR_START_X,BAR_START_WY,water_*BAR_POINT+BAR_START_X,BAR_END_WY,blue,true);
 	
 	if (powerUpFlag_)
 	{
@@ -497,11 +497,11 @@ void Player::DrawDebug(void)
 	//-------------------------------------------------------
 	//キャラ座標
 	v = transform_.pos;
-	DrawFormatString(0, 0, BLACK, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
+	DrawFormatString(0, 0, black, "Player座標 ： (%0.2f, %0.2f, %0.2f)%d", v.x, v.y, v.z, hp_);
 	//-------------------------------------------------------
 
 	//衝突
-	DrawLine3D(gravHitPosUp_, gravHitPosDown_, BLACK);
+	DrawLine3D(gravHitPosUp_, gravHitPosDown_, black);
 
 	capsule_->Draw();
 #endif

@@ -13,9 +13,7 @@ class Tree;
 
 class Player : public ActorBase
 {
-
 public:
-
 	//プレイヤー
 	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
 	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
@@ -57,16 +55,30 @@ public:
 	static constexpr int SLASH_ATTACK = 1;
 	static constexpr int EX_ATTACK = 2;
 
-	//UI位置
-	static constexpr int PLAYER_LABEL_X = 55;
-	static constexpr int PLAYER_LABEL_Y = Application::SCREEN_SIZE_Y - 95;
+	//ステータス関連
+	static constexpr int NAME_X = 55;										//名前の位置X
+	static constexpr int NAME_Y = Application::SCREEN_SIZE_Y - 95;			//名前の位置Y
+	static constexpr int FRAME_START_X = 47;								//枠の最初X
+	static constexpr int FRAME_START_Y = Application::SCREEN_SIZE_Y - 78;	//枠の最初Y
+	static constexpr int FRAME_END_X = 653;									//枠の最後X
+	static constexpr int FRAME_END_Y = Application::SCREEN_SIZE_Y - 37;		//枠の最後Y
+	static constexpr int BAR_START_X = 50;									//バーの最初X
+	static constexpr int BAR_START_HY = Application::SCREEN_SIZE_Y - 75;	//バーの最初体力Y
+	static constexpr int BAR_START_WY = Application::SCREEN_SIZE_Y - 50;	//バーの最初水Y
+	static constexpr int BAR_END_X = 650;									//バーの最後X
+	static constexpr int BAR_END_HY = Application::SCREEN_SIZE_Y - 55;		//バーの最後体力Y
+	static constexpr int BAR_END_WY = Application::SCREEN_SIZE_Y - 40;		//バーの最後水Y
+	static constexpr int BAR_POINT = 60;									//バーの数値
 
-	//UI色
-	static constexpr int WHITE = 0xaaaaaa;
-	static constexpr int GREEN = 0x00ff00;
-	static constexpr int BLACK = 0x0;
-	static constexpr int RED = 0xff0000;
-	static constexpr int BLUE = 0x0000ff;
+	//色
+	int white = 0xffffff; //白
+	int black = 0x000000; //黒
+	int red = 0xff0000;	  //赤
+	int green = 0x00ff00; //緑
+	int blue = 0x0000ff;  //青
+	int yellow = 0xffff00;//黄
+	int purpl = 0x800080; //紫
+	int gray = 0xaaaaaa;  //灰
 
 	//状態
 	enum class STATE
@@ -292,5 +304,4 @@ private:
 
 	//デバッグ処理
 	void DrawDebug(void);
-
 };
