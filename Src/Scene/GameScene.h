@@ -25,18 +25,65 @@ public:
 	static constexpr int STAGE_LANGE=10000;	//ステージの幅
 
 	static constexpr int LV_MAX = 100;		//木のレベル最大
-	static constexpr int LV_OLD = 75;		//木の成長段階（老木）
+	static constexpr int LV_OLD = 75;		//木の成長段階
+	static constexpr int LV_ADULT = 50;		//木の成長段階
+	static constexpr int LV_KID = 25;		//木の成長段階
 	static constexpr int HP_ZERO = 0;		//木の体力0
 
 	static constexpr int BOSS_WAIT = 0;		//ボス出現待機
 	static constexpr int BOSS_ON = 1;		//ボス出現可能
 	static constexpr int BOSS_OFF = 2;		//ボス出現不可
 
+	//UI関係-----------------------------------------------------
+	//-------------------------------------------------------------------
 
-	// ポーズメニュー関連
-	static constexpr int PAUSE_MENU_ITEM_COUNT = 4;
-	static constexpr int PAUSE_MENU_DOWN = 1;							// 下に移動
-	static constexpr int PAUSE_MENU_UP = PAUSE_MENU_ITEM_COUNT - 1;		// 上に移動（+3 の代わり）
+	static constexpr int GAME_HEIGHT_1 = 80;			//ゲーム開始時の注意書き
+
+	//画像サイズ
+	static constexpr float IMG_GAME_UI_1_SIZE = 0.5;	//imgGameUi1_のサイズ
+	static constexpr float IMG_OPEGEAR_UI_SIZE = 0.8;	//imgOpeGear_のサイズ
+	static constexpr float PAUSE_IMG_UI_SIZE = 0.65;	//pauseImg_のサイズ
+
+	//ポーズメニュー関連
+	static constexpr int PAUSE_MENU_ITEM_COUNT = 4;						//ポーズメニューの数
+	static constexpr int PAUSE_MENU_DOWN = 1;							//下に移動
+	static constexpr int PAUSE_MENU_UP = PAUSE_MENU_ITEM_COUNT - 1;		//上に移動（+3 の代わり）
+
+	//フェード系
+	static constexpr int AUTO_FADE = 240;				//自動フェード
+	static constexpr int FLASH = 45;					//点滅
+	static constexpr int ONE_SECOND_FRAME = 60;			//1秒
+
+	//設定系
+	static constexpr int UI_GEAR = 100;					//imgOpeGear_のX,Yの場所
+
+	static constexpr int UI_PAUSE_IMG_HEIGHT = 150;				//pauseImg_の高さ
+
+	static constexpr int UI_WIDTH_PAUSE_1 = 160;				//UIを調整する
+	static constexpr int UI_WIDTH_PAUSE_2 = 200;				//UIを調整する
+	static constexpr int UI_WIDTH_PAUSE_3 = 240;				//UIを調整する
+
+	static constexpr int UI_HEIGHT_PAUSE_1 = 350;				//１個目のUIの高さ
+	static constexpr int UI_HEIGHT_PAUSE_2 = 470;				//２個目のUIの高さ
+	static constexpr int UI_HEIGHT_PAUSE_3 = 590;				//３個目のUIの高さ
+	static constexpr int UI_HEIGHT_PAUSE_4 = 710;				//４個目のUIの高さ
+
+
+	static constexpr int BACK_PAUSE_WIDTH = 1600;				//ポーズに戻るときのENTERのX
+	static constexpr int BACK_PAUSE_HEIGHT = 1020;				//ポーズに戻るときのENTERのY
+
+	//-------------------------------------------------------------------
+
+	//色
+	int white = 0xffffff; //白
+	int black = 0x000000; //黒
+	int red = 0xff0000;	  //赤
+	int green = 0x00ff00; //緑
+	int blue = 0x0000ff;  //青
+	int yellow = 0xffff00;//黄
+	int purpl = 0x800080; //紫
+	
+
 
 	GameScene(void);	// コンストラクタ
 	~GameScene(void);	// デストラクタ
