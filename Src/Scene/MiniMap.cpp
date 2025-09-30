@@ -37,7 +37,7 @@ void MiniMap::DrawBackground()
     //É~ÉjÉ}ÉbÉvÇÃíÜêS
     int centerX = mapPosX + mapPixelSize / HALF_DIVISOR;
     int centerY = mapPosY + mapPixelSize / HALF_DIVISOR;
-    int radius = mapPixelSize / HALF_DIVISOR;
+    int RADIUS = mapPixelSize / HALF_DIVISOR;
 
     int outerRadius = mapPixelSize / HALF_DIVISOR;
     int borderWidth = BORDER_WIDTH;     //äOògÇÃëæÇ≥
@@ -139,16 +139,16 @@ void MiniMap::DrawEnemies(const std::vector<std::shared_ptr<EnemyBase>>& enemies
         if (!IsInsideCircle(ex, ez)) continue;
 
         //í èÌÇÃìGÇÃâ~ÇÃîºåa
-        int radius = ENEMY_RADIUS;
+        int RADIUS = ENEMY_RADIUS;
 
         //BOSSÇÃÇ∆Ç´ÇÕâ~ÇëÂÇ´Ç≠
         if (enemy->GetEnemyType() == EnemyBase::TYPE::BOSS)
         {
-            radius = ENEMY_BOSS_RADIUS;
+            RADIUS = ENEMY_BOSS_RADIUS;
         }
 
         //ìG
-        DrawCircle(ex, ez, radius, RED, TRUE);
+        DrawCircle(ex, ez, RADIUS, RED, TRUE);
     }
 }
 
@@ -187,12 +187,12 @@ bool MiniMap::IsInsideCircle(int x, int y) const
 {
     int centerX = mapPosX + mapPixelSize / HALF_DIVISOR;
     int centerY = mapPosY + mapPixelSize / HALF_DIVISOR;
-    int radius = mapPixelSize / HALF_DIVISOR;
+    int RADIUS = mapPixelSize / HALF_DIVISOR;
 
     int dx = x - centerX;
     int dy = y - centerY;
 
-    return dx * dx + dy * dy <= radius * radius;
+    return dx * dx + dy * dy <= RADIUS * RADIUS;
 }
 
 MapVector2 MiniMap::WorldToMapPos(const MapVector2& worldPos) const

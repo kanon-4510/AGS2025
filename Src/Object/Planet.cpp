@@ -69,9 +69,9 @@ float Planet::GetGravityRadius(void) const
 	return gravityRadius_;
 }
 
-void Planet::SetGravityRadius(float radius)
+void Planet::SetGravityRadius(float RADIUS)
 {
-	gravityRadius_ = radius;
+	gravityRadius_ = RADIUS;
 }
 
 const Planet::TYPE& Planet::GetType(void) const

@@ -105,9 +105,9 @@ float Capsule::GetRadius(void) const
 	return radius_;
 }
 
-void Capsule::SetRadius(float radius)
+void Capsule::SetRadius(float RADIUS)
 {
-	radius_ = radius;
+	radius_ = RADIUS;
 }
 
 float Capsule::GetHeight(void) const

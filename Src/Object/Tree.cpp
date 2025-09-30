@@ -25,7 +25,7 @@ Tree::Tree(void)
 	//無敵状態
 	imgMutekiIcon_ = 0;
 	invincible_ = false;
-	mutekiCnt_ = 600;
+	mutekiCnt_ = INVINCIBLE_TIME;
 
 	//エフェクト
 	effectTreeResId_ = 0;
@@ -46,20 +46,21 @@ bool Tree::Init(void)
 	//無敵アイコン画像
 	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
-	scl_ = { 3.0f, 2.5f, 3.0f };							//大きさ
-	rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };			//回転
-	pos_ = { 0.0f, -3.5f, 0.0f };							//位置
+	scl_ = BABY_SCL;			//大きさ
+	rot_ = BABY_ROT;			//回転
+	pos_ = BABY_POS;			//位置
 
 	lv_ = 1;
+
 	isAlive_ = true;
 	isD_ = false;
 	grow_ = Tree::GROW::BABY;
-	hp_ = 50;
+	hp_ = HP;
 	water_ = 0;
 
 	//衝突判定
-	collisionRadius_ = 100.0f;								
-	collisionLocalPos_ = { 0.0f, 60.0f, 0.0f };				
+	collisionRadius_ = COL_RAD_1;
+	collisionLocalPos_ = COL_LOCAL_POS;
 
 	//エフェクト
 	effectTreeResId_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TREE_RANGE).handleId_;
@@ -80,22 +81,23 @@ void Tree::Update(void)
 
 	//成長段階に応じた最小距離を設定
 	float minDistance = 0.0f;
+
 	switch (grow_) 
 	{
 	case GROW::BABY:
-		minDistance = 70.0f;
+		minDistance = DISTANCE1;
 		break;
 	case GROW::KID:
-		minDistance = 100.0f;
-		collisionRadius_ = 200.0f;
+		minDistance = DISTANCE2;
+		collisionRadius_ = COL_RAD_2;
 		break;
 	case GROW::ADULT:
-		minDistance = 350.0f;
-		collisionRadius_ = 350.0f;
+		minDistance = DISTANCE3;
+		collisionRadius_ = COL_RAD_3;
 		break;
 	case GROW::OLD:
-		minDistance = 700.0f;
-		collisionRadius_ = 800.0f;
+		minDistance = DISTANCE4;
+		collisionRadius_ = COL_RAD_4;
 		break;
 	}
 
@@ -126,33 +128,33 @@ void Tree::Update(void)
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		scl_ = { 3.0f, 2.5f, 3.0f };						//大きさの設定
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
-		pos_ = { 0.0f, -3.5f, 0.0f };						//位置の設定
+		scl_ = BABY_SCL;				//大きさの設定
+		rot_ = BABY_ROT;				//角度の設定
+		pos_ = BABY_POS;				//位置の設定
 		MV1SetScale(modelIdB_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdB_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdB_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::KID:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
-		scl_ = { 15.0f, 10.0f, 15.0};
-		pos_ = { 0.0f, -2.0f, 0.0f };
+		scl_ = KID_SCL;
+		rot_ = KID_ROT;		//角度の設定
+		pos_ = KID_POS;
 		MV1SetScale(modelIdK_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdK_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdK_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::ADULT:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
-		scl_ = { 30.0f, 25.0f, 30.0f };
-		pos_ = { 0.0f, -2.5f, 0.0f };
+		scl_ = ADULT_SCL;
+		rot_ = ADULT_ROT;		//角度の設定
+		pos_ = ADULT_POS;
 		MV1SetScale(modelIdA_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdA_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdA_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::OLD:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
-		scl_ = { 45.0f, 45.0f, 45.0f };
-		pos_ = { 0.0f, -23.5f, 0.0f };
+		scl_ = OLD_SCL;
+		rot_ = OLD_ROT;		//角度の設定
+		pos_ = OLD_POS;
 		MV1SetScale(modelIdO_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdO_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdO_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
@@ -199,7 +201,7 @@ void Tree::Draw(void)
 	}
 	else DrawBox(BAR_START_X,BAR_START_HY,hp_*HIT_POINT+BAR_START_X,BAR_END_HY,green,true);
 
-								DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X					   ,BAR_END_WY,black,true);
+								DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X ,BAR_END_WY,black,true);
 	     if(grow_==GROW::OLD)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_OLD  +BAR_START_X,BAR_END_WY,blue ,true);
 	else if(grow_==GROW::ADULT)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_ADULT+BAR_START_X,BAR_END_WY,blue ,true);
 	else if(grow_==GROW::KID)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_KID  +BAR_START_X,BAR_END_WY,blue ,true);
@@ -207,30 +209,25 @@ void Tree::Draw(void)
 
 	if (invincible_)
 	{
-		const int cx = 300;
-		const int cy = Application::SCREEN_SIZE_Y - 115;
-		const float radius = 32.0f;
-		const int SEGMENTS = 60;
-
 		// 無敵アイコン画像
-		DrawRotaGraph(cx, cy, 1.3, 0.0, imgMutekiIcon_, true);
+		DrawRotaGraph(CX, CY, MUTEKI_ICON_SIZE, 0.0, imgMutekiIcon_, true);
 
 		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
 		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_GRAY);
 
 		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / SEGMENTS;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / SEGMENTS;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = cy + radius * sinf(angle1);
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = cy + radius * sinf(angle2);
+			float x1 = CX + RADIUS * cosf(angle1);
+			float y1 = CY + RADIUS * sinf(angle1);
+			float x2 = CX + RADIUS * cosf(angle2);
+			float y2 = CY + RADIUS * sinf(angle2);
 
-			DrawTriangle(cx, cy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(CX, CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -249,11 +246,6 @@ void Tree::DrawDebug(void)
 
 	VECTOR v;
 	VECTOR c;
-
-	if (invincible_)
-	{
-		DrawFormatString(50, 180, GetColor(255, 0, 0), "���G: �c��%d�b", mutekiCnt_);
-	}
 }
 void Tree::DrawDebugTree2Player(void)
 {
@@ -269,9 +261,9 @@ void Tree::DrawDebugTree2Player(void)
 		float distance = sqrtf(dx * dx + dz * dz);
 		bool inRange = (distance <= viewRange_);
 
-		unsigned int color = inRange ? 0xff0000 : 0xffdead;  /// 赤 or 薄黄色
+		unsigned int color = inRange ? red : orange;  /// 赤 or うすきいろ
 
-		float angleStep = DX_PI_F * 2.0f / circleSegments_;
+		float angleStep = (DX_PI_F * 2.0f) / circleSegments_;
 
 		if (grow_ == GROW::BABY) 
 		{
@@ -280,19 +272,19 @@ void Tree::DrawDebugTree2Player(void)
 		else if (grow_ == GROW::KID)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = 200.0f;
+			viewRange_ = RANGE_1;
 			
 		}
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = 450.0f;
+			viewRange_ = RANGE_2;
 			
 		}
 		else if(grow_ == GROW::OLD)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = 909.0f;
+			viewRange_ = RANGE_3;
 			
 		}
 
@@ -459,7 +451,7 @@ void Tree::pHit(void)//プレイヤーとのあたり判定
 	if (player_->IsMax() == true)
 	{
 		player_->SetIsMax();
-		for (int l = 0; l <= 19; l++)
+		for (int l = 0; l <= DOUBLE_WATER; l++)
 		{
 			water_++;
 			LvUp();
@@ -482,21 +474,21 @@ void Tree::EffectTreeRange(void)
 		StopEffekseer3DEffect(effectTreePlayId_);
 	}
 
-	float scale = 10.0f;  // デフォルト値
+	float scale = DEFAULT_SCL;  // デフォルト値
 
 	switch (grow_)
 	{
 	case GROW::BABY:
-		scale = 50.0f;
+		scale = BABY_TREE_SCL;
 		break;
 	case GROW::KID:
-		scale = 105.0f;
+		scale = BABY_TREE_KID;
 		break;
 	case GROW::ADULT:
-		scale = 235.0f;
+		scale = BABY_TREE_ADULT;
 		break;
 	case GROW::OLD:
-		scale = 480.0f;
+		scale = BABY_TREE_OLD;
 		break;
 	default:
 		break;

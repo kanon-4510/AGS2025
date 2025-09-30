@@ -358,14 +358,14 @@ bool AsoUtility::IsHitSpheres(const VECTOR& pos1, float radius1, const VECTOR& p
     bool ret = false;
 
     // ‚¨Œİ‚¢‚Ì”¼Œa‚Ì‡Œv
-    float radius = radius1 + radius2;
+    float RADIUS = radius1 + radius2;
 
     // À•W‚Ì·‚©‚ç‚¨Œİ‚¢‚Ì‹——£‚ğæ‚é
     VECTOR diff = VSub(pos2, pos1);
 
     // O•½•û‚Ì’è—‚Å”äŠr(SqrMagnitude‚Æ“¯‚¶)
     float dis = (diff.x * diff.x) + (diff.y * diff.y) + (diff.z * diff.z);
-    if (dis < (radius * radius))
+    if (dis < (RADIUS * RADIUS))
     {
         ret = true;
     }

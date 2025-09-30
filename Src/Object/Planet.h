@@ -55,7 +55,7 @@ public:
 	
 	// d—Í”ÍˆÍ‚Ìæ“¾Eİ’è
 	float GetGravityRadius(void) const;
-	void SetGravityRadius(float radius);
+	void SetGravityRadius(float RADIUS);
 
 	// d—Í”ÍˆÍ“à
 	bool InRangeGravity(const VECTOR& pos) const;

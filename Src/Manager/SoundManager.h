@@ -48,7 +48,7 @@ public:
 	void Destroy(void);
 
 	bool Play(SRC src, Sound::TIMES times);	//二次元音源用
-	bool Play(SRC src, Sound::TIMES times, VECTOR pos, float radius);	//三次元音源用
+	bool Play(SRC src, Sound::TIMES times, VECTOR pos, float RADIUS);	//三次元音源用
 
 	void Stop(SRC src);	//音源を停止する
 
