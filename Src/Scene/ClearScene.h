@@ -49,7 +49,6 @@ private:
 	static constexpr int MESSAGE_FONT_SIZE = 128;
 	static constexpr int MESSAGE_X_OFFSET = 5; // 文字列調整の係数
 	static constexpr float MESSAGE_X_SCALE = 5.5f;
-	static constexpr int MESSAGE_Y = 830;
 
 	// フォント戻すサイズ
 	static constexpr int FONT_SIZE_DEFAULT = 16;
