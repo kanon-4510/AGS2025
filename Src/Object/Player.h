@@ -16,10 +16,11 @@ class Player : public ActorBase
 public:
 	//プレイヤー
 	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
-	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };	//カプセルの頂点
 	static constexpr VECTOR CAPSULE_BOTTOM = { 0.0f,  30.0f, 0.0f };//カプセルの足元
-	static constexpr float  CAPSULE_RADIUS = 20.0f;					//カプセルの半径
+	static constexpr float PLAYER_ROT_Y = 180.0f;					// Y軸回転(度数)
+	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
+	static constexpr float CAPSULE_RADIUS = 20.0f;					//カプセルの半径
 	static constexpr float ROT_FORWARD_DEG = 0.0f;					//プレイヤー角度(前)
 	static constexpr float ROT_BACK_DEG = 180.0f;					//プレイヤー角度(後ろ)
 	static constexpr float ROT_RIGHT_DEG = 90.0f;					//プレイヤー角度(右)
@@ -45,19 +46,28 @@ public:
 	static constexpr float SHADOW_UV_SCALE = 2.0f;				//UV計算用
 	static constexpr float SHADOW_UV_CENTER = 0.5f;
 
-	//煙エフェクト発生間隔
-	static constexpr float TERM_FOOT_SMOKE = 0.3f;
+	//煙エフェクト
+	static constexpr float TERM_FOOT_SMOKE = 0.3f;		//煙エフェクト発生間隔
+	static constexpr float FOOT_SMOKE_SCALE = 5.0f;		//煙エフェクトのスケール
 
 	//ステ関連
 	static constexpr int HP = 10;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
+	//水のサイズ
+	static constexpr float WATER_SCALE_BIG = 0.2f;
+	static constexpr float WATER_SCALE_MID = 0.15f;
+	static constexpr int WATER_SMALL = 1;
+	static constexpr int WATER_MID = 2;
+	static constexpr int WATER_BIG = 3;
+
 	//ステータスアップ
-	static constexpr int POWER_UP_TIME = 1200;	//パワーアップ時間
-	static constexpr int SPEED_UP_TIME = 1200;	//スピードアップ時間
-	static constexpr int EX_TIME = 10000;		//無敵時間
-	static constexpr float STATUS_UP = 2.0f;	//ステータス変更用の値
+	static constexpr int POWER_UP_TIME = 1200;			//パワーアップ時間
+	static constexpr int SPEED_UP_TIME = 1200;			//スピードアップ時間
+	static constexpr int EX_TIME = 10000;				//無敵時間
+	static constexpr float STATUS_UP = 2.0f;			//ステータス変更用の値
+	static constexpr float STATUS_EFFECT_SCALE = 20.0f;	//ステータスアップエフェクトのスケール
 
 	//攻撃
 	static constexpr int NORMAL_ATTACK = 2;				//通常攻撃

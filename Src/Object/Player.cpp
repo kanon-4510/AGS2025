@@ -85,7 +85,7 @@ void Player::Init(void)
 	transform_.pos = PLAYER_POS;
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
-		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
+		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(PLAYER_ROT_Y), 0.0f });
 	transform_.Update();
 
 	//丸影画像
@@ -832,7 +832,7 @@ void Player::ProcessAttack(void)
 		else if (!isAttack2_ && !isAttack_ && !exAttack_ && isHit_N)
 		{
 			//Treeのレベルが25以上ならATTACK2を許可
-			if (tree_ && tree_->GetLv() >= 25 && !isAttack2_)
+			if (tree_ && tree_->GetLv() >= LV_KID && !isAttack2_)
 			{
 				animationController_->Play((int)ANIM_TYPE::SLASHATTACK, false);
 				isAttack2_ = true;
@@ -847,7 +847,7 @@ void Player::ProcessAttack(void)
 		else if (!exAttack_ && !isAttack_ && !isAttack2_ && isHit_E)
 		{
 			//Treeのレベルが50以上でクールタイム10秒がたっているならEXATTACKを許可
-			if (tree_ && tree_->GetLv() >= 50 && !exAttack_ && IsExAttackReady())
+			if (tree_ && tree_->GetLv() >= LV_ADULT && !exAttack_ && IsExAttackReady())
 			{
 				animationController_->Play((int)ANIM_TYPE::EXATTACK, false);
 				exAttack_ = true;
@@ -1036,7 +1036,7 @@ void Player::EffectFootSmoke(void)
 		effectSmokePleyId_ = PlayEffekseer3DEffect(effectSmokeResId_);
 
 		//エフェクトの大きさ
-		SetScalePlayingEffekseer3DEffect(effectSmokePleyId_, 5.0f, 5.0f, 5.0f);
+		SetScalePlayingEffekseer3DEffect(effectSmokePleyId_, FOOT_SMOKE_SCALE, FOOT_SMOKE_SCALE, FOOT_SMOKE_SCALE);
 
 		//エフェクトの位置
 		SetPosPlayingEffekseer3DEffect(effectSmokePleyId_,transform_.pos.x, transform_.pos.y, transform_.pos.z);
@@ -1045,7 +1045,7 @@ void Player::EffectFootSmoke(void)
 
 void Player::EffectPower(void)
 {
-	float scale = 20.0f;
+	float scale = STATUS_EFFECT_SCALE;
 
 	//エフェクト再生
 	effectPowerPleyId_ = PlayEffekseer3DEffect(effectPowerResId_);
@@ -1059,7 +1059,7 @@ void Player::EffectPower(void)
 
 void Player::EffectSpeed(void)
 {
-	float scale = 20.0f;
+	float scale = STATUS_EFFECT_SCALE;
 
 	//エフェクト再生
 	effectSpeedPleyId_ = PlayEffekseer3DEffect(effectSpeedResId_);
@@ -1073,7 +1073,7 @@ void Player::EffectSpeed(void)
 
 void Player::EffectHeal(void)
 {
-	float scale = 20.0f;
+	float scale = STATUS_EFFECT_SCALE;
 
 	//エフェクト再生
 	effectHealPleyId_ = PlayEffekseer3DEffect(effectHealResId_);
@@ -1107,14 +1107,14 @@ void Player::wHit(float scale)
 	SoundManager::GetInstance().Play(SoundManager::SRC::GETWATER_SE, Sound::TIMES::FORCE_ONCE);
 
 	//増加量
-	int add = 1;
+	int add = WATER_SMALL;
 
 	//スケールに応じて増加量を変える
-	if (scale >= 0.2f) {
-		add = 3;
+	if (scale >= WATER_SCALE_BIG) {
+		add = WATER_BIG;
 	}
-	else if (scale >= 0.15f) {
-		add = 2;
+	else if (scale >= WATER_SCALE_MID) {
+		add = WATER_MID;
 	}
 	//それ未満は1
 	water_+= add;
