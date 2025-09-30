@@ -5,6 +5,10 @@
 class EnemyDog : public EnemyBase
 {
 public:
+
+	static constexpr  float SPEED = 7.0f;
+	static constexpr  int HP = 8;
+
 	EnemyDog();
 
 	//アニメーションロード用
