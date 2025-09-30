@@ -25,6 +25,11 @@ public:
 	//回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
+	//木のレベル
+	static constexpr int LV_OLD = 75;		//木の成長段階
+	static constexpr int LV_ADULT = 50;		//木の成長段階
+	static constexpr int LV_KID = 25;		//木の成長段階
+
 	//影の大きさ
 	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
@@ -40,6 +45,23 @@ public:
 	//ステータスアップ
 	static constexpr int POWER_UP_TIME = 1200;
 	static constexpr int SPEED_UP_TIME = 1200;
+
+	//ステータス関連
+	static constexpr float ICON_SIZE = 1.3;
+	static constexpr int ICON_CY_HEIGHT = 115;
+
+	static constexpr int GRAY_ALPHA = 180;
+
+	static constexpr int ICON_CY = 965;
+	static constexpr int TIMER_CY = 967;
+
+	static constexpr float RADIUS = 32.0f;
+	static constexpr int SEGMENTS = 60;
+
+	static constexpr int POWER_CX = 150;
+	static constexpr int SPEED_CX = 225;
+	static constexpr int ROT_ATK_CX = 450;
+
 
 	//状態
 	enum class STATE

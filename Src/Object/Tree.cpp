@@ -210,20 +210,20 @@ void Tree::Draw(void)
 		const int cx = 300;
 		const int cy = Application::SCREEN_SIZE_Y - 115;
 		const float radius = 32.0f;
-		const int segments = 60;
+		const int SEGMENTS = 60;
 
 		// 無敵アイコン画像
 		DrawRotaGraph(cx, cy, 1.3, 0.0, imgMutekiIcon_, true);
 
 		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 
-		for (int i = filledSegments; i < segments; ++i)
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / SEGMENTS;
 
 			float x1 = cx + radius * cosf(angle1);
 			float y1 = cy + radius * sinf(angle1);

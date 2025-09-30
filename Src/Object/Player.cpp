@@ -180,93 +180,76 @@ void Player::Draw(void)
 	
 	if (powerUpFlag_)
 	{
-		const int cx = 150;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgPowerIcon_, true);
+		DrawRotaGraph(POWER_CX, ICON_CY, ICON_SIZE, 0, imgPowerIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(powerUpCnt_) / POWER_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = POWER_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = POWER_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(POWER_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	if (speedUpFlag_)
 	{
-		const int cx = 225;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgSpeedIcon_, true);
+		DrawRotaGraph(SPEED_CX, ICON_CY, ICON_SIZE, 0, imgSpeedIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(speedUpCnt_) / SPEED_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = SPEED_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = SPEED_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(SPEED_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (tree_ && tree_->GetLv() >= 50) {
-		const int cx = 450;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;
-		const float radius = 32.0f;
-		const int segments = 60;
+	if (tree_ && tree_->GetLv() >= LV_ADULT) {
 
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgRotateAttackIcon_, true);
+		DrawRotaGraph(ROT_ATK_CX, ICON_CY, ICON_SIZE, 0, imgRotateAttackIcon_, true);
 
 		if (!IsExAttackReady())
 		{
 			float ratio = static_cast<float>(GetNowCount() - lastExTime_) / exTimer_;
-			int filledSegments = static_cast<int>(segments * ratio);
+			int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 
-			for (int i = 0; i < segments - filledSegments; ++i)
+			for (int i = 0; i < SEGMENTS - filledSegments; ++i)
 			{
-				float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-				float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+				float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+				float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-				float x1 = cx + radius * cosf(angle1);
-				float y1 = timerCy + radius * sinf(angle1);
-				float x2 = cx + radius * cosf(angle2);
-				float y2 = timerCy + radius * sinf(angle2);
+				float x1 = ROT_ATK_CX + RADIUS * cosf(angle1);
+				float y1 = TIMER_CY + RADIUS * sinf(angle1);
+				float x2 = ROT_ATK_CX + RADIUS * cosf(angle2);
+				float y2 = TIMER_CY + RADIUS * sinf(angle2);
 
-				DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+				DrawTriangle(ROT_ATK_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 			}
 
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
