@@ -20,6 +20,10 @@ public:
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };	//カプセルの頂点
 	static constexpr VECTOR CAPSULE_BOTTOM = { 0.0f,  30.0f, 0.0f };//カプセルの足元
 	static constexpr float  CAPSULE_RADIUS = 20.0f;					//カプセルの半径
+	static constexpr float ROT_FORWARD_DEG = 0.0f;					//プレイヤー角度(前)
+	static constexpr float ROT_BACK_DEG = 180.0f;					//プレイヤー角度(後ろ)
+	static constexpr float ROT_RIGHT_DEG = 90.0f;					//プレイヤー角度(右)
+	static constexpr float ROT_LEFT_DEG = -90.0f;					//プレイヤー角度(左)
 
 	//スピード
 	static constexpr float SPEED_MOVE = 5.0f;
@@ -28,9 +32,18 @@ public:
 	//回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
+	//木のレベル
+	static constexpr int LV_OLD = 75;		//木の成長段階
+	static constexpr int LV_ADULT = 50;		//木の成長段階
+	static constexpr int LV_KID = 25;		//木の成長段階
+
 	//影の大きさ
 	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
+	static constexpr float SHADOW_LIFT = 0.5f;					//ポリゴンを持ち上げる量
+	static constexpr int   SHADOW_MAX_ALPHA = 128;				//影の最大不透明度
+	static constexpr float SHADOW_UV_SCALE = 2.0f;				//UV計算用
+	static constexpr float SHADOW_UV_CENTER = 0.5f;
 
 	//煙エフェクト発生間隔
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
@@ -40,20 +53,23 @@ public:
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
 
-	//ステータスアップ時間
-	static constexpr int POWER_UP_TIME = 1200;
-	static constexpr int SPEED_UP_TIME = 1200;
+	//ステータスアップ
+	static constexpr int POWER_UP_TIME = 1200;	//パワーアップ時間
+	static constexpr int SPEED_UP_TIME = 1200;	//スピードアップ時間
+	static constexpr int EX_TIME = 10000;		//無敵時間
+	static constexpr float STATUS_UP = 2.0f;	//ステータス変更用の値
 
-	//無敵時間
-	static constexpr int EX_TIME = 10000;
-
-	//ステータス変更用の値
-	static constexpr float STATUS_UP = 2.0f;
-
-	//攻撃力
-	static constexpr int NORMAL_ATTACK = 2;
-	static constexpr int SLASH_ATTACK = 1;
-	static constexpr int EX_ATTACK = 2;
+	//攻撃
+	static constexpr int NORMAL_ATTACK = 2;				//通常攻撃
+	static constexpr int SLASH_ATTACK = 1;				//スラッシュ
+	static constexpr int EX_ATTACK = 2;					//回転斬り
+	static constexpr float ATTACK_RADIUS = 100.0f;		//通常攻撃判定の球半径
+	static constexpr float ATTACK_FORWARD = 100.0f;		//通常攻撃位置の前方オフセット
+	static constexpr float ATTACK2_RADIUS = 140.0f;		//スラッシュ判定半径
+	static constexpr float ATTACK2_FORWARD = 80.0f;		//スラッシュ位置前方オフセット
+	static constexpr float ATTACK2_HEIGHT = 100.0f;		//スラッシュ位置高さ
+	static constexpr float EX_RADIUS = 140.0f;			//回転斬り判定半径
+	static constexpr float EX_HEIGHT = 100.0f;			//回転斬り位置高さ
 
 	//ステータス関連
 	static constexpr int NAME_X = 55;										//名前の位置X
@@ -79,6 +95,23 @@ public:
 	int yellow = 0xffff00;//黄
 	int purpl = 0x800080; //紫
 	int gray = 0xaaaaaa;  //灰
+
+	//ステータス関連
+	static constexpr float ICON_SIZE = 1.3;
+	static constexpr int ICON_CY_HEIGHT = 115;
+
+	static constexpr int GRAY_ALPHA = 180;
+
+	static constexpr int ICON_CY = 965;
+	static constexpr int TIMER_CY = 967;
+
+	static constexpr float RADIUS = 32.0f;
+	static constexpr int SEGMENTS = 60;
+
+	static constexpr int POWER_CX = 150;
+	static constexpr int SPEED_CX = 225;
+	static constexpr int ROT_ATK_CX = 450;
+
 
 	//状態
 	enum class STATE
@@ -138,9 +171,6 @@ public:
 
 	//エネミーの衝突用座標
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
-
-	//ゲームステート処理
-	bool IsPlay(void) const;
 
 	void SetTree(Tree* tree);
 

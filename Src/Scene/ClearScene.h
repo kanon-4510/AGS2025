@@ -18,6 +18,8 @@ public:
 	void Release(void) override;
 private:
 
+	static constexpr float VALUE_TWO = 2.0f;
+
 	// アニメーション用定数
 	static constexpr int MESSAGE_Y = 800;
 	static constexpr int MASK_SPEED = 5;

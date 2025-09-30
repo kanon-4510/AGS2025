@@ -181,93 +181,76 @@ void Player::Draw(void)
 	
 	if (powerUpFlag_)
 	{
-		const int cx = 150;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgPowerIcon_, true);
+		DrawRotaGraph(POWER_CX, ICON_CY, ICON_SIZE, 0, imgPowerIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(powerUpCnt_) / POWER_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = POWER_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = POWER_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(POWER_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	if (speedUpFlag_)
 	{
-		const int cx = 225;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;  //タイマーだけ2px下げる
-		const float radius = 32.0f;
-		const int segments = 60;
-
 		//アイコン描画
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgSpeedIcon_, true);
+		DrawRotaGraph(SPEED_CX, ICON_CY, ICON_SIZE, 0, imgSpeedIcon_, true);
 
 		//タイマー描画（黒い円グラフ）
 		float ratio = static_cast<float>(speedUpCnt_) / SPEED_UP_TIME;
-		int filledSegments = static_cast<int>(segments * ratio);
+		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		for (int i = filledSegments; i < segments; ++i)
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
+		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-			float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-			float x1 = cx + radius * cosf(angle1);
-			float y1 = timerCy + radius * sinf(angle1);  //timerCy使用
-			float x2 = cx + radius * cosf(angle2);
-			float y2 = timerCy + radius * sinf(angle2);  //timerCy使用
+			float x1 = SPEED_CX + RADIUS * cosf(angle1);
+			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
+			float x2 = SPEED_CX + RADIUS * cosf(angle2);
+			float y2 = TIMER_CY + RADIUS * sinf(angle2);  //timerCy使用
 
-			DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+			DrawTriangle(SPEED_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
-	if (tree_ && tree_->GetLv() >= 50) {
-		const int cx = 450;
-		const int iconCy = Application::SCREEN_SIZE_Y - 115;
-		const int timerCy = iconCy + 2;
-		const float radius = 32.0f;
-		const int segments = 60;
+	if (tree_ && tree_->GetLv() >= LV_ADULT) {
 
-		DrawRotaGraph(cx, iconCy, 1.3, 0, imgRotateAttackIcon_, true);
+		DrawRotaGraph(ROT_ATK_CX, ICON_CY, ICON_SIZE, 0, imgRotateAttackIcon_, true);
 
 		if (!IsExAttackReady())
 		{
 			float ratio = static_cast<float>(GetNowCount() - lastExTime_) / exTimer_;
-			int filledSegments = static_cast<int>(segments * ratio);
+			int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 
-			for (int i = 0; i < segments - filledSegments; ++i)
+			for (int i = 0; i < SEGMENTS - filledSegments; ++i)
 			{
-				float angle1 = -DX_PI_F / 2 - DX_TWO_PI * i / segments;
-				float angle2 = -DX_PI_F / 2 - DX_TWO_PI * (i + 1) / segments;
+				float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
+				float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
-				float x1 = cx + radius * cosf(angle1);
-				float y1 = timerCy + radius * sinf(angle1);
-				float x2 = cx + radius * cosf(angle2);
-				float y2 = timerCy + radius * sinf(angle2);
+				float x1 = ROT_ATK_CX + RADIUS * cosf(angle1);
+				float y1 = TIMER_CY + RADIUS * sinf(angle1);
+				float x2 = ROT_ATK_CX + RADIUS * cosf(angle2);
+				float y2 = TIMER_CY + RADIUS * sinf(angle2);
 
-				DrawTriangle(cx, timerCy, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
+				DrawTriangle(ROT_ATK_CX, TIMER_CY, (int)x1, (int)y1, (int)x2, (int)y2, GetColor(0, 0, 0), true);
 			}
 
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -446,7 +429,7 @@ void Player::DrawShadow(void)
 			Vertex[2].pos = HitRes->Position[2];
 
 			//ちょっと持ち上げて重ならないようにする
-			SlideVec = VScale(HitRes->Normal, 0.5f);
+			SlideVec = VScale(HitRes->Normal, SHADOW_LIFT);
 			Vertex[0].pos = VAdd(Vertex[0].pos, SlideVec);
 			Vertex[1].pos = VAdd(Vertex[1].pos, SlideVec);
 			Vertex[2].pos = VAdd(Vertex[2].pos, SlideVec);
@@ -456,21 +439,21 @@ void Player::DrawShadow(void)
 			Vertex[1].dif.a = 0;
 			Vertex[2].dif.a = 0;
 			if (HitRes->Position[0].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[0].dif.a = 128 * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[0].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			if (HitRes->Position[1].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[1].dif.a = 128 * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[1].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			if (HitRes->Position[2].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[2].dif.a = 128 * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[2].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			//ＵＶ値は地面ポリゴンとプレイヤーの相対座標から割り出す
-			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
 
 			//影ポリゴンを描画
 			DrawPolygon3D(Vertex, 1, imgShadow_, TRUE);
@@ -527,22 +510,22 @@ void Player::ProcessMove(void)
 		if (ins.IsNew(KEY_INPUT_W))
 		{
 			dir = cameraRot.GetForward();
-			rotRad = AsoUtility::Deg2RadF(0.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_FORWARD_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_S))
 		{
 			dir = cameraRot.GetBack();
-			rotRad = AsoUtility::Deg2RadF(180.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_BACK_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_D))
 		{
 			dir = cameraRot.GetRight();
-			rotRad = AsoUtility::Deg2RadF(90.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_RIGHT_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_A))
 		{
 			dir = cameraRot.GetLeft();
-			rotRad = AsoUtility::Deg2RadF(-90.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_LEFT_DEG);
 		}
 
 		if (!AsoUtility::EqualsVZero(dir))
@@ -723,11 +706,11 @@ void Player::CollisionAttack(void)
 		//エネミーとの衝突判定
 		
 		//攻撃の球の半径
-		float attackRadius = 100.0f;
+		float attackRadius = ATTACK_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 100.0f));
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK_FORWARD));
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -755,12 +738,12 @@ void Player::CollisionAttack2(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 140.0f;
+		float attackRadius = ATTACK2_RADIUS;
 		//攻撃の方向(プレイヤーの前方)
 		VECTOR forward = transform_.quaRot.GetForward();
 		//攻撃の開始位置と終了位置
-		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, 80.0f));
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		VECTOR attackPos = VAdd(transform_.pos, VScale(forward, ATTACK2_FORWARD));
+		attackPos.y += ATTACK2_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{
@@ -788,10 +771,10 @@ void Player::CollisionAttackEx(void)
 		//エネミーとの衝突判定
 
 		//攻撃の球の半径
-		float attackRadius = 180.0f;
+		float attackRadius = EX_RADIUS;
 		//攻撃の開始位置と終了位置
 		VECTOR attackPos = transform_.pos;
-		attackPos.y += 100.0f;  //攻撃の高さ調整
+		attackPos.y += EX_HEIGHT;  //攻撃の高さ調整
 
 		for (const auto& enemy : *enemy_)
 		{

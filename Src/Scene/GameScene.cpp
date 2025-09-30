@@ -275,30 +275,15 @@ void GameScene::Draw(void)
 	}
 #pragma region UI
 	SetFontSize(DEFAULT_FONT_SIZE * 2.0);
-	DrawString(10,450,"E:’ÊíUŒ‚" , white);
+	DrawString(UI_ATTACK_X,UI_NORMAL_ATTACK_Y,"E:’ÊíUŒ‚" , white);
 	if (tree_->GetLv() >= LV_KID)
 	{
-		DrawString(10, 500, "Q:‚È‚¬•¥‚¢", white);
-
-		if (showQFlash)
-		{
-			int now = GetNowCount();
-			int elapsed = now - qUnlockTime;
-
-			if (elapsed >= 3000)
-			{
-				showQFlash = false;
-			}
-			else
-			{
-				int flashColor = ((elapsed / 400) % 2 == 0) ? red : white;
-
-				int x = 10 + GetDrawStringWidth("Q:‚È‚¬•¥‚¢", strlenDx("Q:‚È‚¬•¥‚¢"));
-				DrawString(x, 500, " ‰ð•ú", flashColor);
-			}
-		}
+		DrawString(UI_ATTACK_X, UI_SLASH_ATTACK_Y, "Q:‚È‚¬•¥‚¢ ‰ð•ú", white);
 	}
-	if (tree_->GetLv() >= LV_ADULT)	DrawString(10, 550, "R:‰ñ“]Ža‚è@‰ð•ú", white);
+	if (tree_->GetLv() >= LV_ADULT)
+	{
+		DrawString(UI_ATTACK_X, UI_EX_ATTACK_Y, "R:‰ñ“]Ža‚è ‰ð•ú", white);
+	}
 	SetFontSize(DEFAULT_FONT_SIZE);
 #pragma endregion
 }
