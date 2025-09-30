@@ -5,6 +5,10 @@
 class EnemyVirus : public EnemyBase
 {
 public:
+
+	static constexpr  float SPEED = 8.0f;
+	static constexpr  int HP = 1;
+
 	EnemyVirus();
 
 	//アニメーションロード用

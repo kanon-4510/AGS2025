@@ -192,7 +192,7 @@ void GameScene::Draw(void)
 
 	DrawMiniMap();
 	
-	DrawRotaGraph(100, 100, 0.8, 0.0, imgOpeGear_, true);
+	DrawRotaGraph(UI_GEAR, UI_GEAR, IMG_OPEGEAR_UI_SIZE, 0.0, imgOpeGear_, true);
 
 	//入力チェック or 時間経過でフェード開始
 	if (!uiFadeStart_) 
@@ -201,7 +201,7 @@ void GameScene::Draw(void)
 			|| CheckHitKey(KEY_INPUT_A)
 			|| CheckHitKey(KEY_INPUT_S)
 			|| CheckHitKey(KEY_INPUT_D))
-			|| uiDisplayFrame_ >= 240)  // 時間経過による自動フェード
+			|| uiDisplayFrame_ >= AUTO_FADE)  // 時間経過による自動フェード
 		{
 			uiFadeStart_ = true;
 			uiFadeFrame_ = 0;
@@ -209,72 +209,77 @@ void GameScene::Draw(void)
 	}
 	if (!uiFadeStart_) 
 	{
-		//フェード前（通常表示）
-		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
-		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		// フェード前（通常表示）
+		DrawRotaGraph((Application::SCREEN_SIZE_X / 2), GAME_HEIGHT_1, IMG_GAME_UI_1_SIZE, 0, imgGameUi1_, true);
 	}
-	else if (uiFadeFrame_ < 60) 
+	else if (uiFadeFrame_ < ONE_SECOND_FRAME)
 	{
-		//フェード中（60フレームで徐々に消す）
-		int alpha = static_cast<int>(255 * (60 - uiFadeFrame_) / 60.0f);
-		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
-		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		// フェード中（60フレームで徐々に消す）
+		int alpha = static_cast<int>(255 * (ONE_SECOND_FRAME - uiFadeFrame_) / ONE_SECOND_FRAME);
+		DrawRotaGraph((Application::SCREEN_SIZE_X / 2), GAME_HEIGHT_1, IMG_GAME_UI_1_SIZE, 0, imgGameUi1_, true);
 		uiFadeFrame_++;
 	}
 
 	if (isPaused_) 
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-		DrawBox(0, 0, 1920, 1080, GetColor(0, 0, 0), TRUE);
+		DrawBox(0, 0, (Application::SCREEN_SIZE_X), (Application::SCREEN_SIZE_Y), black, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		if (pauseState_ == PauseState::Menu)
 		{
-			DrawRotaGraph(Application::SCREEN_SIZE_X/2,150,0.65,0,pauseImg_,true);
-			SetFontSize(80);
-			DrawString(Application::SCREEN_SIZE_X/2-80*3,350,"ゲームに戻る",0xffffff);
-			if(pauseSelectIndex_%4==0)DrawString(Application::SCREEN_SIZE_X/2-80*3,350,"ゲームに戻る",0xffff00);
-			DrawString(Application::SCREEN_SIZE_X/2-80*2,470,"操作説明",0xffffff);
-			if(pauseSelectIndex_%4==1)DrawString(Application::SCREEN_SIZE_X/2-80*2,470,"操作説明",0xffff00);
-			DrawString(Application::SCREEN_SIZE_X/2-80*3,590,"アイテム概要",0xffffff);
-			if(pauseSelectIndex_%4==2)DrawString(Application::SCREEN_SIZE_X/2-80*3,590,"アイテム概要",0xffff00);
-			DrawString(Application::SCREEN_SIZE_X/2-80*2.5,710,"タイトルへ",0xffffff);
-			if(pauseSelectIndex_%4==3)DrawString(Application::SCREEN_SIZE_X/2-80*2.5,710,"タイトルへ",0xffff00);
-			SetFontSize(16);
+			DrawRotaGraph((Application::SCREEN_SIZE_X / 2), UI_PAUSE_IMG_HEIGHT, PAUSE_IMG_UI_SIZE, 0, pauseImg_, true);
+			SetFontSize(DEFAULT_FONT_SIZE * 5.0);
+
+			DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_3, UI_HEIGHT_PAUSE_1, "ゲームに戻る", white);
+			if (pauseSelectIndex_ % PAUSE_MENU_ITEM_COUNT == 0)
+				DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_3, UI_HEIGHT_PAUSE_1, "ゲームに戻る", yellow);
+
+			DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_1, UI_HEIGHT_PAUSE_2, "操作説明", white);
+			if (pauseSelectIndex_ % PAUSE_MENU_ITEM_COUNT == 1)
+				DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_1, UI_HEIGHT_PAUSE_2, "操作説明", yellow);
+
+			DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_3, UI_HEIGHT_PAUSE_3, "アイテム概要", white);
+			if (pauseSelectIndex_ % PAUSE_MENU_ITEM_COUNT == 2)
+				DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_3, UI_HEIGHT_PAUSE_3, "アイテム概要", yellow);
+
+			DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_2, UI_HEIGHT_PAUSE_4, "タイトルへ", white);
+			if (pauseSelectIndex_ % PAUSE_MENU_ITEM_COUNT == 3)
+				DrawString((Application::SCREEN_SIZE_X / 2) - UI_WIDTH_PAUSE_2, UI_HEIGHT_PAUSE_4, "タイトルへ", yellow);
+
+			SetFontSize(DEFAULT_FONT_SIZE);
 		}
 		else if (pauseState_ == PauseState::ShowControls) 
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-			DrawBox(0, 0, 1920, 1080,0xffffff,true);
+			DrawBox(0, 0, (Application::SCREEN_SIZE_X), (Application::SCREEN_SIZE_Y), white, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			DrawGraph(0, 0, pauseExplainImgs_[0], true);
-			SetFontSize(40);
-			DrawString(1600, 1020,"Enterキーで戻る",0xffff00);
-			if(cnt%90 <=45)DrawString(1600, 1020,"Enterキーで戻る",0xffffff);
-			SetFontSize(16);
+			SetFontSize(DEFAULT_FONT_SIZE * 2.5);
+			DrawString(BACK_PAUSE_WIDTH, BACK_PAUSE_HEIGHT,"Enterキーで戻る", yellow);
+			if (cnt % FLASH * 2.0 <= FLASH)DrawString(BACK_PAUSE_WIDTH, BACK_PAUSE_HEIGHT, "Enterキーで戻る", white);
+			SetFontSize(DEFAULT_FONT_SIZE);
 		}
 		else if (pauseState_ == PauseState::ShowItems) 
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-			DrawBox(0, 0, 1920, 1080,0xffffff,true);
+			DrawBox(0, 0, (Application::SCREEN_SIZE_X), (Application::SCREEN_SIZE_Y), white, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			DrawGraph(0, 0, pauseExplainImgs_[1], true);
-			SetFontSize(40);
-			DrawString(1600, 1020, "Enterキーで戻る", 0xffff00);
-			if (cnt % 90 <= 45)DrawString(1600, 1020, "Enterキーで戻る", 0xffffff);
-			SetFontSize(16);
+			SetFontSize(DEFAULT_FONT_SIZE * 2.5);
+			DrawString(BACK_PAUSE_WIDTH, BACK_PAUSE_HEIGHT, "Enterキーで戻る", yellow);
+			if (cnt % FLASH * 2.0 <= FLASH)DrawString(BACK_PAUSE_WIDTH, BACK_PAUSE_HEIGHT, "Enterキーで戻る", white);
+			SetFontSize(DEFAULT_FONT_SIZE);
 		}
 		return;
 	}
 
 #pragma region UI
-	SetFontSize(32);
-	DrawString(10,450,"E:通常攻撃"      ,0xffffff);
-	if (tree_->GetLv()>=25)
+	SetFontSize(DEFAULT_FONT_SIZE * 2.0);
+	DrawString(10,450,"E:通常攻撃" , white);
+	if (tree_->GetLv() >= LV_KID)
 	{
-		DrawString(10, 500, "Q:なぎ払い", 0xffffff);
+		DrawString(10, 500, "Q:なぎ払い", white);
 
 		if (showQFlash)
 		{
@@ -287,15 +292,15 @@ void GameScene::Draw(void)
 			}
 			else
 			{
-				int flashColor = ((elapsed / 400) % 2 == 0) ? 0xff0000 : 0xffffff;
+				int flashColor = ((elapsed / 400) % 2 == 0) ? red : white;
 
 				int x = 10 + GetDrawStringWidth("Q:なぎ払い", strlenDx("Q:なぎ払い"));
 				DrawString(x, 500, " 解放", flashColor);
 			}
 		}
 	}
-	if (tree_->GetLv()>=50)	DrawString(10,550,"R:回転斬り　解放",0xffffff);
-	SetFontSize(16);
+	if (tree_->GetLv() >= LV_ADULT)	DrawString(10, 550, "R:回転斬り　解放", white);
+	SetFontSize(DEFAULT_FONT_SIZE);
 #pragma endregion
 }
 
@@ -471,48 +476,44 @@ bool GameScene::PauseMenu(void)
 {
 	InputManager& ins = InputManager::GetInstance();
 
-	//TABキーでポーズのON/OFF切り替え（Menu中のみ）
-	if (ins.IsTrgDown(KEY_INPUT_TAB))
+	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
+	if (ins.IsTrgDown(KEY_INPUT_TAB) && pauseState_ == PauseState::Menu)
 	{
-		if (pauseState_ == PauseState::Menu)
-		{
-			isPaused_ = !isPaused_;
-			pauseSelectIndex_ = 0;
-			mainCamera->SetPaused(isPaused_);
-		}
-		return true; //ポーズ処理があったので Update 停止
+		isPaused_ = !isPaused_;
+		pauseSelectIndex_ = 0;
+		mainCamera->SetPaused(isPaused_);
+		return true;
 	}
 
-	if (isPaused_)
+	if (!isPaused_) return false; // ポーズ中でなければ通常更新
+
+	if (pauseState_ == PauseState::Menu)
 	{
-		if (pauseState_ == PauseState::Menu)
+		if (ins.IsTrgDown(KEY_INPUT_DOWN))
+			pauseSelectIndex_ = (pauseSelectIndex_ + PAUSE_MENU_DOWN) % PAUSE_MENU_ITEM_COUNT;
+
+		if (ins.IsTrgDown(KEY_INPUT_UP))
+			pauseSelectIndex_ = (pauseSelectIndex_ + PAUSE_MENU_UP) % PAUSE_MENU_ITEM_COUNT;
+
+		if (ins.IsTrgDown(KEY_INPUT_RETURN))
 		{
-			if (ins.IsTrgDown(KEY_INPUT_DOWN)) pauseSelectIndex_ = (pauseSelectIndex_ + 1) % 4;
-			if (ins.IsTrgDown(KEY_INPUT_UP)) pauseSelectIndex_ = (pauseSelectIndex_ + 3) % 4;
-			if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			switch (pauseSelectIndex_)
 			{
-				switch (pauseSelectIndex_)
-				{
-				case 0:
-					isPaused_ = false;
-					pauseState_ = PauseState::Menu;
-					mainCamera->SetPaused(false);
-					break;
-				case 1: pauseState_ = PauseState::ShowControls; break;
-				case 2: pauseState_ = PauseState::ShowItems; break;
-				case 3: SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); break;
-				}
+			case 0:
+				isPaused_ = false;
+				mainCamera->SetPaused(false);
+				break;
+			case 1: pauseState_ = PauseState::ShowControls; break;
+			case 2: pauseState_ = PauseState::ShowItems; break;
+			case 3: SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE); break;
 			}
 		}
-		else
-		{
-			if (ins.IsTrgDown(KEY_INPUT_RETURN))
-			{
-				pauseState_ = PauseState::Menu;
-			}
-		}
-		return true; //ポーズ中なので Update 停止
+	}
+	else
+	{
+		if (ins.IsTrgDown(KEY_INPUT_RETURN))
+			pauseState_ = PauseState::Menu;
 	}
 
-	return false; //ポーズ処理なし → Update 続行
+	return true;
 }
