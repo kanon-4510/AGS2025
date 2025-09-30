@@ -446,7 +446,7 @@ void Player::DrawShadow(void)
 			Vertex[2].pos = HitRes->Position[2];
 
 			//‚¿‚å‚Á‚ÆŽ‚¿ã‚°‚Äd‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é
-			SlideVec = VScale(HitRes->Normal, 0.5f);
+			SlideVec = VScale(HitRes->Normal, SHADOW_LIFT);
 			Vertex[0].pos = VAdd(Vertex[0].pos, SlideVec);
 			Vertex[1].pos = VAdd(Vertex[1].pos, SlideVec);
 			Vertex[2].pos = VAdd(Vertex[2].pos, SlideVec);
@@ -456,21 +456,21 @@ void Player::DrawShadow(void)
 			Vertex[1].dif.a = 0;
 			Vertex[2].dif.a = 0;
 			if (HitRes->Position[0].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[0].dif.a = 128 * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[0].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			if (HitRes->Position[1].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[1].dif.a = 128 * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[1].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			if (HitRes->Position[2].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[2].dif.a = 128 * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				Vertex[2].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
 
 			//‚t‚u’l‚Í’n–Êƒ|ƒŠƒSƒ“‚ÆƒvƒŒƒCƒ„[‚Ì‘Š‘ÎÀ•W‚©‚çŠ„‚èo‚·
-			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-			Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
+			Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
 
 			//‰eƒ|ƒŠƒSƒ“‚ð•`‰æ
 			DrawPolygon3D(Vertex, 1, imgShadow_, TRUE);
@@ -527,22 +527,22 @@ void Player::ProcessMove(void)
 		if (ins.IsNew(KEY_INPUT_W))
 		{
 			dir = cameraRot.GetForward();
-			rotRad = AsoUtility::Deg2RadF(0.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_FORWARD_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_S))
 		{
 			dir = cameraRot.GetBack();
-			rotRad = AsoUtility::Deg2RadF(180.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_BACK_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_D))
 		{
 			dir = cameraRot.GetRight();
-			rotRad = AsoUtility::Deg2RadF(90.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_RIGHT_DEG);
 		}
 		if (ins.IsNew(KEY_INPUT_A))
 		{
 			dir = cameraRot.GetLeft();
-			rotRad = AsoUtility::Deg2RadF(-90.0f);
+			rotRad = AsoUtility::Deg2RadF(ROT_LEFT_DEG);
 		}
 
 		if (!AsoUtility::EqualsVZero(dir))

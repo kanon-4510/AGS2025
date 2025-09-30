@@ -30,10 +30,10 @@ public:
 	static constexpr int LV_KID = 25;				//木の成長度(幼木)
 	static constexpr int LV_ADULT = 50;				//木の成長度(成木)
 	static constexpr int LV_OLD = 75;				//木の成長度(老木)
-	static constexpr int WATER_BABY = 600;			//木の水分量(苗木)
-	static constexpr int WATER_KID = 300;			//木の水分量(幼木)
-	static constexpr int WATER_ADULT = 300;			//木の水分量(成木)
-	static constexpr int WATER_OLD = 200;			//木の水分量(老木)
+	static constexpr int HOLD_WATER_BABY = 1;		//水の所持量(苗木)
+	static constexpr int HOLD_WATER_KID = 2;		//水の所持量(幼木)
+	static constexpr int HOLD_WATER_ADULT = 2;		//水の所持量(成木)
+	static constexpr int HOLD_WATER_OLD = 3;		//水の所持量(老木)
 
 	//ステータス関連
 	static constexpr int NAME_X = 55;									//名前の位置X
@@ -48,6 +48,10 @@ public:
 	static constexpr int BAR_END_X = 650;								//バーの最後X
 	static constexpr int BAR_END_HY = Application::SCREEN_SIZE_Y-180;	//バーの最後体力Y
 	static constexpr int BAR_END_WY = Application::SCREEN_SIZE_Y-165;	//バーの最後水Y
+	static constexpr int WATER_BAR_BABY = 600;							//木の水分量(苗木)
+	static constexpr int WATER_BAR_KID = 300;							//木の水分量(幼木)
+	static constexpr int WATER_BAR_ADULT = 300;							//木の水分量(成木)
+	static constexpr int WATER_BAR_OLD = 200;							//木の水分量(老木)
 
 	//ヘッダーかファイル冒頭で定数定義（必要に応じて static const や constexpr にしてもOK）
 	static constexpr float TREE_GROW_RADIUS_INCREMENT = 10.0f;
