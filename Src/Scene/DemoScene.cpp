@@ -108,15 +108,15 @@ void DemoScene::Draw(void)
 	int centerY = Application::SCREEN_SIZE_Y / 2 - 200;
 
 	// 半径（辺の長さではなく、中心から頂点までの距離）
-	float radius = 315.0f;
+	float RADIUS = 315.0f;
 
 	// 頂点座標を計算（正三角形）
-	int x1 = centerX + static_cast<int>(radius * cosf(DX_PI * 0.0f / 180.0f));
-	int y1 = centerY + static_cast<int>(radius * sinf(DX_PI * 0.0f / 180.0f));
-	int x2 = centerX + static_cast<int>(radius * cosf(DX_PI * 120.0f / 180.0f));
-	int y2 = centerY + static_cast<int>(radius * sinf(DX_PI * 120.0f / 180.0f));
-	int x3 = centerX + static_cast<int>(radius * cosf(DX_PI * 240.0f / 180.0f));
-	int y3 = centerY + static_cast<int>(radius * sinf(DX_PI * 240.0f / 180.0f));
+	int x1 = centerX + static_cast<int>(RADIUS * cosf(DX_PI * 0.0f / 180.0f));
+	int y1 = centerY + static_cast<int>(RADIUS * sinf(DX_PI * 0.0f / 180.0f));
+	int x2 = centerX + static_cast<int>(RADIUS * cosf(DX_PI * 120.0f / 180.0f));
+	int y2 = centerY + static_cast<int>(RADIUS * sinf(DX_PI * 120.0f / 180.0f));
+	int x3 = centerX + static_cast<int>(RADIUS * cosf(DX_PI * 240.0f / 180.0f));
+	int y3 = centerY + static_cast<int>(RADIUS * sinf(DX_PI * 240.0f / 180.0f));
 
 	DrawRotaGraph(Application::SCREEN_SIZE_X/2,Application::SCREEN_SIZE_Y/2-200,1,0,god_[gNo_],true);
 

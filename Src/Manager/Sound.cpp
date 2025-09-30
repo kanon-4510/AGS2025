@@ -104,7 +104,7 @@ bool Sound::Play(TIMES times)
     return false;
 }
 
-bool Sound::Play(VECTOR pos, float radius, TIMES times)
+bool Sound::Play(VECTOR pos, float RADIUS, TIMES times)
 {
     if (soundType_ != TYPE::SOUND_3D)
         return false;
@@ -115,11 +115,11 @@ bool Sound::Play(VECTOR pos, float radius, TIMES times)
         if (CheckSoundMem(handleIds_[i]) != 1)
         {
             Set3DPositionSoundMem(pos, handleIds_[i]);
-            Set3DRadiusSoundMem(radius, handleIds_[i]);
+            Set3DRadiusSoundMem(RADIUS, handleIds_[i]);
             int result = PlaySoundMem(handleIds_[i], times == TIMES::LOOP ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK, TRUE);
             ChangeVolume(1.0f);
             this->pos_ = pos;
-            this->radius_ = radius;
+            this->radius_ = RADIUS;
             return result == 0;
         }
     }

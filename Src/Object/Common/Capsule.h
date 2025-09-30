@@ -38,7 +38,7 @@ public :
 
 	// ”¼Œa
 	float GetRadius(void) const;
-	void SetRadius(float radius);
+	void SetRadius(float RADIUS);
 
 	// ‚‚³
 	float GetHeight(void) const;

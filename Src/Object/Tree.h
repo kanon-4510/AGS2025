@@ -19,6 +19,7 @@ public:
 	int yellow = 0xffff00;//黄
 	int purpl = 0x800080; //紫
 	int gray = 0xaaaaaa;  //灰
+	int orange = 0xffdead;//薄黄色
 
 	static constexpr float ZERO = 0.0f;				//初期化の値用
 	static constexpr int GROW_UP = 4;				//成長段階
@@ -36,6 +37,58 @@ public:
 	static constexpr int HOLD_WATER_OLD = 3;		//水の所持量(老木)
 
 	//ステータス関連
+	static constexpr int HP = 50;
+
+	static constexpr int DOUBLE_WATER = 19;
+
+	static constexpr VECTOR BABY_SCL = { 3.0f, 2.5f, 3.0f };
+	static constexpr VECTOR BABY_ROT = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };
+	static constexpr VECTOR BABY_POS = { 0.0f, -3.5f, 0.0f };
+
+	static constexpr VECTOR KID_SCL = { 15.0f, 10.0f, 15.0 };
+	static constexpr VECTOR KID_ROT = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };
+	static constexpr VECTOR KID_POS = { 0.0f, -2.0f, 0.0f };
+
+	static constexpr VECTOR ADULT_SCL = { 30.0f, 25.0f, 30.0f };
+	static constexpr VECTOR ADULT_ROT = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };
+	static constexpr VECTOR ADULT_POS = { 0.0f, -2.5f, 0.0f };
+
+	static constexpr VECTOR OLD_SCL = { 45.0f, 45.0f, 45.0f };
+	static constexpr VECTOR OLD_ROT = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };
+	static constexpr VECTOR OLD_POS = { 0.0f, -23.5f, 0.0f };
+
+	static constexpr float COL_RAD_1 = 100.0f;
+	static constexpr float COL_RAD_2 = 200.0f;
+	static constexpr float COL_RAD_3 = 350.0f;
+	static constexpr float COL_RAD_4 = 800.0f;
+
+	static constexpr VECTOR COL_LOCAL_POS = { 0.0f, 60.0f, 0.0f };
+
+	static constexpr float DISTANCE1 = 70.0f;
+	static constexpr float DISTANCE2 = 100.0f;
+	static constexpr float DISTANCE3 = 350.0f;
+	static constexpr float DISTANCE4 = 700.0f;
+
+	static constexpr int CX = 300;
+	static constexpr int CY = 965;
+	static constexpr float RADIUS = 32.0f;
+	static constexpr int SEGMENTS = 60;
+	static constexpr float MUTEKI_ICON_SIZE = 1.3f;
+
+	static constexpr int ALPHA_GRAY = 180;
+
+	static constexpr float RANGE_1 = 200.0f;
+	static constexpr float RANGE_2 = 450.0f;
+	static constexpr float RANGE_3 = 909.0f;
+
+	static constexpr float DEFAULT_SCL = 10.0f;
+
+	static constexpr float BABY_TREE_SCL = 50.0f;
+	static constexpr float BABY_TREE_KID = 105.0f;
+	static constexpr float BABY_TREE_ADULT = 235.0f;
+	static constexpr float BABY_TREE_OLD = 480.0f;
+
+
 	static constexpr int NAME_X = 55;									//名前の位置X
 	static constexpr int NAME_Y = Application::SCREEN_SIZE_Y - 220;		//名前の位置Y
 	static constexpr int FRAME_START_X = 47;							//枠の最初X

@@ -30,7 +30,7 @@ public:
     void Release(void);
 
     bool Play(TIMES times); // 2D音再生
-    bool Play(VECTOR pos, float radius, TIMES times); // 3D音再生（未対応だが必要なら拡張可能）
+    bool Play(VECTOR pos, float RADIUS, TIMES times); // 3D音再生（未対応だが必要なら拡張可能）
 
     void Stop(void);
     bool CheckMove(void);

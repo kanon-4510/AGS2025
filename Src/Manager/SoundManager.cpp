@@ -165,7 +165,7 @@ bool SoundManager::Play(SRC src, Sound::TIMES times)
 	return false;
 }
 
-bool SoundManager::Play(SRC src, Sound::TIMES times, VECTOR pos, float radius)
+bool SoundManager::Play(SRC src, Sound::TIMES times, VECTOR pos, float RADIUS)
 {
 	const auto& lPair = soundMap_.find(src);
 	if (lPair != soundMap_.end())
@@ -174,7 +174,7 @@ bool SoundManager::Play(SRC src, Sound::TIMES times, VECTOR pos, float radius)
 		{
 			lPair->second.Load();
 		}
-		return lPair->second.Play(pos, radius, times);
+		return lPair->second.Play(pos, RADIUS, times);
 	}
 	return false;
 }
