@@ -268,7 +268,6 @@ void GameScene::Draw(void)
 		}
 		return;
 	}
-
 #pragma region UI
 	SetFontSize(32);
 	DrawString(10,450,"E:’ÊíUŒ‚"      ,0xffffff);

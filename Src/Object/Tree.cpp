@@ -22,7 +22,7 @@ Tree::Tree(void)
 	modelIdA_ = ZERO;
 	modelIdO_ = ZERO;
 
-	// 無敵状態
+	//無敵状態
 	imgMutekiIcon_ = 0;
 	invincible_ = false;
 	mutekiCnt_ = 600;
@@ -126,15 +126,15 @@ void Tree::Update(void)
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
-		scl_ = { 3.0f, 2.5f, 3.0f };						// 大きさの設定
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
-		pos_ = { 0.0f, -3.5f, 0.0f };						// 位置の設定
+		scl_ = { 3.0f, 2.5f, 3.0f };						//大きさの設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
+		pos_ = { 0.0f, -3.5f, 0.0f };						//位置の設定
 		MV1SetScale(modelIdB_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
 		MV1SetRotationXYZ(modelIdB_, rot_);					//３Ｄモデルの向き(引数は、x, y, zの回転量。単位はラジアン。)
 		MV1SetPosition(modelIdB_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::KID:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
 		scl_ = { 15.0f, 10.0f, 15.0};
 		pos_ = { 0.0f, -2.0f, 0.0f };
 		MV1SetScale(modelIdK_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
@@ -142,7 +142,7 @@ void Tree::Update(void)
 		MV1SetPosition(modelIdK_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::ADULT:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
 		scl_ = { 30.0f, 25.0f, 30.0f };
 		pos_ = { 0.0f, -2.5f, 0.0f };
 		MV1SetScale(modelIdA_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
@@ -150,7 +150,7 @@ void Tree::Update(void)
 		MV1SetPosition(modelIdA_, pos_);					//３Ｄモデルの位置(引数は、３Ｄ座標)
 		break;
 	case Tree::GROW::OLD:
-		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		// 角度の設定
+		rot_ = { 0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f };		//角度の設定
 		scl_ = { 45.0f, 45.0f, 45.0f };
 		pos_ = { 0.0f, -23.5f, 0.0f };
 		MV1SetScale(modelIdO_, scl_);						//３Ｄモデルの大きさを設定(引数は、x, y, zの倍率)
@@ -166,7 +166,7 @@ void Tree::Update(void)
 }
 void Tree::Draw(void)
 {
-	// モデルの描画
+	//モデルの描画
 	switch (grow_)
 	{
 	case Tree::GROW::BABY:
@@ -187,23 +187,23 @@ void Tree::Draw(void)
 	}
 
 #pragma region ステータス
-	DrawFormatString(55,Application::SCREEN_SIZE_Y-220,0x0,"YGGDRASILL : Lv%d",lv_);
-	// 枠線（白）
-	DrawBox(47,Application::SCREEN_SIZE_Y-203,653,Application::SCREEN_SIZE_Y-162,0xaaaaaa,true);
+	DrawFormatString(NAME_X,NAME_Y,black,"YGGDRASILL : Lv%d",lv_);
+	//枠線（白）
+	DrawBox(FRAME_START_X,FRAME_START_Y,FRAME_END_X,FRAME_END_Y,gray,true);
 
-	DrawBox(50,Application::SCREEN_SIZE_Y-200,650,Application::SCREEN_SIZE_Y-180,0x0,true);
+	DrawBox(BAR_START_X,BAR_START_HY,BAR_END_X,BAR_END_HY,black,true);
 	if(isD_ == true)
 	{
-		 DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0xff0000,true);
-		 isD_ = false;
+		DrawBox(BAR_START_X,BAR_START_HY,hp_*HIT_POINT+BAR_START_X,BAR_END_HY,red,true);
+		isD_ = false;
 	}
-	else DrawBox(50,Application::SCREEN_SIZE_Y-200,hp_*12+50,Application::SCREEN_SIZE_Y-180,0x00ff00,true);
+	else DrawBox(BAR_START_X,BAR_START_HY,hp_*HIT_POINT+BAR_START_X,BAR_END_HY,green,true);
 
-								DrawBox(50,Application::SCREEN_SIZE_Y-175,          650,Application::SCREEN_SIZE_Y-165,0x0,     true);
-	     if(grow_==GROW::OLD)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*200+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
-	else if(grow_==GROW::ADULT)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
-	else if(grow_==GROW::KID)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*300+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
-	else if(grow_==GROW::BABY)	DrawBox(50,Application::SCREEN_SIZE_Y-175,water_*600+50,Application::SCREEN_SIZE_Y-165,0x0000ff,true);
+								DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X					   ,BAR_END_WY,black,true);
+	     if(grow_==GROW::OLD)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_OLD  +BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::ADULT)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_ADULT+BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::KID)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_KID  +BAR_START_X,BAR_END_WY,blue ,true);
+	else if(grow_==GROW::BABY)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BABY +BAR_START_X,BAR_END_WY,blue ,true);
 
 	if (invincible_)
 	{
@@ -356,30 +356,28 @@ void Tree::LvUp(void)
 
 	// 水を与えたときの音
 	SoundManager::GetInstance().Play(SoundManager::SRC::LEVEL_UP_SE, Sound::TIMES::ONCE);
-
 }
 void Tree::ChangeGrow(void)
 {
-	if (lv_ == 75)
+	if (lv_ == LV_OLD)
 	{
 		grow_ = Tree::GROW::OLD;
-		hp_ = 50;
-		//PushEnemy();
+		hp_ = HP_MAX;
 	}
-	else if (lv_ == 50)
+	else if (lv_ == LV_ADULT)
 	{
 		grow_ = Tree::GROW::ADULT;
-		hp_ = 50;
+		hp_ = HP_MAX;
 	}
-	else if (lv_ == 25)
+	else if (lv_ == LV_KID)
 	{
 		grow_ = Tree::GROW::KID;
-		hp_ = 50;
+		hp_ = HP_MAX;
 	}
-	else if (lv_ == 1)
+	else if (lv_ == LV_BABY)
 	{
 		grow_ = GROW::BABY;
-		hp_ = 50;
+		hp_ = HP_MAX;
 	}
 }
 
@@ -407,7 +405,7 @@ void Tree::MutekiTimer(void)
 		if (mutekiCnt_ <= 0)
 		{
 			invincible_ = false;
-			mutekiCnt_ = 600;
+			mutekiCnt_ = INVINCIBLE_TIME;
 		}
 	}
 }

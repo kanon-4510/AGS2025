@@ -10,12 +10,46 @@ class Player;
 class Tree
 {
 public:
+	//色
+	int white = 0xffffff; //白
+	int black = 0x000000; //黒
+	int red = 0xff0000;	  //赤
+	int green = 0x00ff00; //緑
+	int blue = 0x0000ff;  //青
+	int yellow = 0xffff00;//黄
+	int purpl = 0x800080; //紫
+	int gray = 0xaaaaaa;  //灰
 
 	static constexpr float ZERO = 0.0f;				//初期化の値用
 	static constexpr int GROW_UP = 4;				//成長段階
 	static constexpr int INVINCIBLE_TIME = 600;		//無敵
 
-	// ヘッダーかファイル冒頭で定数定義（必要に応じて static const や constexpr にしてもOK）
+	static constexpr int HP_MAX = 50;				//木の最大HP
+	static constexpr int HIT_POINT = 12;			//木の現在HP
+	static constexpr int LV_BABY = 1;				//木の成長度(苗木)
+	static constexpr int LV_KID = 25;				//木の成長度(幼木)
+	static constexpr int LV_ADULT = 50;				//木の成長度(成木)
+	static constexpr int LV_OLD = 75;				//木の成長度(老木)
+	static constexpr int WATER_BABY = 600;			//木の水分量(苗木)
+	static constexpr int WATER_KID = 300;			//木の水分量(幼木)
+	static constexpr int WATER_ADULT = 300;			//木の水分量(成木)
+	static constexpr int WATER_OLD = 200;			//木の水分量(老木)
+
+	//ステータス関連
+	static constexpr int NAME_X = 55;									//名前の位置X
+	static constexpr int NAME_Y = Application::SCREEN_SIZE_Y - 220;		//名前の位置Y
+	static constexpr int FRAME_START_X = 47;							//枠の最初X
+	static constexpr int FRAME_START_Y = Application::SCREEN_SIZE_Y-203;//枠の最初Y
+	static constexpr int FRAME_END_X = 653;								//枠の最後X
+	static constexpr int FRAME_END_Y = Application::SCREEN_SIZE_Y-162;	//枠の最後Y
+	static constexpr int BAR_START_X = 50;								//バーの最初X
+	static constexpr int BAR_START_HY = Application::SCREEN_SIZE_Y-200;	//バーの最初体力Y
+	static constexpr int BAR_START_WY = Application::SCREEN_SIZE_Y-175;	//バーの最初水Y
+	static constexpr int BAR_END_X = 650;								//バーの最後X
+	static constexpr int BAR_END_HY = Application::SCREEN_SIZE_Y-180;	//バーの最後体力Y
+	static constexpr int BAR_END_WY = Application::SCREEN_SIZE_Y-165;	//バーの最後水Y
+
+	//ヘッダーかファイル冒頭で定数定義（必要に応じて static const や constexpr にしてもOK）
 	static constexpr float TREE_GROW_RADIUS_INCREMENT = 10.0f;
 	static constexpr float ENEMY_SAFE_MARGIN = 30.0f;
 	static constexpr float MIN_DISTANCE_THRESHOLD = 0.001f;
@@ -70,10 +104,10 @@ private:
 	int modelIdK_;	//モデルの格納(幼木)
 	int modelIdA_;	//モデルの格納(成木)
 	int modelIdO_;	//モデルの格納(老木)
-	VECTOR scl_;	//おおきさ
+	VECTOR scl_;	//大小
 	VECTOR pos_;	//位置
-	VECTOR rot_;	//廻天
-	VECTOR dir_;	//移動せんよ
+	VECTOR rot_;	//回転
+	VECTOR dir_;	//移動しない
 
 	int imgMutekiIcon_;	//無敵アイコン
 
