@@ -320,14 +320,8 @@ const std::vector<std::shared_ptr<EnemyBase>>& Player::GetEnemyCollision(void) c
 	return *enemy_;
 }
 
-bool Player::IsPlay(void) const
-{
-	return state_ == STATE::PLAY;
-}
-
 void Player::InitAnimation(void)
 {
-
 	std::string path = Application::PATH_MODEL + "NPlayer/";
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
@@ -341,7 +335,6 @@ void Player::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::EXATTACK, path + "Player.mv1", 15.0f, 8);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
-
 }
 
 void Player::ChangeState(STATE state)
@@ -1050,7 +1043,6 @@ void Player::Revival()
 	canMove_ = true;   //移動再開
 
 	animationController_->Play((int)ANIM_TYPE::IDLE, true);
-	//他の再開処理（無敵終了、移動可能など）をここで
 }
 
 void Player::EffectFootSmoke(void)
