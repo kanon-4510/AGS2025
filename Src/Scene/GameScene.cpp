@@ -47,7 +47,7 @@ GameScene::~GameScene(void)
 void GameScene::Init(void)
 {
 	cnt = 0;
-	// プレイヤー
+	//プレイヤー
 	player_ = std::make_shared<Player>();
 	GravityManager::GetInstance().SetPlayer(player_);
 	player_->Init();
@@ -57,29 +57,29 @@ void GameScene::Init(void)
 	tree_->Init();
 	tree_->SetPlayer(player_.get());
 
-	// プレイヤーにTreeを渡す(条件付き攻撃用)
+	//プレイヤーにTreeを渡す(条件付き攻撃用)
 	player_->SetTree(tree_.get());
 
-	// 敵のモデル
+	//敵のモデル
 	EnemyCreate();
 
 	player_->SetEnemy(&enemys_);
 
-	// ステージ
+	//ステージ
 	stage_ = std::make_unique<Stage>(*player_);
 	stage_->Init();
 
-	// ステージの初期設定
+	//ステージの初期設定
 	stage_->ChangeStage(Stage::NAME::MAIN_PLANET);
 
-	// スカイドーム
+	//スカイドーム
 	skyDome_ = std::make_unique<SkyDome>(player_->GetTransform());
 	skyDome_->Init();
 
 	map_ = std::make_unique<MiniMap>(30000.0f, 300);
 	map_->Init();
 
-	// 画像
+	//画像
 	imgGameUi1_ = resMng_.Load(ResourceManager::SRC::GAMEUI_1).handleId_;
 	imgOpeGear_ = resMng_.Load(ResourceManager::SRC::OPE_GEAR).handleId_;
 
@@ -88,16 +88,16 @@ void GameScene::Init(void)
 	pauseExplainImgs_[0] = resMng_.Load(ResourceManager::SRC::PAUSEOPE).handleId_; // 操作説明
 	pauseExplainImgs_[1] = resMng_.Load(ResourceManager::SRC::PAUSEITEM).handleId_;   // アイテム概要
 
-	// カウンタ
+	//カウンタ
 	uiFadeStart_ = false;
 	uiFadeFrame_ = 0;
 	uiDisplayFrame_ = 0;
 
-	// ポーズ
+	//ポーズ
 	isPaused_ = false;
 	pauseSelectIndex_ = 0;
 
-	// カメラのポーズ解除
+	//カメラのポーズ解除
 	camera_ = SceneManager::GetInstance().GetCamera().lock();
 	if (camera_) {
 		camera_->SetPaused(false); // ← ここが重要！
@@ -107,7 +107,7 @@ void GameScene::Init(void)
 		camera_->ChangeMode(Camera::MODE::FOLLOW);
 	}
 
-	// 音楽
+	//音楽
 	SoundManager::GetInstance().Play(SoundManager::SRC::GAME_BGM, Sound::TIMES::LOOP);
 
 	mainCamera->SetFollow(&player_->GetTransform());
@@ -123,9 +123,9 @@ void GameScene::Update(void)
 
 	if (PauseMenu()) return; // ポーズ中ならここで止める
 
-	// -------------------------
-	// 通常時のゲーム進行（ポーズされてないときだけ）
-	// -------------------------
+	//-------------------------
+	//通常時のゲーム進行（ポーズされてないときだけ）
+	//-------------------------
 
 	uiDisplayFrame_++;
 
@@ -158,7 +158,7 @@ void GameScene::Update(void)
 		enemy->Update();
 	}
 
-	// 敵のエンカウント処理
+	//敵のエンカウント処理
 	enCounter++;
 	if (enCounter > ENCOUNT) 
 	{
@@ -194,7 +194,7 @@ void GameScene::Draw(void)
 	
 	DrawRotaGraph(100, 100, 0.8, 0.0, imgOpeGear_, true);
 
-	// 入力チェック or 時間経過でフェード開始
+	//入力チェック or 時間経過でフェード開始
 	if (!uiFadeStart_) 
 	{
 		if ((CheckHitKey(KEY_INPUT_W)
@@ -209,14 +209,14 @@ void GameScene::Draw(void)
 	}
 	if (!uiFadeStart_) 
 	{
-		// フェード前（通常表示）
+		//フェード前（通常表示）
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
 		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 	else if (uiFadeFrame_ < 60) 
 	{
-		// フェード中（60フレームで徐々に消す）
+		//フェード中（60フレームで徐々に消す）
 		int alpha = static_cast<int>(255 * (60 - uiFadeFrame_) / 60.0f);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 		DrawRotaGraph(Application::SCREEN_SIZE_X/2,80,0.5,0,imgGameUi1_,true);
@@ -308,11 +308,11 @@ void GameScene::DrawMiniMap(void)
 {
 	if (!map_) return;
 
-	// プレイヤーの座標
+	//プレイヤーの座標
 	MapVector2 playerPos;
 	playerPos.x = player_->GetTransform().pos.x;
 	playerPos.z = player_->GetTransform().pos.z;
-	// Y軸回転角を使用(ラジアン or 度数)
+	//Y軸回転角を使用(ラジアン or 度数)
 	float playerAngle = player_->GetTransform().rot.y;
 
 	float cameraAngleRad = 0.0f;
@@ -320,7 +320,7 @@ void GameScene::DrawMiniMap(void)
 		cameraAngleRad = camera_->GetAngles().y;  // ここ！
 	}
 
-	// 敵の座標リストを作成
+	//敵の座標リストを作成
 	std::vector<std::shared_ptr<EnemyBase>> aliveEnemies;
 	for (const auto& enemy : enemys_)
 	{
@@ -330,7 +330,7 @@ void GameScene::DrawMiniMap(void)
 		}
 	}
 
-	// アイテムの座標リストを作成
+	//アイテムの座標リストを作成
 	std::vector<MapVector2> itemPositions;
 	for (const auto& item : items_)
 	{
@@ -343,7 +343,7 @@ void GameScene::DrawMiniMap(void)
 		}
 	}
 
-	// ミニマップ描画呼び出し
+	//ミニマップ描画呼び出し
 	map_->Draw(playerPos, playerAngle, cameraAngleRad, aliveEnemies, itemPositions);
 }
 
@@ -354,7 +354,7 @@ void GameScene::AddItem(std::shared_ptr<Item> item)
 
 std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale, Item::TYPE itemType)
 {
-	// 現在のアクティブ（生きている）アイテム数を数える
+	//現在のアクティブ（生きている）アイテム数を数える
 	int aliveCount = 0;
 	for (const auto& item : items_) {
 		if (item->GetIsAlive()) {
@@ -362,7 +362,7 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 		}
 	}
 
-	// 再利用可能なアイテムを探す
+	//再利用可能なアイテムを探す
 	if (itemType == Item::TYPE::WATER)
 	{
 		for (auto& item : items_) {
@@ -375,7 +375,7 @@ std::shared_ptr<Item> GameScene::CreateItem(const VECTOR& spawnPos, float scale,
 		}
 	}
 
-	// 再利用できなければ新しく作成
+	//再利用できなければ新しく作成
 	OutputDebugStringA("新規アイテムを作成\n");
 	auto newItem = std::make_shared<Item>(*player_, Transform{}, itemType,*
 		tree_);
@@ -457,7 +457,7 @@ void GameScene::EnemyCreate(void)
 		}
 	}
 
-	// 生成された敵の初期化
+	//生成された敵の初期化
 	enemy->SetGameScene(this);
 	enemy->SetPos(randPos);
 	enemy->SetPlayer(player_);
@@ -471,7 +471,7 @@ bool GameScene::PauseMenu(void)
 {
 	InputManager& ins = InputManager::GetInstance();
 
-	// TABキーでポーズのON/OFF切り替え（Menu中のみ）
+	//TABキーでポーズのON/OFF切り替え（Menu中のみ）
 	if (ins.IsTrgDown(KEY_INPUT_TAB))
 	{
 		if (pauseState_ == PauseState::Menu)
@@ -480,7 +480,7 @@ bool GameScene::PauseMenu(void)
 			pauseSelectIndex_ = 0;
 			mainCamera->SetPaused(isPaused_);
 		}
-		return true; // ポーズ処理があったので Update 停止
+		return true; //ポーズ処理があったので Update 停止
 	}
 
 	if (isPaused_)
@@ -511,8 +511,8 @@ bool GameScene::PauseMenu(void)
 				pauseState_ = PauseState::Menu;
 			}
 		}
-		return true; // ポーズ中なので Update 停止
+		return true; //ポーズ中なので Update 停止
 	}
 
-	return false; // ポーズ処理なし → Update 続行
+	return false; //ポーズ処理なし → Update 続行
 }
