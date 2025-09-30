@@ -519,8 +519,6 @@ void Player::ProcessMove(void)
 
 	//•ûŒü
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
 	double rotRad = 0;
 
