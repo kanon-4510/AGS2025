@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <DxLib.h>
+#include "../Application.h"
 #include "EnemyBase.h"
 
 class AnimationController;
@@ -15,13 +16,21 @@ class Player : public ActorBase
 
 public:
 
+	//プレイヤー
+	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
+	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
+	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };	//カプセルの頂点
+	static constexpr VECTOR CAPSULE_BOTTOM = { 0.0f,  30.0f, 0.0f };//カプセルの足元
+	static constexpr float  CAPSULE_RADIUS = 20.0f;					//カプセルの半径
+	static constexpr float ROT_FORWARD_DEG = 0.0f;					//プレイヤー角度(前)
+	static constexpr float ROT_BACK_DEG = 180.0f;					//プレイヤー角度(後ろ)
+	static constexpr float ROT_RIGHT_DEG = 90.0f;					//プレイヤー角度(右)
+	static constexpr float ROT_LEFT_DEG = -90.0f;					//プレイヤー角度(左)
+
 	//スピード
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
 	
-	//ステータス変更用の値
-	static constexpr float STATUS_UP = 2.0f;
-
 	//回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
@@ -33,6 +42,10 @@ public:
 	//影の大きさ
 	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
+	static constexpr float SHADOW_LIFT = 0.5f;					//ポリゴンを持ち上げる量
+	static constexpr int   SHADOW_MAX_ALPHA = 128;				//影の最大不透明度
+	static constexpr float SHADOW_UV_SCALE = 2.0f;				//UV計算用
+	static constexpr float SHADOW_UV_CENTER = 0.5f;
 
 	//煙エフェクト発生間隔
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;
@@ -43,8 +56,26 @@ public:
 	static constexpr int WATER_MAX = 10;
 
 	//ステータスアップ
-	static constexpr int POWER_UP_TIME = 1200;
-	static constexpr int SPEED_UP_TIME = 1200;
+	static constexpr int POWER_UP_TIME = 1200;	//パワーアップ時間
+	static constexpr int SPEED_UP_TIME = 1200;	//スピードアップ時間
+	static constexpr int EX_TIME = 10000;		//無敵時間
+	static constexpr float STATUS_UP = 2.0f;	//ステータス変更用の値
+
+	//攻撃力
+	static constexpr int NORMAL_ATTACK = 2;
+	static constexpr int SLASH_ATTACK = 1;
+	static constexpr int EX_ATTACK = 2;
+
+	//UI位置
+	static constexpr int PLAYER_LABEL_X = 55;
+	static constexpr int PLAYER_LABEL_Y = Application::SCREEN_SIZE_Y - 95;
+
+	//色
+	static constexpr int WHITE = 0xaaaaaa;
+	static constexpr int GREEN = 0x00ff00;
+	static constexpr int BLACK = 0x0;
+	static constexpr int RED = 0xff0000;
+	static constexpr int BLUE = 0x0000ff;
 
 	//ステータス関連
 	static constexpr float ICON_SIZE = 1.3;
@@ -84,8 +115,8 @@ public:
 		RUN,
 		FAST_RUN,
 		DOWN,
-		ATTACK1,
-		ATTACK2,
+		NORMALATTACK,
+		SLASHATTACK,
 		EXATTACK,
 	};
 
@@ -121,9 +152,6 @@ public:
 
 	//エネミーの衝突用座標
 	const std::vector<std::shared_ptr<EnemyBase>>& GetEnemyCollision(void) const;
-
-	//ゲームステート処理
-	bool IsPlay(void) const;
 
 	void SetTree(Tree* tree);
 
