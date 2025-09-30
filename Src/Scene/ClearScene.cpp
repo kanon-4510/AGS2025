@@ -50,7 +50,7 @@ void ClearScene::Init(void)
 	// 画像サイズ取得
 
 	GetGraphSize(imgClearWolrd_, &imgW_, &imgH_);
-	messageX_ = Application::SCREEN_SIZE_X /2 - imgW_ /2;
+	messageX_ = Application::SCREEN_SIZE_X / VALUE_TWO - imgW_ / VALUE_TWO;
 	messageY_ = MESSAGE_Y;
 
 	// マスクの初期位置（完全に隠れている状態）
@@ -151,11 +151,11 @@ void ClearScene::Draw(void)
 	// 背景を描く
 	DrawGraph(0, 0, imgBackGameClaer_, true);
 
-	DrawRotaGraph(Application::SCREEN_SIZE_X/2, CLEAR_IMG_Y, CLEAR_IMG_SCALE, 0,imgClear_,true);
+	DrawRotaGraph(Application::SCREEN_SIZE_X/ VALUE_TWO, CLEAR_IMG_Y, CLEAR_IMG_SCALE, 0,imgClear_,true);
 
 	// メッセージ（下のテキスト）を表示
 	SetFontSize(MESSAGE_FONT_SIZE);
-	DrawString(Application::SCREEN_SIZE_X/2 - MESSAGE_FONT_SIZE * MESSAGE_X_SCALE, MESSAGE_Y,
+	DrawString(Application::SCREEN_SIZE_X/ VALUE_TWO - MESSAGE_FONT_SIZE * MESSAGE_X_SCALE, MESSAGE_Y,
 		"こうして世界はうまれた", true);
 	SetFontSize(FONT_SIZE_DEFAULT);
 
