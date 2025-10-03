@@ -143,7 +143,7 @@ void Player::Update(void)
 	animationController_->Update();
 
 	//ダウン処理
-	UpdateDown(1.0f);
+	UpdateDown(DOWN_DELTATIME);
 }
 
 void Player::UpdateDown(float deltaTime)
@@ -191,8 +191,8 @@ void Player::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
-			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
+			float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
 			float x1 = POWER_CX + RADIUS * cosf(angle1);
 			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
@@ -216,8 +216,8 @@ void Player::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
-			float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
+			float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
+			float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
 			float x1 = SPEED_CX + RADIUS * cosf(angle1);
 			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
@@ -242,8 +242,8 @@ void Player::Draw(void)
 
 			for (int i = 0; i < SEGMENTS - filledSegments; ++i)
 			{
-				float angle1 = - (DX_PI_F / 2) - DX_TWO_PI * i / SEGMENTS;
-				float angle2 = - (DX_PI_F / 2) - DX_TWO_PI * (i + 1) / SEGMENTS;
+				float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
+				float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
 
 				float x1 = ROT_ATK_CX + RADIUS * cosf(angle1);
 				float y1 = TIMER_CY + RADIUS * sinf(angle1);
@@ -310,13 +310,13 @@ void Player::InitAnimation(void)
 
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	
-	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Player.mv1", 60.0f, 1);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", 17.0f,2);
-	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", 13.0f, 3);
-	animationController_->Add((int)ANIM_TYPE::SLASHATTACK, path + "Player.mv1", 17.0f, 4);
-	animationController_->Add((int)ANIM_TYPE::NORMALATTACK, path + "Player.mv1", 17.0f, 5);
-	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", 15.0f, 7);
-	animationController_->Add((int)ANIM_TYPE::EXATTACK, path + "Player.mv1", 15.0f, 8);
+	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Player.mv1", IDLE_SPEED, ANIM_IDLE_INDEX);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Player.mv1", ANIM_SPEED,ANIM_RUN_INDEX);
+	animationController_->Add((int)ANIM_TYPE::FAST_RUN, path + "Player.mv1", ANIM_SPEED, ANIM_FAST_RUN_INDEX);
+	animationController_->Add((int)ANIM_TYPE::SLASHATTACK, path + "Player.mv1", ANIM_SPEED, ANIM_SLASHATTACK_INDEX);
+	animationController_->Add((int)ANIM_TYPE::NORMALATTACK, path + "Player.mv1", ANIM_SPEED, ANIM_NORMALATTACK_INDEX);
+	animationController_->Add((int)ANIM_TYPE::DOWN, path + "Player.mv1", ANIM_SPEED, ANIM_DOWN_INDEX);
+	animationController_->Add((int)ANIM_TYPE::EXATTACK, path + "Player.mv1", ANIM_SPEED, ANIM_EXATTACK_INDEX);
 
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 }
@@ -412,7 +412,7 @@ void Player::DrawShadow(void)
 			VAdd(transform_.pos, VGet(0.0f, -PLAYER_SHADOW_HEIGHT, 0.0f)), PLAYER_SHADOW_SIZE);
 
 		//頂点データで変化が無い部分をセット
-		Vertex[0].dif = GetColorU8(255, 255, 255, 255);
+		Vertex[0].dif = GetColorU8(SHADOW_COLLER, SHADOW_COLLER, SHADOW_COLLER, SHADOW_COLLER);
 		Vertex[0].spc = GetColorU8(0, 0, 0, 0);
 		Vertex[0].su = 0.0f;
 		Vertex[0].sv = 0.0f;
@@ -579,7 +579,7 @@ void Player::SetGoalRotate(double rotRad)
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
 	//しきい値
-	if (angleDiff > 0.1)
+	if (angleDiff > SIKII)
 	{
 		stepRotTime_ = TIME_ROT;
 	}
@@ -625,11 +625,11 @@ void Player::CollisionGravity(void)
 	//重力の強さ
 	float gravityPow = grvMng_.GetPower();
 
-	float checkPow = 10.0f;
+	float checkPow = GRAVITY_POW;
 
 	gravHitPosUp_ = VAdd(movedPos_, VScale(dirUpGravity, gravityPow));
 
-	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
+	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * COLLISION_LINE_UP));
 
 	gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
 
@@ -649,7 +649,7 @@ void Player::CollisionGravity(void)
 			//movedPos_に押し戻し座標を設定
 			//押し戻し座標については、dxlib のhit構造体の中にヒントアリ
 			//衝突地点情報が格納されている
-			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
+			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, COLLISION_PUSH_UP));
 		}
 	}
 }
@@ -675,7 +675,7 @@ void Player::CollisionCapsule(void)
 			//地面と異なり、衝突回避位置が不明なため、何度か移動させる
 			//この時、移動させる方向は、移動前座標に向いた方向であったり、
 			//衝突したポリゴンの法線方向だったりする
-			for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+			for (int tryCnt = 0; tryCnt < CAPSULE_CNT; tryCnt++)
 			{
 				//再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
 				//最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
