@@ -6,7 +6,6 @@
 
 class SkyDome : public ActorBase
 {
-
 public:
 
 	static constexpr float SCALE = 100.0f;

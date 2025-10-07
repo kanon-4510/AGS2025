@@ -59,7 +59,7 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetIsAlive(bool isAlive);
-	bool GetIsAlive();
+	bool GetIsAlive(void);
 
 	void SetScale(float scale);			//itemのスケールを設定
 	void Respawn(const VECTOR& newPos);	//itemを再利用

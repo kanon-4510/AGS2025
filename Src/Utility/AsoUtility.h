@@ -6,7 +6,6 @@
 #include "../Common/Quaternion.h"
 class AsoUtility
 {
-
 public:	
 
 	// ラジアン(rad)・度(deg)変換用

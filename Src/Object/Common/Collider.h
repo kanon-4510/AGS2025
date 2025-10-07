@@ -1,7 +1,6 @@
 #pragma once
 class Collider
 {
-
 public :
 
 	// Õ“Ëí•Ê

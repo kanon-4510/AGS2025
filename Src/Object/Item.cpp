@@ -128,7 +128,7 @@ void Item::SetIsAlive(bool isAlive)
 	isAlive_ = isAlive;
 }
 
-bool Item::GetIsAlive()
+bool Item::GetIsAlive(void)
 {
 	return isAlive_;
 }

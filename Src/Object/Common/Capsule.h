@@ -4,7 +4,6 @@ class Transform;
 
 class Capsule
 {
-
 public :
 
 	// デバッグ時の簡易カプセル表示の色
