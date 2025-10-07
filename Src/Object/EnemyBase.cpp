@@ -24,7 +24,7 @@ EnemyBase::EnemyBase()
 
 	state_ = STATE::NONE;
 
-	attackPow_ = VALUE_ONE;	//çUåÇóÕ
+	attackPow_ = static_cast<int>(VALUE_ONE);	//çUåÇóÕ
 
 	//èÛë‘ä«óù
 	stateChanges_.emplace(
@@ -313,7 +313,7 @@ void EnemyBase::Damage(int damage)
 		ChangeState(STATE::DEATH);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
-	else if (hp_ >= VALUE_ONE && isAlive_ && enemyType_ != TYPE::BOSS)
+	else if (hp_ >= static_cast<int>(VALUE_ONE) && isAlive_ && enemyType_ != TYPE::BOSS)
 	{
 		ChangeState(STATE::DAMAGE);
 	}
@@ -329,6 +329,7 @@ void EnemyBase::Damage(int damage)
 
 void EnemyBase::DrawDamage()
 {
+	//É_ÉÅÅ[ÉWâÊëúÇÃï`âÊéûä‘
 	if (is1damage_)
 	{
 		DrawRotaGraph3D(transform_.pos.x, transform_.pos.y + DAMAGE_POS, transform_.pos.z
@@ -519,7 +520,7 @@ void EnemyBase::CheckHitAttackHit(void)
 	}
 }
 
-Item::TYPE EnemyBase::GetDropItemType() const
+Item::TYPE EnemyBase::GetDropItemType(void) const
 {
 	return Item::TYPE::WATER;
 }
@@ -624,7 +625,7 @@ void EnemyBase::DrawDebugSearchRange(void)
 
 	float angleStep = AsoUtility::FULL_ROTATION_RAD / VALUE_SIXTY;
 
-	for (int i = VALUE_ZERO; i < VALUE_SIXTY; ++i)
+	for (int i = static_cast<int>(VALUE_ZERO); i < VALUE_SIXTY; ++i)
 	{
 		float angle1 = angleStep * i;
 		float angle2 = angleStep * (i + VALUE_ONE);

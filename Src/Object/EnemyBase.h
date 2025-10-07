@@ -15,8 +15,8 @@ class EnemyBase : public ActorBase
 {
 public:
 	//ダメージ関連
-	static constexpr float DAMAGE_CNT = 120;
-	static constexpr float DAMAGE_POS = 100;
+	static constexpr int DAMAGE_CNT = 120;
+	static constexpr int DAMAGE_POS = 100;
 	static constexpr float DAMAGE_IMG_SCL = 0.5f;
 	static constexpr int VALUE_DAMAGE_1 = 1;
 	static constexpr int VALUE_DAMAGE_2 = 2;
@@ -137,11 +137,11 @@ public:
 	void Damage(int damage);	//ダメージを受ける
 
 
-	TYPE GetEnemyType(void) const;
+	TYPE GetEnemyType(void) const;//敵のタイプを取得
 	TYPE enemyType_;	//敵のタイプ
 
 	// 死亡時のドロップアイテムを決める関数（デフォルトはNONE）
-	virtual Item::TYPE GetDropItemType() const;
+	virtual Item::TYPE GetDropItemType(void) const;
 	
 	void SetCollisionPos(const VECTOR collision);//衝突判定用の球体
 	VECTOR GetCollisionPos(void)const;	//衝突用の中心座標の取得
@@ -150,13 +150,12 @@ public:
 	void SetGameScene(GameScene* scene);
 
 	void DrawDebug(void);	//デバッグ用
-	void DrawDebugSearchRange(void);
+	void DrawDebugSearchRange(void); //視野内に入ったか見る
 
 	void SetPlayer(std::shared_ptr<Player> player);
 	void SetTree(std::shared_ptr<Tree> tree);
-
 protected:
-
+	//ダメージ描画判定
 	bool is1damage_;
 	bool is2damage_;
 	bool is4damage;

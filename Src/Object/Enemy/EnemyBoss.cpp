@@ -64,7 +64,7 @@ void EnemyBoss::DrawBossHpBar(void)
 		return;
 	}
 
-	int barX = (Application::SCREEN_SIZE_X - BOSS_HP_BAR_WIDTH) / VALUE_TWO; // íÜâõX
+	int barX = (Application::SCREEN_SIZE_X - BOSS_HP_BAR_WIDTH) / static_cast<int>(VALUE_TWO); // íÜâõX
 	int barY = BOSS_HP_BAR_Y; // è„Ç©ÇÁ80px
 
 	float hpRate = static_cast<float>(hp_) / BOSS_MAX_HP;
