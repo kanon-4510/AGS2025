@@ -208,14 +208,14 @@ void Item::ItemUse(void)
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
-		tree_.Muteki();
+		tree_.Guard();
 		break;
 	case Item::TYPE::ALL:
 		player_.wHit(transform_.scl.x);
 		player_.PowerUp();
 		player_.SpeedUp();
 		player_.Heal();
-		tree_.Muteki();
+		tree_.Guard();
 		break;
 	
 	default:

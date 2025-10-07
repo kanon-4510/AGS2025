@@ -129,7 +129,7 @@ void EnemyBase::UpdateAttack(void)
 	{
 		isAttack_ = true;
 		isAttack_T = false;
-		tree_->eHit();
+		tree_->EnemyHit();
 	}
 
 	 //アニメーション終了で次の状態に遷移
