@@ -67,9 +67,7 @@ public:
 	TYPE GetItemType(void) const;
 
 	void DrawDebug(void);	//デバッグ用
-
 private:
-
 	Player& player_;
 	Tree& tree_;
 	TYPE itemType_;	//ドロップするアイテムの種類
