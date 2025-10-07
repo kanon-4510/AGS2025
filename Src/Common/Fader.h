@@ -2,7 +2,6 @@
 
 class Fader
 {
-
 public:
 
 	// フェードが進む速さ

@@ -26,6 +26,7 @@ public:
 	static constexpr int LIGHT_OFFSET_Y = 200;
 	static constexpr int LIGHT_ALPHA = 55;
 
+	//アニメーション速度
 	static constexpr float ANIM_SPEED = 20.0f;
 
 	// メニュー文字
@@ -53,12 +54,12 @@ public:
 	int black = 0x000000; //黒
 	int yellow = 0xffff00;//黄
 
-	struct VECTOR4
-	{
-		float x, y, z, w;
-		VECTOR4() : x(0), y(0), z(0), w(0) {}
-		VECTOR4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
-	};
+	//struct VECTOR4
+	//{
+	//	float x, y, z, w;
+	//	VECTOR4() : x(0), y(0), z(0), w(0) {}
+	//	VECTOR4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
+	//};
 
 	OverScene(void);	// コンストラクタ
 	~OverScene(void);	// デストラクタ
@@ -97,7 +98,6 @@ private:
 	std::unique_ptr<AnimationController> animationController_;
 
 	// 3D→2D変換用補助関数
-	VECTOR4 MulMatVec(const MATRIX& m, const VECTOR4& v);
 	bool WorldToScreen(const VECTOR& worldPos, VECTOR& screenPos);
 
 	

@@ -5,7 +5,6 @@
 
 class InputManager
 {
-
 public:
 
 	// ゲームコントローラーの認識番号

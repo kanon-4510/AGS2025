@@ -4,7 +4,6 @@
 #include <algorithm>
 class Quaternion
 {
-
 public:
 	
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;

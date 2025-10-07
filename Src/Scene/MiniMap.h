@@ -11,7 +11,6 @@ struct MapVector2
 
 class MiniMap
 {
-
 public:
 
     //’è”

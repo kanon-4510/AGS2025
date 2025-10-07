@@ -23,9 +23,9 @@ Tree::Tree(void)
 	modelIdO_ = ZERO;
 
 	//無敵状態
-	imgMutekiIcon_ = 0;
-	invincible_ = false;
-	mutekiCnt_ = INVINCIBLE_TIME;
+	imgGuardIcon_ = 0;
+	guard_ = false;
+	guardCnt_ = INVINCIBLE_TIME;
 
 	//エフェクト
 	effectTreeResId_ = 0;
@@ -44,7 +44,7 @@ bool Tree::Init(void)
 	modelIdO_ = MV1LoadModel((Application::PATH_MODEL + "wood/Old.mv1").c_str());
 
 	//無敵アイコン画像
-	imgMutekiIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
+	imgGuardIcon_ = LoadGraph("Data/Image/Icon/MUTEKIIcon.png");
 
 	scl_ = BABY_SCL;			//大きさ
 	rot_ = BABY_ROT;			//回転
@@ -55,11 +55,11 @@ bool Tree::Init(void)
 	isAlive_ = true;
 	isD_ = false;
 	grow_ = Tree::GROW::BABY;
-	hp_ = HP;
+	hp_ = HP_MAX;
 	water_ = 0;
 
 	//衝突判定
-	collisionRadius_ = COL_RAD_1;
+	collisionRadius_ = COL_RAD_BABY;
 	collisionLocalPos_ = COL_LOCAL_POS;
 
 	//エフェクト
@@ -85,19 +85,19 @@ void Tree::Update(void)
 	switch (grow_) 
 	{
 	case GROW::BABY:
-		minDistance = DISTANCE1;
+		minDistance = DISTANCE_BABY;
 		break;
 	case GROW::KID:
-		minDistance = DISTANCE2;
-		collisionRadius_ = COL_RAD_2;
+		minDistance = DISTANCE_KID;
+		collisionRadius_ = COL_RAD_KID;
 		break;
 	case GROW::ADULT:
-		minDistance = DISTANCE3;
-		collisionRadius_ = COL_RAD_3;
+		minDistance = DISTANCE_ADULT;
+		collisionRadius_ = COL_RAD_ADULT;
 		break;
 	case GROW::OLD:
-		minDistance = DISTANCE4;
-		collisionRadius_ = COL_RAD_4;
+		minDistance = DISTANCE_OLD;
+		collisionRadius_ = COL_RAD_OLD;
 		break;
 	}
 
@@ -122,7 +122,7 @@ void Tree::Update(void)
 	if (distance < viewRange_ && player_->GetWater() > 0)
 	{
 		player_->tHit();
-		pHit();//プレイヤーが近くて水を持ってたら水を貯める
+		PlayerHit();//プレイヤーが近くて水を持ってたら水を貯める
 	}
 
 	switch (grow_)
@@ -164,7 +164,7 @@ void Tree::Update(void)
 	collisionPos_ = VAdd(pos_, collisionLocalPos_);
 	DrawDebugTree2Player();
 	EffectTreeRange();	//エフェクト
-	MutekiTimer();		//無敵時間
+	GuardTimer();		//無敵時間
 }
 void Tree::Draw(void)
 {
@@ -207,12 +207,12 @@ void Tree::Draw(void)
 	else if(grow_==GROW::KID)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_KID  +BAR_START_X,BAR_END_WY,blue ,true);
 	else if(grow_==GROW::BABY)	DrawBox(BAR_START_X,BAR_START_WY,water_*WATER_BAR_BABY +BAR_START_X,BAR_END_WY,blue ,true);
 
-	if (invincible_)
+	if (guard_)
 	{
 		// 無敵アイコン画像
-		DrawRotaGraph(CX, CY, MUTEKI_ICON_SIZE, 0.0, imgMutekiIcon_, true);
+		DrawRotaGraph(CX, CY, GUARD_ICON_SIZE, 0.0, imgGuardIcon_, true);
 
-		float ratio = static_cast<float>(mutekiCnt_) / INVINCIBLE_TIME;
+		float ratio = static_cast<float>(guardCnt_) / INVINCIBLE_TIME;
 		int filledSegments = static_cast<int>(SEGMENTS * ratio);
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_GRAY);
@@ -272,19 +272,19 @@ void Tree::DrawDebugTree2Player(void)
 		else if (grow_ == GROW::KID)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = RANGE_1;
+			viewRange_ = RANGE_KID;
 			
 		}
 		else if(grow_ == GROW::ADULT)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = RANGE_2;
+			viewRange_ = RANGE_ADULT;
 			
 		}
 		else if(grow_ == GROW::OLD)
 		{
 			centerPos.y = 0.0f;
-			viewRange_ = RANGE_3;
+			viewRange_ = RANGE_OLD;
 			
 		}
 
@@ -387,23 +387,23 @@ float Tree::GetCollisionRadius(void)
 	return collisionRadius_;
 }
 
-void Tree::MutekiTimer(void)
+void Tree::GuardTimer(void)
 {
 	//無敵
-	if (invincible_)
+	if (guard_)
 	{
-		mutekiCnt_--;
+		guardCnt_--;
 
-		if (mutekiCnt_ <= 0)
+		if (guardCnt_ <= 0)
 		{
-			invincible_ = false;
-			mutekiCnt_ = INVINCIBLE_TIME;
+			guard_ = false;
+			guardCnt_ = INVINCIBLE_TIME;
 		}
 	}
 }
-void Tree::Muteki(void)
+void Tree::Guard(void)
 {
-	invincible_ = true;
+	guard_ = true;
 
 	// 木が無敵になった時の音
 	SoundManager::GetInstance().Play(SoundManager::SRC::MUTEKI_SE, Sound::TIMES::ONCE);
@@ -435,9 +435,9 @@ void Tree::PushEnemy(void)
 		}
 	}
 }
-void Tree::eHit(void)//エネミーとのあたり判定
+void Tree::EnemyHit(void)//エネミーとのあたり判定
 {
-	if (!invincible_)
+	if (!guard_)
 	{
 		hp_ -= 1;
 		isD_ = true;
@@ -446,7 +446,7 @@ void Tree::eHit(void)//エネミーとのあたり判定
 		SoundManager::GetInstance().Play(SoundManager::SRC::T_DAMAGE_SE, Sound::TIMES::FORCE_ONCE);
 	}
 }
-void Tree::pHit(void)//プレイヤーとのあたり判定
+void Tree::PlayerHit(void)//プレイヤーとのあたり判定
 {
 	if (player_->IsMax() == true)
 	{
@@ -479,16 +479,16 @@ void Tree::EffectTreeRange(void)
 	switch (grow_)
 	{
 	case GROW::BABY:
-		scale = BABY_TREE_SCL;
+		scale = SCL_TREE_BABY;
 		break;
 	case GROW::KID:
-		scale = BABY_TREE_KID;
+		scale = SCL_TREE_KID;
 		break;
 	case GROW::ADULT:
-		scale = BABY_TREE_ADULT;
+		scale = SCL_TREE_ADULT;
 		break;
 	case GROW::OLD:
-		scale = BABY_TREE_OLD;
+		scale = SCL_TREE_OLD;
 		break;
 	default:
 		break;

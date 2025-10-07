@@ -13,7 +13,7 @@ Item::Item(Player& player, const Transform& transform, TYPE itemType, Tree& tree
 	player_(player), pos_(transform.pos), itemType_(itemType), tree_(tree)
 {
 	transform_.dir = {};
-	transform_.modelId = VALUE_ZERO;
+	transform_.modelId = static_cast<int>(VALUE_ZERO);
 
 	collisionLocalPos_ = {};
 	collisionRadius_ = VALUE_ZERO;
@@ -42,7 +42,7 @@ void Item::Init(void)
 	baseY_ = transform_.pos.y + safetyMargin;
 
 	collisionRadius_ = COLLISION_SIZE;	// 衝突判定用の球体半径
-	collisionLocalPos_ = COLLISION_POS;	// 衝突判定用の球体中心の調整座標
+	collisionLocalPos_ = VGet(VALUE_ZERO, COLLISION_POS_Y, VALUE_ZERO);	// 衝突判定用の球体中心の調整座標
 }
 
 void Item::Update(void)
@@ -128,7 +128,7 @@ void Item::SetIsAlive(bool isAlive)
 	isAlive_ = isAlive;
 }
 
-bool Item::GetIsAlive()
+bool Item::GetIsAlive(void)
 {
 	return isAlive_;
 }
@@ -208,14 +208,14 @@ void Item::ItemUse(void)
 		player_.Heal();
 		break;
 	case Item::TYPE::MUTEKI:
-		tree_.Muteki();
+		tree_.Guard();
 		break;
 	case Item::TYPE::ALL:
 		player_.wHit(transform_.scl.x);
 		player_.PowerUp();
 		player_.SpeedUp();
 		player_.Heal();
-		tree_.Muteki();
+		tree_.Guard();
 		break;
 	
 	default:

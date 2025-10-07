@@ -6,7 +6,6 @@ class GravityManager;
 
 class ActorBase
 {
-
 public:
 
 	// コンストラクタ

@@ -4,7 +4,6 @@
 
 class Resource
 {
-
 public:
 	
 	// リソースタイプ

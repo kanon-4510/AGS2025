@@ -12,17 +12,6 @@
 #include "../Object/SkyDome.h" 
 #include "OverScene.h"
 
-// 4x4行列 × 4成分ベクトルの掛け算
-OverScene::VECTOR4 OverScene::MulMatVec(const MATRIX& m, const VECTOR4& v)
-{
-	VECTOR4 r;
-	r.x = m.m[0][0] * v.x + m.m[1][0] * v.y + m.m[2][0] * v.z + m.m[3][0] * v.w;
-	r.y = m.m[0][1] * v.x + m.m[1][1] * v.y + m.m[2][1] * v.z + m.m[3][1] * v.w;
-	r.z = m.m[0][2] * v.x + m.m[1][2] * v.y + m.m[2][2] * v.z + m.m[3][2] * v.w;
-	r.w = m.m[0][3] * v.x + m.m[1][3] * v.y + m.m[2][3] * v.z + m.m[3][3] * v.w;
-	return r;
-}
-
 // 3D座標をスクリーン座標に変換
 bool OverScene::WorldToScreen(const VECTOR& worldPos, VECTOR& screenPos)
 {
@@ -31,11 +20,11 @@ bool OverScene::WorldToScreen(const VECTOR& worldPos, VECTOR& screenPos)
 	int screenH = Application::SCREEN_SIZE_Y;
 
 	// X座標を画面Xにマッピング（中央を画面中央に）
-	screenPos.x = screenW / VALUE_TWO + static_cast<int>(worldPos.x);
+	screenPos.x = static_cast<int>(screenW) / VALUE_TWO + static_cast<int>(worldPos.x);
 
 	// Z座標を画面Yにマッピング（手前が下、適当にY軸調整）
 	// Yはそのまま画面の下方向に使う例
-	screenPos.y = screenH / VALUE_TWO - static_cast<int>(worldPos.z);
+	screenPos.y = static_cast<int>(screenH) / VALUE_TWO - static_cast<int>(worldPos.z);
 
 	// 簡易判定として画面内ならtrue
 	if (screenPos.x < 0 || screenPos.x > screenW || screenPos.y < 0 || screenPos.y > screenH) {
@@ -77,7 +66,7 @@ void OverScene::Init(void)
 	imgLightCircle_ = resMng_.Load(ResourceManager::SRC::LIGHT).handleId_;  // 作成した光画像を読み込む
 
 	// 画像の横幅（例）
-	const int massageX = Application::SCREEN_SIZE_X / VALUE_TWO - MASSAGE_X_OFFSET;
+	const int massageX = Application::SCREEN_SIZE_X / static_cast<int>(VALUE_TWO) - MASSAGE_X_OFFSET;
 	maskLeftX_ = massageX;                          // 黒帯は最初は画像全体を覆う
 	maskRightX_ = massageX + maskWidthMax_;
 
@@ -97,9 +86,7 @@ void OverScene::Init(void)
 	charactor_.Update();
 
 	// アニメーションの設定
-	std::string path = Application::PATH_MODEL + "Player/";
 	animationController_ = std::make_unique<AnimationController>(charactor_.modelId);
-	animationController_->Add(0, path + "Sword And Shield Death.mv1", ANIM_SPEED);
 	animationController_->Play(0);
 
 	// 定点カメラ
@@ -157,7 +144,7 @@ void OverScene::Draw(void)
 	DrawBox(0,0,Application::SCREEN_SIZE_X,Application::SCREEN_SIZE_Y,0x0,true);
 
 	// ゲームオーバー画像
-	DrawGraph(Application::SCREEN_SIZE_X/ VALUE_TWO - GAMEOVER_IMG_X_OFFSET, GAMEOVER_IMG_Y,imgGameOver_,true);
+	DrawGraph(Application::SCREEN_SIZE_X/ static_cast<int>(VALUE_TWO) - GAMEOVER_IMG_X_OFFSET, GAMEOVER_IMG_Y,imgGameOver_,true);
 
 	// プレイヤーモデル描画
 	MV1DrawModel(charactor_.modelId);
@@ -180,10 +167,10 @@ void OverScene::Draw(void)
 		int offsetY = LIGHT_OFFSET_Y;
 
 		DrawExtendGraph(
-			(int)screenPos.x - drawW / VALUE_TWO,
-			(int)screenPos.y + offsetY - drawH / VALUE_TWO,
-			(int)screenPos.x + drawW / VALUE_TWO,
-			(int)screenPos.y + offsetY + drawH / VALUE_TWO,
+			(int)screenPos.x - drawW / static_cast<int>(VALUE_TWO),
+			(int)screenPos.y + offsetY - drawH / static_cast<int>(VALUE_TWO),
+			(int)screenPos.x + drawW / static_cast<int>(VALUE_TWO),
+			(int)screenPos.y + offsetY + drawH / static_cast<int>(VALUE_TWO),
 			imgLightCircle_,
 			TRUE
 		);
@@ -209,10 +196,10 @@ void OverScene::Draw(void)
 
 	// 画像描画
 	SetFontSize(STORY_FONT_SIZE);
-	DrawString(Application::SCREEN_SIZE_X/ VALUE_TWO - STORY_X_OFFSET, STORY_Y,"ユグドラシルは死んでしまった…",white,true);
+	DrawString(Application::SCREEN_SIZE_X/ static_cast<int>(VALUE_TWO) - STORY_X_OFFSET, STORY_Y,"ユグドラシルは死んでしまった…",white,true);
 	SetFontSize(DEFAULT_FONT_SIZE);
 
-	// 黒帯描画（maskLeftX_ は初期値 msgX + imgW から 徐々に msgX へ移動する想定）
+	//黒帯描画（maskLeftX_ は初期値 msgX + imgW から 徐々に msgX へ移動する想定）
 	DrawBox(BLACK_BOX_X1 +(cnt * BLACK_BOX_SLIDE_SPEED),
 		BLACK_BOX_Y1, BLACK_BOX_X2, BLACK_BOX_Y2, black,true);
 }

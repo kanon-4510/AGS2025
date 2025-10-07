@@ -6,7 +6,6 @@
 
 class ResourceManager
 {
-
 public:
 
 	// ƒŠƒ\[ƒX–¼

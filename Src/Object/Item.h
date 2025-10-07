@@ -18,10 +18,10 @@ public:
 	static constexpr float COLLISION_SIZE = 30.0f;		//コリジョンサイズ
 
 	//球体座標
-	static constexpr VECTOR COLLISION_POS = { 0.0f, 150.0f, 0.0f };
+	static constexpr float COLLISION_POS_Y = 150.0f;	//コリジョン位置
 
-	const float ITEM_GROUND_Y = 2.0f;
-	const float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
+	static constexpr float ITEM_GROUND_Y = 2.0f;
+	static constexpr float ITEM_MODEL_BOTTOM_OFFSET = 3.0f;
 
 	static constexpr int DEBUG_SPHERE_DIV = 8;
 
@@ -59,7 +59,7 @@ public:
 	float GetCollisionRadius(void);		// 衝突用の球体半径の取得
 
 	void SetIsAlive(bool isAlive);
-	bool GetIsAlive();
+	bool GetIsAlive(void);
 
 	void SetScale(float scale);			//itemのスケールを設定
 	void Respawn(const VECTOR& newPos);	//itemを再利用
@@ -67,14 +67,10 @@ public:
 	TYPE GetItemType(void) const;
 
 	void DrawDebug(void);	//デバッグ用
-
 private:
-
 	Player& player_;
 	Tree& tree_;
 	TYPE itemType_;	//ドロップするアイテムの種類
-
-	int modelId_;//モデルの格納
 
 	VECTOR pos_;	// 表示座標
 
