@@ -18,7 +18,7 @@ public:
 	static constexpr VECTOR PLAYER_POS = { 300.0f, 0.0f, 0.0f };	//初期位置
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };	//カプセルの頂点
 	static constexpr VECTOR CAPSULE_BOTTOM = { 0.0f,  30.0f, 0.0f };//カプセルの足元
-	static constexpr float PLAYER_ROT_Y = 180.0f;					// Y軸回転(度数)
+	static constexpr float PLAYER_ROT_Y = 180.0f;					//Y軸回転(度数)
 	static constexpr float COLLISION_RADIUS = 100.0f;				//衝突判定の半径
 	static constexpr float CAPSULE_RADIUS = 20.0f;					//カプセルの半径
 	static constexpr float ROT_FORWARD_DEG = 0.0f;					//プレイヤー角度(前)
@@ -134,7 +134,7 @@ public:
 	int gray = 0xaaaaaa;  //灰
 
 	//ステータス関連
-	static constexpr float ICON_SIZE = 1.3;
+	static constexpr double ICON_SIZE = 1.3;
 	static constexpr int ICON_CY_HEIGHT = 115;
 
 	static constexpr int GRAY_ALPHA = 180;
@@ -227,17 +227,15 @@ public:
 	void SpeedUp(void);			//スピードアップ
 	void Heal(void);			//回復
 	void Muteki(void);			//無敵
-
 private:
-
 	//アニメーション
 	std::unique_ptr<AnimationController> animationController_;
 	void InitAnimation(void);
 
 	//状態管理
 	STATE state_;
-	std::map<STATE, std::function<void(void)>> stateChanges_;	// 状態管理(状態遷移時初期処理)
-	std::function<void(void)> stateUpdate_;						// 状態管理(更新)
+	std::map<STATE, std::function<void(void)>> stateChanges_;	//状態管理(状態遷移時初期処理)
+	std::function<void(void)> stateUpdate_;						//状態管理(更新)
 
 	//状態遷移
 	void ChangeState(STATE state);
@@ -266,11 +264,11 @@ private:
 
 	//プレイヤーが持つ判定
 	VECTOR collisionPos_;			//プレイヤーの当たり判定移動後座標
-	float collisionRadius_;			// 衝突判定用の球体半径
-	VECTOR collisionLocalPos_;		// 衝突判定用の球体中心の調整座標
+	float collisionRadius_;			//衝突判定用の球体半径
+	VECTOR collisionLocalPos_;		//衝突判定用の球体中心の調整座標
 
 	//プレイヤーの動き
-	void ProcessMove(void);			// 移動
+	void ProcessMove(void);			//移動
 	void ProcessAttack(void);		//攻撃モーション
 
 	//回転
@@ -278,8 +276,8 @@ private:
 	void Rotate(void);
 
 	//モーション終了
-	bool IsEndLandingA(void);		// アタック終了
-	bool IsExAttackReady() const;	// 回転斬りリセット
+	bool IsEndLanding(void);		//アタック終了
+	bool IsExAttackReady() const;	//回転斬りリセット
 
 	//ステータス変化管理
 	void PowerUpTimer(void);		//パワーアップの制限時間
@@ -324,7 +322,7 @@ private:
 	bool speedUpFlag_;	//スピードが上がったている間treu
 	int powerUpCnt_;	//2パワーアップの時間(20秒)
 	int speedUpCnt_;	//スピードアップの時間(20秒)
-	bool invincible_;	// 無敵状態
+	bool invincible_;	//無敵状態
 
 	//水の所持上限
 	bool isMax_;

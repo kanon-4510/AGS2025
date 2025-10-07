@@ -175,7 +175,7 @@ void Player::Draw(void)
 	
 	DrawBox(BAR_START_X,BAR_START_HY,BAR_END_X,BAR_END_HY,black,true);
 	if (hp_ != 0)DrawBox(BAR_START_X,BAR_START_HY,hp_*BAR_POINT+BAR_START_X,BAR_END_HY,green,true);
-	if (hp_ == 0)DrawBox(BAR_START_X,BAR_START_HY,revivalTimer_+BAR_START_X,BAR_END_HY,red,true);
+	if (hp_ == 0)DrawBox(BAR_START_X,BAR_START_HY,static_cast<int>(revivalTimer_)+BAR_START_X,BAR_END_HY,red,true);
 	DrawBox(BAR_START_X,BAR_START_WY,BAR_END_X,BAR_END_WY,black,true);
 	DrawBox(BAR_START_X,BAR_START_WY,water_*BAR_POINT+BAR_START_X,BAR_END_WY,blue,true);
 	
@@ -191,8 +191,8 @@ void Player::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
-			float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
+			float angle1 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * i / SEGMENTS;
+			float angle2 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * (i + 1) / SEGMENTS;
 
 			float x1 = POWER_CX + RADIUS * cosf(angle1);
 			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
@@ -216,8 +216,8 @@ void Player::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, GRAY_ALPHA);
 		for (int i = filledSegments; i < SEGMENTS; ++i)
 		{
-			float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
-			float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
+			float angle1 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * i / SEGMENTS;
+			float angle2 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * (i + 1) / SEGMENTS;
 
 			float x1 = SPEED_CX + RADIUS * cosf(angle1);
 			float y1 = TIMER_CY + RADIUS * sinf(angle1);  //timerCy使用
@@ -242,8 +242,8 @@ void Player::Draw(void)
 
 			for (int i = 0; i < SEGMENTS - filledSegments; ++i)
 			{
-				float angle1 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * i / SEGMENTS;
-				float angle2 = - (DX_PI_F / HALF_DIVISOR) - DX_TWO_PI * (i + 1) / SEGMENTS;
+				float angle1 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * i / SEGMENTS;
+				float angle2 = - (static_cast<float>(DX_PI_F) / HALF_DIVISOR) - static_cast<float>(DX_TWO_PI) * (i + 1) / SEGMENTS;
 
 				float x1 = ROT_ATK_CX + RADIUS * cosf(angle1);
 				float y1 = TIMER_CY + RADIUS * sinf(angle1);
@@ -381,12 +381,11 @@ void Player::UpdatePlay(void)
 
 void Player::DrawShadow(void)
 {
-	int i, j;
+	int i;
 	MV1_COLL_RESULT_POLY_DIM HitResDim;
 	MV1_COLL_RESULT_POLY* HitRes;
 	VERTEX3D Vertex[3];
 	VECTOR SlideVec;
-	int ModelHandle;
 
 	//ライティングを無効にする
 	SetUseLighting(FALSE);
@@ -438,14 +437,25 @@ void Player::DrawShadow(void)
 			Vertex[0].dif.a = 0;
 			Vertex[1].dif.a = 0;
 			Vertex[2].dif.a = 0;
-			if (HitRes->Position[0].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[0].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+			for (int i = 0; i < 3; i++)
+			{
+				float diff = fabs(HitRes->Position[i].y - transform_.pos.y);
 
-			if (HitRes->Position[1].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[1].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+				if (HitRes->Position[i].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
+				{
+					float alpha = static_cast<float>(SHADOW_MAX_ALPHA) *
+						(1.0f - diff / PLAYER_SHADOW_HEIGHT);
 
-			if (HitRes->Position[2].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-				Vertex[2].dif.a = SHADOW_MAX_ALPHA * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+					//0～255にクランプしてからBYTEへキャスト
+					alpha = std::clamp(alpha, 0.0f, 255.0f);
+
+					Vertex[i].dif.a = static_cast<unsigned char>(alpha + 0.5f);
+				}
+				else
+				{
+					Vertex[i].dif.a = 0;
+				}
+			}
 
 			//ＵＶ値は地面ポリゴンとプレイヤーの相対座標から割り出す
 			Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * SHADOW_UV_SCALE) + SHADOW_UV_CENTER;
@@ -505,7 +515,7 @@ void Player::ProcessMove(void)
 
 	double rotRad = 0;
 
-	if (!isAttack_ && !isAttack2_ && !exAttack_ && IsEndLandingA())
+	if (!isAttack_ && !isAttack2_ && !exAttack_ && IsEndLanding())
 	{
 		if (ins.IsNew(KEY_INPUT_W))
 		{
@@ -815,7 +825,7 @@ void Player::ProcessAttack(void)
 	bool isHit_E = CheckHitKey(KEY_INPUT_R);
 
 	//アタック
-	if (isAttack_ || IsEndLandingA())
+	if (isAttack_ || IsEndLanding())
 	{
 		if (!isAttack_ && !isAttack2_ && !exAttack_ && isHit)
 		{
@@ -880,7 +890,7 @@ void Player::ProcessAttack(void)
 	}
 }
 
-bool Player::IsEndLandingA(void)
+bool Player::IsEndLanding(void)
 {
 	bool ret = true;
 	int animType = animationController_->GetPlayType();
@@ -953,9 +963,9 @@ void Player::PowerUp(void)
 
 	if (powerUpCnt_ >= 0 && powerUpFlag_)
 	{
-		normalAttack_ = normalAttack_ * STATUS_UP;
-		slashAttack_ = slashAttack_ * STATUS_UP;
-		exrAttack_ = exrAttack_ * STATUS_UP;
+		normalAttack_ = normalAttack_ * static_cast<int>(STATUS_UP);
+		slashAttack_ = slashAttack_ * static_cast<int>(STATUS_UP);
+		exrAttack_ = exrAttack_ * static_cast<int>(STATUS_UP);
 	}
 }
 
