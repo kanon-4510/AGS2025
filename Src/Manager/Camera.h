@@ -5,7 +5,6 @@ class Transform;
 
 class Camera
 {
-
 public:
 
 	// カメラスピード(度)

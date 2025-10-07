@@ -9,7 +9,6 @@ class EnemyBase;
 
 class GravityManager
 {
-
 public:
 
 	// d—Í•ûŒü‚ªŠ®‘S‚É•Ï‚í‚é‚Ü‚Å‚ÌŠÔ

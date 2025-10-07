@@ -8,7 +8,6 @@ class Player;
 
 class Stage
 {
-
 public:
 
 	// ステージ名

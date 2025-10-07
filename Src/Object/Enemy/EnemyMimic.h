@@ -7,7 +7,7 @@ class EnemyMimic : public EnemyBase
 public:
 
 	static constexpr  float SPEED = 4.0f;
-	static constexpr  int HP = 5.0f;
+	static constexpr  int HP = 5;
 
 	EnemyMimic();
 

@@ -12,7 +12,6 @@
 /// </summary>
 class Transform
 {
-
 public:
 
 	// コンストラクタ

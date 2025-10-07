@@ -26,6 +26,19 @@ public:
 	static constexpr float ROT_RIGHT_DEG = 90.0f;					//プレイヤー角度(右)
 	static constexpr float ROT_LEFT_DEG = -90.0f;					//プレイヤー角度(左)
 
+	//アニメーション関係
+	static constexpr  float IDLE_SPEED = 60.0f;
+	static constexpr  float ANIM_SPEED = 15.0f;
+
+	//アニメーション番号
+	static constexpr int   ANIM_IDLE_INDEX = 1;
+	static constexpr int   ANIM_RUN_INDEX = 2;
+	static constexpr int   ANIM_FAST_RUN_INDEX = 3;
+	static constexpr int   ANIM_SLASHATTACK_INDEX = 4;
+	static constexpr int   ANIM_NORMALATTACK_INDEX = 5;
+	static constexpr int   ANIM_DOWN_INDEX = 7;
+	static constexpr int   ANIM_EXATTACK_INDEX = 8;
+
 	//スピード
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
@@ -38,19 +51,21 @@ public:
 	static constexpr int LV_ADULT = 50;		//木の成長段階
 	static constexpr int LV_KID = 25;		//木の成長段階
 
-	//影の大きさ
+	//影関係
 	static constexpr float PLAYER_SHADOW_SIZE = 100.0f;
 	static constexpr float PLAYER_SHADOW_HEIGHT = 300.0f;
-	static constexpr float SHADOW_LIFT = 0.5f;					//ポリゴンを持ち上げる量
-	static constexpr int   SHADOW_MAX_ALPHA = 128;				//影の最大不透明度
-	static constexpr float SHADOW_UV_SCALE = 2.0f;				//UV計算用
+	static constexpr float SHADOW_LIFT = 0.5f;
+	static constexpr int   SHADOW_MAX_ALPHA = 128;
+	static constexpr float SHADOW_UV_SCALE = 2.0f;
 	static constexpr float SHADOW_UV_CENTER = 0.5f;
+	static constexpr int SHADOW_COLLER = 255;
 
 	//煙エフェクト
 	static constexpr float TERM_FOOT_SMOKE = 0.3f;		//煙エフェクト発生間隔
 	static constexpr float FOOT_SMOKE_SCALE = 5.0f;		//煙エフェクトのスケール
 
 	//ステ関連
+	static constexpr float DOWN_DELTATIME = 1.0f;
 	static constexpr int HP = 10;
 	static constexpr int D_COUNT = 600;
 	static constexpr int WATER_MAX = 10;
@@ -68,6 +83,7 @@ public:
 	static constexpr int EX_TIME = 10000;				//無敵時間
 	static constexpr float STATUS_UP = 2.0f;			//ステータス変更用の値
 	static constexpr float STATUS_EFFECT_SCALE = 20.0f;	//ステータスアップエフェクトのスケール
+	static constexpr int HALF_DIVISOR = 2;				//÷2
 
 	//攻撃
 	static constexpr int NORMAL_ATTACK = 2;				//通常攻撃
@@ -95,6 +111,17 @@ public:
 	static constexpr int BAR_END_HY = Application::SCREEN_SIZE_Y - 55;		//バーの最後体力Y
 	static constexpr int BAR_END_WY = Application::SCREEN_SIZE_Y - 40;		//バーの最後水Y
 	static constexpr int BAR_POINT = 60;									//バーの数値
+
+	//しきい値
+	static constexpr double SIKII = 0.1;
+
+	//重力
+	static constexpr float GRAVITY_POW = 10.0f;
+	static constexpr float COLLISION_LINE_UP = 2.0f;
+	static constexpr float COLLISION_PUSH_UP = 2.0f;
+
+	//カプセル
+	static constexpr int CAPSULE_CNT = 10;
 
 	//色
 	int white = 0xffffff; //白

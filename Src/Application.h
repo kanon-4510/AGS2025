@@ -3,7 +3,6 @@
 
 class Application
 {
-
 public:
 
 	// スクリーンサイズ

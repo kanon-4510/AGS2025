@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "..//Application.h"
 #include "SceneBase.h"
 #include "string"
 

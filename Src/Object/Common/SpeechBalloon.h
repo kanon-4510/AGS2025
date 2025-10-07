@@ -6,7 +6,6 @@ class SceneManager;
 
 class SpeechBalloon
 {
-
 public:
 
 	// •\Ž¦Ží•Ê

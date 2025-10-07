@@ -11,7 +11,6 @@ class Camera;
 
 class SceneManager
 {
-
 public:
 
 	//60FPSŒÅ’è‚Ì’è”

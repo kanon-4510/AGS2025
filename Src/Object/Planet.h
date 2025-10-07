@@ -5,7 +5,6 @@
 
 class Planet : public ActorBase
 {
-
 public:
 
 	// d—Í‚Ì‹­‚³

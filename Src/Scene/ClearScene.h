@@ -17,7 +17,7 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 private:
-
+	//汎用性の値
 	static constexpr float VALUE_TWO = 2.0f;
 
 	// アニメーション用定数
