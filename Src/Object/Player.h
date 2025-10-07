@@ -302,6 +302,7 @@ private:
 	float speed_;					//移動スピード
 	bool canMove_;					//移動が可能かどうか
 	float stepRotTime_;				//回転補間の進行を管理するタイマー(残り時間)
+	VECTOR jumpPow_;				//ジャンプ量
 	void CalcGravityPow(void);		//移動量の計算
 
 	//回転

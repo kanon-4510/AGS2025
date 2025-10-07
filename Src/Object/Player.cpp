@@ -626,6 +626,9 @@ void Player::Collision(void)
 
 void Player::CollisionGravity(void)
 {
+	//ジャンプ量を加算
+	movedPos_ = VAdd(movedPos_, jumpPow_);
+
 	//重力方向
 	VECTOR dirGravity = grvMng_.GetDirGravity();
 
@@ -635,11 +638,11 @@ void Player::CollisionGravity(void)
 	//重力の強さ
 	float gravityPow = grvMng_.GetPower();
 
-	float checkPow = GRAVITY_POW;
+	float checkPow = 10.0f;
 
 	gravHitPosUp_ = VAdd(movedPos_, VScale(dirUpGravity, gravityPow));
 
-	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * COLLISION_LINE_UP));
+	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
 
 	gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
 
@@ -649,17 +652,16 @@ void Player::CollisionGravity(void)
 		auto hit = MV1CollCheck_Line(
 			c.lock()->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
 
-		//if (hit.HitFlag > 0)
-		if (hit.HitFlag > 0)
+		//if(hit.HitFlag > 0)
+		if (hit.HitFlag > 0 && VDot(dirGravity, jumpPow_) > 0.9f)
 		{
 			//衝突地点から、少し上に移動
-
 			//地面と衝突している
-
 			//movedPos_に押し戻し座標を設定
-			//押し戻し座標については、dxlib のhit構造体の中にヒントアリ
-			//衝突地点情報が格納されている
-			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, COLLISION_PUSH_UP));
+			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
+
+			//jumpPow_の値をゼロにする
+			jumpPow_ = AsoUtility::VECTOR_ZERO;
 		}
 	}
 }
@@ -813,9 +815,18 @@ void Player::CalcGravityPow(void)
 	//重力の強さ
 	float gravityPow = grvMng_.GetPower();
 
-	//重力
 	//重力を作る
+	//メンバ変数 jumpPow_ に重力計算を行う(加速度)
 	VECTOR gravity = VScale(dirGravity, gravityPow);
+	jumpPow_ = VAdd(jumpPow_, gravity);
+
+	//内積
+	float dot = VDot(dirGravity, jumpPow_);
+	if (dot >= 0.0f)
+	{
+		//重力方向と反対方向(マイナス)でなければ、ジャンプ力を無くす
+		jumpPow_ = gravity;
+	}
 }
 
 void Player::ProcessAttack(void)
