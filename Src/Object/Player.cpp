@@ -638,11 +638,11 @@ void Player::CollisionGravity(void)
 	//重力の強さ
 	float gravityPow = grvMng_.GetPower();
 
-	float checkPow = 10.0f;
+	float checkPow = GRAVITY_POW;
 
 	gravHitPosUp_ = VAdd(movedPos_, VScale(dirUpGravity, gravityPow));
 
-	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
+	gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * COLLISION_LINE_UP));
 
 	gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
 
@@ -653,12 +653,12 @@ void Player::CollisionGravity(void)
 			c.lock()->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
 
 		//if(hit.HitFlag > 0)
-		if (hit.HitFlag > 0 && VDot(dirGravity, jumpPow_) > 0.9f)
+		if (hit.HitFlag > 0 && VDot(dirGravity, jumpPow_) > CONTACT_DOT_THRESHOLD)
 		{
 			//衝突地点から、少し上に移動
 			//地面と衝突している
 			//movedPos_に押し戻し座標を設定
-			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
+			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, COLLISION_PUSH_UP));
 
 			//jumpPow_の値をゼロにする
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
