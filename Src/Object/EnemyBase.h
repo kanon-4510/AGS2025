@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include<map>
+#include <map>
 #include <functional>
 #include <vector>
 #include "ActorBase.h"
@@ -27,10 +27,10 @@ public:
 	static constexpr int VALUE_DAMAGE_64 = 64;
 
 	//デバッグ &　汎用
-	static constexpr float VALUE_ZERO = 0.0f;	//初期化の値用
-	static constexpr float VALUE_ONE = 1.0f;
-	static constexpr float VALUE_TWO = 2.0f;
-	static constexpr int  VALUE_SIXTY = 60;
+	static constexpr float VALUE_ZERO = 0.0f;	//初期化用
+	static constexpr float VALUE_ONE = 1.0f;	//初期化用
+	static constexpr float VALUE_TWO = 2.0f;	//計算用
+	static constexpr int  VALUE_SIXTY = 60;		//フレーム数
 
 	//向き
 	static constexpr float DEGREE = 180.0f;
@@ -63,6 +63,7 @@ public:
 
 	//アニメーション関係
 	static constexpr float ANIM_SPEED = 20.0f;
+
 	//アニメーション番号
 	static constexpr int   ANIM_IDLE_INDEX = 0;
 	static constexpr int   ANIM_RUN_INDEX = 1;
@@ -101,7 +102,7 @@ public:
 		PLAY,
 		ATTACK,
 		DAMAGE,
-		DEATH,
+		DOWN,
 		MAX
 	};
 
@@ -113,9 +114,43 @@ public:
 		RUN,
 		ATTACK,
 		DAMAGE,
-		DEATH,
+		DOWN,
 		MAX
 	};
+
+	//ダメージの種別
+	enum class DAMAGE_TYPE
+	{
+		NONE,
+		DAMAGE1,
+		DAMAGE2,
+		DAMAGE4,
+		DAMAGE8,
+		DAMAGE16,
+		DAMAGE32,
+		DAMAGE64,
+		MAX
+	};
+	
+	//ダメージ画像の種別
+	enum class IMAGE_TYPE
+	{
+		NONE,
+		DAMAGE1,
+		DAMAGE2,
+		DAMAGE4,
+		DAMAGE8,
+		DAMAGE16,
+		DAMAGE32,
+		DAMAGE64,
+		MAX
+	};
+
+	/*struct DAMAGE_INFO
+	{
+		bool isJudge;
+		int imgHundleId;
+	};*/
 
 	EnemyBase();	//コンストラクタ
 	virtual ~EnemyBase(void);	//デストラクタ
@@ -155,7 +190,12 @@ public:
 	void SetPlayer(std::shared_ptr<Player> player);
 	void SetTree(std::shared_ptr<Tree> tree);
 protected:
+
 	//ダメージ描画判定
+	std::map<DAMAGE_TYPE, bool> isJudgeDamages_;
+	std::map<IMAGE_TYPE, int> damagesImg_;
+	//std::map<DAMAGE_TYPE, DAMAGE_INFO> isJudgeDamages_;
+
 	bool is1damage_;
 	bool is2damage_;
 	bool is4damage;
@@ -183,6 +223,7 @@ protected:
 	std::unique_ptr<AnimationController> animationController_;
 	
 	std::map<STATE, std::function<void(void)>> stateChanges_;//状態管理(状態遷移時初期処理)
+	
 	std::function<void(void)> stateUpdate_;					 //状態管理(更新ステップ)
 	
 	float speed_;	//移動速度

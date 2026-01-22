@@ -8,7 +8,7 @@ class Camera
 public:
 
 	// カメラスピード(度)
-	static constexpr float SPEED = 1.0f;
+	static constexpr float SPEED = 2.0f;
 
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;

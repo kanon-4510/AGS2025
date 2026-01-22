@@ -17,7 +17,7 @@ void EnemyBoss::InitAnimation(void)
 	animationController_->Add((int)ANIM_TYPE::IDLE,		path, ANIM_SPEED,		ANIM_IDLE_INDEX);
 	animationController_->Add((int)ANIM_TYPE::RUN,		path, ANIM_SPEED,		ANIM_RUN_INDEX);
 	animationController_->Add((int)ANIM_TYPE::ATTACK,	path, ANIM_ATK_SPEED,	ANIM_ATTACK_INDEX);
-	animationController_->Add((int)ANIM_TYPE::DEATH,	path, ANIM_SPEED,		ANIM_DEATH_INDEX);
+	animationController_->Add((int)ANIM_TYPE::DOWN,	path, ANIM_SPEED,		ANIM_DEATH_INDEX);
 
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }

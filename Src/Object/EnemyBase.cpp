@@ -38,7 +38,8 @@ EnemyBase::EnemyBase()
 	stateChanges_.emplace(
 		STATE::DAMAGE, std::bind(&EnemyBase::ChangeStateDamage, this));
 	stateChanges_.emplace(
-		STATE::DEATH, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::DOWN, std::bind(&EnemyBase::ChangeStateDeath, this));
+
 
 	is1damage_ = false;
 	is2damage_ = false;
@@ -151,7 +152,7 @@ void EnemyBase::UpdateDamage(void)
 
 void EnemyBase::UpdateDeath(void)
 {
-	animationController_->Play((int)ANIM_TYPE::DEATH, false);
+	animationController_->Play((int)ANIM_TYPE::DOWN, false);
 
 	if (animationController_->IsEnd())
 	{
@@ -310,7 +311,7 @@ void EnemyBase::Damage(int damage)
 	isAttack_ = false;
 	if (hp_ <= VALUE_ZERO && isAlive_)
 	{
-		ChangeState(STATE::DEATH);	
+		ChangeState(STATE::DOWN);	
 		SoundManager::GetInstance().Play(SoundManager::SRC::E_DOWN_SE, Sound::TIMES::ONCE);
 	}
 	else if (hp_ >= static_cast<int>(VALUE_ONE) && isAlive_ && enemyType_ != TYPE::BOSS)

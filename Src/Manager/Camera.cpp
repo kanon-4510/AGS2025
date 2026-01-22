@@ -184,29 +184,58 @@ void Camera::ProcessRot(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsNew(KEY_INPUT_UP))
+	// ゲームパッドが接続数で処理を分ける
+	if (GetJoypadNum() == 0)
 	{
-		angles_.x += AsoUtility::Deg2RadF(1.5);
-		if (angles_.x > LIMIT_X_UP_RAD)
+		if (ins.IsNew(KEY_INPUT_UP))
 		{
-			angles_.x = LIMIT_X_UP_RAD;
+			angles_.x += AsoUtility::Deg2RadF(SPEED);
+			if (angles_.x > LIMIT_X_UP_RAD)
+			{
+				angles_.x = LIMIT_X_UP_RAD;
+			}
+		}
+		if (ins.IsNew(KEY_INPUT_DOWN))
+		{
+			angles_.x -= AsoUtility::Deg2RadF(SPEED);
+			if (angles_.x < -LIMIT_X_DW_RAD)
+			{
+				angles_.x = -LIMIT_X_DW_RAD;
+			}
+		}
+		if (ins.IsNew(KEY_INPUT_RIGHT))
+		{
+			angles_.y += AsoUtility::Deg2RadF(SPEED);
+		}
+		if (ins.IsNew(KEY_INPUT_LEFT))
+		{
+			angles_.y -= AsoUtility::Deg2RadF(SPEED);
 		}
 	}
-	if (ins.IsNew(KEY_INPUT_DOWN))
+	else
 	{
-		angles_.x -= AsoUtility::Deg2RadF(1.5);
-		if (angles_.x < -LIMIT_X_DW_RAD)
+		// 接続されているゲームパッド１の情報を取得
+		InputManager::JOYPAD_IN_STATE padState =
+			ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+		// アナログキーの入力値から方向を取得
+		float rotX = (float)padState.AKeyRY / InputManager::AKEY_VAL_MAX;
+		float rotY = (float)padState.AKeyRX / InputManager::AKEY_VAL_MAX;
+		// 入力値がしきい値を超えていたら回転量に加算
+		if (fabsf(rotX) > InputManager::THRESHOLD)
 		{
-			angles_.x = -LIMIT_X_DW_RAD;
+			angles_.x -= rotX * AsoUtility::Deg2RadF(SPEED);
+			if (angles_.x > LIMIT_X_UP_RAD)
+			{
+				angles_.x = LIMIT_X_UP_RAD;
+			}
+			if (angles_.x < LIMIT_X_DW_RAD)
+			{
+				angles_.x = LIMIT_X_DW_RAD;
+			}
 		}
-	}
-	if (ins.IsNew(KEY_INPUT_RIGHT))
-	{
-		angles_.y += AsoUtility::Deg2RadF(1.5);
-	}
-	if (ins.IsNew(KEY_INPUT_LEFT))
-	{
-		angles_.y -= AsoUtility::Deg2RadF(1.5);
+		if (fabsf(rotY) > InputManager::THRESHOLD) {
+			angles_.y += rotY * AsoUtility::Deg2RadF(SPEED);
+		}
 	}
 }
 
