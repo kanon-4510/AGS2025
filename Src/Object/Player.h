@@ -119,6 +119,7 @@ public:
 	static constexpr float GRAVITY_POW = 10.0f;
 	static constexpr float COLLISION_LINE_UP = 2.0f;
 	static constexpr float COLLISION_PUSH_UP = 2.0f;
+	static constexpr float CONTACT_DOT_THRESHOLD = 0.9f;
 
 	//ƒJƒvƒZƒ‹
 	static constexpr int CAPSULE_CNT = 10;
