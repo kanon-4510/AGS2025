@@ -38,7 +38,7 @@ EnemyBase::EnemyBase()
 	stateChanges_.emplace(
 		STATE::DAMAGE, std::bind(&EnemyBase::ChangeStateDamage, this));
 	stateChanges_.emplace(
-		STATE::DOWN, std::bind(&EnemyBase::ChangeStateDeath, this));
+		STATE::DOWN, std::bind(&EnemyBase::ChangeStateDown, this));
 
 
 	is1damage_ = false;
@@ -150,7 +150,7 @@ void EnemyBase::UpdateDamage(void)
 	}
 }
 
-void EnemyBase::UpdateDeath(void)
+void EnemyBase::UpdateDown(void)
 {
 	animationController_->Play((int)ANIM_TYPE::DOWN, false);
 
@@ -566,9 +566,9 @@ void EnemyBase::ChangeStateDamage(void)
 	stateUpdate_ = std::bind(&EnemyBase::UpdateDamage, this);
 }
 
-void EnemyBase::ChangeStateDeath(void)
+void EnemyBase::ChangeStateDown(void)
 {
-	stateUpdate_ = std::bind(&EnemyBase::UpdateDeath, this);
+	stateUpdate_ = std::bind(&EnemyBase::UpdateDown, this);
 }
 
 #pragma endregion

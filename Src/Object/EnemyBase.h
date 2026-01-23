@@ -269,7 +269,7 @@ protected:
 	virtual void UpdatePlay(void);	//移動時の更新処理
 	virtual void UpdateAttack(void);//アタック時の更新処理
 	virtual void UpdateDamage(void);//ダメージ時の更新処理
-	virtual void UpdateDeath(void);	//死んだ時の更新処理
+	virtual void UpdateDown(void);	//死んだ時の更新処理
 
 	void ChasePlayer(void);	//プレイヤーを追いかける
 
@@ -288,7 +288,7 @@ protected:
 	void ChangeStatePlay(void);
 	void ChangeStateAttack(void);
 	void ChangeStateDamage(void);
-	void ChangeStateDeath(void);
+	void ChangeStateDown(void);
 
 	void Collision(void);	//衝突判定
 };

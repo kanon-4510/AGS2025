@@ -41,6 +41,18 @@ public:
 		RIGHT,
 		TOP,
 		DOWN,
+		//十字キー
+		DG_DOWN,
+		DG_UP,
+		DG_LEFT,
+		DG_RIGHT,
+		STRAT,
+		BACK,
+		L3,
+		R3,
+		//トリガー
+		LB,
+		RB,
 		R_TRIGGER,
 		L_TRIGGER,
 		MAX
@@ -113,6 +125,20 @@ public:
 	bool IsPadBtnNew(JOYPAD_NO no, JOYPAD_BTN btn) const;
 	bool IsPadBtnTrgDown(JOYPAD_NO no, JOYPAD_BTN btn) const;
 	bool IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const;
+
+	//// InputManagerのインスタンスを取得
+	//auto& ins = InputManager::GetInstance();
+	//// 接続されているゲームパッド１の情報を取得
+	//InputManager::JOYPAD_IN_STATE padState =
+	//	ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+
+	// アナログキーの最大値
+	static constexpr float AKEY_VAL_MAX = 1000.0f;
+	// アナログキーの入力受付しきい値(0.0～1.0)
+	static constexpr float THRESHOLD = 0.35f;
+
+	// アナログキーの入力値から方向を取得
+	VECTOR GetDirectionXZAKey(int aKeyX, int aKeyY);
 
 private:
 

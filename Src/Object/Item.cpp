@@ -217,9 +217,6 @@ void Item::ItemUse(void)
 		player_.Heal();
 		tree_.Guard();
 		break;
-	
-	default:
-		break;
 	}
 }
 

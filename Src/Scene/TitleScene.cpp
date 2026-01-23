@@ -109,10 +109,13 @@ void TitleScene::Update(void)
 
 		if (confirmAnimFrame_ >= CONFIRM_ANIM_DURATION) {
 			// 入力受付はアニメーション終了後に
-			if (ins.IsTrgDown(KEY_INPUT_LEFT) || ins.IsTrgDown(KEY_INPUT_RIGHT)) {
+			if (ins.IsTrgDown(KEY_INPUT_LEFT) || ins.IsTrgDown(KEY_INPUT_RIGHT) ||
+				ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DG_LEFT) ||
+				ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DG_RIGHT)) {
 				confirmIndex_ = 1 - confirmIndex_; // 「はい」「いいえ」切替
 			}
-			if (ins.IsTrgDown(KEY_INPUT_RETURN)) {
+			if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
+				ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)) {
 				SoundManager::GetInstance().Play(SoundManager::SRC::SET_SE, Sound::TIMES::ONCE);
 
 				if (confirmIndex_ == 0) {
@@ -134,14 +137,17 @@ void TitleScene::Update(void)
 	}
 
 	// === メニュー選択操作 ===
-	if (ins.IsTrgDown(KEY_INPUT_DOWN)) {
+	if (ins.IsTrgDown(KEY_INPUT_DOWN)||
+		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DG_DOWN)) {
 		selectedIndex_ = (selectedIndex_ + 1) % MENU_SELECT;
 	}
-	else if (ins.IsTrgDown(KEY_INPUT_UP)) {
+	else if (ins.IsTrgDown(KEY_INPUT_UP) ||
+		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DG_UP)) {
 		selectedIndex_ = (selectedIndex_ + 2) % MENU_SELECT;
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
+		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
 	{
 		if (selectedIndex_ == 0) {
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
@@ -222,7 +228,6 @@ void TitleScene::Draw(void)
 	DrawRotaGraph(IMG_3D_WIDTH, cnt_3D - IMG_3D_HEIGHT, IMG_3D_SIZE, 0, img3D_, true);
 
 	#pragma region		ボタン設定
-
 	const int yGame = BASE_Y;
 	const int yRule = BASE_Y + BUTTON_OFFSET;
 	const int yExit = BASE_Y + BUTTON_OFFSET * 2;
